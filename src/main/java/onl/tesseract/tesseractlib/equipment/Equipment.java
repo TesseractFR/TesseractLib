@@ -2,6 +2,7 @@ package onl.tesseract.tesseractlib.equipment;
 
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.invocable.Boussole;
+import onl.tesseract.tesseractlib.equipment.invocable.Carte;
 import onl.tesseract.tesseractlib.equipment.invocable.Elytra;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
@@ -109,7 +110,7 @@ public class Equipment implements Listener {
                 // Remove from dropped items
                 iterator.remove();
                 Invocable invoc = Invocable.asInvocable(eq, drop);
-                if (invoc instanceof Boussole || invoc instanceof Elytra) {
+                if (invoc instanceof Boussole || invoc instanceof Elytra || invoc instanceof Carte) {
                     event.getItemsToKeep().add(drop);
                     continue;
                 }
