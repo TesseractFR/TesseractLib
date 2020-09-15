@@ -121,7 +121,7 @@ public class TPlayer implements Listener {
         return playerProfile;
     }
 
-    void dailyConnection()
+    protected void dailyConnection()
     {
         // ...
     }
@@ -205,7 +205,7 @@ public class TPlayer implements Listener {
     /**
      * Loading done only once when the server starts
      */
-    void loadOnServerStarts()
+    protected void loadOnServerStarts()
     {
 
     }
@@ -233,7 +233,7 @@ public class TPlayer implements Listener {
         }
     }
 
-    ItemStack[] loadInventory(YamlConfiguration yaml, String inv)
+    protected ItemStack[] loadInventory(YamlConfiguration yaml, String inv)
     {
         ItemStack[] list = new ItemStack[41];
         if (yaml.contains(inv))

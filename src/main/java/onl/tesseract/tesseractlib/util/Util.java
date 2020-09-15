@@ -1,9 +1,9 @@
 package onl.tesseract.tesseractlib.util;
 
 import onl.tesseract.tesseractlib.TesseractLib;
+import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class Util {
     static public final String NEW_LINE = " {nl} ";
@@ -40,7 +39,6 @@ public class Util {
      * @param tPlayer Owner of the head.
      * @return Head with the skin of the owner.
      */
-    /*
     @SuppressWarnings("all")
     static public ItemStack getPlayerHead(TPlayer tPlayer)
     {
@@ -49,8 +47,6 @@ public class Util {
         else
             return InventoryMenu.getCustomHead(null, tPlayer.skinValue, tPlayer.skinSignature);
     }
-
-     */
 
     /**
      * Split a string into several strings of size width
