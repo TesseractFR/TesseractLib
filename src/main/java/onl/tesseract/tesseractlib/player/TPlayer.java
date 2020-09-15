@@ -5,7 +5,6 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.Equipment;
-import onl.tesseract.tesseractlib.event.ChatDing;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -49,7 +48,6 @@ public class TPlayer implements Listener {
 
     protected OfflinePlayer player;
     protected Equipment equipment = null;
-    protected Group group;
     protected Gender gender = Gender.OTHER;
 
     /**
@@ -350,18 +348,6 @@ public class TPlayer implements Listener {
             chatEntryRunnable.cancel();
             event.setCancelled(true);
         }
-        // Group chat
-        else if(event.getMessage().charAt(0) == '!' && get(event.getPlayer()).hasGroup()) {
-            event.setCancelled(true);
-            new BukkitRunnable() {
-                @Override
-                public void run()
-                {
-                    event.getPlayer().performCommand("gc " + event.getMessage().replaceFirst("^!", ""));
-                    ChatDing.ding(event.getMessage(), List.copyOf(get(event.getPlayer()).getGroup().getMembers()));
-                }
-            }.runTask(TesseractLib.instance);
-        }
     }
 
     /**
@@ -414,10 +400,6 @@ public class TPlayer implements Listener {
     {
         return player.getPlayer();
     }
-
-    public Group getGroup(){ return  group;}
-    public boolean hasGroup() { return group != null; }
-    public void setGroup(Group gr){this.group = gr;}
 
     public Equipment getEquipment()
     {

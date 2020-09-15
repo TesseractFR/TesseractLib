@@ -4,6 +4,7 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Util {
     static public final String NEW_LINE = " {nl} ";
@@ -438,23 +440,6 @@ public class Util {
                 origin.subtract(0, 1, 0);
             return origin;
         }
-
-        /*
-        static public List<LivingEntity> getNearbyEnnemies(org.bukkit.Location location, double distance, TPlayer player)
-        {
-            return location.getNearbyLivingEntities(distance).stream()
-                    .filter(entity -> !player.getBukkitPlayer().equals(entity) && !(entity.getType() == EntityType.PLAYER && player.hasGroup() && player.getGroup().equals(TPlayer.get((Player)entity).getGroup())))
-                    .collect(Collectors.toList());
-        }
-
-        static public List<LivingEntity> getNearbyAllies(org.bukkit.Location location, double distance, TPlayer player)
-        {
-            return location.getNearbyLivingEntities(distance).stream()
-                    .filter(entity -> !player.getBukkitPlayer().equals(entity) && entity.getType() == EntityType.PLAYER && player.hasGroup() && player.getGroup().equals(TPlayer.get((Player)entity).getGroup()))
-                    .collect(Collectors.toList());
-        }
-
-         */
 
         static public List<org.bukkit.Location> getPointsBetween(org.bukkit.Location a, org.bukkit.Location b, double step)
         {
