@@ -1,7 +1,6 @@
 package onl.tesseract.tesseractlib.menu;
 
 import onl.tesseract.tesseractlib.equipment.invocable.Boussole;
-import onl.tesseract.tesseractlib.equipment.invocable.Carte;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
@@ -119,17 +118,6 @@ public class EquipmentMenu extends InventoryMenu {
         }else {
             this.addInactiveButton(38, Material.BARRIER, ChatColor.RED + "Emplacement de boussole", null);
         }
-
-        Carte carte = (Carte) this.player.getEquipment().get(Carte.class);
-        if (carte != null) {
-            this.addButton(37, carte.getItem(), carte.isInvoked(), event -> {
-                mainHandInvocationMenu(carte, player);
-            });
-        }else {
-            this.addInactiveButton(37, Material.BARRIER, ChatColor.RED + "Emplacement de carte", null);
-        }
-
-
 
         super.open(player);
     }
