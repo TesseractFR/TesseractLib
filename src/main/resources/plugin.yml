@@ -1,0 +1,4 @@
+name: TesseractLib
+version: ${project.version}
+main: onl.tesseract.tesseractlib.TesseractLib
+api-version: 1.16
