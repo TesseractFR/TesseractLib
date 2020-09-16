@@ -79,13 +79,6 @@ public class TPlayer implements Listener {
      */
     public TPlayer(OfflinePlayer player) {
         this.player = player;
-
-        this.load();
-        this.loadOnServerStarts();
-        if (player.isOnline()) {
-            Bukkit.getServer().getPluginManager().registerEvents(this, TesseractLib.instance);
-            loadOnConnection();
-        }
     }
 
     /**
