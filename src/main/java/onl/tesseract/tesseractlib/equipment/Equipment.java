@@ -257,7 +257,7 @@ public class Equipment implements Listener {
      */
     public Invocable getLike(Class<?> clazz) {
         for (Invocable i : invocables) {
-            if (i.getClass().isInstance(clazz))
+            if (clazz.isInstance(i))
                 return i;
         }
         return null;
