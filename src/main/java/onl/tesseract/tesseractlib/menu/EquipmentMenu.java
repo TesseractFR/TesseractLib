@@ -111,7 +111,7 @@ public class EquipmentMenu extends InventoryMenu {
         });
 
         // SECONDARY INVOCATIONS
-        Boussole boussole = (Boussole) this.player.getEquipment().get(Boussole.class);
+        Boussole boussole = (Boussole) this.player.getEquipment().getLike(Boussole.class);
         if (boussole != null) {
             this.addButton(38, boussole.getItem(), boussole.isInvoked(), event -> {
                 mainHandInvocationMenu(boussole, player);
@@ -120,7 +120,7 @@ public class EquipmentMenu extends InventoryMenu {
             this.addInactiveButton(38, Material.BARRIER, ChatColor.RED + "Emplacement de boussole", null);
         }
 
-        Carte carte = (Carte) this.player.getEquipment().get(Carte.class);
+        Carte carte = (Carte) this.player.getEquipment().getLike(Carte.class);
         if (carte != null) {
             this.addButton(37, carte.getItem(), carte.isInvoked(), event -> {
                 mainHandInvocationMenu(carte, player);
