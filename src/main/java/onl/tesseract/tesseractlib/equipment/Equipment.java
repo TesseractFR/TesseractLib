@@ -251,6 +251,19 @@ public class Equipment implements Listener {
     }
 
     /**
+     * Gets an invocable by class
+     * @param clazz Class of the invocable
+     * @return The invocable that is an instance of clazz, or null
+     */
+    public Invocable getLike(Class<?> clazz) {
+        for (Invocable i : invocables) {
+            if (i.getClass().isInstance(clazz))
+                return i;
+        }
+        return null;
+    }
+
+    /**
      * Removes an invocable from this equipment
      * @param invocable The object to remove
      */
