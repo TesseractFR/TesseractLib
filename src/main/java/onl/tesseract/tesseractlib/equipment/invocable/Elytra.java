@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Elytra extends Invocable {
     BukkitTask accelerateTask;
@@ -113,7 +114,6 @@ public class Elytra extends Invocable {
         speedLevel = (int)yamlMap.get("speedLvl");
         setItem();
 
-        /*
         // Load trails
         File file = new File(TPlayer.folderPath + equipment.getPlayer().getOfflinePlayer().getUniqueId() + ".yml");
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
@@ -126,7 +126,6 @@ public class Elytra extends Invocable {
         if (yamlMap.containsKey("trail"))
             trail = Trail.valueOf((String) yamlMap.get("trail"));
 
-         */
         equipment.unblockedChestplate.add(this);
     }
 
