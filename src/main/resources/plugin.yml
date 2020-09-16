@@ -2,3 +2,26 @@ name: TesseractLib
 version: ${project.version}
 main: onl.tesseract.tesseractlib.TesseractLib
 api-version: 1.16
+
+commands:
+  animation:
+    aliases: animation
+    usage: "/animation"
+    description: Pour tester des animations
+    permission: tesseract.staff
+  equipement:
+    aliases: eq
+    usage: "/equipement"
+    description: Pour tester le menu équipements
+  msg:
+    aliases: [ tell, w ]
+    usage: "/msg {pseudo} {message}"
+    description: Envoie un message privé
+  reply:
+    aliases: [ r ]
+    usage: "/r {message}"
+    description: Répondre à un message privé
+  socialspy:
+    usage: "/socialspy"
+    description: Espionner les conversations
+    permission: tesseract.staff.socialspy
