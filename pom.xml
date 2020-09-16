@@ -6,7 +6,7 @@
 
     <groupId>onl.tesseract</groupId>
     <artifactId>TesseractLib</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>TesseractLib</name>

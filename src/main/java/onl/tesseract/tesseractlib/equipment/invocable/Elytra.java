@@ -32,6 +32,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -418,7 +420,6 @@ public class Elytra extends Invocable {
     {
         return prices;
     }
-    /*
 
     public static void addTrail(OfflinePlayer player, Trail trail) {
         if (player.isOnline())
@@ -468,6 +469,4 @@ public class Elytra extends Invocable {
             e.printStackTrace();
         }
     }
-
-     */
 }
