@@ -229,6 +229,15 @@ public class InventoryMenu implements Listener {
         this.buttons.clear();
     }
 
+    /**
+     * Clears the menu
+     */
+    public void clear()
+    {
+        this.buttons.clear();
+        this.inventory.clear();
+    }
+
     public static ItemStack getCustomHead(String name, String data, String signature) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) head.getItemMeta();
