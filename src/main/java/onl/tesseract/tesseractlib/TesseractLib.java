@@ -33,7 +33,7 @@ public final class TesseractLib extends JavaPlugin {
     void registerCommands()
     {
         Objects.requireNonNull(instance.getCommand("animation")).setExecutor(new Animation());
-        Objects.requireNonNull(instance.getCommand("equipment")).setExecutor(new EquipmentCommand());
+        //Objects.requireNonNull(instance.getCommand("equipment")).setExecutor(new EquipmentCommand());
         Objects.requireNonNull(instance.getCommand("socialspy")).setExecutor(new SocialSpy());
         Objects.requireNonNull(instance.getCommand("msg")).setExecutor(new MsgCommand());
         Objects.requireNonNull(instance.getCommand("reply")).setExecutor(new ReplyToMsg());
