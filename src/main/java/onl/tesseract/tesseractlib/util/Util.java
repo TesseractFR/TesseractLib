@@ -230,10 +230,14 @@ public class Util {
         // Check off hand
         if (remaining > 0) {
             ItemStack item = inv.getItemInOffHand();
-            int tmp = item.getAmount() - remaining;
-            remaining -= item.getAmount();
-            item.setAmount(tmp);
-            inv.setItem(EquipmentSlot.OFF_HAND, item);
+            if (item.getType().equals(material))
+            {
+                int tmp = item.getAmount() - remaining;
+                remaining -= item.getAmount();
+                item.setAmount(tmp);
+                inv.setItem(EquipmentSlot.OFF_HAND, item);
+            }
+
         }
         return count - Math.max(remaining, 0);
     }
