@@ -9,7 +9,7 @@
     <version>1.6.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>TesseractLib</name>
+    <name>tesseractlib</name>
 
     <properties>
         <java.version>1.8</java.version>
