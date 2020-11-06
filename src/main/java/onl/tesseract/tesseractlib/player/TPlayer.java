@@ -120,17 +120,7 @@ public class TPlayer implements Listener {
     public void onJoin(OfflinePlayer player) {
         this.player = player;
 
-        Bukkit.getServer().getPluginManager().registerEvents(this, TesseractLib.instance);
         this.loadOnConnection();
-        //Tesseract.permissions.playerAddGroup(getOfflinePlayer().getPlayer(), rank.getPermGroup());
-
-        /*
-        // Check mails
-        if (mailer.hasUnreadMail())
-            sendMessage(new ComponentBuilder(ChatFormat.MAIL + "Vous avez des messages non lus. Cliquez pour les consulter.")
-                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mail read")).create());
-
-         */
 
         // First connection of the day
         if (! hasPlayedToday())
@@ -334,6 +324,8 @@ public class TPlayer implements Listener {
                 @Override
                 public void run()
                 {
+                    if (chatEntryCallback == null)
+                        return;
                     chatEntryCallback.accept(event.getMessage());
                     chatEntryCallback = null;
                 }
