@@ -63,10 +63,6 @@
             <id>github-Cartographer</id>
             <url>https://maven.pkg.github.com/BananaPuncher714/Cartographer2</url>
         </repository>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
     </repositories>
 
     <dependencies>
