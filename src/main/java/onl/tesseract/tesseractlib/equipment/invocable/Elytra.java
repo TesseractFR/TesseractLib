@@ -450,7 +450,7 @@ public class Elytra extends Invocable {
     public static void removeTrail(OfflinePlayer player, Trail trail)
     {
         if (player.isOnline()) {
-            Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().get(Elytra.class);
+            Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().getLike(Elytra.class);
             el.getPurchasedTrails().remove(trail);
             if (el.getTrail() == trail)
                 el.setTrail(Trail.NONE);
