@@ -423,7 +423,7 @@ public class Elytra extends Invocable {
     public static void addTrail(OfflinePlayer player, Trail trail) {
         if (player.isOnline())
         {
-            Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().get(Elytra.class);
+            Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().getLike(Elytra.class);
             el.getPurchasedTrails().add(trail);
             ((Player) player).sendMessage(ChatFormat.EQUIPMENT_SUCCESS + "Le sillage " + trail.getName() + ChatColor.GREEN +
                     " a bien été ajouté à vos ailes ! Activez le dans le menu des ailes.");
