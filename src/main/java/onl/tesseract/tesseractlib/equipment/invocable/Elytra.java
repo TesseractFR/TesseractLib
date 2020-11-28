@@ -189,7 +189,7 @@ public class Elytra extends Invocable {
                         vector.add(player.getLocation().getDirection().multiply(0.7));
 
                         player.setVelocity(vector);
-                        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 10, 1);
+                        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
                     }
                 }
             }.runTaskTimer(TesseractLib.instance, 0, 10);
