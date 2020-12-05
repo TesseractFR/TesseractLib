@@ -143,6 +143,7 @@ public class Util {
             item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
             item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
+        item.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         return item;
     }
 
