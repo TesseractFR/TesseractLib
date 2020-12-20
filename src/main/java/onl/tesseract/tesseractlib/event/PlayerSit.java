@@ -10,6 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -37,7 +38,11 @@ public class PlayerSit implements Listener {
                     return;
                 Slab dir = (Slab)event.getClickedBlock().getBlockData();
                 if (dir.getType() == Slab.Type.BOTTOM)
-                    sit(event.getPlayer(), event.getClickedBlock().getLocation().add(0.5, -.4, 0.5), event.getPlayer().getLocation().getYaw());
+                {
+                    Location sitLocation = event.getClickedBlock().getLocation().add(0.5, -.4, 0.5);
+                    new PlayerSitEvent(event.getPlayer(), sitLocation, event.getPlayer().getLocation().getYaw())
+                            .callEvent();
+                }
             }
             else if (event.getClickedBlock().getType().toString().contains("STAIRS"))
             {
@@ -47,22 +52,23 @@ public class PlayerSit implements Listener {
                 if (stairs.getHalf() == Bisected.Half.TOP)
                     return;
 
+                Location sitLocation = event.getClickedBlock().getLocation().add(0.5, -.4, 0.5);
                 Directional dir = (Directional) event.getClickedBlock().getBlockData();
                 switch (dir.getFacing())
                 {
                     case DOWN:
                         break;
                     case NORTH:
-                        sit(event.getPlayer(), event.getClickedBlock().getLocation().add(0.5, -.4, 0.5), 0);
+                        new PlayerSitEvent(event.getPlayer(), sitLocation, 0).callEvent();
                         break;
                     case SOUTH:
-                        sit(event.getPlayer(), event.getClickedBlock().getLocation().add(0.5, -.4, 0.5), 180);
+                        new PlayerSitEvent(event.getPlayer(), sitLocation, 180).callEvent();
                         break;
                     case EAST:
-                        sit(event.getPlayer(), event.getClickedBlock().getLocation().add(0.5, -.4, 0.5), 90);
+                        new PlayerSitEvent(event.getPlayer(), sitLocation, 90).callEvent();
                         break;
                     case WEST:
-                        sit(event.getPlayer(), event.getClickedBlock().getLocation().add(0.5, -.4, 0.5), -90);
+                        new PlayerSitEvent(event.getPlayer(), sitLocation, -90).callEvent();
                         break;
                 }
             }
@@ -80,6 +86,13 @@ public class PlayerSit implements Listener {
     {
         if (map.containsKey(event.getPlayer()))
             standUp(event.getPlayer());
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onSitHandler(PlayerSitEvent event)
+    {
+        if (!event.isCancelled())
+            sit(event.getPlayer(), event.getLocation(), event.getRotation());
     }
 
     static public void sit(Player player, Location location, float rotation)
