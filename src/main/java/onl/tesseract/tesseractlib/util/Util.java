@@ -253,7 +253,13 @@ public class Util {
         for (int index : inv.all(item).keySet()) {
             return index;
         }
+        System.out.println(item.getItemFlags());
+        ItemStack item2 = inv.getItemInOffHand();
+        System.out.println(item2.getItemFlags());
+
         if (item.equals(inv.getItemInOffHand()))
+            return -1;
+        if(item.getType().equals(item2.getType()) && item.getLore().equals(item2.getLore()) && item.getItemFlags().equals(item2.getItemFlags()) )
             return -1;
         return -2;
     }
