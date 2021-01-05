@@ -236,7 +236,7 @@ public class Elytra extends Invocable {
                         vector.add(player.getLocation().getDirection().multiply(0.7));
 
                         player.setVelocity(vector);
-                        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 10, 1);
+                        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
                     }
                 }
             }.runTaskTimer(TesseractLib.instance, 0, 10);
@@ -470,7 +470,7 @@ public class Elytra extends Invocable {
     public static void addTrail(OfflinePlayer player, Trail trail) {
         if (player.isOnline())
         {
-            Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().get(Elytra.class);
+            Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().getLike(Elytra.class);
             el.getPurchasedTrails().add(trail);
             ((Player) player).sendMessage(ChatFormat.EQUIPMENT_SUCCESS + "Le sillage " + trail.getName() + ChatColor.GREEN +
                     " a bien été ajouté à vos ailes ! Activez le dans le menu des ailes.");
@@ -497,7 +497,7 @@ public class Elytra extends Invocable {
     public static void removeTrail(OfflinePlayer player, Trail trail)
     {
         if (player.isOnline()) {
-            Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().get(Elytra.class);
+            Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().getLike(Elytra.class);
             el.getPurchasedTrails().remove(trail);
             if (el.getTrail() == trail)
                 el.setTrail(Trail.NONE);

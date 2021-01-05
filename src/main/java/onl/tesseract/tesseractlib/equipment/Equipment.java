@@ -251,7 +251,7 @@ public class Equipment implements Listener {
     }
 
     /**
-     * Gets an invocable by class
+     * Gets an invocable by class or super-class
      * @param clazz Class of the invocable
      * @return The invocable that is an instance of clazz, or null
      */

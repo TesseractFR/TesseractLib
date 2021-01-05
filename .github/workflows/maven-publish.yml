@@ -28,7 +28,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s ~/.m2/settings.xml
+      run: mvn deploy -e -s ~/.m2/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
         server-id: github
@@ -37,4 +37,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: tesseractLib
-        path: /home/runner/work/TesseractLib/TesseractLib/target/TesseractLib-1.0-SNAPSHOT.jar
+        path: /home/runner/work/TesseractLib/TesseractLib/target/tesseractlib-*

@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>onl.tesseract</groupId>
-    <artifactId>TesseractLib</artifactId>
-    <version>1.6.1-SNAPSHOT</version>
+    <artifactId>tesseractlib</artifactId>
+    <version>1.6.12</version>
     <packaging>jar</packaging>
 
-    <name>TesseractLib</name>
+    <name>tesseractlib</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -17,14 +17,28 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+         
     <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/TesseractFR/TesseractLib</url>
-        </repository>
-    </distributionManagement>
+         <repository>
+             <id>github</id>
+             <name>GitHub Packages</name>
+             <url>https://maven.pkg.github.com/TesseractFR/TesseractLib</url>
+         </repository>
+     </distributionManagement>
+         
+     <pluginRepositories>
+         <pluginRepository>
+             <releases>
+                 <updatePolicy>never</updatePolicy>
+             </releases>
+             <snapshots>
+                 <enabled>true</enabled>
+             </snapshots>
+             <id>github</id>
+             <name>GitHub Packages</name>
+             <url>https://maven.pkg.github.com/TesseractFR/TesseractLib</url>
+         </pluginRepository>
+     </pluginRepositories>
 
     <build>
         <plugins>
@@ -62,32 +76,14 @@
         </resources>
     </build>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/TesseractFR/TesseractLib</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <repositories>
         <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/BananaPuncher714/Cartographer2</url>
-        </repository>
-        <repository>
-            <id>papermc-repo</id>
+            <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/BananaPuncher714/Cartographer2</url>
         </repository>
     </repositories>
 
@@ -95,13 +91,13 @@
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.1-R0.1-SNAPSHOT</version>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.github.bananapuncher714</groupId>
-            <artifactId>Cartographer2_API</artifactId>
-            <version>2.14.0</version>
+            <artifactId>cartographer2_api</artifactId>
+            <version>2.14.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
