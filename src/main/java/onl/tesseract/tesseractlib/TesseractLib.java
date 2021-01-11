@@ -43,12 +43,6 @@ public final class TesseractLib extends JavaPlugin {
         registerEvents();
         registerCommands();
 
-
-        try {
-            Elytra.Trail.registerTrails();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
     }
 
     @Override
