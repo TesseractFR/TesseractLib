@@ -10,7 +10,11 @@ public class BDDManager {
        this.bddConnection = new BDDConnection(new BDD("localhost","user","","TesseractBase",3306));
     }
 
-    public void close() throws SQLException {
-        bddConnection.close();
+    public void close() {
+        try {
+            bddConnection.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }

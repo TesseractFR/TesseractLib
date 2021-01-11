@@ -1,5 +1,6 @@
 package onl.tesseract.tesseractlib;
 
+import onl.tesseract.tesseractlib.bdd.BDDManager;
 import onl.tesseract.tesseractlib.command.Animation;
 import onl.tesseract.tesseractlib.command.EquipmentCommand;
 import onl.tesseract.tesseractlib.command.MsgCommand;
@@ -26,17 +27,18 @@ public final class TesseractLib extends JavaPlugin {
     static public final String configFilepath = "plugins/Tesseract/config.yml";
 
     static public String host, database, username, password;
+    private BDDManager bddManager;
     static public int port;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         instance = this;
+        bddManager = new BDDManager();
         registerEvents();
         registerCommands();
 
         loadConfig();
-        connect();
 
         try {
             Elytra.Trail.registerTrails();
@@ -48,6 +50,7 @@ public final class TesseractLib extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        this.bddManager.close();
 
     }
 
@@ -69,12 +72,6 @@ public final class TesseractLib extends JavaPlugin {
     }
 
 
-    public static Connection getConnection() {
-        return connection;
-    }
-
-    static Connection connection;
-
     public void loadConfig()
     {
         File file = new File(configFilepath);
@@ -87,24 +84,5 @@ public final class TesseractLib extends JavaPlugin {
         port = yaml.getInt("db.port", 3306);
     }
 
-    public void connect()
-    {
-        try {
-            if (connection != null && ! connection.isClosed())
-                return;
 
-            synchronized (this)
-            {
-                Class.forName("com.mysql.jdbc.Driver");
-                String url = "jdbc:sql://" + host + ":" + port + "/" + database;
-                connection = DriverManager.getConnection(url, username, password);
-                System.out.println(connection != null);
-            }
-
-
-        } catch (SQLException | ClassNotFoundException throwables) {
-            TesseractLib.instance.getLogger().log(Level.SEVERE, "Could not connect to Tesseract database!");
-            throwables.printStackTrace();
-        }
-    }
 }
