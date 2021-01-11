@@ -34,9 +34,6 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,23 +96,6 @@ public class Elytra extends Invocable {
         {
             return particle;
         }
-
-        /**
-         * Register all trails into the SQL database
-         */
-        static public void registerTrails() throws SQLException {
-            StringBuilder values = new StringBuilder("(");
-            boolean first = true;
-            for (Trail trail : Trail.values()) {
-                if (first)
-                    values.append('\'').append(trail.toString()).append('\'');
-                else
-                    values.append(",'").append(trail.toString()).append('\'');
-                first = false;
-            }
-            PreparedStatement statement = TesseractLib.getConnection().prepareStatement("INSERT INTO tesseract_sillages VALUES " + values.append(")").toString());
-            statement.execute();
-        }
     }
 
     public Elytra(Equipment equipment)
@@ -135,12 +115,6 @@ public class Elytra extends Invocable {
         setItem();
 
         // Load trails
-        try {
-            loadTrails();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        /*
         File file = new File(TPlayer.folderPath + equipment.getPlayer().getOfflinePlayer().getUniqueId() + ".yml");
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         if (yaml.contains("elytraTrails"))
@@ -148,32 +122,11 @@ public class Elytra extends Invocable {
             List<String> names = yaml.getStringList("elytraTrails");
             purchasedTrails = names.stream().map(Trail::valueOf).collect(Collectors.toList());
         }
-
-         */
-
         // Load active trail
         if (yamlMap.containsKey("trail"))
-        {
-            Trail selected = Trail.valueOf((String) yamlMap.get("trail"));
-            if (purchasedTrails.contains(selected))
-                trail = selected;
-        }
+            trail = Trail.valueOf((String) yamlMap.get("trail"));
 
         equipment.unblockedChestplate.add(this);
-    }
-
-    /**
-     * Loads trails from SQL database
-     */
-    public void loadTrails() throws SQLException {
-        PreparedStatement statement = TesseractLib.getConnection().prepareStatement("SELECT * FROM tesseract_sillages_joueurs WHERE playerUUID = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        ResultSet results = statement.executeQuery();
-        while (results.next())
-        {
-            Trail trail = Trail.valueOf(results.getString("name"));
-            purchasedTrails.add(trail);
-        }
     }
 
     static ItemStack createItem() {
