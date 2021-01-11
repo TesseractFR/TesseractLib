@@ -4,6 +4,8 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
+import onl.tesseract.tesseractlib.bdd.BDDConnection;
+import onl.tesseract.tesseractlib.bdd.BDDPlayer;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import org.bukkit.*;
@@ -24,6 +26,9 @@ import org.bukkit.util.Consumer;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -36,13 +41,19 @@ public class TPlayer implements Listener {
 
 
     public enum Gender{
-        MALE("Masculin"),FEMALE("Féminin"),OTHER("Non renseigné");
+        MALE("Masculin", 'H'),FEMALE("Féminin", 'F'),OTHER("Non renseigné", 'N');
         private final String string ;
-        Gender(String string) {
+        private final char bddchar;
+        Gender(String string,char bddchar) {
             this.string = string ;
+            this.bddchar = bddchar;
         }
         public String getName() {
             return  this.string ;
+        }
+
+        public char toBdd() {
+            return bddchar;
         }
     }
 
@@ -122,9 +133,14 @@ public class TPlayer implements Listener {
 
         this.loadOnConnection();
 
+        new BDDPlayer(this).registerAll();
+
         // First connection of the day
-        if (! hasPlayedToday())
+        if (! hasPlayedToday()){
             setPlayedToday(true);
+
+        }
+
     }
 
     @EventHandler
@@ -144,7 +160,7 @@ public class TPlayer implements Listener {
     public void save() {
         if (equipment != null)
             this.equipment.save();
-
+        new BDDPlayer(this).saveGender();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         yaml.set("name", getOfflinePlayer().getName());
