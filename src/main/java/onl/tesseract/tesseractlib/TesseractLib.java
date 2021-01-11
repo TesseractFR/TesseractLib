@@ -26,19 +26,23 @@ public final class TesseractLib extends JavaPlugin {
 
     static public final String configFilepath = "plugins/Tesseract/config.yml";
 
-    static public String host, database, username, password;
-    private BDDManager bddManager;
+    static private String host, database, username, password;
+    private static BDDManager bddManager;
     static public int port;
+
+    static public BDDManager getBddManager() {
+        return bddManager;
+    }
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         instance = this;
-        bddManager = new BDDManager();
+        loadConfig();
+        bddManager = new BDDManager(host,port,username,password,database);
         registerEvents();
         registerCommands();
 
-        loadConfig();
 
         try {
             Elytra.Trail.registerTrails();
@@ -50,7 +54,7 @@ public final class TesseractLib extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        this.bddManager.close();
+        bddManager.close();
 
     }
 
@@ -77,11 +81,11 @@ public final class TesseractLib extends JavaPlugin {
         File file = new File(configFilepath);
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 
-        host = yaml.getString("db.host", "localhost");
-        database = yaml.getString("db.database", "tesseract");
-        username = yaml.getString("db.username", "admin");
-        password = yaml.getString("db.password", "admin");
-        port = yaml.getInt("db.port", 3306);
+        host = yaml.getString("db_host");
+        database = yaml.getString("db_database");
+        username = yaml.getString("db_username");
+        password = yaml.getString("db_password");
+        port = yaml.getInt("db_port");
     }
 
 

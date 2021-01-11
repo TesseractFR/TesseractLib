@@ -16,6 +16,7 @@ public class BDD {
     }
 
     public String getUrl(){
+        System.out.println("jdbc:mysql://"+host+":"+port+"/"+dbName);
         return "jdbc:mysql://"+host+":"+port+"/"+dbName;
 
     }

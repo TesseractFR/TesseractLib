@@ -6,8 +6,13 @@ public class BDDManager {
 
     private BDDConnection bddConnection;
 
-    public BDDManager(){
-       this.bddConnection = new BDDConnection(new BDD("localhost","user","","TesseractBase",3306));
+
+    public BDDManager(String host, int port, String username, String password, String database) {
+        this.bddConnection = new BDDConnection(new BDD(host,username,password,database,port));
+    }
+
+    public BDDConnection getBddConnection() {
+        return bddConnection;
     }
 
     public void close() {
