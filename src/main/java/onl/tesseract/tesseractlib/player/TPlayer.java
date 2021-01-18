@@ -4,11 +4,12 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.bdd.BDDConnection;
 import onl.tesseract.tesseractlib.bdd.BDDPlayer;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.util.ChatFormat;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,11 +27,11 @@ import org.bukkit.util.Consumer;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.UUID;
 
 public class TPlayer implements Listener {
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
@@ -160,7 +161,7 @@ public class TPlayer implements Listener {
     public void save() {
         if (equipment != null)
             this.equipment.save();
-        new BDDPlayer(this).saveGender();
+        new BDDPlayer(this).setGender(gender);
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         yaml.set("name", getOfflinePlayer().getName());
