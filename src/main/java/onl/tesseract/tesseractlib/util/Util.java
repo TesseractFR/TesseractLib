@@ -168,7 +168,7 @@ public class Util {
         // For each item
         for (ItemStack item : items.values()) {
             // Skip if it has a localizedName
-            if (item.hasItemMeta() && item.getItemMeta().hasLocalizedName())
+            if ((item.hasItemMeta() && item.getItemMeta().hasLocalizedName())  || !item.getEnchantments().isEmpty())
                 continue;
             count += item.getAmount();
         }
@@ -186,7 +186,7 @@ public class Util {
         // Get off hand
         ItemStack item = inv.getItem(EquipmentSlot.OFF_HAND);
         if (item != null) {
-            if (item.getType() == material && !(item.hasItemMeta() && item.getItemMeta().hasLocalizedName()))
+            if (item.getType() == material && !(item.hasItemMeta() && item.getItemMeta().hasLocalizedName()) && item.getEnchantments().isEmpty())
                 return item.getAmount() + countNonSpecialItems((Inventory) inv, material);
         }
         return countNonSpecialItems((Inventory) inv, material);
@@ -204,7 +204,7 @@ public class Util {
         HashMap<Integer, ? extends ItemStack> items = inv.all(material);
         for (int index : items.keySet()) {
             ItemStack item = items.get(index);
-            if (item.hasItemMeta() && item.getItemMeta().hasLocalizedName())
+            if ((item.hasItemMeta() && item.getItemMeta().hasLocalizedName() )|| !item.getEnchantments().isEmpty())
                 continue;
             if (item.getAmount() >= count) {
                 item.setAmount(item.getAmount() - count);
@@ -231,7 +231,7 @@ public class Util {
         // Check off hand
         if (remaining > 0) {
             ItemStack item = inv.getItemInOffHand();
-            if (item.getType().equals(material))
+            if (item.getType().equals(material) && item.getEnchantments().isEmpty())
             {
                 int tmp = item.getAmount() - remaining;
                 remaining -= item.getAmount();
