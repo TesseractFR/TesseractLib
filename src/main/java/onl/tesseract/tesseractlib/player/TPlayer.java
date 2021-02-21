@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
+import onl.tesseract.tesseractlib.bdd.BDDConnection;
 import onl.tesseract.tesseractlib.bdd.BDDPlayer;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.util.ChatFormat;
@@ -27,6 +28,9 @@ import org.bukkit.util.Consumer;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,63 +38,71 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class TPlayer implements Listener {
+    public enum Gender {
+        MALE("Masculin", 'H'),
+        FEMALE("Féminin", 'F'),
+        OTHER("Non renseigné", 'N');
+        private final String string;
+        private final char bddchar;
+
+        Gender(String string, char bddchar)
+        {
+            this.string = string;
+            this.bddchar = bddchar;
+        }
+
+        public String getName()
+        {
+            return this.string;
+        }
+
+        public char toBdd()
+        {
+            return bddchar;
+        }
+    }
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
+    static private final String bddtable = "t_player";
     /**
      * Maps every Player who has played before with a TPlayer instance.
      */
     static public HashMap<UUID, TPlayer> playerMap = new HashMap<>();
-
-
-    public enum Gender{
-        MALE("Masculin", 'H'),FEMALE("Féminin", 'F'),OTHER("Non renseigné", 'N');
-        private final String string ;
-        private final char bddchar;
-        Gender(String string,char bddchar) {
-            this.string = string ;
-            this.bddchar = bddchar;
-        }
-        public String getName() {
-            return  this.string ;
-        }
-
-        public char toBdd() {
-            return bddchar;
-        }
-    }
-
+    public Date lastUpdateHF = null;
+    public String skinValue;
+    public String skinSignature;
     protected OfflinePlayer player;
     protected Equipment equipment = null;
     protected Gender gender = Gender.OTHER;
-
     /**
      * Function to call the next time this player chats. The message is passed as a parameter.
      */
-    protected  Consumer<String> chatEntryCallback;
-    protected  BukkitRunnable chatEntryRunnable;
-    protected  Consumer<String[]> commandEntryCallback;
-    protected  BukkitRunnable commandEntryRunnable;
-
+    protected Consumer<String> chatEntryCallback;
+    protected BukkitRunnable chatEntryRunnable;
+    protected Consumer<String[]> commandEntryCallback;
+    // Mailer mailer = new Mailer(this);
+    protected BukkitRunnable commandEntryRunnable;
     protected String dateSinceLastConnection = null;
     protected String dateFirstConnection = new Date().toString();
-    public Date lastUpdateHF = null;
-    // Mailer mailer = new Mailer(this);
-
     protected boolean playedToday = false;
-
     protected boolean adminMode = false;
     protected Inventory adminInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
     protected Inventory playerInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
-
-    public String skinValue;
-    public String skinSignature;
     protected PlayerProfile playerProfile;
+    protected BDDConnection bddconnection = TesseractLib.getBddManager().getBddConnection();
 
     /**
      * Loads a player
+     *
      * @param player OfflinePlayer to load
      */
-    public TPlayer(OfflinePlayer player) {
+    public TPlayer(OfflinePlayer player)
+    {
         this.player = player;
+    }
+
+    static public TPlayer get(Player player)
+    {
+        return TPlayer.playerMap.get(player.getUniqueId());
     }
 
     /**
@@ -102,7 +114,8 @@ public class TPlayer implements Listener {
         this.playerProfile = Bukkit.createProfile(player.getUniqueId());
         new BukkitRunnable() {
             @Override
-            public void run() {
+            public void run()
+            {
                 playerProfile.complete();
                 for (ProfileProperty profileProperty : playerProfile.getProperties())
                 {
@@ -118,9 +131,11 @@ public class TPlayer implements Listener {
 
     /**
      * Gets the player profile stored at server start by TPlayer#loadPlayerProfile
+     *
      * @return the player profile
      */
-    public PlayerProfile getPlayerProfile() {
+    public PlayerProfile getPlayerProfile()
+    {
         return playerProfile;
     }
 
@@ -129,7 +144,8 @@ public class TPlayer implements Listener {
         // ...
     }
 
-    public void onJoin(OfflinePlayer player) {
+    public void onJoin(OfflinePlayer player)
+    {
         this.player = player;
 
         this.loadOnConnection();
@@ -137,7 +153,8 @@ public class TPlayer implements Listener {
         new BDDPlayer(this).registerAll();
 
         // First connection of the day
-        if (! hasPlayedToday()){
+        if (!hasPlayedToday())
+        {
             setPlayedToday(true);
 
         }
@@ -145,7 +162,8 @@ public class TPlayer implements Listener {
     }
 
     @EventHandler
-    public void onLeave(PlayerQuitEvent event) {
+    public void onLeave(PlayerQuitEvent event)
+    {
         if (event.getPlayer().equals(getOfflinePlayer()))
         {
             this.save();
@@ -158,17 +176,17 @@ public class TPlayer implements Listener {
     /**
      * Saves the player
      */
-    public void save() {
+    public void save()
+    {
         if (equipment != null)
             this.equipment.save();
-        new BDDPlayer(this).setGender(gender);
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         yaml.set("name", getOfflinePlayer().getName());
-        yaml.set("First_co",dateFirstConnection);
-        yaml.set("gender",gender.toString());
+        yaml.set("First_co", dateFirstConnection);
         yaml.set("hasPlayedToday", playedToday);
-        if (getOfflinePlayer().isOnline()) {
+        if (getOfflinePlayer().isOnline())
+        {
             SimpleDateFormat sdf = new SimpleDateFormat("E, dd MMM yyyy");
             String date = sdf.format(new Date());
             yaml.set("dateSinceLastConnection", date);
@@ -193,9 +211,12 @@ public class TPlayer implements Listener {
                 yaml.set("adminInventory", adminInventory.getContents());
         }
 
-        try {
+        try
+        {
             yaml.save(file);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
@@ -213,7 +234,8 @@ public class TPlayer implements Listener {
      */
     public void loadOnConnection()
     {
-        if (getOfflinePlayer().isOnline()){
+        if (getOfflinePlayer().isOnline())
+        {
             this.equipment = Equipment.load(this);
             //Tesseract.permissions.playerAddGroup(getOfflinePlayer().getPlayer(), rank.getPermGroup());
 
@@ -251,80 +273,95 @@ public class TPlayer implements Listener {
     /**
      * Loads player's general information that does not need the player to be online
      */
-    public void load() {
+    public void load()
+    {
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
-        if (file.exists()) {
+        if (file.exists())
+        {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 
             this.dateSinceLastConnection = yaml.getString("dateSinceLastConnection");
             dateFirstConnection = yaml.getString("First_co");
             if (yaml.contains("hasPlayedToday"))
                 playedToday = yaml.getBoolean("hasPlayedToday");
-            if (yaml.contains("gender"))
-                gender = Gender.valueOf(yaml.getString("gender"));
         }
     }
 
     /**
      * Checks if the player is online
+     *
      * @return True if online
      */
-    public boolean isOnline() {
+    public boolean isOnline()
+    {
         return getOfflinePlayer().isOnline();
     }
 
     /**
      * Sends a message to the bukkit player if he is online.
+     *
      * @param message Message to send
      */
-    public void sendMessage(String message) {
+    public void sendMessage(String message)
+    {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
 
-    public void sendMessage(String[] message) {
+    public void sendMessage(String[] message)
+    {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
 
-    public void sendMessage(BaseComponent message) {
+    public void sendMessage(BaseComponent message)
+    {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
 
-    public void sendMessage(BaseComponent... message) {
+    public void sendMessage(BaseComponent... message)
+    {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
 
-    public String getDateFirstConnection(){
+    public String getDateFirstConnection()
+    {
         return dateFirstConnection;
     }
 
     /**
      * Get the next player's input in the chat. Expires within 30 seconds.
+     *
      * @param message Message to prompt to the player.
      * @param function Callback. The player's message is given as parameter.
      */
-    public void getChatEntry(String message, Consumer<String> function) {
+    public void getChatEntry(String message, Consumer<String> function)
+    {
         getChatEntry(message, 30, function);
     }
 
-    public void getChatEntry(String message, int seconds, Consumer<String> function) {
+    public void getChatEntry(String message, int seconds, Consumer<String> function)
+    {
         getChatEntry(ChatFormat.CHAT, message, seconds, function);
     }
 
-    public void getChatEntry(String format, String message, Consumer<String> function) {
+    public void getChatEntry(String format, String message, Consumer<String> function)
+    {
         getChatEntry(format, message, 30, function);
     }
 
-    public void getChatEntry(String format, String message, int seconds, Consumer<String> function) {
-        if (! player.isOnline()) return;
+    public void getChatEntry(String format, String message, int seconds, Consumer<String> function)
+    {
+        if (!player.isOnline())
+            return;
         player.getPlayer().sendMessage(format + message);
         this.chatEntryCallback = function;
         this.chatEntryRunnable = new BukkitRunnable() {
             @Override
-            public void run() {
+            public void run()
+            {
                 chatEntryCallback = null;
             }
         };
@@ -332,10 +369,12 @@ public class TPlayer implements Listener {
     }
 
     @EventHandler
-    public void onChat(AsyncPlayerChatEvent event) {
-        if (! event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
+    public void onChat(AsyncPlayerChatEvent event)
+    {
+        if (!event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
             return;
-        if (this.chatEntryCallback != null) {
+        if (this.chatEntryCallback != null)
+        {
             // Make a sync call
             new BukkitRunnable() {
                 @Override
@@ -354,10 +393,13 @@ public class TPlayer implements Listener {
 
     /**
      * Gets the arguments of the next /command of this player.
+     *
      * @param function Callback to call. Passes the args as parameter
      */
-    public void getChatCommand(Consumer<String[]> function) {
-        if (! player.isOnline()) return;
+    public void getChatCommand(Consumer<String[]> function)
+    {
+        if (!player.isOnline())
+            return;
         commandEntryCallback = function;
         commandEntryRunnable = new BukkitRunnable() {
             @Override
@@ -366,19 +408,23 @@ public class TPlayer implements Listener {
                 commandEntryCallback = null;
             }
         };
-        commandEntryRunnable.runTaskLater(TesseractLib.instance, 20*60*5);
+        commandEntryRunnable.runTaskLater(TesseractLib.instance, 20 * 60 * 5);
     }
 
     @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent event) {
-        if (! event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId())) return;
+    public void onCommand(PlayerCommandPreprocessEvent event)
+    {
+        if (!event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
+            return;
         String[] parts = event.getMessage().split(" ");
-        if (commandEntryCallback != null && parts[0].equals("/command") && parts.length > 1) {
+        if (commandEntryCallback != null && parts[0].equals("/command") && parts.length > 1)
+        {
             String[] args = new String[parts.length - 1];
             System.arraycopy(parts, 1, args, 0, parts.length - 1);
             commandEntryCallback.accept(args);
             commandEntryRunnable.cancel();
-            if(!parts[1].equals("shopswapsign")){
+            if (!parts[1].equals("shopswapsign"))
+            {
                 commandEntryCallback = null;
             }
             event.setCancelled(true);
@@ -394,7 +440,8 @@ public class TPlayer implements Listener {
          */
     }
 
-    public OfflinePlayer getOfflinePlayer() {
+    public OfflinePlayer getOfflinePlayer()
+    {
         return player;
     }
 
@@ -445,6 +492,9 @@ public class TPlayer implements Listener {
         this.adminInventory = adminInventory;
     }
 
+    ////////////////////
+    // Static methods //
+
     public Inventory getPlayerInventory()
     {
         return playerInventory;
@@ -456,26 +506,37 @@ public class TPlayer implements Listener {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof TPlayer)) return false;
-        return getOfflinePlayer().getUniqueId().equals(((TPlayer) other).getOfflinePlayer().getUniqueId());
-    }
-
-    ////////////////////
-    // Static methods //
-
-    static public TPlayer get(Player player) {
-        return TPlayer.playerMap.get(player.getUniqueId());
-    }
-
-    public void setGender(Gender gender)
+    public boolean equals(Object other)
     {
-        this.gender = gender;
+        if (!(other instanceof TPlayer))
+            return false;
+        return getOfflinePlayer().getUniqueId().equals(((TPlayer) other).getOfflinePlayer().getUniqueId());
     }
 
     public Gender getGender()
     {
-        if (gender == null) setGender(Gender.OTHER);
-        return gender;
+        try {
+            final Connection connection = bddconnection.getConnection();
+            final PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT genre FROM "+bddtable + " WHERE uuid = "+getBukkitPlayer().getUniqueId().toString());
+            return TPlayer.Gender.valueOf(preparedStatement.executeQuery().getString("genre"));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return Gender.OTHER;
+    }
+
+    public void setGender(Gender gender)
+    {
+        try {
+            final Connection connection = bddconnection.getConnection();
+            final PreparedStatement preparedStatement = connection.prepareStatement(
+                    "UPDATE "+bddtable+" SET genre = ? WHERE uuid = ?");
+            preparedStatement.setString(1,""+gender.toString());
+            preparedStatement.setString(2,getBukkitPlayer().getUniqueId().toString());
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }
