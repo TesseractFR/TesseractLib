@@ -5,7 +5,6 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.bdd.BDDConnection;
-import onl.tesseract.tesseractlib.bdd.BDDPlayer;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import org.bukkit.Bukkit;
@@ -30,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,26 +39,19 @@ import java.util.UUID;
 
 public class TPlayer implements Listener {
     public enum Gender {
-        MALE("Masculin", 'H'),
-        FEMALE("Féminin", 'F'),
-        OTHER("Non renseigné", 'N');
+        MALE("Masculin"),
+        FEMALE("Féminin"),
+        OTHER("Non renseigné");
         private final String string;
-        private final char bddchar;
 
-        Gender(String string, char bddchar)
+        Gender(String string)
         {
             this.string = string;
-            this.bddchar = bddchar;
         }
 
         public String getName()
         {
             return this.string;
-        }
-
-        public char toBdd()
-        {
-            return bddchar;
         }
     }
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
@@ -147,10 +140,9 @@ public class TPlayer implements Listener {
     public void onJoin(OfflinePlayer player)
     {
         this.player = player;
-
+        checkFirstJoin(player.getUniqueId());
         this.loadOnConnection();
 
-        new BDDPlayer(this).registerAll();
 
         // First connection of the day
         if (!hasPlayedToday())
@@ -159,6 +151,20 @@ public class TPlayer implements Listener {
 
         }
 
+    }
+
+    private void checkFirstJoin(UUID uniqueId)
+    {
+        try {
+            final Connection connection = bddconnection.getConnection();
+            final PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM "+bddtable + " WHERE uuid = ?");
+            preparedStatement.setString(1,getBukkitPlayer().getUniqueId().toString());
+            ResultSet result = preparedStatement.executeQuery();
+            result.next();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @EventHandler
@@ -518,8 +524,11 @@ public class TPlayer implements Listener {
         try {
             final Connection connection = bddconnection.getConnection();
             final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT genre FROM "+bddtable + " WHERE uuid = "+getBukkitPlayer().getUniqueId().toString());
-            return TPlayer.Gender.valueOf(preparedStatement.executeQuery().getString("genre"));
+                    "SELECT genre FROM "+bddtable + " WHERE uuid = ?");
+            preparedStatement.setString(1,getBukkitPlayer().getUniqueId().toString());
+            ResultSet result = preparedStatement.executeQuery();
+            if(result.next())
+                return TPlayer.Gender.valueOf(result.getString("genre"));
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
