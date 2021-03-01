@@ -45,6 +45,8 @@ public class Elytra extends Invocable {
     BukkitTask autoGlideTask;
 
     boolean autoGlide = true;
+
+    boolean ignoreSpeedLevel = false;
     List<Trail> purchasedTrails = new ArrayList<>();
     Trail trail = Trail.NONE;
 
@@ -167,7 +169,7 @@ public class Elytra extends Invocable {
     {
         if (! event.getPlayer().equals(equipment.getPlayer().getBukkitPlayer())) return;
         // If the player is sneaking in flight
-        if (event.isSneaking() && invoked && event.getPlayer().isGliding() && event.getPlayer().getVelocity().length() < (1.20 + (0.10 * (speedLevel + 1)))
+        if (event.isSneaking() && invoked && event.getPlayer().isGliding() && event.getPlayer().getVelocity().length() < (1.20 + (0.10 * (getSpeedLevel() + 1)))
                 && accelerateTask == null)
         {
             // Start a timer to accelerate every 0.5 seconds while sneaking.
@@ -178,7 +180,7 @@ public class Elytra extends Invocable {
                 {
                     // Cancel speed level if in event world
                     final int finalSpeedLevel = event.getPlayer().getLocation().getWorld().getName().equals("Event") ?
-                            0 : speedLevel;
+                            0 : getSpeedLevel();
                     // Cancel if not sneaking or flying
                     if (!player.isOnline() || !player.isSneaking() || !player.isGliding()) {
                         this.cancel();
@@ -328,11 +330,16 @@ public class Elytra extends Invocable {
 
     public int getSpeedLevel()
     {
-        return speedLevel;
+        return ignoreSpeedLevel ? 1 : speedLevel;
+    }
+
+    public int getSpeedLevel(boolean ignoreSpeedLevel)
+    {
+        return ignoreSpeedLevel ? 1 : speedLevel;
     }
 
     public int getLevel(Upgrade type) {
-        return type == Upgrade.PROTECTION ? protectionLevel : speedLevel;
+        return type == Upgrade.PROTECTION ? protectionLevel : getSpeedLevel();
     }
 
     public void upgradeLevel(Upgrade type) {
@@ -411,6 +418,16 @@ public class Elytra extends Invocable {
     {
         this.trail = trail;
         equipment.getPlayer().sendMessage(ChatFormat.EQUIPMENT + "Le sillage a été activé !");
+    }
+
+    public boolean isIgnoreSpeedLevel()
+    {
+        return ignoreSpeedLevel;
+    }
+
+    public void setIgnoreSpeedLevel(boolean ignoreSpeedLevel)
+    {
+        this.ignoreSpeedLevel = ignoreSpeedLevel;
     }
 
     /////////// STATIC ////////////
