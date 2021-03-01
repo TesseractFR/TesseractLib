@@ -65,7 +65,6 @@ public class TPlayer implements Listener {
     public String skinSignature;
     protected OfflinePlayer player;
     protected Equipment equipment = null;
-    protected Gender gender = Gender.OTHER;
     /**
      * Function to call the next time this player chats. The message is passed as a parameter.
      */
@@ -159,9 +158,24 @@ public class TPlayer implements Listener {
             final Connection connection = bddconnection.getConnection();
             final PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT * FROM "+bddtable + " WHERE uuid = ?");
-            preparedStatement.setString(1,getBukkitPlayer().getUniqueId().toString());
+            preparedStatement.setString(1, String.valueOf(uniqueId));
             ResultSet result = preparedStatement.executeQuery();
-            result.next();
+            if(!result.next()){
+                addtodatabase(uniqueId);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    private void addtodatabase(UUID uniqueId)
+    {
+        try {
+            final Connection connection = bddconnection.getConnection();
+            final PreparedStatement preparedStatement = connection.prepareStatement(
+                    "INSERT INTO "+bddtable + "(uuid,genre) VALUES (?,'OTHER')");
+            preparedStatement.setString(1, String.valueOf(uniqueId));
+            preparedStatement.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
