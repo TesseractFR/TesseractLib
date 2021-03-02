@@ -152,7 +152,7 @@ public class TPlayer implements Listener {
 
     }
 
-    private void checkFirstJoin(UUID uniqueId)
+    protected void checkFirstJoin(UUID uniqueId)
     {
         try {
             final Connection connection = bddconnection.getConnection();
