@@ -345,7 +345,13 @@ public class Util {
                 ChatColor.GRAY + "/" + ChatColor.GREEN + total;
     }
 
-
+    static public String itemsPossessedOverTotal(int possessed, int total)
+    {
+        if (possessed < total)
+            return ChatColor.RED + "" + possessed + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + total;
+        else
+            return ChatColor.GREEN + "" + possessed + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + total;
+    }
 
 
 

@@ -177,9 +177,11 @@ public class EquipmentMenu extends InventoryMenu {
                 invoked = invocable;
             subMenu.addButton(i, items.get(i).getItem(), event -> {
                 if (this.player.getEquipment().getInvocationPower() == 0) {
-                    this.player.getBukkitPlayer().sendMessage(ChatFormat.EQUIPMENT_ERROR + "Impossible d'invoquer l'équipement, " +
-                            "vous n'avez plus de pouvoir d'invocation. Rechargez là dans le menu à l'aide de lingots d'or.");
-                    return;
+                    if (!invocable.toString().contains("onl.tesseract.item.invocable.Elytra")) {
+                        this.player.getBukkitPlayer().sendMessage(ChatFormat.EQUIPMENT_ERROR + "Impossible d'invoquer l'équipement, " +
+                                "vous n'avez plus de pouvoir d'invocation. Rechargez là dans le menu à l'aide de lingots d'or.");
+                        return;
+                    }
                 }
                 if (invocable.slotType == EquipmentSlot.HAND) {
                     this.mainHandInvocationMenu(invocable, player);
