@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
@@ -167,8 +168,14 @@ public class Util {
         int count = 0;
         // For each item
         for (ItemStack item : items.values()) {
+            //Skip if is damaged
+
+            if( item.hasItemMeta() && item.getItemMeta() instanceof Damageable && ((Damageable)item.getItemMeta()).getDamage() >0)
+                continue;
+
             // Skip if it has a localizedName
-            if ((item.hasItemMeta() && item.getItemMeta().hasLocalizedName())  || !item.getEnchantments().isEmpty())
+
+            if ((item.hasItemMeta() && item.getItemMeta().hasLocalizedName()) || !item.getEnchantments().isEmpty())
                 continue;
             count += item.getAmount();
         }
@@ -186,6 +193,8 @@ public class Util {
         // Get off hand
         ItemStack item = inv.getItem(EquipmentSlot.OFF_HAND);
         if (item != null) {
+            if(item.hasItemMeta() && item.getItemMeta() instanceof Damageable && ((Damageable)item.getItemMeta()).getDamage() >0)
+                return countNonSpecialItems((Inventory) inv, material);
             if (item.getType() == material && !(item.hasItemMeta() && item.getItemMeta().hasLocalizedName()) && item.getEnchantments().isEmpty())
                 return item.getAmount() + countNonSpecialItems((Inventory) inv, material);
         }
@@ -204,6 +213,8 @@ public class Util {
         HashMap<Integer, ? extends ItemStack> items = inv.all(material);
         for (int index : items.keySet()) {
             ItemStack item = items.get(index);
+            if(item.hasItemMeta() && item.getItemMeta() instanceof Damageable && ((Damageable)item.getItemMeta()).getDamage() >0)
+                continue;
             if ((item.hasItemMeta() && item.getItemMeta().hasLocalizedName() )|| !item.getEnchantments().isEmpty())
                 continue;
             if (item.getAmount() >= count) {
