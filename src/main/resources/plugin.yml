@@ -22,7 +22,7 @@ commands:
     aliases: [ r ]
     usage: "/r {message}"
     description: Répondre à un message privé
-  socialspy:
-    usage: "/socialspy"
-    description: Espionner les conversations
-    permission: tesseract.staff.socialspy
+#  socialspy:
+#    usage: "/socialspy"
+#    description: Espionner les conversations
+#    permission: tesseract.staff.socialspy
