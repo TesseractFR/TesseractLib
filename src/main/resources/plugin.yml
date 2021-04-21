@@ -2,7 +2,7 @@ name: TesseractLib
 version: ${project.version}
 main: onl.tesseract.tesseractlib.TesseractLib
 api-version: 1.16
-depend: [Multiverse-Core, Vault, LuckPerms, Cartographer2]
+depend: [Multiverse-Core, Vault, LuckPerms]
 
 commands:
   animation:
