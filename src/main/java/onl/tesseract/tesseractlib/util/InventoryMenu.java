@@ -3,6 +3,7 @@ package onl.tesseract.tesseractlib.util;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import onl.tesseract.tesseractlib.TesseractLib;
+import onl.tesseract.tesseractlib.event.PlayerMenuOpenEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -220,8 +221,14 @@ public class InventoryMenu implements Listener {
      * @param player
      */
     public void open(Player player) {
-        this.view = player.openInventory(this.inventory);
-        this.viewer = player;
+        PlayerMenuOpenEvent event = new PlayerMenuOpenEvent(this, player);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (!event.isCancelled())
+        {
+            System.out.println("call event");
+            event.getMenu().view = event.getPlayer().openInventory(event.getMenu().inventory);
+            event.getMenu().viewer = event.getPlayer();
+        }
     }
 
     public void close() {
