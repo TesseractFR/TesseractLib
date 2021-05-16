@@ -2,6 +2,7 @@ package onl.tesseract.tesseractlib.equipment.invocable;
 
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.Equipment;
+import onl.tesseract.tesseractlib.event.PlayerInvocableInvokeEvent;
 import onl.tesseract.tesseractlib.menu.EquipmentMenu;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.Util;
@@ -141,6 +142,11 @@ public abstract class Invocable implements Listener {
         return invoke(true);
     }
     public boolean invoke(boolean manualInvocation) {
+        PlayerInvocableInvokeEvent event = new PlayerInvocableInvokeEvent(equipment.getPlayer(), this,
+                                                                          manualInvocation);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled())
+            return false;
         PlayerInventory inv = this.equipment.getPlayer().getBukkitPlayer().getInventory();
         // Remove any present invokable
         this.equipment.uninvoke(this.slotType);
@@ -170,6 +176,10 @@ public abstract class Invocable implements Listener {
      * @param index index of the slot in the action bar. [0,8]
      */
     public void invoke(int index) {
+        PlayerInvocableInvokeEvent event = new PlayerInvocableInvokeEvent(equipment.getPlayer(), this, false);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled())
+            return;
         if (index < 0 || index > 8) return;
         if (this.slotType != EquipmentSlot.HAND) return;
         PlayerInventory inv = this.equipment.getPlayer().getBukkitPlayer().getInventory();
