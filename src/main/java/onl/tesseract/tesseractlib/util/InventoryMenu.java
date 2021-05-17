@@ -225,7 +225,6 @@ public class InventoryMenu implements Listener {
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (!event.isCancelled())
         {
-            System.out.println("call event");
             event.getMenu().view = event.getPlayer().openInventory(event.getMenu().inventory);
             event.getMenu().viewer = event.getPlayer();
         }
