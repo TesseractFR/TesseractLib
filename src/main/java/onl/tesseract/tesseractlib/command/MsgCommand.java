@@ -3,8 +3,10 @@ package onl.tesseract.tesseractlib.command;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
+import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,7 +37,7 @@ public class MsgCommand implements CommandExecutor {
                 message.append(args[i]).append(" ");
 
             // Send
-            sendMessage(sender, other, message.toString());
+            sendMessage(sender, other, message.toString(), true);
         }
         else
             sender.sendMessage(ChatColor.RED + "Joueur introuvable");
@@ -43,7 +45,7 @@ public class MsgCommand implements CommandExecutor {
         return true;
     }
 
-    public static void sendMessage(CommandSender sender, CommandSender receiver, String message)
+    public static void sendMessage(CommandSender sender, CommandSender receiver, String message , boolean etat)
     {
         if (sender.equals(receiver)) return;
         if (receiver instanceof Player && !((Player) receiver).isOnline())
@@ -61,6 +63,10 @@ public class MsgCommand implements CommandExecutor {
                 .append(ChatColor.AQUA + "" + ChatColor.ITALIC + message)
                 .create()
         );
+        if (etat)
+        {
+            Bukkit.getPlayerExact(receiver.getName()).playSound(Bukkit.getPlayerExact(receiver.getName()).getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 5, 1);
+        }
 
         // Send feedback
         sender.sendMessage(new ComponentBuilder(ChatColor.GRAY + "" + ChatColor.ITALIC + "Envoyé à " + ChatColor.RED + receiver.getName() + " » ")
