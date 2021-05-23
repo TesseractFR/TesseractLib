@@ -58,7 +58,7 @@ public class MsgCommand implements CommandExecutor {
         messages.put(receiver, sender);
 
         // Send the message to the receiver
-        receiver.sendMessage(new ComponentBuilder(ChatColor.GRAY + "" + ChatColor.ITALIC + "Reçu de " + ChatColor.RED + sender.getName() + " » ")
+        receiver.sendMessage(new ComponentBuilder(ChatColor.GOLD + "" + ChatColor.ITALIC + "Reçu de " + ChatColor.RED + sender.getName() + " » ")
                 .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName() + " "))
                 .append(ChatColor.AQUA + "" + ChatColor.ITALIC + message)
                 .create()
@@ -69,7 +69,7 @@ public class MsgCommand implements CommandExecutor {
         }
 
         // Send feedback
-        sender.sendMessage(new ComponentBuilder(ChatColor.GRAY + "" + ChatColor.ITALIC + "Envoyé à " + ChatColor.RED + receiver.getName() + " » ")
+        sender.sendMessage(new ComponentBuilder(ChatColor.GOLD + "" + ChatColor.ITALIC + "Envoyé à " + ChatColor.RED + receiver.getName() + " » ")
                 .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + receiver.getName() + " "))
                 .append(ChatColor.GRAY + "" + ChatColor.ITALIC + message)
                 .create()
