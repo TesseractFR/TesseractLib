@@ -5,6 +5,7 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.bdd.BDDConnection;
+import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import org.bukkit.Bukkit;
@@ -55,7 +56,6 @@ public class TPlayer implements Listener {
         }
     }
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
-    static private final String bddtable = "t_player";
     /**
      * Maps every Player who has played before with a TPlayer instance.
      */
@@ -81,6 +81,9 @@ public class TPlayer implements Listener {
     protected Inventory playerInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
     protected PlayerProfile playerProfile;
     protected BDDConnection bddconnection = TesseractLib.getBddManager().getBddConnection();
+    protected Gender gender;
+    protected PlayerFacade playerFacade;
+    private UUID uuid;
 
     /**
      * Loads a player
@@ -146,7 +149,7 @@ public class TPlayer implements Listener {
         // First connection of the day
         if (!hasPlayedToday())
         {
-            setPlayedToday(true);
+            this.dailyConnection();
 
         }
 
@@ -154,31 +157,14 @@ public class TPlayer implements Listener {
 
     protected void checkFirstJoin(UUID uniqueId)
     {
-        try {
-            final Connection connection = bddconnection.getConnection();
-            final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM "+bddtable + " WHERE uuid = ?");
-            preparedStatement.setString(1, String.valueOf(uniqueId));
-            ResultSet result = preparedStatement.executeQuery();
-            if(!result.next()){
-                addtodatabase(uniqueId);
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        if(!PlayerFacade.exist(uniqueId)){
+            addtodatabase(uniqueId);
         }
     }
 
     private void addtodatabase(UUID uniqueId)
     {
-        try {
-            final Connection connection = bddconnection.getConnection();
-            final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO "+bddtable + "(uuid,genre) VALUES (?,'OTHER')");
-            preparedStatement.setString(1, String.valueOf(uniqueId));
-            preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        PlayerFacade.addtodatabase(uniqueId);
     }
 
     @EventHandler
@@ -295,6 +281,9 @@ public class TPlayer implements Listener {
      */
     public void load()
     {
+        playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
+        gender = playerFacade.getGender();
+
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
         if (file.exists())
         {
@@ -482,6 +471,7 @@ public class TPlayer implements Listener {
 
     public boolean hasPlayedToday()
     {
+        System.out.println(getBukkitPlayer().getLastSeen());
         return playedToday;
     }
 
@@ -535,31 +525,13 @@ public class TPlayer implements Listener {
 
     public Gender getGender()
     {
-        try {
-            final Connection connection = bddconnection.getConnection();
-            final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT genre FROM "+bddtable + " WHERE uuid = ?");
-            preparedStatement.setString(1,getBukkitPlayer().getUniqueId().toString());
-            ResultSet result = preparedStatement.executeQuery();
-            if(result.next())
-                return TPlayer.Gender.valueOf(result.getString("genre"));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return Gender.OTHER;
+        return gender;
     }
 
     public void setGender(Gender gender)
     {
-        try {
-            final Connection connection = bddconnection.getConnection();
-            final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "UPDATE "+bddtable+" SET genre = ? WHERE uuid = ?");
-            preparedStatement.setString(1,""+gender.toString());
-            preparedStatement.setString(2,getBukkitPlayer().getUniqueId().toString());
-            preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        this.gender = gender;
+        playerFacade.setGender(gender);
+
     }
 }
