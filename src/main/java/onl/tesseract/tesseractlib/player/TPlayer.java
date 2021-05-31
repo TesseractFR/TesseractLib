@@ -3,12 +3,17 @@ package onl.tesseract.tesseractlib.player;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.bdd.BDDConnection;
+import onl.tesseract.tesseractlib.achievement.Achievement;
+import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -28,15 +33,8 @@ import org.bukkit.util.Consumer;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class TPlayer implements Listener {
     public enum Gender {
@@ -60,7 +58,6 @@ public class TPlayer implements Listener {
      * Maps every Player who has played before with a TPlayer instance.
      */
     static public HashMap<UUID, TPlayer> playerMap = new HashMap<>();
-    public Date lastUpdateHF = null;
     public String skinValue;
     public String skinSignature;
     protected OfflinePlayer player;
@@ -80,9 +77,9 @@ public class TPlayer implements Listener {
     protected Inventory adminInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
     protected Inventory playerInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
     protected PlayerProfile playerProfile;
-    protected BDDConnection bddconnection = TesseractLib.getBddManager().getBddConnection();
     protected Gender gender;
     protected PlayerFacade playerFacade;
+    protected List<Achievement> achievements = new ArrayList<>();
     private UUID uuid;
 
     /**
@@ -283,7 +280,7 @@ public class TPlayer implements Listener {
     {
         playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
         gender = playerFacade.getGender();
-
+        achievements = playerFacade.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
         if (file.exists())
         {
@@ -532,6 +529,51 @@ public class TPlayer implements Listener {
     {
         this.gender = gender;
         playerFacade.setGender(gender);
+    }
+    public boolean hasAchievement(Achievement achievement)
+    {
+        return achievements.contains(achievement);
+    }
 
+    public void addAchievements(Achievement achievement)
+    {
+        addAchievements(achievement, true);
+    }
+
+    public void addAchievements(Achievement achievement, boolean foreveryone)
+    {
+        if(achievements.contains(achievement))return;
+        achievements.add(achievement);
+        playerFacade.addAchievements(achievement);
+        sendMessage(ChatFormat.HAUT_FAIT + "Vous avez obtenu le haut-fait ");
+        sendMessage(new ComponentBuilder().append(ChatColor.AQUA + "      « ")
+                                          .append(ChatColor.AQUA + achievement.getName())
+                                          .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                                                new Text(ChatColor.AQUA + achievement.getCondition())))
+                                          .append(ChatColor.AQUA + " » ").create());
+        if (foreveryone)
+        {
+            for (Player p : Bukkit.getOnlinePlayers())
+            {
+                if (p.equals(this.getBukkitPlayer()))
+                    continue;
+                p.sendMessage(ChatFormat.HAUT_FAIT + getOfflinePlayer().getName() + " a obtenu le haut-fait ");
+                p.sendMessage(new ComponentBuilder().append(ChatColor.AQUA + "      « ")
+                                                    .append(ChatColor.AQUA + achievement.getName())
+                                                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(
+                                                            ChatColor.AQUA + achievement.getCondition())))
+                                                    .append(ChatColor.AQUA + " » ").create());
+            }
+        }
+
+    }
+    public boolean hasAllAchievement(List<Achievement> list)
+    {
+        for (Achievement a : list)
+        {
+            if (!hasAchievement(a))
+                return false;
+        }
+        return true;
     }
 }

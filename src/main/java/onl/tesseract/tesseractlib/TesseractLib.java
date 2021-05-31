@@ -6,7 +6,6 @@ import onl.tesseract.tesseractlib.command.EquipmentCommand;
 import onl.tesseract.tesseractlib.command.MsgCommand;
 import onl.tesseract.tesseractlib.command.ReplyToMsg;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
-import onl.tesseract.tesseractlib.equipment.invocable.Elytra;
 import onl.tesseract.tesseractlib.event.ChatDing;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
@@ -15,11 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Objects;
-import java.util.logging.Level;
 
 public final class TesseractLib extends JavaPlugin {
     public static JavaPlugin instance;
