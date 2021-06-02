@@ -35,13 +35,15 @@ public class Achievement {
     private final float lys;
     private final int ptsIllumination;
     private final int id;
+    private final String displayName;
 
 
-    public Achievement(int id, Title title, String name, String condition, float lys, int ptsIllumination)
+    public Achievement(int id, Title title, String name,String displayName, String condition, float lys, int ptsIllumination)
     {
         this.id = id;
         this.title = title;
         this.name = name;
+        this.displayName = displayName;
         this.condition = condition;
         this.lys = lys;
         this.ptsIllumination = ptsIllumination;
@@ -64,9 +66,9 @@ public class Achievement {
         throw new NullPointerException("No achievement founds");
     }
 
-    public String getName()
+    public String getDisplayName()
     {
-        return name;
+        return displayName;
     }
 
     public String getCondition()

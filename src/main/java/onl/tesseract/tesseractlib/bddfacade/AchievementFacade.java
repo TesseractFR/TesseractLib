@@ -17,6 +17,7 @@ public class AchievementFacade {
     {
         return new Achievement(result.getInt("id"),
                                Title.getTitleFromName(result.getString("title")),
+                               result.getString("name"),
                                result.getString("text"),
                                result.getString("condition"),
                                result.getFloat("lys"),

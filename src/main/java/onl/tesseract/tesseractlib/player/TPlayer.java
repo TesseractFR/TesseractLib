@@ -280,6 +280,7 @@ public class TPlayer implements Listener {
     {
         playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
         gender = playerFacade.getGender();
+        achievements.clear();
         achievements = playerFacade.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
         if (file.exists())
@@ -547,7 +548,7 @@ public class TPlayer implements Listener {
         playerFacade.addAchievements(achievement);
         sendMessage(ChatFormat.HAUT_FAIT + "Vous avez obtenu le haut-fait ");
         sendMessage(new ComponentBuilder().append(ChatColor.AQUA + "      « ")
-                                          .append(ChatColor.AQUA + achievement.getName())
+                                          .append(ChatColor.AQUA + achievement.getDisplayName())
                                           .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                                                 new Text(ChatColor.AQUA + achievement.getCondition())))
                                           .append(ChatColor.AQUA + " » ").create());
@@ -559,7 +560,7 @@ public class TPlayer implements Listener {
                     continue;
                 p.sendMessage(ChatFormat.HAUT_FAIT + getOfflinePlayer().getName() + " a obtenu le haut-fait ");
                 p.sendMessage(new ComponentBuilder().append(ChatColor.AQUA + "      « ")
-                                                    .append(ChatColor.AQUA + achievement.getName())
+                                                    .append(ChatColor.AQUA + achievement.getDisplayName())
                                                     .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(
                                                             ChatColor.AQUA + achievement.getCondition())))
                                                     .append(ChatColor.AQUA + " » ").create());
