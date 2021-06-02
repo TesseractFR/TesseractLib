@@ -96,7 +96,7 @@ public class Achievement {
         return id;
     }
 
-    public HashMap<String,Achievement> getAll(){
+    public static HashMap<String,Achievement> getAll(){
         return achievements;
     }
 }
