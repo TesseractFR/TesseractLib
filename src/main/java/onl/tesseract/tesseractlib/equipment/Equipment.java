@@ -109,7 +109,7 @@ public class Equipment implements Listener {
                 // Remove from dropped items
                 iterator.remove();
                 Invocable invoc = Invocable.asInvocable(eq, drop);
-                if (invoc instanceof Boussole || invoc instanceof Elytra ) {
+                if (invoc instanceof Boussole || invoc instanceof Elytra ){
                     event.getItemsToKeep().add(drop);
                     continue;
                 }

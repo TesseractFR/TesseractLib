@@ -74,8 +74,8 @@ public class TPlayer implements Listener {
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
     protected boolean adminMode = false;
-    protected Inventory adminInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
-    protected Inventory playerInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
+    protected Inventory adminInventory;
+    protected Inventory playerInventory;
     protected PlayerProfile playerProfile;
     protected Gender gender;
     protected PlayerFacade playerFacade;
@@ -90,6 +90,15 @@ public class TPlayer implements Listener {
     public TPlayer(OfflinePlayer player)
     {
         this.player = player;
+        this.adminInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
+        this.playerInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
+    }
+
+    public TPlayer(OfflinePlayer player, Inventory adminInventory, Inventory playerInventory)
+    {
+        this.player = player;
+        this.adminInventory = adminInventory;
+        this.playerInventory = playerInventory;
     }
 
     static public TPlayer get(Player player)
