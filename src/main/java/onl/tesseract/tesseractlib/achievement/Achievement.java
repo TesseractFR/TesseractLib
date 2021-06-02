@@ -95,6 +95,10 @@ public class Achievement {
     {
         return id;
     }
+
+    public HashMap<String,Achievement> getAll(){
+        return achievements;
+    }
 }
 
 
