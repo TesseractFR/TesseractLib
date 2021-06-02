@@ -586,4 +586,8 @@ public class TPlayer implements Listener {
         }
         return true;
     }
+    public void removeAchievement(Achievement achievement){
+        achievements.remove(achievement);
+        playerFacade.removeAchievement(achievement);
+    }
 }

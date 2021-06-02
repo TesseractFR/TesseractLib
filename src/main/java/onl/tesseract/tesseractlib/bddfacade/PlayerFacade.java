@@ -138,4 +138,20 @@ public class PlayerFacade {
             throwables.printStackTrace();
         }
     }
+
+    public void removeAchievement(Achievement achievement)
+    {
+        try
+        {
+            final PreparedStatement preparedStatement = TesseractLib.getBddManager().getBddConnection().getConnection().prepareStatement(
+                    "DELETE FROM " + bddtableAchivement + " WHERE player_uuid=? AND achievement_id=?");
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setInt(2, achievement.getId());
+            preparedStatement.execute();
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+    }
 }
