@@ -40,3 +40,4 @@ jobs:
         path: |
           /home/runner/work/TesseractLib/TesseractLib/target/*.jar
           !/home/runner/work/TesseractLib/TesseractLib/target/*sources.jar
+          !/home/runner/work/TesseractLib/TesseractLib/target/original*.jar
