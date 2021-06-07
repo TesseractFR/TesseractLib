@@ -6,7 +6,7 @@
 
     <groupId>onl.tesseract</groupId>
     <artifactId>tesseractlib</artifactId>
-    <version>1.7.16-SNAPSHOT</version>
+    <version>1.7.17-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>tesseractlib</name>
@@ -109,6 +109,7 @@
             <artifactId>maven-source-plugin</artifactId>
             <version>3.2.1</version>
             <type>maven-plugin</type>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
