@@ -341,6 +341,14 @@ public class Elytra extends Invocable {
     public int getLevel(Upgrade type) {
         return type == Upgrade.PROTECTION ? protectionLevel : getSpeedLevel();
     }
+    public void setLevel(Upgrade type , int level)
+    {
+        if (type == Upgrade.PROTECTION)
+            this.protectionLevel = level;
+        else
+            this.speedLevel = level;
+        setItem();
+    }
 
     public void upgradeLevel(Upgrade type) {
         if (type == Upgrade.PROTECTION)
