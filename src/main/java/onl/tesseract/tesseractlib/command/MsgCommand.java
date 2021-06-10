@@ -45,7 +45,7 @@ public class MsgCommand implements CommandExecutor {
         return true;
     }
 
-    public static void sendMessage(CommandSender sender, CommandSender receiver, String message , boolean etat)
+    public static void sendMessage(CommandSender sender, CommandSender receiver, String message , boolean doSound)
     {
         if (sender.equals(receiver)) return;
         if (receiver instanceof Player && !((Player) receiver).isOnline())
@@ -63,7 +63,7 @@ public class MsgCommand implements CommandExecutor {
                 .append(ChatColor.AQUA + "" + ChatColor.ITALIC + message)
                 .create()
         );
-        if (etat)
+        if (doSound)
         {
             Bukkit.getPlayerExact(receiver.getName()).playSound(Bukkit.getPlayerExact(receiver.getName()).getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 5, 1);
         }
