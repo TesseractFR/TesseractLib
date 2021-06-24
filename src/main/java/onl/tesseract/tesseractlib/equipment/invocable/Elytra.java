@@ -52,6 +52,8 @@ public class Elytra extends Invocable {
 
     int protectionLevel = 0;
     int speedLevel = 0;
+    int topprotectionLevel = 0;
+    int topspeedLevel = 0;
 
     // static int[] prices = new int[] {2000,4000,8000,14000,19000,25000,30000,35000,40000};
     static int[] prices = new int[] {100,200,300,400,500,600,700,800,900};
@@ -114,6 +116,8 @@ public class Elytra extends Invocable {
         setAutoGlide((boolean) yamlMap.get("autoGlide"));
         protectionLevel = (int) yamlMap.get("protectionLvl");
         speedLevel = (int)yamlMap.get("speedLvl");
+        topprotectionLevel = (int) yamlMap.get("topprotectionLvl");
+        topspeedLevel = (int)yamlMap.get("topspeedLvl");
         setItem();
 
         // Load trails
@@ -160,6 +164,8 @@ public class Elytra extends Invocable {
         map.put("autoGlide", this.autoGlide);
         map.put("protectionLvl", this.protectionLevel);
         map.put("speedLvl", this.speedLevel);
+        map.put("topprotectionLvl", this.topprotectionLevel);
+        map.put("topspeedLvl", this.topspeedLevel);
         map.put("trail", this.trail.toString());
         return map;
     }
@@ -337,9 +343,38 @@ public class Elytra extends Invocable {
     {
         return ignoreSpeedLevel ? 1 : speedLevel;
     }
-
+    public int getTopSpeedLevel(boolean ignoreSpeedLevel)
+    {
+        return ignoreSpeedLevel ? 1 : topspeedLevel;
+    }
+    public void topLevel(Upgrade type) {
+        if (type == Upgrade.PROTECTION)
+            topprotectionLevel++;
+        else
+            topspeedLevel++;
+        setItem();
+    }
+    public int getTopLevel(Upgrade type) {
+        return type == Upgrade.PROTECTION ? topprotectionLevel : getSpeedLevel();
+    }
+    public void setTopLevel(Upgrade type , int level)
+    {
+        if (type == Upgrade.PROTECTION)
+            this.topprotectionLevel = level;
+        else
+            this.topspeedLevel = level;
+        setItem();
+    }
     public int getLevel(Upgrade type) {
         return type == Upgrade.PROTECTION ? protectionLevel : getSpeedLevel();
+    }
+    public void setLevel(Upgrade type , int level)
+    {
+        if (type == Upgrade.PROTECTION)
+            this.protectionLevel = level;
+        else
+            this.speedLevel = level;
+        setItem();
     }
 
     public void upgradeLevel(Upgrade type) {
