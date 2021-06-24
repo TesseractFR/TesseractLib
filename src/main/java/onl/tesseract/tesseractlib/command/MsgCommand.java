@@ -66,7 +66,7 @@ public class MsgCommand implements CommandExecutor {
         if (doSound)
         {
             Player player = (Player)receiver;
-            player.playSound(Bukkit.getPlayerExact(receiver.getName()).getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 5, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 5, 1);
         }
 
         // Send feedback
