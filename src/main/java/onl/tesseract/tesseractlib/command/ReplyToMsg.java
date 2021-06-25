@@ -22,7 +22,7 @@ public class ReplyToMsg implements CommandExecutor {
             for (String arg : args) message.append(arg).append(" ");
 
             // Reply
-            MsgCommand.sendMessage(sender, receiver, message.toString());
+            MsgCommand.sendMessage(sender, receiver, message.toString(), false);
         }
         else
             sender.sendMessage(ChatColor.RED + "Il n'y a personne à qui répondre.");
