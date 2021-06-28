@@ -99,6 +99,12 @@ public class InventoryMenu implements Listener {
         item = Util.buildItem(item, name, lore);
         this.inventory.setItem(index, item);
     }
+
+    public void addInactiveButton(int index, ItemStack item, String name, String lore, boolean enchant) {
+        Util.buildItem(item, name, lore, enchant);
+        this.inventory.setItem(index, item);
+    }
+
     public void addInactiveButton(int index, ItemStack item) {
         this.inventory.setItem(index, item);
     }
