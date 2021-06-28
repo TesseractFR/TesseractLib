@@ -116,8 +116,8 @@ public class Elytra extends Invocable {
         setAutoGlide((boolean) yamlMap.get("autoGlide"));
         protectionLevel = (int) yamlMap.get("protectionLvl");
         speedLevel = (int)yamlMap.get("speedLvl");
-        topprotectionLevel = (int) yamlMap.get("topprotectionLvl");
-        topspeedLevel = (int)yamlMap.get("topspeedLvl");
+        topprotectionLevel = (int) yamlMap.getOrDefault("topprotectionLvl", 0);
+        topspeedLevel = (int)yamlMap.getOrDefault("topspeedLvl", 0);
         setItem();
 
         // Load trails
