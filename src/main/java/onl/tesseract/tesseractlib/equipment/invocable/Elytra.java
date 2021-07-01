@@ -338,12 +338,7 @@ public class Elytra extends Invocable {
     {
         return ignoreSpeedLevel ? 1 : speedLevel;
     }
-
-    public int getSpeedLevel(boolean ignoreSpeedLevel)
-    {
-        return ignoreSpeedLevel ? 1 : speedLevel;
-    }
-    public int getTopSpeedLevel(boolean ignoreSpeedLevel)
+    public int getTopSpeedLevel()
     {
         return ignoreSpeedLevel ? 1 : topspeedLevel;
     }
@@ -355,7 +350,7 @@ public class Elytra extends Invocable {
         setItem();
     }
     public int getTopLevel(Upgrade type) {
-        return type == Upgrade.PROTECTION ? topprotectionLevel : getSpeedLevel();
+        return type == Upgrade.PROTECTION ? topprotectionLevel : getTopSpeedLevel();
     }
     public void setTopLevel(Upgrade type , int level)
     {
@@ -380,13 +375,13 @@ public class Elytra extends Invocable {
     public void upgradeLevel(Upgrade type) {
         if (type == Upgrade.PROTECTION)
         {
-            protectionLevel++;
-            this.topprotectionLevel = protectionLevel;
+            this.topprotectionLevel ++;
+            protectionLevel = this.topprotectionLevel;
         }
         else
         {
-            speedLevel++;
-            this.topspeedLevel = speedLevel;
+            this.topspeedLevel ++;
+            speedLevel = this.topspeedLevel;
         }
         setItem();
     }
