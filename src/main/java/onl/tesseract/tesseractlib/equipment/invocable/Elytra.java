@@ -118,6 +118,10 @@ public class Elytra extends Invocable {
         speedLevel = (int)yamlMap.get("speedLvl");
         topprotectionLevel = (int) yamlMap.get("topprotectionLvl");
         topspeedLevel = (int)yamlMap.get("topspeedLvl");
+        if (this.topprotectionLevel == 0)
+            this.topprotectionLevel = protectionLevel;
+        if (this.topspeedLevel == 0)
+            this.topspeedLevel = speedLevel;
         setItem();
 
         // Load trails
