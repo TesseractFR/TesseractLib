@@ -26,6 +26,10 @@ public final class TesseractLib extends JavaPlugin {
     static public int port;
 
     static public BDDManager getBddManager() {
+        if(bddManager == null){
+            loadConfig();
+            bddManager= new BDDManager(host,port,username,password,database);
+        }
         return bddManager;
     }
 
@@ -65,7 +69,7 @@ public final class TesseractLib extends JavaPlugin {
     }
 
 
-    public void loadConfig()
+    public static void loadConfig()
     {
         File file = new File(configFilepath);
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
