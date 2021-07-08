@@ -116,8 +116,12 @@ public class Elytra extends Invocable {
         setAutoGlide((boolean) yamlMap.get("autoGlide"));
         protectionLevel = (int) yamlMap.get("protectionLvl");
         speedLevel = (int)yamlMap.get("speedLvl");
-        topprotectionLevel = (int) yamlMap.getOrDefault("topprotectionLvl", 0);
-        topspeedLevel = (int)yamlMap.getOrDefault("topspeedLvl", 0);
+        topprotectionLevel = (int) yamlMap.get("topprotectionLvl");
+        topspeedLevel = (int)yamlMap.get("topspeedLvl");
+        if (this.topprotectionLevel == 0)
+            this.topprotectionLevel = protectionLevel;
+        if (this.topspeedLevel == 0)
+            this.topspeedLevel = speedLevel;
         setItem();
 
         // Load trails
@@ -338,12 +342,7 @@ public class Elytra extends Invocable {
     {
         return ignoreSpeedLevel ? 1 : speedLevel;
     }
-
-    public int getSpeedLevel(boolean ignoreSpeedLevel)
-    {
-        return ignoreSpeedLevel ? 1 : speedLevel;
-    }
-    public int getTopSpeedLevel(boolean ignoreSpeedLevel)
+    public int getTopSpeedLevel()
     {
         return ignoreSpeedLevel ? 1 : topspeedLevel;
     }
@@ -355,7 +354,7 @@ public class Elytra extends Invocable {
         setItem();
     }
     public int getTopLevel(Upgrade type) {
-        return type == Upgrade.PROTECTION ? topprotectionLevel : getSpeedLevel();
+        return type == Upgrade.PROTECTION ? topprotectionLevel : getTopSpeedLevel();
     }
     public void setTopLevel(Upgrade type , int level)
     {
@@ -379,9 +378,15 @@ public class Elytra extends Invocable {
 
     public void upgradeLevel(Upgrade type) {
         if (type == Upgrade.PROTECTION)
-            protectionLevel++;
+        {
+            this.topprotectionLevel ++;
+            protectionLevel = this.topprotectionLevel;
+        }
         else
-            speedLevel++;
+        {
+            this.topspeedLevel ++;
+            speedLevel = this.topspeedLevel;
+        }
         setItem();
     }
 
