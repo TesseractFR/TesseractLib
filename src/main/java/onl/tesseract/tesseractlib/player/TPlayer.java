@@ -299,7 +299,7 @@ public class TPlayer implements Listener {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 
             this.dateSinceLastConnection = yaml.getString("dateSinceLastConnection");
-            dateFirstConnection = Date.from(Instant.ofEpochMilli(getBukkitPlayer().getFirstPlayed())).toString();
+            dateFirstConnection = Date.from(Instant.ofEpochMilli(getOfflinePlayer().getFirstPlayed())).toString();
             if (yaml.contains("hasPlayedToday"))
                 playedToday = yaml.getBoolean("hasPlayedToday");
         }

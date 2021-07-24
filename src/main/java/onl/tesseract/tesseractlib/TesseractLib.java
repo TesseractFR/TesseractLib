@@ -1,5 +1,7 @@
 package onl.tesseract.tesseractlib;
 
+import onl.tesseract.tesseractlib.achievement.Achievement;
+import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bdd.BDDManager;
 import onl.tesseract.tesseractlib.command.Animation;
 import onl.tesseract.tesseractlib.command.EquipmentCommand;
@@ -14,6 +16,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Objects;
 
 public final class TesseractLib extends JavaPlugin {
@@ -41,6 +46,10 @@ public final class TesseractLib extends JavaPlugin {
         bddManager = new BDDManager(host,port,username,password,database);
         registerEvents();
         registerCommands();
+        System.out.println("Loading title...");
+        Title.loadAll();
+        System.out.println("Loading achievement...");
+        Achievement.loadAll();
 
     }
 

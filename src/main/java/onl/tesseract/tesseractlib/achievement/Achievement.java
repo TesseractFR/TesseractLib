@@ -1,8 +1,13 @@
 package onl.tesseract.tesseractlib.achievement;
 
 
+import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.bddfacade.AchievementFacade;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +55,26 @@ public class Achievement {
         achievements.put(name, this);
         achievementsbyId.put(id,this);
     }
+
+    static public void loadAll(){
+        try{
+            Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM t_achievement");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                new Achievement(resultSet.getInt("id"),Title.getTitleFromName(resultSet.getString("title")),
+                                resultSet.getString("name"),
+                                resultSet.getString("text"),resultSet.getString("condition"),
+                                resultSet.getFloat("lys"),resultSet.getInt("illumination"));
+            }
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+    }
+
 
     static public Achievement getAchievementFromName(String name)
     {

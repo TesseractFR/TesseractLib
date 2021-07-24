@@ -15,43 +15,44 @@ public class Title {
 
     static private final String bddtable = "t_title";
 
-    static private HashMap<String, Title> titles = new HashMap<>();
-    private String text_m;
-    private String text_f;
-    private String name;
+    static private final HashMap<String, Title> titles = new HashMap<>();
+    private final String text_m;
+    private final String text_f;
+    private final String name;
 
     Title(String name, String text_m, String text_f)
     {
         this.text_m = text_m;
         this.text_f = text_f;
         this.name = name;
+        titles.put(name,this);
     }
-
-    static public Title getTitleFromName(String name)
-    {
-        name = name.toUpperCase();
-        if (name.equals("NULL"))
-            return null;
-        if (titles.containsKey(name))
-            return titles.get(name);
+    static public void loadAll(){
         try
         {
-            final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
-            final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM " + bddtable + " WHERE name = ?");
-            preparedStatement.setString(1, name);
-            ResultSet result = preparedStatement.executeQuery();
-            if (result.next())
-            {
-                Title t = getTitleFromSQLResult(result);
-                titles.put(name, t);
-                return t;
+            Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM "+bddtable);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Title.getTitleFromSQLResult(resultSet);
             }
         }
         catch (SQLException throwables)
         {
             throwables.printStackTrace();
         }
+    }
+
+    static public Title getTitleFromName(String name)
+    {
+        if (name == null)
+            return null;
+        name = name.toUpperCase();
+        if (name.equals("NULL"))
+            return null;
+        if (titles.containsKey(name))
+            return titles.get(name);
         throw new NullPointerException("This title doesn't exsit (" + name + ")");
     }
 
