@@ -34,6 +34,7 @@ import org.bukkit.util.Consumer;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 
 public class TPlayer implements Listener {
@@ -92,6 +93,7 @@ public class TPlayer implements Listener {
         this.player = player;
         this.adminInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
         this.playerInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
+        checkFirstJoin(player.getUniqueId());
     }
 
     public TPlayer(OfflinePlayer player, Inventory adminInventory, Inventory playerInventory)
@@ -297,7 +299,7 @@ public class TPlayer implements Listener {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 
             this.dateSinceLastConnection = yaml.getString("dateSinceLastConnection");
-            dateFirstConnection = yaml.getString("First_co");
+            dateFirstConnection = Date.from(Instant.ofEpochMilli(getBukkitPlayer().getFirstPlayed())).toString();
             if (yaml.contains("hasPlayedToday"))
                 playedToday = yaml.getBoolean("hasPlayedToday");
         }
