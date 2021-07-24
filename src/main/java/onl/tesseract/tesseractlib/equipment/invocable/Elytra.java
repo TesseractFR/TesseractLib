@@ -5,6 +5,7 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.animation.AnimationTarget;
 import onl.tesseract.tesseractlib.animation.Circle;
 import onl.tesseract.tesseractlib.animation.Concentration;
+import onl.tesseract.tesseractlib.bddfacade.ElytraTrailsFacade;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
@@ -14,7 +15,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,12 +32,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Elytra extends Invocable {
     BukkitTask accelerateTask;
@@ -125,13 +122,7 @@ public class Elytra extends Invocable {
         setItem();
 
         // Load trails
-        File file = new File(TPlayer.folderPath + equipment.getPlayer().getOfflinePlayer().getUniqueId() + ".yml");
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        if (yaml.contains("elytraTrails"))
-        {
-            List<String> names = yaml.getStringList("elytraTrails");
-            purchasedTrails = names.stream().map(Trail::valueOf).collect(Collectors.toList());
-        }
+        purchasedTrails = ElytraTrailsFacade.getPlayedTrails(equipment.getPlayer().getOfflinePlayer().getUniqueId());
         // Load active trail
         if (yamlMap.containsKey("trail"))
             trail = Trail.valueOf((String) yamlMap.get("trail"));
@@ -485,23 +476,11 @@ public class Elytra extends Invocable {
             ((Player) player).sendMessage(ChatFormat.EQUIPMENT_SUCCESS + "Le sillage " + trail.getName() + ChatColor.GREEN +
                     " a bien été ajouté à vos ailes ! Activez le dans le menu des ailes.");
         }
-        File file = new File(TPlayer.folderPath + player.getUniqueId() + ".yml");
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        List<String> trails = yaml.contains("elytraTrails") ? yaml.getStringList("elytraTrails") : new ArrayList<>();
-        trails.add(trail.toString());
-        yaml.set("elytraTrails", trails);
-        try {
-            yaml.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ElytraTrailsFacade.addTrail(player.getUniqueId(),trail);
     }
 
     public static boolean hasTrail(OfflinePlayer player, Trail trail) {
-        File file = new File(TPlayer.folderPath + player.getUniqueId() + ".yml");
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        List<String> trails = yaml.contains("elytraTrails") ? yaml.getStringList("elytraTrails") : new ArrayList<>();
-        return trails.contains(trail.toString());
+        return ElytraTrailsFacade.hasTrail(player.getUniqueId(),trail);
     }
 
     public static void removeTrail(OfflinePlayer player, Trail trail)
@@ -514,15 +493,6 @@ public class Elytra extends Invocable {
         }
         ((Player) player).sendMessage(ChatFormat.EQUIPMENT_SUCCESS + "Le sillage " + trail.getName() + ChatColor.GREEN +
                 " a été retiré de vos ailes !");
-        File file = new File(TPlayer.folderPath + player.getUniqueId() + ".yml");
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        List<String> trails = yaml.contains("elytraTrails") ? yaml.getStringList("elytraTrails") : new ArrayList<>();
-        trails.remove(trail.toString());
-        yaml.set("elytraTrails", trails);
-        try {
-            yaml.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ElytraTrailsFacade.removeTrail(player.getUniqueId(),trail);
     }
 }
