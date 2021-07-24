@@ -17,6 +17,6 @@ public class ColoredChat implements Listener {
 
     static public String colorMessage(String message)
     {
-        return message.replaceAll("(&)([0-9a-f])", "§$2");
+        return message.replaceAll("(&)([0-9a-fklnorm])", "§$2");
     }
 }
