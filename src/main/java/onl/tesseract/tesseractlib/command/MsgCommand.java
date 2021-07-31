@@ -3,7 +3,6 @@ package onl.tesseract.tesseractlib.command;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
-import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -11,8 +10,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +22,7 @@ public class MsgCommand implements CommandExecutor {
     static Map<CommandSender, CommandSender> messages = new HashMap<>();
 
     @Override
-    public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args)
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
     {
         if (args.length < 2)
             return false;

@@ -4,8 +4,7 @@ import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerInvocableEvent extends Event {
     private static final HandlerList handlerList = new HandlerList();
@@ -34,7 +33,7 @@ public class PlayerInvocableEvent extends Event {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public HandlerList getHandlers()
     {
         return handlerList;
