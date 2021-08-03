@@ -1,5 +1,6 @@
 package onl.tesseract.tesseractlib.util;
 
+import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.*;
@@ -56,7 +57,9 @@ public class Util {
      * @param message Original string
      * @param width Size of substrings
      * @return List of substrings
+     * @deprecated In favor of {@link ItemLoreBuilder}
      */
+    @Deprecated
     static public List<String> splitByLines(String message, short width)
     {
         List<String> lines = new ArrayList<>();
@@ -136,9 +139,9 @@ public class Util {
     static public ItemStack buildItem(ItemStack item, String name, String lore, int lineWidth, boolean enchant) {
         ItemMeta meta = item.getItemMeta();
         if (name != null)
-            meta.setDisplayName(name);
+            meta.displayName(Component.text(name));
         if (lore != null)
-            meta.setLore(splitByLines(lore, (short)lineWidth));
+            meta.lore(new ItemLoreBuilder(lineWidth).append(lore).get());
         item.setItemMeta(meta);
         if (enchant) {
             item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
