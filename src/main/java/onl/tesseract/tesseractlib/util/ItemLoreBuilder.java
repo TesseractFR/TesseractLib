@@ -3,6 +3,7 @@ package onl.tesseract.tesseractlib.util;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.ArrayList;
@@ -24,6 +25,59 @@ public class ItemLoreBuilder {
     public ItemLoreBuilder()
     {
         this(35);
+    }
+
+    public ItemLoreBuilder append(String text, TextColor color)
+    {
+        return append(text, color, null);
+    }
+
+    public ItemLoreBuilder append(String text, TextDecoration decoration)
+    {
+        return append(text, null, decoration);
+    }
+
+    public ItemLoreBuilder append(String text, TextColor color, TextDecoration decoration)
+    {
+        var words = text.split(" ");
+        for (int i = 0; i < words.length; i++)
+        {
+            var word = words[i];
+            // Get real length
+            int wordLen = word.length();
+
+            boolean isNewLine = word.strip().equals(Util.NEW_LINE.strip());
+            if (isNewLine)
+            {
+                // Split
+                lines.add(lastLine);
+                lastLine = Component.text("");
+                lastLineLength = 0;
+            }
+            else if (lastLineLength + wordLen > width)
+            {
+                // Split
+                lines.add(lastLine);
+                lastLine = Component.text(word + " ");
+                if (color != null)
+                    lastLine = lastLine.color(color);
+                if (decoration != null)
+                    lastLine = lastLine.decorate(decoration);
+                lastLineLength = wordLen;
+            }
+            else
+            {
+                var component = Component.text(word + (i == words.length - 1 ? "" : " "));
+                if (color != null)
+                    lastLine = lastLine.color(color);
+                if (decoration != null)
+                    lastLine = lastLine.decorate(decoration);
+                lastLine = lastLine.append(component);
+                lastLineLength += 1 + wordLen;
+            }
+        }
+
+        return this;
     }
 
     public ItemLoreBuilder append(String text)
