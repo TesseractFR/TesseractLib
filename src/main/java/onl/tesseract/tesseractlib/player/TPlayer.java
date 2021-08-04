@@ -33,6 +33,8 @@ import org.bukkit.util.Consumer;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
@@ -291,6 +293,31 @@ public class TPlayer implements Listener {
     {
         playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
         gender = playerFacade.getGender();
+        achievements.clear();
+        achievements = playerFacade.getAllAchievements();
+        File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
+        if (file.exists())
+        {
+            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+
+            this.dateSinceLastConnection = yaml.getString("dateSinceLastConnection");
+            dateFirstConnection = Date.from(Instant.ofEpochMilli(getOfflinePlayer().getFirstPlayed())).toString();
+            if (yaml.contains("hasPlayedToday"))
+                playedToday = yaml.getBoolean("hasPlayedToday");
+        }
+    }
+
+    public void load(ResultSet resultSet)
+    {
+        playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
+        try
+        {
+            gender = Gender.valueOf(resultSet.getString("genre"));
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
         achievements.clear();
         achievements = playerFacade.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
