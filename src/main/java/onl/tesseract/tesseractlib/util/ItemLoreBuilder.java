@@ -5,10 +5,10 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.apache.commons.lang.NotImplementedException;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ItemLoreBuilder {
@@ -29,7 +29,7 @@ public class ItemLoreBuilder {
 
     public ItemLoreBuilder append(String text, TextColor color)
     {
-        return append(text, color, null);
+        return append(text, color, Set.of());
     }
 
     public ItemLoreBuilder append(String text, TextDecoration decoration)
@@ -38,6 +38,11 @@ public class ItemLoreBuilder {
     }
 
     public ItemLoreBuilder append(String text, TextColor color, TextDecoration decoration)
+    {
+        return append(text, color, Set.of(decoration));
+    }
+
+    public ItemLoreBuilder append(String text, TextColor color, @NotNull Set<TextDecoration> decoration)
     {
         var words = text.split(" ");
         for (int i = 0; i < words.length; i++)
@@ -61,8 +66,8 @@ public class ItemLoreBuilder {
                 lastLine = Component.text(word + " ");
                 if (color != null)
                     lastLine = lastLine.color(color);
-                if (decoration != null)
-                    lastLine = lastLine.decorate(decoration);
+                for (var deco : decoration)
+                    lastLine = lastLine.decorate(deco);
                 lastLineLength = wordLen;
             }
             else
@@ -70,8 +75,8 @@ public class ItemLoreBuilder {
                 var component = Component.text(word + (i == words.length - 1 ? "" : " "));
                 if (color != null)
                     lastLine = lastLine.color(color);
-                if (decoration != null)
-                    lastLine = lastLine.decorate(decoration);
+                for (var deco : decoration)
+                    lastLine = lastLine.decorate(deco);
                 lastLine = lastLine.append(component);
                 lastLineLength += 1 + wordLen;
             }
@@ -139,6 +144,25 @@ public class ItemLoreBuilder {
             }
         }
 
+        return this;
+    }
+
+    public ItemLoreBuilder append(Component component)
+    {
+        if (component instanceof TextComponent textComponent)
+        {
+            Set<TextDecoration> decorations = new HashSet<>();
+            textComponent.decorations()
+                         .forEach((deco, state) -> {
+                             if (state == TextDecoration.State.TRUE)
+                                 decorations.add(deco);
+                         });
+            append(textComponent.content(), textComponent.color(), decorations);
+        }
+        else
+            lastLine = lastLine.append(component);
+
+        component.children().forEach(this::append);
         return this;
     }
 
