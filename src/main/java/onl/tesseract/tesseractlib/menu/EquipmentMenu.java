@@ -7,7 +7,7 @@ import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
-import onl.tesseract.tesseractlib.util.InventoryMenu;
+import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
