@@ -2,13 +2,14 @@ package onl.tesseract.tesseractlib.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
-import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.util.ChatFormat;
@@ -69,6 +70,7 @@ public class TPlayer implements Listener {
      * Function to call the next time this player chats. The message is passed as a parameter.
      */
     protected Consumer<String> chatEntryCallback;
+    protected Consumer<Component> chatEntryComponentCallback;
     protected BukkitRunnable chatEntryRunnable;
     protected Consumer<String[]> commandEntryCallback;
     // Mailer mailer = new Mailer(this);
@@ -359,16 +361,35 @@ public class TPlayer implements Listener {
             getBukkitPlayer().sendMessage(message);
     }
 
+    @Deprecated
     public void sendMessage(BaseComponent message)
     {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
 
+    @Deprecated
     public void sendMessage(BaseComponent... message)
     {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
+    }
+
+    @Deprecated
+    public void sendMessage(Component message)
+    {
+        if (isOnline())
+            getBukkitPlayer().sendMessage(message);
+    }
+
+    @Deprecated
+    public void sendMessage(Component... message)
+    {
+        if (isOnline())
+        {
+            for (var component : message)
+                getBukkitPlayer().sendMessage(component);
+        }
     }
 
     public String getDateFirstConnection()
@@ -382,21 +403,25 @@ public class TPlayer implements Listener {
      * @param message Message to prompt to the player.
      * @param function Callback. The player's message is given as parameter.
      */
+    @Deprecated
     public void getChatEntry(String message, Consumer<String> function)
     {
         getChatEntry(message, 30, function);
     }
 
+    @Deprecated
     public void getChatEntry(String message, int seconds, Consumer<String> function)
     {
         getChatEntry(ChatFormat.CHAT, message, seconds, function);
     }
 
+    @Deprecated
     public void getChatEntry(String format, String message, Consumer<String> function)
     {
         getChatEntry(format, message, 30, function);
     }
 
+    @Deprecated
     public void getChatEntry(String format, String message, int seconds, Consumer<String> function)
     {
         if (!player.isOnline())
@@ -413,7 +438,29 @@ public class TPlayer implements Listener {
         chatEntryRunnable.runTaskLater(TesseractLib.instance, 20 * seconds);
     }
 
+    public void chatEntry(Component message, Consumer<Component> function)
+    {
+        chatEntry(message, 30, function);
+    }
+
+    public void chatEntry(Component message, int seconds, Consumer<Component> function)
+    {
+        if (!player.isOnline())
+            return;
+        Objects.requireNonNull(player.getPlayer()).sendMessage(message);
+        this.chatEntryComponentCallback = function;
+        this.chatEntryRunnable = new BukkitRunnable() {
+            @Override
+            public void run()
+            {
+                chatEntryComponentCallback = null;
+            }
+        };
+        chatEntryRunnable.runTaskLater(TesseractLib.instance, 20L * seconds);
+    }
+
     @EventHandler
+    @Deprecated
     public void onChat(AsyncPlayerChatEvent event)
     {
         if (!event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
@@ -429,6 +476,29 @@ public class TPlayer implements Listener {
                         return;
                     chatEntryCallback.accept(event.getMessage());
                     chatEntryCallback = null;
+                }
+            }.runTask(TesseractLib.instance);
+            chatEntryRunnable.cancel();
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onChat(AsyncChatEvent event)
+    {
+        if (!event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
+            return;
+        if (this.chatEntryComponentCallback != null)
+        {
+            // Make a sync call
+            new BukkitRunnable() {
+                @Override
+                public void run()
+                {
+                    if (chatEntryComponentCallback == null)
+                        return;
+                    chatEntryComponentCallback.accept(event.message());
+                    chatEntryComponentCallback = null;
                 }
             }.runTask(TesseractLib.instance);
             chatEntryRunnable.cancel();
