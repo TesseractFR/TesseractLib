@@ -1,7 +1,9 @@
 package onl.tesseract.tesseractlib.command;
 
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -57,11 +59,10 @@ public class MsgCommand implements CommandExecutor {
         messages.put(receiver, sender);
 
         // Send the message to the receiver
-        receiver.sendMessage(new ComponentBuilder(ChatColor.GOLD + "" + ChatColor.ITALIC + "Reçu de " + ChatColor.RED + sender.getName() + " » ")
-                .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName() + " "))
-                .append(ChatColor.AQUA + "" + ChatColor.ITALIC + message)
-                .create()
-        );
+        receiver.sendMessage(Component.text("Reçu de ", NamedTextColor.GOLD, TextDecoration.ITALIC)
+                             .append(Component.text(sender.getName() + " » ", NamedTextColor.RED))
+                             .clickEvent(ClickEvent.suggestCommand("/msg " + sender.getName() + " "))
+                             .append(Component.text(message, NamedTextColor.AQUA, TextDecoration.ITALIC)));
         if (doSound)
         {
             Player player = (Player)receiver;
@@ -69,20 +70,20 @@ public class MsgCommand implements CommandExecutor {
         }
 
         // Send feedback
-        sender.sendMessage(new ComponentBuilder(ChatColor.GOLD + "" + ChatColor.ITALIC + "Envoyé à " + ChatColor.RED + receiver.getName() + " » ")
-                .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + receiver.getName() + " "))
-                .append(ChatColor.GRAY + "" + ChatColor.ITALIC + message)
-                .create()
-        );
+        receiver.sendMessage(Component.text("Envoyé à ", NamedTextColor.GOLD, TextDecoration.ITALIC)
+                                      .append(Component.text(sender.getName() + " » ", NamedTextColor.RED))
+                                      .clickEvent(ClickEvent.suggestCommand("/msg " + sender.getName() + " "))
+                                      .append(Component.text(message, NamedTextColor.GRAY, TextDecoration.ITALIC)));
 
         // Send to social spies
         SocialSpy.spies.forEach(spy -> {
             if (spy.isOnline() && !spy.getBukkitPlayer().equals(sender) && ! spy.getBukkitPlayer().equals(receiver))
             {
-                spy.sendMessage(new ComponentBuilder(ChatColor.GRAY + "" + ChatColor.ITALIC + "Message de " + ChatColor.RED + sender.getName() + ChatColor.GRAY + ChatColor.ITALIC + " envoyé à " + ChatColor.RED + receiver.getName() + " » ")
-                        .append(ChatColor.GRAY + "" + ChatColor.ITALIC + message)
-                        .create()
-                );
+                spy.sendMessage(Component.text("Message de ", NamedTextColor.GRAY, TextDecoration.ITALIC)
+                                         .append(Component.text(sender.getName(), NamedTextColor.RED))
+                                         .append(Component.text(" envoyé à ", NamedTextColor.GRAY, TextDecoration.ITALIC))
+                                         .append(Component.text(receiver.getName() + " » ", NamedTextColor.RED))
+                                         .append(Component.text(message, NamedTextColor.GRAY, TextDecoration.ITALIC)));
             }
         });
     }

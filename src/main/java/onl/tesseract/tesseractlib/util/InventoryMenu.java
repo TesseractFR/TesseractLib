@@ -2,6 +2,7 @@ package onl.tesseract.tesseractlib.util;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.event.PlayerMenuOpenEvent;
 import org.bukkit.Bukkit;
@@ -48,7 +49,7 @@ public class InventoryMenu implements Listener {
      * @param title Name of the menu
      */
     public InventoryMenu(int size, String title) {
-        this.inventory = Bukkit.createInventory(null, size, title);
+        this.inventory = Bukkit.createInventory(null, size, Component.text(title));
         Bukkit.getPluginManager().registerEvents(this, TesseractLib.instance);
     }
 
@@ -70,7 +71,7 @@ public class InventoryMenu implements Listener {
      * @param freezeBottom If the bottom inventory should be frozen.
      */
     public InventoryMenu(int size, String title, InventoryMenu previous, boolean freezeBottom) {
-        this.inventory = Bukkit.createInventory(null, size, title);
+        this.inventory = Bukkit.createInventory(null, size, Component.text(title));
         this.previous = previous;
         this.freezeBottom = freezeBottom;
         Bukkit.getPluginManager().registerEvents(this, TesseractLib.instance);
@@ -259,7 +260,8 @@ public class InventoryMenu implements Listener {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) head.getItemMeta();
         assert meta != null;
-        meta.setDisplayName(name);
+        if (name != null)
+            meta.displayName(Component.text(name));
 
         PlayerProfile pp = Bukkit.createProfile(UUID.randomUUID());
         pp.setProperty(new ProfileProperty("textures", data, signature));

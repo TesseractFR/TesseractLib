@@ -1,6 +1,8 @@
 package onl.tesseract.tesseractlib.equipment.invocable;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.animation.AnimationTarget;
 import onl.tesseract.tesseractlib.animation.Circle;
@@ -9,6 +11,7 @@ import onl.tesseract.tesseractlib.bddfacade.ElytraTrailsFacade;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -226,13 +229,15 @@ public class Elytra extends Invocable {
                 }
                 // Show action bar
                 else {
-                    player.sendActionBar(
-                            ChatColor.GRAY + "Vitesse: " + ChatColor.AQUA + (int) (player.getVelocity().length() * 20)
-                                    + ChatColor.DARK_GRAY + " | "
-                                    + ChatColor.GRAY + "Alt: " + ChatColor.GREEN + player.getLocation().getBlockY()
-                                    + ChatColor.DARK_GRAY + " | "
-                                    + ChatColor.GRAY + "Distance: " + ChatColor.YELLOW + (int) (player.getLocation().distance(player.getCompassTarget()))
-                    );
+                    var comp = Component.text("Vitesse: ", NamedTextColor.GRAY)
+                            .append(Component.text((int) (player.getVelocity().length() * 20), NamedTextColor.AQUA))
+                            .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                            .append(Component.text("Alt: "))
+                            .append(Component.text(player.getLocation().getBlockY(), NamedTextColor.GREEN))
+                            .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                            .append(Component.text("Distance: "))
+                            .append(Component.text((int) (player.getLocation().distance(player.getCompassTarget())), NamedTextColor.YELLOW));
+                    player.sendActionBar(comp);
                     if (trail != Trail.NONE) {
                         ParticleBuilder builder = new ParticleBuilder(trail.getParticle());
                         if (trail == Trail.SHINNING)
@@ -448,7 +453,7 @@ public class Elytra extends Invocable {
     public void setTrail(Trail trail)
     {
         this.trail = trail;
-        equipment.getPlayer().sendMessage(ChatFormat.EQUIPMENT + "Le sillage a été activé !");
+        equipment.getPlayer().sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Le sillage a été activé !")));
     }
 
     public boolean isIgnoreSpeedLevel()
@@ -473,8 +478,10 @@ public class Elytra extends Invocable {
         {
             Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().getLike(Elytra.class);
             el.getPurchasedTrails().add(trail);
-            ((Player) player).sendMessage(ChatFormat.EQUIPMENT_SUCCESS + "Le sillage " + trail.getName() + ChatColor.GREEN +
-                    " a bien été ajouté à vos ailes ! Activez le dans le menu des ailes.");
+            ((Player) player).sendMessage(ChatFormats.EQUIPMENT_SUCCESS
+                                                  .append(Component.text("Le sillage "))
+                                                  .append(Component.text(trail.getName(), NamedTextColor.GREEN))
+                                                  .append(Component.text(" a bien été ajouté à vos ailes ! Activez le dans le menu des ailes.")));
         }
         ElytraTrailsFacade.addTrail(player.getUniqueId(),trail);
     }
@@ -491,8 +498,10 @@ public class Elytra extends Invocable {
             if (el.getTrail() == trail)
                 el.setTrail(Trail.NONE);
         }
-        ((Player) player).sendMessage(ChatFormat.EQUIPMENT_SUCCESS + "Le sillage " + trail.getName() + ChatColor.GREEN +
-                " a été retiré de vos ailes !");
+        ((Player) player).sendMessage(ChatFormats.EQUIPMENT_SUCCESS
+                                              .append(Component.text("Le sillage "))
+                                              .append(Component.text(trail.getName(), NamedTextColor.GREEN))
+                                              .append(Component.text(" a été retiré de vos ailes !")));
         ElytraTrailsFacade.removeTrail(player.getUniqueId(),trail);
     }
 }

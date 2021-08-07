@@ -271,7 +271,7 @@ public class Util {
 
         if (item.equals(inv.getItemInOffHand()))
             return -1;
-        if(item.getType().equals(item2.getType()) && item.getLore().equals(item2.getLore()) && item.getItemFlags().equals(item2.getItemFlags()) )
+        if(item.getType().equals(item2.getType()) && item.lore().equals(item2.lore()) && item.getItemFlags().equals(item2.getItemFlags()) )
             return -1;
         return -2;
     }

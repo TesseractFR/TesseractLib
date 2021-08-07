@@ -1,11 +1,14 @@
 package onl.tesseract.tesseractlib.equipment;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.invocable.Boussole;
 import onl.tesseract.tesseractlib.equipment.invocable.Elytra;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -92,8 +95,9 @@ public class Equipment implements Listener {
 
         if (invocationPower == 0) {
             this.uninvokeAll();
-            this.getPlayer().getBukkitPlayer().sendMessage(ChatFormat.EQUIPMENT + "Votre pouvoir d'invocation est épuisé, " +
-                    "vos équipements ont été désinvoqués. Rechargez votre pouvoir dans le menu d'équipement.");
+            this.getPlayer().getBukkitPlayer().sendMessage(
+                    ChatFormats.EQUIPMENT.append(Component.text("Votre pouvoir d'invocation est épuisé, vos équipements ont été désinvoqués."
+                                                                        + " Rechargez votre pouvoir dans le menu d'équipement.")));
         }
     }
 
@@ -116,9 +120,13 @@ public class Equipment implements Listener {
                 if (! hasEquipment) {
                     this.addInvocationPower(-5);
                     if (invocationPower > 0)
-                        this.getPlayer().getBukkitPlayer().sendMessage(ChatFormat.EQUIPMENT + "Vous êtes mort avec au moins un " +
-                                "objet invocable sur vous. Vous avez perdu 5% de pouvoir d'invocation. Pouvoir restant: " +
-                                ChatColor.GOLD + this.invocationPower + "%");
+                    {
+                        var comp = ChatFormats.EQUIPMENT
+                                .append(Component.text("Vous êtes mort avec au moins un objet invocable sur vous. Vous avez perdu 5% de"
+                                                               + " pouvoir d'invocation. Pouvoir restant: "))
+                                .append(Component.text(this.invocationPower + "%").color(NamedTextColor.GOLD));
+                        this.getPlayer().getBukkitPlayer().sendMessage(comp);
+                    }
                 }
                 // Add to kept items
                 if (invocationPower > 0)

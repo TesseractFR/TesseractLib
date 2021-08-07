@@ -1,10 +1,12 @@
 package onl.tesseract.tesseractlib.equipment.invocable;
 
+import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.menu.BoussoleMenu;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -79,7 +81,7 @@ public class Boussole extends Invocable {
                 if (event.getPlayer().isGliding() && event.getPlayer().getLocation().getBlock().getType() != Material.WATER
                         || (propulsionTask != null && !propulsionTask.isCancelled())) return;
                 Elytra el = (Elytra) player.getEquipment().get(EquipmentSlot.CHEST);
-                player.sendMessage(ChatFormat.EQUIPMENT + "Décolage dans 3 secondes... Regardez en l'air !");
+                player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage dans 3 secondes... Regardez en l'air !")));
                 propulsionTask = new BukkitRunnable() {
                     @Override
                     public void run()
@@ -87,11 +89,11 @@ public class Boussole extends Invocable {
                         if (! player.getOfflinePlayer().isOnline()) {
                         }
                         else if (! el.isInvoked()) {
-                            player.sendMessage(ChatFormat.EQUIPMENT_ERROR + "Décollage annulé (ailes désinvoquées).");
+                            player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage annulé (ailes désinvoquées).")));
                             propulsionTask = null;
                         }
                         else if (! player.getBukkitPlayer().getInventory().getItemInMainHand().equals(item)) {
-                            player.sendMessage(ChatFormat.EQUIPMENT_ERROR + "Décollage annulé (boussole pas en main).");
+                            player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage annulé (boussole pas en main).")));
                             propulsionTask = null;
                         }
                         else {
@@ -110,7 +112,7 @@ public class Boussole extends Invocable {
                 }.runTaskLater(TesseractLib.instance, 20*3);
             }
             else
-                player.sendMessage(ChatFormat.EQUIPMENT_ERROR + "Vous devez être équipé de vos ailes pour décoller avec la boussole.");
+                player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Vous devez être équipé de vos ailes pour décoller avec la boussole.")));
         }
         else
             menu.open(equipment.getPlayer().getBukkitPlayer());

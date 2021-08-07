@@ -1,9 +1,12 @@
 package onl.tesseract.tesseractlib.menu;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.equipment.invocable.Boussole;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.InventoryMenu;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.ChatColor;
@@ -139,9 +142,11 @@ public class EquipmentMenu extends InventoryMenu {
             int removed = Util.removeNonSpecialItems(this.player.getBukkitPlayer().getInventory(), Material.GOLD_INGOT, goldCount);
             // Update the invocation power
             this.player.getEquipment().addInvocationPower(removed);
-            this.player.getBukkitPlayer().sendMessage(ChatFormat.EQUIPMENT + "Votre puissance d'invocation a été rechargée" +
-                    " de " + ChatColor.GOLD + removed + "%" + ChatColor.GRAY + ". Charge actuelle : " + ChatColor.GOLD +
-                    this.player.getEquipment().getInvocationPower() + "%");
+            var comp = ChatFormats.EQUIPMENT.append(Component.text("Votre puissance d'invocation a été rechargée de "))
+                    .append(Component.text(removed + "%", NamedTextColor.GRAY))
+                    .append(Component.text(". Charge actuelle : "))
+                    .append(Component.text(player.getEquipment().getInvocationPower() + "%", NamedTextColor.GOLD));
+            this.player.getBukkitPlayer().sendMessage(comp);
             this.open(viewer);
         });
     }
@@ -165,8 +170,9 @@ public class EquipmentMenu extends InventoryMenu {
             subMenu.addButton(i, items.get(i).getItem(), event -> {
                 if (this.player.getEquipment().getInvocationPower() == 0) {
                     if (!invocable.toString().contains("onl.tesseract.item.invocable.Elytra")) {
-                        this.player.getBukkitPlayer().sendMessage(ChatFormat.EQUIPMENT_ERROR + "Impossible d'invoquer l'équipement, " +
-                                "vous n'avez plus de pouvoir d'invocation. Rechargez là dans le menu à l'aide de lingots d'or.");
+                        var comp = ChatFormats.EQUIPMENT_ERROR
+                                .append(Component.text("Impossible d'invoquer l'équipement, vous n'avez plus de pouvoir d'invocation. Rechargez là dans le menu à l'aide de lingots d'or."));
+                        this.player.getBukkitPlayer().sendMessage(comp);
                         return;
                     }
                 }
