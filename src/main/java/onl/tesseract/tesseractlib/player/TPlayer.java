@@ -4,17 +4,16 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -57,6 +56,7 @@ public class TPlayer implements Listener {
             return this.string;
         }
     }
+
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
     /**
      * Maps every Player who has played before with a TPlayer instance.
@@ -169,7 +169,8 @@ public class TPlayer implements Listener {
 
     protected void checkFirstJoin(UUID uniqueId)
     {
-        if(!PlayerFacade.exist(uniqueId)){
+        if (!PlayerFacade.exist(uniqueId))
+        {
             addtodatabase(uniqueId);
         }
     }
@@ -639,6 +640,7 @@ public class TPlayer implements Listener {
         this.gender = gender;
         playerFacade.setGender(gender);
     }
+
     public boolean hasAchievement(Achievement achievement)
     {
         return achievements.contains(achievement);
@@ -651,31 +653,34 @@ public class TPlayer implements Listener {
 
     public void addAchievements(Achievement achievement, boolean foreveryone)
     {
-        if(achievements.contains(achievement))return;
+        if (achievements.contains(achievement))
+            return;
         achievements.add(achievement);
         playerFacade.addAchievements(achievement);
-        sendMessage(ChatFormat.HAUT_FAIT + "Vous avez obtenu le haut-fait ");
-        sendMessage(new ComponentBuilder().append(ChatColor.AQUA + "      « ")
-                                          .append(ChatColor.AQUA + achievement.getDisplayName())
-                                          .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                                new Text(ChatColor.AQUA + achievement.getCondition())))
-                                          .append(ChatColor.AQUA + " » ").create());
+        sendMessage(ChatFormats.HAUT_FAIT.append(Component.text("Vous avez obtenu le haut-fait ")));
+        sendMessage(Component.empty()
+                             .append(Component.text("      « ").color(NamedTextColor.AQUA))
+                             .append(Component.text(achievement.getDisplayName()).color(NamedTextColor.AQUA))
+                             .hoverEvent(HoverEvent.showText(Component.text(achievement.getCondition()).color(NamedTextColor.AQUA)))
+                             .append(Component.text(" » ").color(NamedTextColor.AQUA)));
         if (foreveryone)
         {
             for (Player p : Bukkit.getOnlinePlayers())
             {
                 if (p.equals(this.getBukkitPlayer()))
                     continue;
-                p.sendMessage(ChatFormat.HAUT_FAIT + getOfflinePlayer().getName() + " a obtenu le haut-fait ");
-                p.sendMessage(new ComponentBuilder().append(ChatColor.AQUA + "      « ")
-                                                    .append(ChatColor.AQUA + achievement.getDisplayName())
-                                                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(
-                                                            ChatColor.AQUA + achievement.getCondition())))
-                                                    .append(ChatColor.AQUA + " » ").create());
+                p.sendMessage(ChatFormats.HAUT_FAIT
+                                      .append(Component.text(getOfflinePlayer().getName() + " a obtenu le haut-fait ")));
+                p.sendMessage(Component.empty()
+                                       .append(Component.text("      « ").color(NamedTextColor.AQUA))
+                                       .append(Component.text(achievement.getDisplayName()).color(NamedTextColor.AQUA))
+                                       .hoverEvent(HoverEvent.showText(Component.text(achievement.getCondition()).color(NamedTextColor.AQUA)))
+                                       .append(Component.text(" » ").color(NamedTextColor.AQUA)));
             }
         }
 
     }
+
     public boolean hasAllAchievement(List<Achievement> list)
     {
         for (Achievement a : list)
@@ -685,7 +690,9 @@ public class TPlayer implements Listener {
         }
         return true;
     }
-    public void removeAchievement(Achievement achievement){
+
+    public void removeAchievement(Achievement achievement)
+    {
         achievements.remove(achievement);
         playerFacade.removeAchievement(achievement);
     }
