@@ -376,14 +376,12 @@ public class TPlayer implements Listener {
             getBukkitPlayer().sendMessage(message);
     }
 
-    @Deprecated
     public void sendMessage(Component message)
     {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
 
-    @Deprecated
     public void sendMessage(Component... message)
     {
         if (isOnline())
