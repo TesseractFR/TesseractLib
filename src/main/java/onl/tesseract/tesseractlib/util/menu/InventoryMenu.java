@@ -3,8 +3,10 @@ package onl.tesseract.tesseractlib.util.menu;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.event.PlayerMenuOpenEvent;
+import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,7 +39,7 @@ public class InventoryMenu implements Listener {
     /**
      * Map of buttons. Each button is represented by an ItemStack, and maps to a function
      */
-    HashMap<Integer, Consumer<InventoryClickEvent>> buttons = new HashMap<>();
+    HashMap<Integer, Button> buttons = new HashMap<>();
     static public final String NEW_LINE = " {nl} ";
 
     static ItemStack buttonBack = getCustomHead(ChatColor.RED + "Retour", "eyJ0aW1lc3RhbXAiOjE1MzQ0NTU2Njg3MTgsInByb2ZpbGVJZCI6ImE2OGYwYjY0OGQxNDQwMDBhOTVmNGI5YmExNGY4ZGY5IiwicHJvZmlsZU5hbWUiOiJNSEZfQXJyb3dMZWZ0Iiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mN2FhY2FkMTkzZTIyMjY5NzFlZDk1MzAyZGJhNDMzNDM4YmU0NjQ0ZmJhYjVlYmY4MTgwNTQwNjE2NjdmYmUyIn19fQ==", "P1pFjz8nr9mcyMiBoisU0ON86W+7MG4K3ieuuLKrAvBwd11KFNrKqY7t0vp3kUVF0TNCaN/1oPEN27Ahl/L7l0yrM6c+tiPBQQkEGQiQpMqHPPM0bSVdT6m9Sv0zW7ZAytJXuRoK/JFr6InxMoAcd/lvhZvuNyL60nW7NRDtKYyac2/Z1X0Hk+aEI6XwuAE1g2SVkxyv7FWTrOWE+KO2Umv/w3GteV9fT6moHYOHhs0PmhqzrXHtqK+jfXB0b/eiVhQSBBiR4e9A8Svj+XJDzvH2csfZu9XeQ2kAUuJMQ09CpxvrBeQ1E8FFBFk8UAxQH/ANLMCcg+SsmJxnrR1SS45PP1BM+arm/VdmVsqzk60VBDyREhQmqtB+h6IDbYLOzIvggZhF3nQyolC/uklYy7SJ4WP5R3XuQtT/wPeS9s6BixtNhvbTVA7Yv02c8XTKMZpI4gN9sX2icbtOuYlIBf7w4aXNLBfi896RONuU4odS7X3mz7HwmNN2Zyu+XOPU8njTcbbIDxBWmTsfK/ROnFol19b4Vd8geyQSbFDZvsvqrLYS83mnBoQXODowHnSH8rRXAdQ0F8o/QkmUylz4tlSk5oi+y4Vv1EOKtut05HGyor38WFbO0niBYDv0EmHSO33m9vLYVJzoE65wXGT6bLhhrxdasBAr+WvkExtcgPg=");
@@ -85,16 +87,19 @@ public class InventoryMenu implements Listener {
      * @param name Custom display name of the item. Can be null
      * @param lore Custom lore. Can be null
      */
+    @Deprecated
     public void addInactiveButton(int index, Material material, String name, String lore) {
         ItemStack item = Util.buildItem(material, name, lore);
         this.inventory.setItem(index, item);
     }
 
+    @Deprecated
     public void addInactiveButton(int index, Material material, String name, String lore, boolean enchant) {
         ItemStack item = Util.buildItem(material, name, lore, enchant);
         this.inventory.setItem(index, item);
     }
 
+    @Deprecated
     public void addInactiveButtons(int[] indexes, Material material, String name, String lore) {
         for (int index : indexes) {
             ItemStack item = Util.buildItem(material, name, lore);
@@ -102,18 +107,36 @@ public class InventoryMenu implements Listener {
         }
     }
 
+    @Deprecated
     public void addInactiveButton(int index, ItemStack item, String name, String lore) {
         item = Util.buildItem(item, name, lore);
         this.inventory.setItem(index, item);
     }
 
+    @Deprecated
     public void addInactiveButton(int index, ItemStack item, String name, String lore, boolean enchant) {
         Util.buildItem(item, name, lore, enchant);
         this.inventory.setItem(index, item);
     }
 
+    @Deprecated
     public void addInactiveButton(int index, ItemStack item) {
         this.inventory.setItem(index, item);
+    }
+
+    public void add(int index, Material material, Component name)
+    {
+        addButton(index, new Button(new ItemBuilder(material).name(name).build()));
+    }
+
+    public void add(int index, Material material, Component name, Component lore)
+    {
+        addButton(index, new Button(new ItemBuilder(material).name(name).lore(lore).build()));
+    }
+
+    public void add(int index, final ItemStack itemStack)
+    {
+        addButton(index, new Button(itemStack));
     }
 
     /**
@@ -124,36 +147,42 @@ public class InventoryMenu implements Listener {
      * @param <T> The click event
      */
     public <T> void addButton(int index, ItemStack item, Consumer<InventoryClickEvent> function) {
-        buttons.put(index, function);
-        this.inventory.setItem(index, item);
+        addButton(index, new Button(item, function));
     }
 
     public <T> void addButton(int index, ItemStack item, boolean enchanted, Consumer<InventoryClickEvent> function) {
         ItemStack cloned = item.clone();
         if (enchanted)
             cloned.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
-        buttons.put(index, function);
-        this.inventory.setItem(index, cloned);
+        addButton(index, cloned, function);
     }
 
+    @Deprecated
     public <T> void addButton(int index, ItemStack item, String name, String lore, Consumer<InventoryClickEvent> function) {
         if (item == null) return;
 
         Util.buildItem(item, name, lore);
-        buttons.put(index, function);
-        this.inventory.setItem(index, item);
+        addButton(index, item, function);
     }
 
+    @Deprecated
     public <T> void addButton(int index, Material material, String name, String lore, Consumer<InventoryClickEvent> function) {
         ItemStack item = Util.buildItem(material, name, lore);
         item.addItemFlags(ItemFlag.values());
         this.addButton(index, item, function);
     }
 
+    @Deprecated
     public <T> void addButton(int index, Material material, String name, String lore, boolean enchanted, Consumer<InventoryClickEvent> function) {
         ItemStack item = Util.buildItem(material, name, lore, enchanted);
         item.addItemFlags(ItemFlag.values());
         this.addButton(index, item, function);
+    }
+
+    public void addButton(final int index, final Button button)
+    {
+        buttons.put(index, button);
+        inventory.setItem(index, button.getItemStack());
     }
 
     /**
@@ -164,9 +193,8 @@ public class InventoryMenu implements Listener {
     }
 
     public void addBackButton(int index) {
-        this.addButton(index, buttonBack, ChatColor.RED + "Retour", null, event -> {
-            this.previous.open(this.viewer);
-        });
+        this.addButton(index, new ItemBuilder(buttonBack).name("Retour", NamedTextColor.RED).build()
+                , event -> this.previous.open(this.viewer));
     }
 
     /**
@@ -174,10 +202,18 @@ public class InventoryMenu implements Listener {
      * @param function Function to execute
      * @param <T> void
      */
+    @Deprecated
     public <T> void addBackButton(Consumer<T> function) {
-        this.addButton(this.inventory.getSize() - 9, buttonBack, ChatColor.RED + "Retour", null, event -> {
+        addButton(inventory.getSize() - 9, new ItemBuilder(buttonBack).name("Retour", NamedTextColor.RED).build(), event -> {
             this.close();
             function.accept(null);
+        });
+    }
+
+    public <T> void addBackButton(Runnable function) {
+        addButton(inventory.getSize() - 9, new ItemBuilder(buttonBack).name("Retour", NamedTextColor.RED).build(), event -> {
+            this.close();
+            function.run();
         });
     }
 
@@ -186,16 +222,37 @@ public class InventoryMenu implements Listener {
     }
 
     public void addQuitButton(int index) {
-        this.addButton(index, buttonQuit, event -> {
-            this.close();
-        });
+        this.addButton(index, buttonQuit, event -> this.close());
     }
 
+    @Deprecated
     public void fill(Material material, String name, String lore) {
         ItemStack item = Util.buildItem(material, name, lore);
 
         for (int i = 0; i < this.inventory.getSize(); i++) {
             this.inventory.setItem(i, item);
+        }
+    }
+
+    public void fill(Material material, String name) {
+        ItemStack item = new ItemBuilder(material, Component.text(name)).build();
+
+        for (int i = 0; i < this.inventory.getSize(); i++) {
+            this.inventory.setItem(i, item);
+        }
+    }
+
+    public void fill(Material material, String name, Component lore) {
+        ItemStack item = new ItemBuilder(material).name(name).lore(lore).build();
+
+        for (int i = 0; i < this.inventory.getSize(); i++) {
+            this.inventory.setItem(i, item);
+        }
+    }
+
+    public void fill(final Button button) {
+        for (int i = 0; i < this.inventory.getSize(); i++) {
+            addButton(i, button);
         }
     }
 
@@ -219,7 +276,8 @@ public class InventoryMenu implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    buttons.get(event.getSlot()).accept(event);
+                    var button = buttons.get(event.getSlot());
+                    button.onClick(event);
                 }
             }.runTaskLater(TesseractLib.instance, 1);
         }else if (event.getCurrentItem().equals(buttonBack)) {
@@ -315,7 +373,7 @@ public class InventoryMenu implements Listener {
      */
     public static void openConfirmationMenu(Player player, String message, InventoryMenu backMenu, Consumer<Void> callback) {
         InventoryMenu menu = new InventoryMenu(9, "Confirmer", backMenu);
-        menu.fill(Material.GRAY_STAINED_GLASS_PANE, " ", null);
+        menu.fill(Material.GRAY_STAINED_GLASS_PANE, " ");
         if (backMenu != null)
             menu.addBackButton();
         else
