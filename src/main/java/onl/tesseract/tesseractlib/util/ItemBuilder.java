@@ -253,8 +253,7 @@ public class ItemBuilder {
     }
 
     /**
-     * To put color or decoration in the lore, prefer {@link ItemBuilder#lore(String, TextColor, TextDecoration)} or other methods using {@link
-     * Component}
+     * Note: The string can contained values from {@link org.bukkit.ChatColor}, as they will be converted to components
      *
      * @see ItemLoreBuilder
      */
