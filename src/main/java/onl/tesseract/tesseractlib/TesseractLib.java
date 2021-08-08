@@ -3,10 +3,7 @@ package onl.tesseract.tesseractlib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bdd.BDDManager;
-import onl.tesseract.tesseractlib.command.Animation;
-import onl.tesseract.tesseractlib.command.EquipmentCommand;
-import onl.tesseract.tesseractlib.command.MsgCommand;
-import onl.tesseract.tesseractlib.command.ReplyToMsg;
+import onl.tesseract.tesseractlib.command.*;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
 import onl.tesseract.tesseractlib.event.ChatDing;
 import onl.tesseract.tesseractlib.event.ColoredChat;
@@ -68,6 +65,7 @@ public final class TesseractLib extends JavaPlugin {
         Objects.requireNonNull(instance.getCommand("socialspy")).setExecutor(new SocialSpy());
         Objects.requireNonNull(instance.getCommand("msg")).setExecutor(new MsgCommand());
         Objects.requireNonNull(instance.getCommand("reply")).setExecutor(new ReplyToMsg());
+        Objects.requireNonNull(instance.getCommand("familier")).setExecutor(new FamilierCommand());
     }
 
     void registerEvents()
