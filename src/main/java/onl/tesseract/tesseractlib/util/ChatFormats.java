@@ -1,6 +1,7 @@
 package onl.tesseract.tesseractlib.util;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
 
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.Component.*;
@@ -45,4 +46,10 @@ public class ChatFormats {
             .append(text("[").color(DARK_AQUA))
             .append(text("Chat Groupe").color(BLUE))
             .append(text("] ").color(DARK_AQUA));
+
+    public static final Component PET = empty()
+            .color(YELLOW)
+            .append(text("[").color(GOLD))
+            .append(text("Familier").color(YELLOW))
+            .append(text("] ").color(GOLD));
 }

@@ -1,11 +1,16 @@
 package onl.tesseract.tesseractlib.menu.pet;
 
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.familier.Pet;
 import onl.tesseract.tesseractlib.familier.PetCategory;
 import onl.tesseract.tesseractlib.familier.PetManager;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
+import onl.tesseract.tesseractlib.util.ItemBuilder;
+import onl.tesseract.tesseractlib.util.menu.Button;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -45,35 +50,41 @@ public class PetsSelectionMenu extends InventoryMenu {
                 obtenue = ChatColor.RED + "Non possédé";
             }
             Pet pet = pets.get(index);
-            this.addButton(index, pet.getHead(), ChatColor.YELLOW + pet.getname(),
-                           NEW_LINE + ChatColor.GRAY + "Cliquez pour invoquer " + pet.getname() + NEW_LINE
-                                   + NEW_LINE + obtenue, event -> {
-                        if (PetManager.invokedPets.get(viewer.getUniqueId()) != null && lePet)
-                        {
-                            PetManager.invokePet(viewer, null, false);
-                        }
-                        PetManager.invokePet(viewer, pet, true);
-                        if (lePet)
-                        {
-                            this.close();
-                        }
-                    });
+            addButton(index, new Button(new ItemBuilder(pet.getHead())
+                                        .name(pet.getname(), NamedTextColor.YELLOW)
+                                        .lore(NEW_LINE + ChatColor.GRAY + "Cliquez pour invoquer " + pet.getname() + NEW_LINE
+                                                      + NEW_LINE + obtenue)
+                                        .build()
+                    , event -> {
+                if (PetManager.invokedPets.get(viewer.getUniqueId()) != null && lePet)
+                {
+                    PetManager.invokePet(viewer, null, false);
+                }
+                PetManager.invokePet(viewer, pet, true);
+                if (lePet)
+                {
+                    this.close();
+                }
+            }));
 
 
         }
-        this.addButton(13, Material.NAME_TAG, ChatColor.YELLOW + "Désinvocation",
-                       NEW_LINE + ChatColor.GRAY + "Cliquez pour désinvoquer votre familier", event -> {
-                    if (PetManager.hasPetInvocked(viewer))
-                    {
-                        PetManager.invokePet(viewer, null, false);
-                        viewer.sendMessage(ChatFormat.PET + ChatColor.GREEN + "Votre familier a été désinvoqué");
-                        this.close();
-                    }
-                    else
-                    {
-                        viewer.sendMessage(ChatFormat.PET + ChatColor.RED + "Vous n'avez pas de familier invoqué");
-                    }
-                });
+        addButton(13, new Button(new ItemBuilder(Material.NAME_TAG)
+                                 .name("Désinvocation", NamedTextColor.YELLOW)
+                                 .lore(NEW_LINE + ChatColor.GRAY + "Cliquez pour désinvoquer votre familier")
+                                 .build()
+                , event -> {
+            if (PetManager.hasPetInvocked(viewer))
+            {
+                PetManager.invokePet(viewer, null, false);
+                viewer.sendMessage(ChatFormats.PET.append(Component.text("Votre familier a été désinvoqué", NamedTextColor.GREEN)));
+                this.close();
+            }
+            else
+            {
+                viewer.sendMessage(ChatFormats.PET.append(Component.text("Vous n'avez pas de familier invoqué", NamedTextColor.RED)));
+            }
+        }));
         this.addBackButton();
         this.addQuitButton();
         super.open(viewer);
