@@ -11,9 +11,10 @@ commands:
     description: Pour tester des animations
     permission: tesseract.staff
   equipment:
-    aliases: eq
+    aliases: [eq, equipement ]
     usage: "/equipement"
     description: Pour tester le menu équipements
+    permission: tesseract.equipment
   msg:
     aliases: [ tell, w ]
     usage: "/msg {pseudo} {message}"
