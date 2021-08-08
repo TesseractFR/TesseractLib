@@ -136,6 +136,7 @@ public class EquipmentMenu extends InventoryMenu {
         int goldAvailable = Util.countNonSpecialItems(inv, Material.GOLD_INGOT);
         final int goldCount = Math.min(goldAvailable, (100 - player.getEquipment().getInvocationPower()));
         var lore = new ItemLoreBuilder()
+                .newline()
                 .append("Puissance disponible ", NamedTextColor.DARK_PURPLE)
                 .append(": ", NamedTextColor.DARK_GRAY)
                 .append(player.getEquipment().getInvocationPower() + " %", NamedTextColor.LIGHT_PURPLE)
@@ -209,7 +210,7 @@ public class EquipmentMenu extends InventoryMenu {
         subMenu.add(new int[] {46, 47, 48, 50, 51, 52}, Material.RED_STAINED_GLASS_PANE, Component.text("*", NamedTextColor.DARK_GRAY));
 
         Invocable finalInvoked = invoked;
-        subMenu.addButton(40, new Button(new ItemBuilder(Material.NAME_TAG)
+        subMenu.addButton(49, new Button(new ItemBuilder(Material.NAME_TAG)
                                                  .name("Désinvoquer cet équipement", NamedTextColor.GOLD).build()
                 , event -> {
             if (finalInvoked != null) {
