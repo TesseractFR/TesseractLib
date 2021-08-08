@@ -48,6 +48,10 @@ public class ItemLoreBuilder {
         for (int i = 0; i < words.length; i++)
         {
             var word = words[i];
+            if (i == words.length - 1 && text.endsWith(" "))
+                word = word + " ";
+            if (i == 0 && text.startsWith(" "))
+                word = " " + word;
             // Get real length
             int wordLen = word.length();
 
@@ -93,6 +97,10 @@ public class ItemLoreBuilder {
         for (int i = 0; i < words.length; i++)
         {
             var word = words[i];
+            if (i == words.length - 1 && text.endsWith(" "))
+                word = word + " ";
+            if (i == 0 && text.startsWith(" "))
+                word = " " + word;
             // Get real length
             int wordLen = word.replaceAll("§.", "").length();
             // Get the last used color.
