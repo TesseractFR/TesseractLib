@@ -10,17 +10,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class ItemBuilder {
     protected ItemStack base;
     protected Material material;
     protected Component name;
-    protected Component lore;
+    protected List<Component> lore;
     protected boolean enchanted;
     protected int quantity;
     protected int lineWidth;
     protected ItemFlag[] flags;
 
-    public ItemBuilder(@NotNull final Material material, final Component name, final Component lore, final boolean enchanted, final int quantity,
+    public ItemBuilder(@NotNull final Material material, final Component name, final List<Component> lore, final boolean enchanted, final int quantity,
                        final int lineWidth)
     {
         this.material = material;
@@ -32,12 +34,12 @@ public class ItemBuilder {
         this.flags = ItemFlag.values();
     }
 
-    public ItemBuilder(@NotNull final Material material, final Component name, final Component lore, final boolean enchanted)
+    public ItemBuilder(@NotNull final Material material, final Component name, final List<Component> lore, final boolean enchanted)
     {
         this(material, name, lore, enchanted, 1, 35);
     }
 
-    public ItemBuilder(@NotNull final Material material, final Component name, final Component lore)
+    public ItemBuilder(@NotNull final Material material, final Component name, final List<Component> lore)
     {
         this(material, name, lore, false, 1, 35);
     }
@@ -68,7 +70,7 @@ public class ItemBuilder {
         if (name != null)
             meta.displayName(name);
         if (lore != null)
-            meta.lore(new ItemLoreBuilder(lineWidth).append(lore).get());
+            meta.lore(lore);
         item.setItemMeta(meta);
         if (enchanted)
         {
@@ -130,32 +132,38 @@ public class ItemBuilder {
         return this;
     }
 
-    public Component lore()
+    public List<Component> lore()
     {
         return lore;
     }
 
-    public ItemBuilder lore(final Component lore)
+    public ItemBuilder lore(final List<Component> lore)
     {
         this.lore = lore;
         return this;
     }
 
+    public ItemBuilder lore(final Component lore)
+    {
+        this.lore = new ItemLoreBuilder().append(lore).get();
+        return this;
+    }
+
     public ItemBuilder lore(final String content, final TextColor color, final TextDecoration decoration)
     {
-        this.lore = Component.text(content, color, decoration);
+        this.lore = new ItemLoreBuilder().append(content, color, decoration).get();
         return this;
     }
 
     public ItemBuilder lore(final String content, final TextColor color)
     {
-        this.lore = Component.text(content, color);
+        this.lore = new ItemLoreBuilder().append(content, color).get();
         return this;
     }
 
     public ItemBuilder lore(final String content)
     {
-        this.lore = Component.text(content);
+        this.lore = new ItemLoreBuilder().append(content).get();
         return this;
     }
 
