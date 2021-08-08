@@ -106,17 +106,29 @@ public class Util {
      * @param name display name to apply to the item
      * @param lore Lore to apply to the item. It will be trimmed by 30
      * @return an itemstack
+     * @deprecated In favor of {@link ItemBuilder}
      */
+    @Deprecated
     static public ItemStack buildItem(Material material, String name, String lore) {
         ItemStack item = new ItemStack(material);
         return buildItem(item, name, lore);
     }
 
+    /**
+     *
+     * @deprecated In favor of {@link ItemBuilder}
+     */
+    @Deprecated
     static public ItemStack buildItem(Material material, String name, String lore, int lineWidth, boolean enchant) {
         ItemStack item = new ItemStack(material);
         return buildItem(item, name, lore, lineWidth, enchant);
     }
 
+    /**
+     *
+     * @deprecated In favor of {@link ItemBuilder}
+     */
+    @Deprecated
     static public ItemStack buildItem(Material material, String name, String lore, boolean enchant) {
         ItemStack item = new ItemStack(material);
         return buildItem(item, name, lore, enchant);
@@ -128,15 +140,27 @@ public class Util {
      * @param name display name to apply to the item
      * @param lore Lore to apply to the item. It will be trimmed by 30
      * @return returns the same itemstack.
+     * @deprecated In favor of {@link ItemBuilder}
      */
+    @Deprecated
     static public ItemStack buildItem(ItemStack item, String name, String lore) {
         return buildItem(item, name, lore, false);
     }
 
+    /**
+     *
+     * @deprecated In favor of {@link ItemBuilder}
+     */
+    @Deprecated
     static public ItemStack buildItem(ItemStack item, String name, String lore, boolean enchant) {
         return buildItem(item, name, lore, 35, enchant);
     }
 
+    /**
+     *
+     * @deprecated In favor of {@link ItemBuilder}
+     */
+    @Deprecated
     static public ItemStack buildItem(ItemStack item, String name, String lore, int lineWidth, boolean enchant) {
         ItemMeta meta = item.getItemMeta();
         if (name != null)
@@ -152,6 +176,7 @@ public class Util {
         return item;
     }
 
+    @Deprecated
     static public String center(String title) {
         int length = title.replaceAll("§.", "").length();
         int spaceLength = (41 - length) / 2;
