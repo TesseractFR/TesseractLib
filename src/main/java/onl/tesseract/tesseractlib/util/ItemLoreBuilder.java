@@ -5,43 +5,93 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Builder class to construct an item lore, and to automatically wrap it to fit a given maximum width.
+ * The result is a collection of {@link Component} that can be used to set the lore of an {@link org.bukkit.inventory.meta.ItemMeta}
+ *
+ * @see org.bukkit.inventory.ItemStack
+ * @see org.bukkit.inventory.meta.ItemMeta
+ * @see Component
+ */
 public class ItemLoreBuilder {
     final int width;
     final List<Component> lines = new ArrayList<>();
     Component lastLine = Component.text("").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     int lastLineLength = 0;
+    private static final int DEFAULT_LINE_WIDTH = 35;
 
+    /**
+     * Instantiate a new builder with the given line width
+     *
+     * @param width Maximum line width
+     */
     public ItemLoreBuilder(final int width)
     {
         this.width = width;
     }
 
+    /**
+     * Instantiate a new builder. Default line width set to {@value DEFAULT_LINE_WIDTH}
+     */
     public ItemLoreBuilder()
     {
-        this(35);
+        this(DEFAULT_LINE_WIDTH);
     }
 
+    /**
+     * Append a text with a color
+     *
+     * @param text text
+     * @param color color
+     *
+     * @return this
+     */
     public ItemLoreBuilder append(String text, TextColor color)
     {
         return append(text, color, Set.of());
     }
 
+    /**
+     * Append a text with a decoration
+     *
+     * @param text text
+     * @param decoration decoration
+     *
+     * @return this
+     */
     public ItemLoreBuilder append(String text, TextDecoration decoration)
     {
         return append(text, null, decoration);
     }
 
+    /**
+     * Append a text with a color and decoration
+     *
+     * @param text text
+     * @param color color
+     * @param decoration decoration
+     *
+     * @return this
+     */
     public ItemLoreBuilder append(String text, TextColor color, TextDecoration decoration)
     {
         return append(text, color, Set.of(decoration));
     }
 
+    /**
+     * Append a text with a color and a set of decoration
+     *
+     * @param text text
+     * @param color color
+     * @param decoration decorations
+     *
+     * @return this
+     */
     public ItemLoreBuilder append(String text, TextColor color, @NotNull Set<TextDecoration> decoration)
     {
         var words = text.split(" ");
@@ -60,14 +110,14 @@ public class ItemLoreBuilder {
             {
                 // Split
                 lines.add(lastLine);
-                lastLine = Component.text("").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);;
+                lastLine = Component.text("").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
                 lastLineLength = 0;
             }
             else if (lastLineLength + wordLen > width)
             {
                 // Split
                 lines.add(lastLine);
-                lastLine = Component.text(word + " ").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);;
+                lastLine = Component.text(word + " ").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
                 if (color != null)
                     lastLine = lastLine.color(color);
                 for (var deco : decoration)
@@ -89,6 +139,15 @@ public class ItemLoreBuilder {
         return this;
     }
 
+    /**
+     * Append a text. This text can include values of {@link org.bukkit.ChatColor}, as they will be converted to Component
+     *
+     * @param text text
+     *
+     * @return this
+     *
+     * @see Component
+     */
     public ItemLoreBuilder append(String text)
     {
         var words = text.split(" ");
@@ -131,7 +190,7 @@ public class ItemLoreBuilder {
             {
                 // Split
                 lines.add(lastLine);
-                lastLine = Component.empty().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);;
+                lastLine = Component.empty().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
                 var component = Component.text(word + " ");
                 if (lastColor.get() != null)
                     component = component.color(lastColor.get());
@@ -155,6 +214,13 @@ public class ItemLoreBuilder {
         return this;
     }
 
+    /**
+     * Append a component and its children. TextComponent will be split to fit the width
+     *
+     * @param component component
+     *
+     * @return this
+     */
     public ItemLoreBuilder append(Component component)
     {
         if (component instanceof TextComponent textComponent)
@@ -174,14 +240,26 @@ public class ItemLoreBuilder {
         return this;
     }
 
+    /**
+     * Insert a newline
+     *
+     * @return this
+     */
     public ItemLoreBuilder newline()
     {
         lines.add(lastLine);
-        lastLine = Component.text("").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);;
+        lastLine = Component.text("").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
         lastLineLength = 0;
         return this;
     }
 
+    /**
+     * Insert {@code count} newlines
+     *
+     * @param count Quantity of newlines to insert
+     *
+     * @return this
+     */
     public ItemLoreBuilder newline(int count)
     {
         for (int i = 0; i < count; i++)
@@ -233,6 +311,11 @@ public class ItemLoreBuilder {
         return c == 'r';
     }
 
+    /**
+     * Get the built lore
+     *
+     * @return List of component representing the lore
+     */
     public List<Component> get()
     {
         if (lastLineLength > 0)
