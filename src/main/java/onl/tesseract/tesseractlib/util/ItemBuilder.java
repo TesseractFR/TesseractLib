@@ -27,6 +27,8 @@ public class ItemBuilder {
     {
         this.material = material;
         this.name = name;
+        if (name != null && this.name.decoration(TextDecoration.ITALIC) == TextDecoration.State.NOT_SET)
+            this.name = this.name.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
         this.lore = lore;
         this.enchanted = enchanted;
         this.quantity = quantity;
@@ -108,27 +110,31 @@ public class ItemBuilder {
         return name;
     }
 
-    public ItemBuilder name(final Component name)
+    public ItemBuilder name(@NotNull final Component name)
     {
         this.name = name;
+        if (this.name.decoration(TextDecoration.ITALIC) == TextDecoration.State.NOT_SET)
+            this.name = this.name.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
         return this;
     }
 
     public ItemBuilder name(final String name)
     {
-        this.name = Component.text(name);
+        this.name = Component.text(name).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
         return this;
     }
 
     public ItemBuilder name(final String name, TextColor color)
     {
-        this.name = Component.text(name, color);
+        this.name = Component.text(name, color).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);;
         return this;
     }
 
     public ItemBuilder name(final String name, TextColor color, TextDecoration decoration)
     {
-        this.name = Component.text(name, color, decoration);
+        this.name = Component.text(name, color)
+                             .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+                             .decorate(decoration);
         return this;
     }
 

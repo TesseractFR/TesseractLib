@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ItemLoreBuilder {
     final int width;
     final List<Component> lines = new ArrayList<>();
-    Component lastLine = Component.text("");
+    Component lastLine = Component.text("").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     int lastLineLength = 0;
 
     public ItemLoreBuilder(final int width)
@@ -56,14 +56,14 @@ public class ItemLoreBuilder {
             {
                 // Split
                 lines.add(lastLine);
-                lastLine = Component.text("");
+                lastLine = Component.text("").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);;
                 lastLineLength = 0;
             }
             else if (lastLineLength + wordLen > width)
             {
                 // Split
                 lines.add(lastLine);
-                lastLine = Component.text(word + " ");
+                lastLine = Component.text(word + " ").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);;
                 if (color != null)
                     lastLine = lastLine.color(color);
                 for (var deco : decoration)
@@ -116,14 +116,14 @@ public class ItemLoreBuilder {
             {
                 // Split
                 lines.add(lastLine);
-                lastLine = Component.text("");
+                lastLine = Component.text("").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
                 lastLineLength = 0;
             }
             else if (lastLineLength + wordLen > width)
             {
                 // Split
                 lines.add(lastLine);
-                lastLine = Component.empty();
+                lastLine = Component.empty().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);;
                 var component = Component.text(word + " ");
                 if (lastColor.get() != null)
                     component = component.color(lastColor.get());
@@ -169,7 +169,7 @@ public class ItemLoreBuilder {
     public ItemLoreBuilder newline()
     {
         lines.add(lastLine);
-        lastLine = Component.text("");
+        lastLine = Component.text("").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);;
         lastLineLength = 0;
         return this;
     }
