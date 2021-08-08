@@ -1,4 +1,4 @@
-package onl.tesseract.tesseractlib.util.menu;
+package onl.tesseract.tesseractlib.util;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -6,8 +6,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.event.PlayerMenuOpenEvent;
-import onl.tesseract.tesseractlib.util.ItemBuilder;
-import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

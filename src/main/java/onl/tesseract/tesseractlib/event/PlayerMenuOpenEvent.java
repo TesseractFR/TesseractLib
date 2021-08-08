@@ -1,6 +1,6 @@
 package onl.tesseract.tesseractlib.event;
 
-import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
+import onl.tesseract.tesseractlib.util.InventoryMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

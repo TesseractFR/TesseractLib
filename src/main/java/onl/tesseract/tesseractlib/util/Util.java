@@ -3,10 +3,8 @@ package onl.tesseract.tesseractlib.util;
 import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -22,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class Util {
     static public final String NEW_LINE = " {nl} ";
