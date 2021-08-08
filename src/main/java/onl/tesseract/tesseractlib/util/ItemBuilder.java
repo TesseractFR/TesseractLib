@@ -20,7 +20,7 @@ public class ItemBuilder {
     protected boolean enchanted;
     protected int quantity;
     protected int lineWidth;
-    protected ItemFlag[] flags;
+    protected ItemFlag[] flags = ItemFlag.values();
 
     public ItemBuilder(@NotNull final Material material, final Component name, final List<Component> lore, final boolean enchanted, final int quantity,
                        final int lineWidth)
@@ -33,7 +33,6 @@ public class ItemBuilder {
         this.enchanted = enchanted;
         this.quantity = quantity;
         this.lineWidth = lineWidth;
-        this.flags = ItemFlag.values();
     }
 
     public ItemBuilder(@NotNull final Material material, final Component name, final List<Component> lore, final boolean enchanted)
