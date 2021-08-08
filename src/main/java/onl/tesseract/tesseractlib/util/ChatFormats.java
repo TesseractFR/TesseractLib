@@ -52,4 +52,6 @@ public class ChatFormats {
             .append(text("[").color(GOLD))
             .append(text("Familier").color(YELLOW))
             .append(text("] ").color(GOLD));
+    public static final Component PET_SUCCESS = PET.color(GREEN);
+    public static final Component PET_ERROR = PET.color(RED);
 }

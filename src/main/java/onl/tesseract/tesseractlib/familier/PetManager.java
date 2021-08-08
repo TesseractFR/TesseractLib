@@ -1,7 +1,10 @@
 package onl.tesseract.tesseractlib.familier;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
@@ -13,8 +16,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -53,12 +56,12 @@ public class PetManager implements Listener {
             armorStand.setMarker(true);
             armorStand.setDisabledSlots(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.FEET,
                                         EquipmentSlot.HAND, EquipmentSlot.LEGS, EquipmentSlot.OFF_HAND);
-            p.sendMessage(ChatFormat.PET + ChatColor.DARK_GREEN + "Vous avez invoqué " + pet);
+            p.sendMessage(ChatFormats.PET_SUCCESS.append(Component.text("Vous avez invoqué " + pet)));
             invokedPets.put(p.getUniqueId(), armorStand);
         }
         else
         {
-            p.sendMessage(ChatFormat.PET + ChatColor.RED + "Vous ne possédez pas ce familier");
+            p.sendMessage(ChatFormats.PET_ERROR.append(Component.text("Vous ne possédez pas ce familier")));
         }
     }
 
@@ -69,16 +72,13 @@ public class PetManager implements Listener {
             TPlayer tPlayer = TPlayer.get(player);
             if (!tPlayer.hasPet(pet))
             {
-                sender.sendMessage(
-                        ChatFormat.PET + ChatColor.RED + pet.name() + " n'est pas possedé par " + player
-                                .getDisplayName());
+                sender.sendMessage(ChatFormats.PET_ERROR.append(Component.text(pet.name() + " n'est pas possedé par "))
+                              .append(player.displayName()));
                 return;
             }
             tPlayer.removePet(pet);
-            sender.sendMessage(
-                    ChatFormat.PET + ChatColor.GREEN + "Vous avez supprimé " + pet.name() + " de "
-                            + player.getDisplayName());
-
+            sender.sendMessage(ChatFormats.PET_SUCCESS.append(Component.text("Vous avez supprimé " + pet.name() + " de "))
+                                                    .append(player.displayName()));
         }
     }
 
@@ -86,12 +86,14 @@ public class PetManager implements Listener {
     /***************************************************************************************
      Lister familier
      **************************************************************************************/
-    public static void ListerFamilier(@Nonnull Player player, PetCategory category, CommandSender sender)
+    public static void ListerFamilier(@NotNull Player player, PetCategory category, CommandSender sender)
     {
         TPlayer tPlayer = TPlayer.get(player);
         List<Pet> pets = tPlayer.getPets();
-        sender.sendMessage(ChatColor.DARK_GREEN + "---- " + ChatColor.GREEN + " Liste des familiers de "
-                                   + player.getDisplayName() + ChatColor.DARK_GREEN + " ----");
+        sender.sendMessage(Component.text("---- ", NamedTextColor.DARK_GREEN)
+                                    .append(Component.text(" Liste des familiers de ", NamedTextColor.GREEN))
+                                    .append(player.displayName())
+                                    .append(Component.text(" ----", NamedTextColor.DARK_GREEN)));
         sender.sendMessage(ChatColor.DARK_GREEN + "---- " + ChatColor.DARK_AQUA + category.name()
                                    + ChatColor.DARK_GREEN + " ----");
         for (Pet p : category.getPets())
@@ -108,17 +110,16 @@ public class PetManager implements Listener {
         sender.sendMessage(ChatColor.DARK_GREEN + "-----------------------------------------------");
     }
 
-    public static void ajouterFamilier(@Nonnull Player player, Pet pet, CommandSender sender)
+    public static void ajouterFamilier(@NotNull Player player, Pet pet, CommandSender sender)
     {
         TPlayer tPlayer = TPlayer.get(player);
         if (tPlayer.hasPet(pet))
         {
-            sender.sendMessage(ChatFormat.PET + "Le joueur possède déjà ce familier");
+            sender.sendMessage(ChatFormats.PET_ERROR.append(Component.text("Le joueur possède déjà ce familier")));
             return;
         }
         tPlayer.addPet(pet);
-        sender.sendMessage(
-                ChatFormat.PET + ChatColor.GREEN + "Vous avez ajouté " + pet.name() + " à " + player.getName());
+        sender.sendMessage(ChatFormats.PET_SUCCESS.append(Component.text("Vous avez ajouté " + pet.name() + " à " + player.getName())));
 
     }
 

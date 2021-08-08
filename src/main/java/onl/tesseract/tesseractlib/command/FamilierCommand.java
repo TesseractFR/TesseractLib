@@ -1,25 +1,26 @@
 package onl.tesseract.tesseractlib.command;
 
 
+import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.familier.Pet;
 import onl.tesseract.tesseractlib.familier.PetCategory;
 import onl.tesseract.tesseractlib.familier.PetManager;
 import onl.tesseract.tesseractlib.menu.pet.PetTypeSelection;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class FamilierCommand implements CommandExecutor {
     @Override
-    public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label,
-                             @Nonnull String[] args)
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
+                             @NotNull String[] args)
     {
         if (args.length == 0)
         {
@@ -36,22 +37,20 @@ public class FamilierCommand implements CommandExecutor {
                 {
                     if (args.length < 3)
                     {
-                        sender.sendMessage(ChatFormat.PET + ChatColor.RED
-                                                   + "La commande est /familier add <player> <familier_Name>");
+                        sender.sendMessage(ChatFormats.PET_ERROR.append(Component.text("La commande est /familier add <player> <familier_Name>")));
                     }
                     else
                     {
                         Player player = Bukkit.getPlayer(args[1]);
-                        if(player != null)
+                        if (player != null)
                             PetManager.ajouterFamilier(player, Pet.valueOf(args[2]), sender);
                         else
-                            sender.sendMessage(ChatFormat.PET + ChatColor.RED+ " Le joueur "+args[1]+" n'est pas en ligne");
+                            sender.sendMessage(ChatFormats.PET_ERROR.append(Component.text(" Le joueur " + args[1] + " n'est pas en ligne")));
                     }
                 }
                 else
                 {
-                    sender.sendMessage(
-                            ChatFormat.PET + ChatColor.RED + "Vous n'avez pas les droits d'utiliser cette commande");
+                    sender.sendMessage(ChatFormats.PET_ERROR.append(Component.text("Vous n'avez pas les droits d'utiliser cette commande")));
                 }
                 break;
             case "remove":
@@ -59,24 +58,24 @@ public class FamilierCommand implements CommandExecutor {
                 {
                     if (args.length < 3)
                     {
-                        sender.sendMessage(ChatFormat.PET + ChatColor.RED
-                                                   + "La commande est /familier remove <player> <familier_Name>");
+                        sender.sendMessage(ChatFormats.PET_ERROR.append(Component.text("La commande est /familier remove <player> <familier_Name>")));
                     }
                     else
                     {
                         Player player = Bukkit.getPlayer(args[1]);
-                        if(player!= null){
-                        PetManager.supprimerFamilier(player, Pet.valueOf(args[2]), sender);}
+                        if (player != null)
+                        {
+                            PetManager.supprimerFamilier(player, Pet.valueOf(args[2]), sender);
+                        }
                         else
                         {
-                            sender.sendMessage(ChatFormat.PET + ChatColor.RED + player.getDisplayName() + " n'est pas online ");
+                            sender.sendMessage(ChatFormats.PET_ERROR.append(Component.text(args[1] + " n'est pas online ")));
                         }
                     }
                 }
                 else
                 {
-                    sender.sendMessage(
-                            ChatFormat.PET + ChatColor.RED + "Vous n'avez pas les droits d'utiliser cette commande");
+                    sender.sendMessage(ChatFormats.PET_ERROR.append(Component.text("Vous n'avez pas les droits d'utiliser cette commande")));
                 }
                 break;
             case "list":
@@ -84,26 +83,23 @@ public class FamilierCommand implements CommandExecutor {
                 {
                     if (args.length < 3)
                     {
-                        sender.sendMessage(
-                                ChatFormat.PET + ChatColor.RED
-                                        + "La commande est /familier list <player> <Type|all>");
+                        return false;
                     }
                     else
                     {
                         Player player = Bukkit.getPlayer(args[1]);
-                        if(player != null)
+                        if (player != null)
                             PetManager.ListerFamilier(player, PetCategory.valueOf(args[2]), sender);
 
                         else
                         {
-                            sender.sendMessage(ChatFormat.PET + ChatColor.RED + args[1] + " n'est pas online ");
+                            sender.sendMessage(ChatFormats.PET_ERROR.append(Component.text(args[1] + " n'est pas online ")));
                         }
                     }
                 }
                 else
                 {
-                    sender.sendMessage(
-                            ChatFormat.PET + ChatColor.RED + "Vous n'avez pas les droits d'utiliser cette commande");
+                    sender.sendMessage(ChatFormats.PET_ERROR.append(Component.text("Vous n'avez pas les droits d'utiliser cette commande")));
                 }
                 break;
             default:
