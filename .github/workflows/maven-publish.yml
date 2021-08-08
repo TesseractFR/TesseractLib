@@ -1,0 +1,44 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
+
+name: Publish maven package to GitHub Packages
+
+on:
+  push:
+    branches: [master, sql]
+  release:
+    types: [created]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+        env:
+          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to GitHub Packages Apache Maven
+        run: mvn deploy -e -s ~/.m2/settings.xml
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          server-id: github
+          settings-path: ${{ github.workspace }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: tesseractLib
+          path: |
+            /home/runner/work/TesseractLib/TesseractLib/target/*.jar
+            !/home/runner/work/TesseractLib/TesseractLib/target/*sources.jar
+            !/home/runner/work/TesseractLib/TesseractLib/target/original*.jar
+
