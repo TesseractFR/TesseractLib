@@ -19,7 +19,6 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class Util {
     static public final String NEW_LINE = " {nl} ";
@@ -301,49 +300,6 @@ public class Util {
 
     static public double random(int min, int max) {
         return (Math.random() * (max - min)) + min;
-    }
-
-    static public double parseDenizenDouble(String raw)
-    {
-        if (! raw.contains("."))
-            return Integer.parseInt(raw);
-        return Double.parseDouble(raw.replaceAll("d@", "").replaceAll("E", "E+").replaceAll("s", ""));
-    }
-
-    static public UUID parseDernizenUUID(String raw)
-    {
-        return UUID.fromString(raw.replaceAll("p@", ""));
-    }
-
-    static public Location parseDenizenLocation(String raw)
-    {
-        raw = raw.replaceAll("l@", "");
-        String[] parts = raw.split(",");
-        if (parts.length != 4 && parts.length != 6)
-            throw new IllegalArgumentException("Wrong location format");
-
-        double x = parseDenizenDouble(parts[0]);
-        double y = parseDenizenDouble(parts[1]);
-        double z = parseDenizenDouble(parts[2]);
-        double yaw = parts.length == 6 ? parseDenizenDouble(parts[3]) : 0;
-        double pitch = parts.length == 6 ? parseDenizenDouble(parts[4]) : 0;
-        World world = parts.length == 6 ? Bukkit.getWorld(parts[5]) : Bukkit.getWorld(parts[3]);
-        return new Location(world, x, y, z, (float) yaw, (float) pitch);
-    }
-
-    static public List<Location> parseDenizenLocations(String raw)
-    {
-        List<Location> res = new ArrayList<>();
-        String[] parts = raw.split(",");
-        World world = Bukkit.getWorld(parts[0]);
-        for (int i = 3; i < parts.length; i += 3)
-        {
-            double x = parseDenizenDouble(parts[i - 2]);
-            double y = parseDenizenDouble(parts[i - 1]);
-            double z = parseDenizenDouble(parts[i]);
-            res.add(new Location(world, x, y, z));
-        }
-        return res;
     }
 
     /**
