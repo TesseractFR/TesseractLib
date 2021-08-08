@@ -24,20 +24,6 @@
          </repository>
      </distributionManagement>
          
-     <pluginRepositories>
-         <pluginRepository>
-             <releases>
-                 <updatePolicy>never</updatePolicy>
-             </releases>
-             <snapshots>
-                 <enabled>true</enabled>
-             </snapshots>
-             <id>github</id>
-             <name>GitHub Packages</name>
-             <url>https://maven.pkg.github.com/TesseractFR/TesseractLib</url>
-         </pluginRepository>
-     </pluginRepositories>
-
     <build>
         <plugins>
             <plugin>
