@@ -1,7 +1,7 @@
 package onl.tesseract.tesseractlib.familier;
 
 
-import onl.tesseract.tesseractlib.util.InventoryMenu;
+import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.inventory.ItemStack;
 
 public enum Pet {

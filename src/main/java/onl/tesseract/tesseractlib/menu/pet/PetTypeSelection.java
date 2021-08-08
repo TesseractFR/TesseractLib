@@ -6,7 +6,7 @@ import onl.tesseract.tesseractlib.familier.PetManager;
 import onl.tesseract.tesseractlib.menu.BoussoleMenu;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
-import onl.tesseract.tesseractlib.util.InventoryMenu;
+import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ public class PetTypeSelection extends InventoryMenu {
     @Override
     public void open(Player viewer)
     {
-        this.fill(Material.GRAY_STAINED_GLASS_PANE, " ", null);
+        this.fill(Material.GRAY_STAINED_GLASS_PANE, " ");
         PetCategory[] petCategories = PetCategory.values();
         for (int Index = 0; Index < petCategories.length; Index++)
         {
