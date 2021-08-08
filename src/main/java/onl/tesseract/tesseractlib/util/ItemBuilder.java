@@ -12,6 +12,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Builder class to build item, specifying its name, material, lore, ...
+ *
+ * @see ItemLoreBuilder
+ */
 public class ItemBuilder {
     protected ItemStack base;
     protected Material material;
@@ -22,8 +27,20 @@ public class ItemBuilder {
     protected int lineWidth;
     protected ItemFlag[] flags = ItemFlag.values();
 
-    public ItemBuilder(@NotNull final Material material, final Component name, final List<Component> lore, final boolean enchanted, final int quantity,
-                       final int lineWidth)
+    /**
+     * Default constructor. Instantiate a new builder by initializing all parameters.
+     *
+     * @param material Base material
+     * @param name Display name
+     * @param lore Lore
+     * @param enchanted If true, add a enchanted effect to the item, and add the flag {@link ItemFlag#HIDE_ENCHANTS}
+     * @param quantity Amount in the stack
+     * @param lineWidth Maximum line width in the lore
+     * @param flags List of flags
+     */
+    public ItemBuilder(@NotNull final Material material, final Component name, final List<Component> lore, final boolean enchanted,
+                       final int quantity,
+                       final int lineWidth, ItemFlag... flags)
     {
         this.material = material;
         this.name = name;
@@ -33,18 +50,61 @@ public class ItemBuilder {
         this.enchanted = enchanted;
         this.quantity = quantity;
         this.lineWidth = lineWidth;
+        this.flags = flags;
     }
 
+    /**
+     * Instantiate a new builder. The built item will have all values of flags in {@link ItemFlag}.
+     * Equivalent to {@code new ItemBuilder(material, name, lore, enchanted, quantity, lineWith, ItemFlags.values());}
+     *
+     * @param material Base material
+     * @param name Display name
+     * @param lore Lore
+     * @param enchanted If true, add a enchanted effect to the item, and add the flag {@link ItemFlag#HIDE_ENCHANTS}
+     * @param quantity Amount in the stack
+     * @param lineWidth Maximum line width in the lore
+     */
+    public ItemBuilder(@NotNull final Material material, final Component name, final List<Component> lore, final boolean enchanted,
+                       final int quantity,
+                       final int lineWidth)
+    {
+        this(material, name, lore, enchanted, quantity, lineWidth, ItemFlag.values());
+    }
+
+    /**
+     * Instantiate a new builder.
+     * Equivalent to {@code new ItemBuilder(material, name, lore, enchanted, 1, 35, ItemFlags.values());}
+     *
+     * @param material Base material
+     * @param name Display name
+     * @param lore Lore
+     * @param enchanted If true, add a enchanted effect to the item, and add the flag {@link ItemFlag#HIDE_ENCHANTS}
+     */
     public ItemBuilder(@NotNull final Material material, final Component name, final List<Component> lore, final boolean enchanted)
     {
         this(material, name, lore, enchanted, 1, 35);
     }
 
+    /**
+     * Instantiate a new builder.
+     * Equivalent to {@code new ItemBuilder(material, name, lore, false, 1, 35, ItemFlags.values());}
+     *
+     * @param material Base material
+     * @param name Display name
+     * @param lore Lore
+     */
     public ItemBuilder(@NotNull final Material material, final Component name, final List<Component> lore)
     {
         this(material, name, lore, false, 1, 35);
     }
 
+    /**
+     * Instantiate a new builder.
+     * Equivalent to {@code new ItemBuilder(material, name, null, false, 1, 35, ItemFlags.values());}
+     *
+     * @param material Base material
+     * @param name Display name
+     */
     public ItemBuilder(@NotNull final Material material, final Component name)
     {
         this(material, name, null, false, 1, 35);
@@ -55,12 +115,22 @@ public class ItemBuilder {
         this(material, null, null, false, 1, 35);
     }
 
+    /**
+     * Instantiate a new builder, based on existing item stack
+     *
+     * @param base Base item stack
+     */
     public ItemBuilder(final ItemStack base)
     {
         this.base = base;
         this.material = null;
     }
 
+    /**
+     * Build the item stack
+     *
+     * @return Built ItemStack
+     */
     @NotNull
     public ItemStack build()
     {
@@ -87,7 +157,7 @@ public class ItemBuilder {
         return flags;
     }
 
-    public ItemBuilder flags(final ItemFlag... flags)
+    public ItemBuilder flags(@NotNull final ItemFlag... flags)
     {
         this.flags = flags;
         return this;
@@ -117,6 +187,10 @@ public class ItemBuilder {
         return this;
     }
 
+    /**
+     * To put color or decoration in the name, prefer {@link ItemBuilder#name(Component)} or {@link ItemBuilder#name(String, TextColor,
+     * TextDecoration)}
+     */
     public ItemBuilder name(final String name)
     {
         this.name = Component.text(name).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
@@ -125,7 +199,8 @@ public class ItemBuilder {
 
     public ItemBuilder name(final String name, TextColor color)
     {
-        this.name = Component.text(name, color).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);;
+        this.name = Component.text(name, color).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+        ;
         return this;
     }
 
@@ -142,30 +217,48 @@ public class ItemBuilder {
         return lore;
     }
 
+    /**
+     * @see ItemLoreBuilder
+     */
     public ItemBuilder lore(final List<Component> lore)
     {
         this.lore = lore;
         return this;
     }
 
+    /**
+     * @see ItemLoreBuilder
+     */
     public ItemBuilder lore(final Component lore)
     {
         this.lore = new ItemLoreBuilder().append(lore).get();
         return this;
     }
 
+    /**
+     * @see ItemLoreBuilder
+     */
     public ItemBuilder lore(final String content, final TextColor color, final TextDecoration decoration)
     {
         this.lore = new ItemLoreBuilder().append(content, color, decoration).get();
         return this;
     }
 
+    /**
+     * @see ItemLoreBuilder
+     */
     public ItemBuilder lore(final String content, final TextColor color)
     {
         this.lore = new ItemLoreBuilder().append(content, color).get();
         return this;
     }
 
+    /**
+     * To put color or decoration in the lore, prefer {@link ItemBuilder#lore(String, TextColor, TextDecoration)} or other methods using {@link
+     * Component}
+     *
+     * @see ItemLoreBuilder
+     */
     public ItemBuilder lore(final String content)
     {
         this.lore = new ItemLoreBuilder().append(content).get();
