@@ -12,6 +12,7 @@ import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
+import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -134,18 +135,23 @@ public class Elytra extends Invocable {
     }
 
     static ItemStack createItem() {
-        ItemStack item = Util.buildItem(Material.ELYTRA, ChatColor.GOLD + "Flanc éthéré",
-                ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
-                        ChatColor.DARK_AQUA + "Vitesse : " + ChatColor.GOLD + "0" + Util.NEW_LINE +
-                        ChatColor.DARK_AQUA + "Protection : " + ChatColor.GOLD + "0", true);
-        return item;
+        return new ItemBuilder(Material.ELYTRA)
+                .name("Flanc éthéré", NamedTextColor.GOLD)
+                .lore(ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
+                              ChatColor.DARK_AQUA + "Vitesse : " + ChatColor.GOLD + "0" + Util.NEW_LINE +
+                              ChatColor.DARK_AQUA + "Protection : " + ChatColor.GOLD + "0")
+                .enchanted(true)
+                .build();
     }
 
     void setItem() {
-        this.item = Util.buildItem(Material.ELYTRA, ChatColor.GOLD + "Flanc éthéré",
-                ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
+        this.item = new ItemBuilder(Material.ELYTRA)
+                .name("Flanc éthéré", NamedTextColor.GOLD)
+                .lore(ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
                         ChatColor.DARK_AQUA + "Vitesse : " + ChatColor.GOLD + speedLevel + Util.NEW_LINE +
-                        ChatColor.DARK_AQUA + "Protection : " + ChatColor.GOLD + protectionLevel, true);
+                        ChatColor.DARK_AQUA + "Protection : " + ChatColor.GOLD + protectionLevel)
+                .enchanted(true)
+                .build();
         ItemMeta meta = item.getItemMeta();
         meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier("generic.armor", protectionLevel, AttributeModifier.Operation.ADD_NUMBER));
 
