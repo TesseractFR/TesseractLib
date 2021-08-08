@@ -1,12 +1,11 @@
 package onl.tesseract.tesseractlib.event;
 
-import onl.tesseract.tesseractlib.util.InventoryMenu;
+import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerMenuOpenEvent extends Event implements Cancellable {
     static private final HandlerList handlerList = new HandlerList();
@@ -51,7 +50,7 @@ public class PlayerMenuOpenEvent extends Event implements Cancellable {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public HandlerList getHandlers()
     {
         return handlerList;

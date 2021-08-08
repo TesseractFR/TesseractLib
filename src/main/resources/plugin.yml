@@ -2,7 +2,7 @@ name: TesseractLib
 version: ${project.version}
 main: onl.tesseract.tesseractlib.TesseractLib
 api-version: 1.16
-depend: [Multiverse-Core, Vault, LuckPerms]
+depend: [Multiverse-Core, Vault, LuckPerms, JElytra, PlaceholderAPI]
 
 commands:
   animation:
@@ -11,9 +11,10 @@ commands:
     description: Pour tester des animations
     permission: tesseract.staff
   equipment:
-    aliases: eq
+    aliases: [eq, equipement ]
     usage: "/equipement"
     description: Pour tester le menu équipements
+    permission: tesseract.equipment
   msg:
     aliases: [ tell, w ]
     usage: "/msg {pseudo} {message}"

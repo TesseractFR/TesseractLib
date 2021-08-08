@@ -1,10 +1,13 @@
 package onl.tesseract.tesseractlib.equipment.invocable;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.event.PlayerInvocableInvokeEvent;
 import onl.tesseract.tesseractlib.menu.EquipmentMenu;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -304,7 +307,8 @@ public abstract class Invocable implements Listener {
                     // If shift click, uninvoke it
                     if (event.isShiftClick()) {
                         uninvoke();
-                        equipment.getPlayer().sendMessage(ChatFormat.EQUIPMENT + "Équipement désinvoqué. Vous pouvez ré-invoquer un équipement via " + ChatColor.GOLD + "/equipement");
+                        equipment.getPlayer().sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Équipement désinvoqué. Vous pouvez ré-invoquer un équipement via "))
+                                                          .append(Component.text("/equipement", NamedTextColor.GOLD)));
                     }else if (slotType == EquipmentSlot.HAND) {
                         EquipmentMenu menu = new EquipmentMenu(finalThis.equipment.getPlayer());
                         menu.mainHandInvocationMenu(finalThis, finalThis.equipment.getPlayer().getBukkitPlayer());

@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import static org.bukkit.ChatColor.*;
 import static org.bukkit.ChatColor.DARK_AQUA;
 
+@Deprecated
 public class ChatFormat {
     static final public String EQUIPMENT = ChatColor.DARK_GRAY + "[" + ChatColor.GOLD + "Équipement" + ChatColor.DARK_GRAY +
             "]" + ChatColor.GRAY + " ";
@@ -23,4 +24,5 @@ public class ChatFormat {
     public static final String GROUP_ERROR = DARK_AQUA + "[" + BLUE + "Groupe" + DARK_AQUA + "] " + RED;
     public static final String GROUP_SUCCESS = DARK_AQUA + "[" + BLUE + "Groupe" + DARK_AQUA + "] " + GREEN;
     public static final String CHAT_GROUP = DARK_AQUA + "[" + BLUE + "Chat Groupe" + DARK_AQUA + "] ";
+    public static final String PET = ChatColor.GOLD + "[" + ChatColor.YELLOW + "Familier" + ChatColor.GOLD + "] ";
 }

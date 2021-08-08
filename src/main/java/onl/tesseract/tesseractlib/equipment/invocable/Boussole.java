@@ -1,10 +1,14 @@
 package onl.tesseract.tesseractlib.equipment.invocable;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.menu.BoussoleMenu;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
+import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -38,21 +42,18 @@ public class Boussole extends Invocable {
         String left = ChatColor.DARK_GRAY + "« " + ChatColor.GRAY;
         String right = ChatColor.DARK_GRAY + " »" + Util.NEW_LINE;
         String wave = ChatColor.DARK_GRAY + "~ " + ChatColor.DARK_AQUA;
-        return Util.buildItem(Material.COMPASS, ChatColor.BLUE + "Boussole des voeux", Util.NEW_LINE +
-                left + "Des possibilités incroyables !" + right +
-                wave + "F.I.A (Force d'Intervention Ailée) " + wave + Util.NEW_LINE +
-                Util.NEW_LINE +
-                left + "Un concentré de magie à l'état pur !" + right +
-                wave + "Parangon Transport Inc. " + wave + Util.NEW_LINE +
-                Util.NEW_LINE +
-                left + "À utiliser sans modération !" + right +
-                wave + "Flying Whales Corp. " + wave + Util.NEW_LINE +
-                Util.NEW_LINE +
-                left + "La boussole des voeux me donne tout ce que je veux !" + right +
-                wave + "Anonyme " + wave + Util.NEW_LINE +
-                Util.NEW_LINE +
-                ChatColor.DARK_GREEN + ChatColor.UNDERLINE + "Utilisation en main :" + ChatColor.RESET +
-                ChatColor.GREEN + " Clic gauche pour décoller avec les ailes.");
+        return new ItemBuilder(Material.COMPASS)
+                .name("Boussole des voeux", NamedTextColor.BLUE)
+                .lore(Util.NEW_LINE
+                              + left + "Des possibilités incroyables !" + right + wave + "F.I.A (Force d'Intervention Ailée) " + wave + Util.NEW_LINE
+                              + Util.NEW_LINE + left + "Un concentré de magie à l'état pur !" + right + wave + "Parangon Transport Inc. "
+                              + wave + Util.NEW_LINE + Util.NEW_LINE + left + "À utiliser sans modération !" + right + wave
+                              + "Flying Whales Corp. " + wave + Util.NEW_LINE
+                              + Util.NEW_LINE + left + "La boussole des voeux me donne tout ce que je veux !" + right + wave
+                              + "Anonyme " + wave + Util.NEW_LINE
+                              + Util.NEW_LINE + ChatColor.DARK_GREEN + ChatColor.UNDERLINE + "Utilisation en main :" + ChatColor.RESET
+                              + ChatColor.GREEN + " Clic gauche pour décoller avec les ailes.")
+                .build();
     }
 
     @Override
@@ -79,7 +80,7 @@ public class Boussole extends Invocable {
                 if (event.getPlayer().isGliding() && event.getPlayer().getLocation().getBlock().getType() != Material.WATER
                         || (propulsionTask != null && !propulsionTask.isCancelled())) return;
                 Elytra el = (Elytra) player.getEquipment().get(EquipmentSlot.CHEST);
-                player.sendMessage(ChatFormat.EQUIPMENT + "Décolage dans 3 secondes... Regardez en l'air !");
+                player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage dans 3 secondes... Regardez en l'air !")));
                 propulsionTask = new BukkitRunnable() {
                     @Override
                     public void run()
@@ -87,11 +88,11 @@ public class Boussole extends Invocable {
                         if (! player.getOfflinePlayer().isOnline()) {
                         }
                         else if (! el.isInvoked()) {
-                            player.sendMessage(ChatFormat.EQUIPMENT_ERROR + "Décollage annulé (ailes désinvoquées).");
+                            player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage annulé (ailes désinvoquées).")));
                             propulsionTask = null;
                         }
                         else if (! player.getBukkitPlayer().getInventory().getItemInMainHand().equals(item)) {
-                            player.sendMessage(ChatFormat.EQUIPMENT_ERROR + "Décollage annulé (boussole pas en main).");
+                            player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage annulé (boussole pas en main).")));
                             propulsionTask = null;
                         }
                         else {
@@ -110,7 +111,7 @@ public class Boussole extends Invocable {
                 }.runTaskLater(TesseractLib.instance, 20*3);
             }
             else
-                player.sendMessage(ChatFormat.EQUIPMENT_ERROR + "Vous devez être équipé de vos ailes pour décoller avec la boussole.");
+                player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Vous devez être équipé de vos ailes pour décoller avec la boussole.")));
         }
         else
             menu.open(equipment.getPlayer().getBukkitPlayer());

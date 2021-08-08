@@ -1,9 +1,10 @@
 package onl.tesseract.tesseractlib.command;
 
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
-import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -11,8 +12,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class MsgCommand implements CommandExecutor {
     static Map<CommandSender, CommandSender> messages = new HashMap<>();
 
     @Override
-    public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args)
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
     {
         if (args.length < 2)
             return false;
@@ -58,11 +59,10 @@ public class MsgCommand implements CommandExecutor {
         messages.put(receiver, sender);
 
         // Send the message to the receiver
-        receiver.sendMessage(new ComponentBuilder(ChatColor.GOLD + "" + ChatColor.ITALIC + "Reçu de " + ChatColor.RED + sender.getName() + " » ")
-                .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName() + " "))
-                .append(ChatColor.AQUA + "" + ChatColor.ITALIC + message)
-                .create()
-        );
+        receiver.sendMessage(Component.text("Reçu de ", NamedTextColor.GOLD, TextDecoration.ITALIC)
+                             .append(Component.text(sender.getName() + " » ", NamedTextColor.RED))
+                             .clickEvent(ClickEvent.suggestCommand("/msg " + sender.getName() + " "))
+                             .append(Component.text(message, NamedTextColor.AQUA, TextDecoration.ITALIC)));
         if (doSound)
         {
             Player player = (Player)receiver;
@@ -70,20 +70,20 @@ public class MsgCommand implements CommandExecutor {
         }
 
         // Send feedback
-        sender.sendMessage(new ComponentBuilder(ChatColor.GOLD + "" + ChatColor.ITALIC + "Envoyé à " + ChatColor.RED + receiver.getName() + " » ")
-                .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + receiver.getName() + " "))
-                .append(ChatColor.GRAY + "" + ChatColor.ITALIC + message)
-                .create()
-        );
+        receiver.sendMessage(Component.text("Envoyé à ", NamedTextColor.GOLD, TextDecoration.ITALIC)
+                                      .append(Component.text(sender.getName() + " » ", NamedTextColor.RED))
+                                      .clickEvent(ClickEvent.suggestCommand("/msg " + sender.getName() + " "))
+                                      .append(Component.text(message, NamedTextColor.GRAY, TextDecoration.ITALIC)));
 
         // Send to social spies
         SocialSpy.spies.forEach(spy -> {
             if (spy.isOnline() && !spy.getBukkitPlayer().equals(sender) && ! spy.getBukkitPlayer().equals(receiver))
             {
-                spy.sendMessage(new ComponentBuilder(ChatColor.GRAY + "" + ChatColor.ITALIC + "Message de " + ChatColor.RED + sender.getName() + ChatColor.GRAY + ChatColor.ITALIC + " envoyé à " + ChatColor.RED + receiver.getName() + " » ")
-                        .append(ChatColor.GRAY + "" + ChatColor.ITALIC + message)
-                        .create()
-                );
+                spy.sendMessage(Component.text("Message de ", NamedTextColor.GRAY, TextDecoration.ITALIC)
+                                         .append(Component.text(sender.getName(), NamedTextColor.RED))
+                                         .append(Component.text(" envoyé à ", NamedTextColor.GRAY, TextDecoration.ITALIC))
+                                         .append(Component.text(receiver.getName() + " » ", NamedTextColor.RED))
+                                         .append(Component.text(message, NamedTextColor.GRAY, TextDecoration.ITALIC)));
             }
         });
     }

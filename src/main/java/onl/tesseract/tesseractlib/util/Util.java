@@ -1,10 +1,11 @@
 package onl.tesseract.tesseractlib.util;
 
+import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.player.TPlayer;
+import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -19,8 +20,6 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class Util {
     static public final String NEW_LINE = " {nl} ";
@@ -56,7 +55,9 @@ public class Util {
      * @param message Original string
      * @param width Size of substrings
      * @return List of substrings
+     * @deprecated In favor of {@link ItemLoreBuilder}
      */
+    @Deprecated
     static public List<String> splitByLines(String message, short width)
     {
         List<String> lines = new ArrayList<>();
@@ -102,17 +103,29 @@ public class Util {
      * @param name display name to apply to the item
      * @param lore Lore to apply to the item. It will be trimmed by 30
      * @return an itemstack
+     * @deprecated In favor of {@link ItemBuilder}
      */
+    @Deprecated
     static public ItemStack buildItem(Material material, String name, String lore) {
         ItemStack item = new ItemStack(material);
         return buildItem(item, name, lore);
     }
 
+    /**
+     *
+     * @deprecated In favor of {@link ItemBuilder}
+     */
+    @Deprecated
     static public ItemStack buildItem(Material material, String name, String lore, int lineWidth, boolean enchant) {
         ItemStack item = new ItemStack(material);
         return buildItem(item, name, lore, lineWidth, enchant);
     }
 
+    /**
+     *
+     * @deprecated In favor of {@link ItemBuilder}
+     */
+    @Deprecated
     static public ItemStack buildItem(Material material, String name, String lore, boolean enchant) {
         ItemStack item = new ItemStack(material);
         return buildItem(item, name, lore, enchant);
@@ -124,21 +137,33 @@ public class Util {
      * @param name display name to apply to the item
      * @param lore Lore to apply to the item. It will be trimmed by 30
      * @return returns the same itemstack.
+     * @deprecated In favor of {@link ItemBuilder}
      */
+    @Deprecated
     static public ItemStack buildItem(ItemStack item, String name, String lore) {
         return buildItem(item, name, lore, false);
     }
 
+    /**
+     *
+     * @deprecated In favor of {@link ItemBuilder}
+     */
+    @Deprecated
     static public ItemStack buildItem(ItemStack item, String name, String lore, boolean enchant) {
         return buildItem(item, name, lore, 35, enchant);
     }
 
+    /**
+     *
+     * @deprecated In favor of {@link ItemBuilder}
+     */
+    @Deprecated
     static public ItemStack buildItem(ItemStack item, String name, String lore, int lineWidth, boolean enchant) {
         ItemMeta meta = item.getItemMeta();
         if (name != null)
-            meta.setDisplayName(name);
+            meta.displayName(Component.text(name));
         if (lore != null)
-            meta.setLore(splitByLines(lore, (short)lineWidth));
+            meta.lore(new ItemLoreBuilder(lineWidth).append(lore).get());
         item.setItemMeta(meta);
         if (enchant) {
             item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
@@ -148,6 +173,7 @@ public class Util {
         return item;
     }
 
+    @Deprecated
     static public String center(String title) {
         int length = title.replaceAll("§.", "").length();
         int spaceLength = (41 - length) / 2;
@@ -268,56 +294,13 @@ public class Util {
 
         if (item.equals(inv.getItemInOffHand()))
             return -1;
-        if(item.getType().equals(item2.getType()) && item.getLore().equals(item2.getLore()) && item.getItemFlags().equals(item2.getItemFlags()) )
+        if(item.getType().equals(item2.getType()) && item.lore().equals(item2.lore()) && item.getItemFlags().equals(item2.getItemFlags()) )
             return -1;
         return -2;
     }
 
     static public double random(int min, int max) {
         return (Math.random() * (max - min)) + min;
-    }
-
-    static public double parseDenizenDouble(String raw)
-    {
-        if (! raw.contains("."))
-            return Integer.parseInt(raw);
-        return Double.parseDouble(raw.replaceAll("d@", "").replaceAll("E", "E+").replaceAll("s", ""));
-    }
-
-    static public UUID parseDernizenUUID(String raw)
-    {
-        return UUID.fromString(raw.replaceAll("p@", ""));
-    }
-
-    static public Location parseDenizenLocation(String raw)
-    {
-        raw = raw.replaceAll("l@", "");
-        String[] parts = raw.split(",");
-        if (parts.length != 4 && parts.length != 6)
-            throw new IllegalArgumentException("Wrong location format");
-
-        double x = parseDenizenDouble(parts[0]);
-        double y = parseDenizenDouble(parts[1]);
-        double z = parseDenizenDouble(parts[2]);
-        double yaw = parts.length == 6 ? parseDenizenDouble(parts[3]) : 0;
-        double pitch = parts.length == 6 ? parseDenizenDouble(parts[4]) : 0;
-        World world = parts.length == 6 ? Bukkit.getWorld(parts[5]) : Bukkit.getWorld(parts[3]);
-        return new Location(world, x, y, z, (float) yaw, (float) pitch);
-    }
-
-    static public List<Location> parseDenizenLocations(String raw)
-    {
-        List<Location> res = new ArrayList<>();
-        String[] parts = raw.split(",");
-        World world = Bukkit.getWorld(parts[0]);
-        for (int i = 3; i < parts.length; i += 3)
-        {
-            double x = parseDenizenDouble(parts[i - 2]);
-            double y = parseDenizenDouble(parts[i - 1]);
-            double z = parseDenizenDouble(parts[i]);
-            res.add(new Location(world, x, y, z));
-        }
-        return res;
     }
 
     /**

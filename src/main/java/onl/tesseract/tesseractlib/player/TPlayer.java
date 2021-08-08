@@ -2,11 +2,23 @@ package onl.tesseract.tesseractlib.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
+import onl.tesseract.tesseractlib.achievement.Achievement;
+import onl.tesseract.tesseractlib.achievement.Title;
+import onl.tesseract.tesseractlib.bddfacade.PetFacade;
+import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
 import onl.tesseract.tesseractlib.equipment.Equipment;
+import onl.tesseract.tesseractlib.familier.Pet;
 import onl.tesseract.tesseractlib.util.ChatFormat;
-import org.bukkit.*;
+import onl.tesseract.tesseractlib.util.ChatFormats;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,63 +36,72 @@ import org.bukkit.util.Consumer;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 
 public class TPlayer implements Listener {
+    public enum Gender {
+        MALE("Masculin"),
+        FEMALE("Féminin"),
+        OTHER("Non renseigné");
+        private final String string;
+
+        Gender(String string)
+        {
+            this.string = string;
+        }
+
+        public String getName()
+        {
+            return this.string;
+        }
+    }
+
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
     /**
      * Maps every Player who has played before with a TPlayer instance.
      */
     static public HashMap<UUID, TPlayer> playerMap = new HashMap<>();
-
-
-    public enum Gender{
-        MALE("Masculin"),FEMALE("Féminin"),OTHER("Non renseigné");
-        private final String string ;
-        Gender(String string) {
-            this.string = string ;
-        }
-        public String getName() {
-            return  this.string ;
-        }
-    }
-
+    public String skinValue;
+    public String skinSignature;
     protected OfflinePlayer player;
     protected Equipment equipment = null;
-    protected Gender gender = Gender.OTHER;
-
     /**
      * Function to call the next time this player chats. The message is passed as a parameter.
      */
-    protected  Consumer<String> chatEntryCallback;
-    protected  BukkitRunnable chatEntryRunnable;
-    protected  Consumer<String[]> commandEntryCallback;
-    protected  BukkitRunnable commandEntryRunnable;
-
+    protected Consumer<String> chatEntryCallback;
+    protected Consumer<Component> chatEntryComponentCallback;
+    protected BukkitRunnable chatEntryRunnable;
+    protected Consumer<String[]> commandEntryCallback;
+    // Mailer mailer = new Mailer(this);
+    protected BukkitRunnable commandEntryRunnable;
     protected String dateSinceLastConnection = null;
     protected String dateFirstConnection = new Date().toString();
-    public Date lastUpdateHF = null;
-    // Mailer mailer = new Mailer(this);
-
     protected boolean playedToday = false;
-
     protected boolean adminMode = false;
     protected Inventory adminInventory;
     protected Inventory playerInventory;
-
-    public String skinValue;
-    public String skinSignature;
     protected PlayerProfile playerProfile;
+    protected Gender gender;
+    protected PlayerFacade playerFacade;
+    protected List<Achievement> achievements = new ArrayList<>();
+    private UUID uuid;
+    private List<Pet> pets = null;
 
     /**
      * Loads a player
+     *
      * @param player OfflinePlayer to load
      */
-    public TPlayer(OfflinePlayer player) {
+    public TPlayer(OfflinePlayer player)
+    {
         this.player = player;
         this.adminInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
         this.playerInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
+        checkFirstJoin(player.getUniqueId());
     }
 
     public TPlayer(OfflinePlayer player, Inventory adminInventory, Inventory playerInventory)
@@ -88,6 +109,11 @@ public class TPlayer implements Listener {
         this.player = player;
         this.adminInventory = adminInventory;
         this.playerInventory = playerInventory;
+    }
+
+    static public TPlayer get(Player player)
+    {
+        return TPlayer.playerMap.get(player.getUniqueId());
     }
 
     /**
@@ -99,7 +125,8 @@ public class TPlayer implements Listener {
         this.playerProfile = Bukkit.createProfile(player.getUniqueId());
         new BukkitRunnable() {
             @Override
-            public void run() {
+            public void run()
+            {
                 playerProfile.complete();
                 for (ProfileProperty profileProperty : playerProfile.getProperties())
                 {
@@ -115,9 +142,11 @@ public class TPlayer implements Listener {
 
     /**
      * Gets the player profile stored at server start by TPlayer#loadPlayerProfile
+     *
      * @return the player profile
      */
-    public PlayerProfile getPlayerProfile() {
+    public PlayerProfile getPlayerProfile()
+    {
         return playerProfile;
     }
 
@@ -126,18 +155,38 @@ public class TPlayer implements Listener {
         // ...
     }
 
-    public void onJoin(OfflinePlayer player) {
+    public void onJoin(OfflinePlayer player)
+    {
         this.player = player;
-
+        checkFirstJoin(player.getUniqueId());
         this.loadOnConnection();
 
+
         // First connection of the day
-        if (! hasPlayedToday())
-            setPlayedToday(true);
+        if (!hasPlayedToday())
+        {
+            this.dailyConnection();
+
+        }
+
+    }
+
+    protected void checkFirstJoin(UUID uniqueId)
+    {
+        if (!PlayerFacade.exist(uniqueId))
+        {
+            addtodatabase(uniqueId);
+        }
+    }
+
+    private void addtodatabase(UUID uniqueId)
+    {
+        PlayerFacade.addtodatabase(uniqueId);
     }
 
     @EventHandler
-    public void onLeave(PlayerQuitEvent event) {
+    public void onLeave(PlayerQuitEvent event)
+    {
         if (event.getPlayer().equals(getOfflinePlayer()))
         {
             this.save();
@@ -150,17 +199,17 @@ public class TPlayer implements Listener {
     /**
      * Saves the player
      */
-    public void save() {
+    public void save()
+    {
         if (equipment != null)
             this.equipment.save();
-
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         yaml.set("name", getOfflinePlayer().getName());
-        yaml.set("First_co",dateFirstConnection);
-        yaml.set("gender",gender.toString());
+        yaml.set("First_co", dateFirstConnection);
         yaml.set("hasPlayedToday", playedToday);
-        if (getOfflinePlayer().isOnline()) {
+        if (getOfflinePlayer().isOnline())
+        {
             SimpleDateFormat sdf = new SimpleDateFormat("E, dd MMM yyyy");
             String date = sdf.format(new Date());
             yaml.set("dateSinceLastConnection", date);
@@ -185,9 +234,12 @@ public class TPlayer implements Listener {
                 yaml.set("adminInventory", adminInventory.getContents());
         }
 
-        try {
+        try
+        {
             yaml.save(file);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
@@ -205,7 +257,8 @@ public class TPlayer implements Listener {
      */
     public void loadOnConnection()
     {
-        if (getOfflinePlayer().isOnline()){
+        if (getOfflinePlayer().isOnline())
+        {
             this.equipment = Equipment.load(this);
             //Tesseract.permissions.playerAddGroup(getOfflinePlayer().getPlayer(), rank.getPermGroup());
 
@@ -220,7 +273,41 @@ public class TPlayer implements Listener {
                 getPlayerInventory().setContents(loadInventory(yaml, "playerInventory"));
                 getAdminInventory().setContents(loadInventory(yaml, "adminInventory"));
             }
+
+            loadPets();
         }
+    }
+
+    private void loadPets()
+    {
+        pets = PetFacade.getPets(getUUID());
+    }
+    public List<Pet> getPets()
+    {
+        if(pets == null)loadPets();
+        return pets;
+    }
+
+    public void addPet(Pet pet)
+    {
+        pets.add(pet);
+        PetFacade.addPet(getUUID(), pet);
+    }
+
+    public boolean hasPet(Pet p)
+    {
+        return getPets().contains(p);
+    }
+
+    public void removePet(Pet pet)
+    {
+        pets.remove(pet);
+        PetFacade.removePet(getUUID(), pet);
+    }
+
+    public UUID getUUID()
+    {
+        return getOfflinePlayer().getUniqueId();
     }
 
     protected ItemStack[] loadInventory(YamlConfiguration yaml, String inv)
@@ -243,91 +330,180 @@ public class TPlayer implements Listener {
     /**
      * Loads player's general information that does not need the player to be online
      */
-    public void load() {
+    public void load()
+    {
+        playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
+        gender = playerFacade.getGender();
+        achievements.clear();
+        achievements = playerFacade.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
-        if (file.exists()) {
+        if (file.exists())
+        {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 
             this.dateSinceLastConnection = yaml.getString("dateSinceLastConnection");
-            dateFirstConnection = yaml.getString("First_co");
+            dateFirstConnection = Date.from(Instant.ofEpochMilli(getOfflinePlayer().getFirstPlayed())).toString();
             if (yaml.contains("hasPlayedToday"))
                 playedToday = yaml.getBoolean("hasPlayedToday");
-            if (yaml.contains("gender"))
-                gender = Gender.valueOf(yaml.getString("gender"));
+        }
+    }
+
+    public void load(ResultSet resultSet)
+    {
+        playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
+        try
+        {
+            gender = Gender.valueOf(resultSet.getString("genre"));
+        }
+        catch (SQLException throwables)
+        {
+            gender = Gender.OTHER;
+        }
+        achievements.clear();
+        achievements = playerFacade.getAllAchievements();
+        File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
+        if (file.exists())
+        {
+            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+
+            this.dateSinceLastConnection = yaml.getString("dateSinceLastConnection");
+            dateFirstConnection = Date.from(Instant.ofEpochMilli(getOfflinePlayer().getFirstPlayed())).toString();
+            if (yaml.contains("hasPlayedToday"))
+                playedToday = yaml.getBoolean("hasPlayedToday");
         }
     }
 
     /**
      * Checks if the player is online
+     *
      * @return True if online
      */
-    public boolean isOnline() {
+    public boolean isOnline()
+    {
         return getOfflinePlayer().isOnline();
     }
 
     /**
      * Sends a message to the bukkit player if he is online.
+     *
      * @param message Message to send
      */
-    public void sendMessage(String message) {
+    public void sendMessage(String message)
+    {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
 
-    public void sendMessage(String[] message) {
+    public void sendMessage(String[] message)
+    {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
 
-    public void sendMessage(BaseComponent message) {
+    @Deprecated
+    public void sendMessage(BaseComponent message)
+    {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
 
-    public void sendMessage(BaseComponent... message) {
+    @Deprecated
+    public void sendMessage(BaseComponent... message)
+    {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
 
-    public String getDateFirstConnection(){
+    public void sendMessage(Component message)
+    {
+        if (isOnline())
+            getBukkitPlayer().sendMessage(message);
+    }
+
+    public void sendMessage(Component... message)
+    {
+        if (isOnline())
+        {
+            for (var component : message)
+                getBukkitPlayer().sendMessage(component);
+        }
+    }
+
+    public String getDateFirstConnection()
+    {
         return dateFirstConnection;
     }
 
     /**
      * Get the next player's input in the chat. Expires within 30 seconds.
+     *
      * @param message Message to prompt to the player.
      * @param function Callback. The player's message is given as parameter.
      */
-    public void getChatEntry(String message, Consumer<String> function) {
+    @Deprecated
+    public void getChatEntry(String message, Consumer<String> function)
+    {
         getChatEntry(message, 30, function);
     }
 
-    public void getChatEntry(String message, int seconds, Consumer<String> function) {
+    @Deprecated
+    public void getChatEntry(String message, int seconds, Consumer<String> function)
+    {
         getChatEntry(ChatFormat.CHAT, message, seconds, function);
     }
 
-    public void getChatEntry(String format, String message, Consumer<String> function) {
+    @Deprecated
+    public void getChatEntry(String format, String message, Consumer<String> function)
+    {
         getChatEntry(format, message, 30, function);
     }
 
-    public void getChatEntry(String format, String message, int seconds, Consumer<String> function) {
-        if (! player.isOnline()) return;
+    @Deprecated
+    public void getChatEntry(String format, String message, int seconds, Consumer<String> function)
+    {
+        if (!player.isOnline())
+            return;
         player.getPlayer().sendMessage(format + message);
         this.chatEntryCallback = function;
         this.chatEntryRunnable = new BukkitRunnable() {
             @Override
-            public void run() {
+            public void run()
+            {
                 chatEntryCallback = null;
             }
         };
         chatEntryRunnable.runTaskLater(TesseractLib.instance, 20 * seconds);
     }
 
-    @EventHandler
-    public void onChat(AsyncPlayerChatEvent event) {
-        if (! event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
+    public void chatEntry(Component message, Consumer<Component> function)
+    {
+        chatEntry(message, 30, function);
+    }
+
+    public void chatEntry(Component message, int seconds, Consumer<Component> function)
+    {
+        if (!player.isOnline())
             return;
-        if (this.chatEntryCallback != null) {
+        Objects.requireNonNull(player.getPlayer()).sendMessage(message);
+        this.chatEntryComponentCallback = function;
+        this.chatEntryRunnable = new BukkitRunnable() {
+            @Override
+            public void run()
+            {
+                chatEntryComponentCallback = null;
+            }
+        };
+        chatEntryRunnable.runTaskLater(TesseractLib.instance, 20L * seconds);
+    }
+
+    @EventHandler
+    @Deprecated
+    public void onChat(AsyncPlayerChatEvent event)
+    {
+        if (!event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
+            return;
+        if (this.chatEntryCallback != null)
+        {
             // Make a sync call
             new BukkitRunnable() {
                 @Override
@@ -344,12 +520,38 @@ public class TPlayer implements Listener {
         }
     }
 
+    @EventHandler
+    public void onChat(AsyncChatEvent event)
+    {
+        if (!event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
+            return;
+        if (this.chatEntryComponentCallback != null)
+        {
+            // Make a sync call
+            new BukkitRunnable() {
+                @Override
+                public void run()
+                {
+                    if (chatEntryComponentCallback == null)
+                        return;
+                    chatEntryComponentCallback.accept(event.message());
+                    chatEntryComponentCallback = null;
+                }
+            }.runTask(TesseractLib.instance);
+            chatEntryRunnable.cancel();
+            event.setCancelled(true);
+        }
+    }
+
     /**
      * Gets the arguments of the next /command of this player.
+     *
      * @param function Callback to call. Passes the args as parameter
      */
-    public void getChatCommand(Consumer<String[]> function) {
-        if (! player.isOnline()) return;
+    public void getChatCommand(Consumer<String[]> function)
+    {
+        if (!player.isOnline())
+            return;
         commandEntryCallback = function;
         commandEntryRunnable = new BukkitRunnable() {
             @Override
@@ -358,19 +560,23 @@ public class TPlayer implements Listener {
                 commandEntryCallback = null;
             }
         };
-        commandEntryRunnable.runTaskLater(TesseractLib.instance, 20*60*5);
+        commandEntryRunnable.runTaskLater(TesseractLib.instance, 20 * 60 * 5);
     }
 
     @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent event) {
-        if (! event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId())) return;
+    public void onCommand(PlayerCommandPreprocessEvent event)
+    {
+        if (!event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
+            return;
         String[] parts = event.getMessage().split(" ");
-        if (commandEntryCallback != null && parts[0].equals("/command") && parts.length > 1) {
+        if (commandEntryCallback != null && parts[0].equals("/command") && parts.length > 1)
+        {
             String[] args = new String[parts.length - 1];
             System.arraycopy(parts, 1, args, 0, parts.length - 1);
             commandEntryCallback.accept(args);
             commandEntryRunnable.cancel();
-            if(!parts[1].equals("shopswapsign")){
+            if (!parts[1].equals("shopswapsign"))
+            {
                 commandEntryCallback = null;
             }
             event.setCancelled(true);
@@ -386,7 +592,8 @@ public class TPlayer implements Listener {
          */
     }
 
-    public OfflinePlayer getOfflinePlayer() {
+    public OfflinePlayer getOfflinePlayer()
+    {
         return player;
     }
 
@@ -407,6 +614,7 @@ public class TPlayer implements Listener {
 
     public boolean hasPlayedToday()
     {
+        System.out.println(getBukkitPlayer().getLastSeen());
         return playedToday;
     }
 
@@ -437,6 +645,9 @@ public class TPlayer implements Listener {
         this.adminInventory = adminInventory;
     }
 
+    ////////////////////
+    // Static methods //
+
     public Inventory getPlayerInventory()
     {
         return playerInventory;
@@ -448,26 +659,77 @@ public class TPlayer implements Listener {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof TPlayer)) return false;
+    public boolean equals(Object other)
+    {
+        if (!(other instanceof TPlayer))
+            return false;
         return getOfflinePlayer().getUniqueId().equals(((TPlayer) other).getOfflinePlayer().getUniqueId());
     }
 
-    ////////////////////
-    // Static methods //
-
-    static public TPlayer get(Player player) {
-        return TPlayer.playerMap.get(player.getUniqueId());
+    public Gender getGender()
+    {
+        return gender;
     }
 
     public void setGender(Gender gender)
     {
         this.gender = gender;
+        playerFacade.setGender(gender);
     }
 
-    public Gender getGender()
+    public boolean hasAchievement(Achievement achievement)
     {
-        if (gender == null) setGender(Gender.OTHER);
-        return gender;
+        return achievements.contains(achievement);
+    }
+
+    public void addAchievements(Achievement achievement)
+    {
+        addAchievements(achievement, true);
+    }
+
+    public void addAchievements(Achievement achievement, boolean foreveryone)
+    {
+        if (achievements.contains(achievement))
+            return;
+        achievements.add(achievement);
+        playerFacade.addAchievements(achievement);
+        sendMessage(ChatFormats.HAUT_FAIT.append(Component.text("Vous avez obtenu le haut-fait ")));
+        sendMessage(Component.empty()
+                             .append(Component.text("      « ").color(NamedTextColor.AQUA))
+                             .append(Component.text(achievement.getDisplayName()).color(NamedTextColor.AQUA))
+                             .hoverEvent(HoverEvent.showText(Component.text(achievement.getCondition()).color(NamedTextColor.AQUA)))
+                             .append(Component.text(" » ").color(NamedTextColor.AQUA)));
+        if (foreveryone)
+        {
+            for (Player p : Bukkit.getOnlinePlayers())
+            {
+                if (p.equals(this.getBukkitPlayer()))
+                    continue;
+                p.sendMessage(ChatFormats.HAUT_FAIT
+                                      .append(Component.text(getOfflinePlayer().getName() + " a obtenu le haut-fait ")));
+                p.sendMessage(Component.empty()
+                                       .append(Component.text("      « ").color(NamedTextColor.AQUA))
+                                       .append(Component.text(achievement.getDisplayName()).color(NamedTextColor.AQUA))
+                                       .hoverEvent(HoverEvent.showText(Component.text(achievement.getCondition()).color(NamedTextColor.AQUA)))
+                                       .append(Component.text(" » ").color(NamedTextColor.AQUA)));
+            }
+        }
+
+    }
+
+    public boolean hasAllAchievement(List<Achievement> list)
+    {
+        for (Achievement a : list)
+        {
+            if (!hasAchievement(a))
+                return false;
+        }
+        return true;
+    }
+
+    public void removeAchievement(Achievement achievement)
+    {
+        achievements.remove(achievement);
+        playerFacade.removeAchievement(achievement);
     }
 }

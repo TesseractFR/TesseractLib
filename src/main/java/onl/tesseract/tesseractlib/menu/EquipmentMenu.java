@@ -1,11 +1,13 @@
 package onl.tesseract.tesseractlib.menu;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.equipment.invocable.Boussole;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.ChatFormat;
-import onl.tesseract.tesseractlib.util.InventoryMenu;
-import onl.tesseract.tesseractlib.util.Util;
+import onl.tesseract.tesseractlib.util.*;
+import onl.tesseract.tesseractlib.util.menu.Button;
+import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -43,23 +45,26 @@ public class EquipmentMenu extends InventoryMenu {
     public void open(Player player) {
         if (! this.player.getOfflinePlayer().isOnline())
             return;
-        this.fill(Material.GRAY_STAINED_GLASS_PANE, ChatColor.DARK_GRAY + "*", null);
+        this.fill(Material.GRAY_STAINED_GLASS_PANE, ChatColor.DARK_GRAY + "*");
         this.addQuitButton();
         if (previous != null)
             this.addBackButton();
 
         this.putInvocationPower(player);
 
-        this.addButton(49, Material.NAME_TAG, ChatColor.GOLD + "Désinvoquer tout", null, event -> {
+        addButton(49, new Button(new ItemBuilder(Material.NAME_TAG)
+                                         .name("Tout désinvoquer", NamedTextColor.GOLD).build()
+                , event -> {
             this.player.getEquipment().uninvokeAll();
             this.open(player);
-        });
+        }));
 
         ItemStack chestplate;
         if (this.player.getEquipment().chestplate != null)
             chestplate = this.player.getEquipment().chestplate.getItem();
         else
-            chestplate = Util.buildItem(Material.STRUCTURE_VOID, ChatColor.DARK_AQUA + "Emplacement de plastron", null);
+            chestplate = new ItemBuilder(Material.STRUCTURE_VOID)
+                    .name("Emplacement de plastron", NamedTextColor.DARK_AQUA).build();
         this.addButton(22, chestplate, event -> {
             this.subMenu(this.player.getEquipment().unblockedChestplate, ChatColor.BLUE + "Emplacement de plastron", player);
         });
@@ -68,7 +73,8 @@ public class EquipmentMenu extends InventoryMenu {
         if (this.player.getEquipment().helmet != null)
             helmet = this.player.getEquipment().helmet.getItem();
         else
-            helmet = Util.buildItem(Material.STRUCTURE_VOID, ChatColor.DARK_AQUA + "Emplacement de casque", null);
+            helmet = new ItemBuilder(Material.STRUCTURE_VOID)
+                    .name("Emplacement de casque", NamedTextColor.DARK_AQUA).build();
         this.addButton(13, helmet, event -> {
             this.subMenu(this.player.getEquipment().unblockedHelmet, ChatColor.BLUE + "Emplacement de casque", player);
         });
@@ -77,7 +83,8 @@ public class EquipmentMenu extends InventoryMenu {
         if (this.player.getEquipment().leggings != null)
             leggings = this.player.getEquipment().leggings.getItem();
         else
-            leggings = Util.buildItem(Material.STRUCTURE_VOID, ChatColor.DARK_AQUA + "Emplacement de jambières", null);
+            leggings = new ItemBuilder(Material.STRUCTURE_VOID)
+                    .name("Emplacement de jambières", NamedTextColor.DARK_AQUA).build();
         this.addButton(31, leggings, event -> {
             this.subMenu(this.player.getEquipment().unblockedLeggings, ChatColor.BLUE + "Emplacement de jambières", player);
         });
@@ -86,7 +93,8 @@ public class EquipmentMenu extends InventoryMenu {
         if (this.player.getEquipment().boots != null)
             boots = this.player.getEquipment().boots.getItem();
         else
-            boots = Util.buildItem(Material.STRUCTURE_VOID, ChatColor.DARK_AQUA + "Emplacement de bottes", null);
+            boots = new ItemBuilder(Material.STRUCTURE_VOID)
+                    .name("Emplacement de bottes", NamedTextColor.DARK_AQUA).build();
         this.addButton(40, boots, event -> {
             this.subMenu(this.player.getEquipment().unblockedBoots, ChatColor.BLUE + "Emplacement de bottes", player);
         });
@@ -95,7 +103,8 @@ public class EquipmentMenu extends InventoryMenu {
         if (this.player.getEquipment().mainHand != null)
             mainHand = this.player.getEquipment().mainHand.getItem();
         else
-            mainHand = Util.buildItem(Material.STRUCTURE_VOID, ChatColor.DARK_AQUA + "Emplacement de main principale", null);
+            mainHand = new ItemBuilder(Material.STRUCTURE_VOID)
+                    .name("Emplacement de main principale", NamedTextColor.DARK_AQUA).build();
         this.addButton(21, mainHand, event -> {
             this.subMenu(this.player.getEquipment().unblockedMainHand, ChatColor.BLUE + "Emplacement de main principale", player);
         });
@@ -104,7 +113,8 @@ public class EquipmentMenu extends InventoryMenu {
         if (this.player.getEquipment().offHand != null)
             offHand = this.player.getEquipment().offHand.getItem();
         else
-            offHand = Util.buildItem(Material.STRUCTURE_VOID, ChatColor.DARK_AQUA + "Emplacement de main secondaire", null);
+            offHand = new ItemBuilder(Material.STRUCTURE_VOID)
+                    .name("Emplacement de main secondaire", NamedTextColor.DARK_AQUA).build();
         this.addButton(23, offHand, event -> {
             this.subMenu(this.player.getEquipment().unblockedOffHand, ChatColor.BLUE + "Emplacement de main secondaire", player);
         });
@@ -116,7 +126,7 @@ public class EquipmentMenu extends InventoryMenu {
                 mainHandInvocationMenu(boussole, player);
             });
         }else {
-            this.addInactiveButton(38, Material.BARRIER, ChatColor.RED + "Emplacement de boussole", null);
+            add(38, Material.BARRIER, Component.text("Emplacement de boussole", NamedTextColor.RED));
         }
         super.open(player);
     }
@@ -125,25 +135,37 @@ public class EquipmentMenu extends InventoryMenu {
         PlayerInventory inv = player.getBukkitPlayer().getInventory();
         int goldAvailable = Util.countNonSpecialItems(inv, Material.GOLD_INGOT);
         final int goldCount = Math.min(goldAvailable, (100 - player.getEquipment().getInvocationPower()));
-        String lore = ChatColor.DARK_PURPLE + "Puissance disponible " + ChatColor.DARK_GRAY + ": " +
-                ChatColor.LIGHT_PURPLE + player.getEquipment().getInvocationPower() + " %" + NEW_LINE + NEW_LINE +
-                ChatColor.GRAY + "Vous perdez 5% de votre puissance d'invocation en mourrant avec au moins un objet " +
-                "invocable équipé." + NEW_LINE + NEW_LINE +
-                ChatColor.RED + "Cliquez ici pour recharger votre pouvoir d'invocation avec " + ChatColor.WHITE + goldCount +
-                ChatColor.RED + " lingots d'or dans votre inventaire." + NEW_LINE + NEW_LINE +
-                ChatColor.GRAY + "(1 lingot d'or = 1%)";
+        var lore = new ItemLoreBuilder()
+                .newline()
+                .append("Puissance disponible ", NamedTextColor.DARK_PURPLE)
+                .append(": ", NamedTextColor.DARK_GRAY)
+                .append(player.getEquipment().getInvocationPower() + " %", NamedTextColor.LIGHT_PURPLE)
+                .newline(2)
+                .append("Vous perdez 5% de votre puissance d'invocation en mourrant avec au moins un objet invocable équipé.", NamedTextColor.GRAY)
+                .newline(2)
+                .append("Cliquez ici pour recharger votre pouvoir d'invocation avec ", NamedTextColor.RED)
+                .append(goldCount + "", NamedTextColor.WHITE)
+                .append(" lingots d'or dans votre inventaire.", NamedTextColor.RED)
+                .newline(2)
+                .append("(1 lingot d'or = 1%)", NamedTextColor.GRAY)
+                .get();
 
-        this.addButton(4, Material.NETHER_STAR, ChatColor.GOLD + "Puissance d'invocation", lore, event -> {
+        addButton(4, new Button(new ItemBuilder(Material.NETHER_STAR)
+                                        .name("Puissance d'invocation", NamedTextColor.GOLD)
+                                        .lore(lore).build()
+                , event -> {
             if (goldCount == 0) return;
             // Remove the gold from the inventory, and get the number of gold removed
             int removed = Util.removeNonSpecialItems(this.player.getBukkitPlayer().getInventory(), Material.GOLD_INGOT, goldCount);
             // Update the invocation power
             this.player.getEquipment().addInvocationPower(removed);
-            this.player.getBukkitPlayer().sendMessage(ChatFormat.EQUIPMENT + "Votre puissance d'invocation a été rechargée" +
-                    " de " + ChatColor.GOLD + removed + "%" + ChatColor.GRAY + ". Charge actuelle : " + ChatColor.GOLD +
-                    this.player.getEquipment().getInvocationPower() + "%");
+            var comp = ChatFormats.EQUIPMENT.append(Component.text("Votre puissance d'invocation a été rechargée de "))
+                    .append(Component.text(removed + "%", NamedTextColor.GRAY))
+                    .append(Component.text(". Charge actuelle : "))
+                    .append(Component.text(player.getEquipment().getInvocationPower() + "%", NamedTextColor.GOLD));
+            this.player.getBukkitPlayer().sendMessage(comp);
             this.open(viewer);
-        });
+        }));
     }
 
     /**
@@ -165,8 +187,9 @@ public class EquipmentMenu extends InventoryMenu {
             subMenu.addButton(i, items.get(i).getItem(), event -> {
                 if (this.player.getEquipment().getInvocationPower() == 0) {
                     if (!invocable.toString().contains("onl.tesseract.item.invocable.Elytra")) {
-                        this.player.getBukkitPlayer().sendMessage(ChatFormat.EQUIPMENT_ERROR + "Impossible d'invoquer l'équipement, " +
-                                "vous n'avez plus de pouvoir d'invocation. Rechargez là dans le menu à l'aide de lingots d'or.");
+                        var comp = ChatFormats.EQUIPMENT_ERROR
+                                .append(Component.text("Impossible d'invoquer l'équipement, vous n'avez plus de pouvoir d'invocation. Rechargez là dans le menu à l'aide de lingots d'or."));
+                        this.player.getBukkitPlayer().sendMessage(comp);
                         return;
                     }
                 }
@@ -182,17 +205,19 @@ public class EquipmentMenu extends InventoryMenu {
             });
         }
         for (; i < 45; i++) {
-            subMenu.addInactiveButton(i, Material.RED_STAINED_GLASS_PANE, ChatColor.DARK_GRAY + "*", null);
+            subMenu.add(i, Material.RED_STAINED_GLASS_PANE, Component.text("*", NamedTextColor.DARK_GRAY));
         }
-        subMenu.addInactiveButtons(new int[] {46, 47, 48, 50, 51, 52}, Material.GRAY_STAINED_GLASS_PANE, ChatColor.DARK_GRAY + "*", null);
+        subMenu.add(new int[] {46, 47, 48, 50, 51, 52}, Material.RED_STAINED_GLASS_PANE, Component.text("*", NamedTextColor.DARK_GRAY));
 
         Invocable finalInvoked = invoked;
-        subMenu.addButton(49, Material.NAME_TAG, ChatColor.GOLD + "Désinvoquer cet équipement", null, event -> {
+        subMenu.addButton(49, new Button(new ItemBuilder(Material.NAME_TAG)
+                                                 .name("Désinvoquer cet équipement", NamedTextColor.GOLD).build()
+                , event -> {
             if (finalInvoked != null) {
                 finalInvoked.uninvoke();
                 this.open(player);
             }
-        });
+        }));
         subMenu.addBackButton();
         subMenu.addQuitButton();
         subMenu.open(player);
@@ -210,7 +235,11 @@ public class EquipmentMenu extends InventoryMenu {
         for (int i = 0; i < 9; i++) {
             ItemStack item = inv.getItem(i);
             if (item == null)
-                item = Util.buildItem(Material.LIME_STAINED_GLASS_PANE, ChatColor.GREEN + "Libre", ChatColor.GRAY + "Cliquez pour invoquer votre équipement ici");
+                item = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE)
+                        .name("Libre", NamedTextColor.GREEN)
+                        .lore(new ItemLoreBuilder()
+                                      .append("Cliquez pour invoquer votre équipement ici", NamedTextColor.GRAY)
+                                      .get()).build();
             int finalI = i;
             menu.addButton(i, item, event -> {
                 if (finalI == invocable.slot)
@@ -220,9 +249,12 @@ public class EquipmentMenu extends InventoryMenu {
                 mainHandInvocationMenu(invocable, player);
             });
         }
-        menu.addInactiveButton(13, Material.ACACIA_SIGN, " ", ChatColor.GRAY + "Séléctionnez un slot pour invoquer " +
-                "votre équipement. L'invocation déplacera ou désinvoquera l'objet déjà présent sur le slot.");
-        menu.addInactiveButtons(new int[] {10,11,12,14,15,16}, Material.GRAY_STAINED_GLASS_PANE, " ", null);
+        menu.add(13, new ItemBuilder(Material.ACACIA_SIGN, Component.text(" "))
+                 .lore(new ItemLoreBuilder()
+                       .append("Séléctionnez un slot pour invoquer votre équipement. L'invocation déplacera ou désinvoquera l'objet déjà présent "
+                                       + "sur le slot.", NamedTextColor.GRAY).get())
+                 .build());
+        menu.add(new int[] {10,11,12,14,15,16}, Material.GRAY_STAINED_GLASS_PANE, Component.text(" "));
         menu.addBackButton();
         menu.addQuitButton();
         menu.open(player);

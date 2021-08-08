@@ -1,20 +1,24 @@
 package onl.tesseract.tesseractlib.equipment.invocable;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.animation.AnimationTarget;
 import onl.tesseract.tesseractlib.animation.Circle;
 import onl.tesseract.tesseractlib.animation.Concentration;
+import onl.tesseract.tesseractlib.bddfacade.ElytraTrailsFacade;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormat;
+import onl.tesseract.tesseractlib.util.ChatFormats;
+import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,12 +36,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Elytra extends Invocable {
     BukkitTask accelerateTask;
@@ -125,13 +126,7 @@ public class Elytra extends Invocable {
         setItem();
 
         // Load trails
-        File file = new File(TPlayer.folderPath + equipment.getPlayer().getOfflinePlayer().getUniqueId() + ".yml");
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        if (yaml.contains("elytraTrails"))
-        {
-            List<String> names = yaml.getStringList("elytraTrails");
-            purchasedTrails = names.stream().map(Trail::valueOf).collect(Collectors.toList());
-        }
+        purchasedTrails = ElytraTrailsFacade.getPlayedTrails(equipment.getPlayer().getOfflinePlayer().getUniqueId());
         // Load active trail
         if (yamlMap.containsKey("trail"))
             trail = Trail.valueOf((String) yamlMap.get("trail"));
@@ -140,18 +135,23 @@ public class Elytra extends Invocable {
     }
 
     static ItemStack createItem() {
-        ItemStack item = Util.buildItem(Material.ELYTRA, ChatColor.GOLD + "Flanc éthéré",
-                ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
-                        ChatColor.DARK_AQUA + "Vitesse : " + ChatColor.GOLD + "0" + Util.NEW_LINE +
-                        ChatColor.DARK_AQUA + "Protection : " + ChatColor.GOLD + "0", true);
-        return item;
+        return new ItemBuilder(Material.ELYTRA)
+                .name("Flanc éthéré", NamedTextColor.GOLD)
+                .lore(ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
+                              ChatColor.DARK_AQUA + "Vitesse : " + ChatColor.GOLD + "0" + Util.NEW_LINE +
+                              ChatColor.DARK_AQUA + "Protection : " + ChatColor.GOLD + "0")
+                .enchanted(true)
+                .build();
     }
 
     void setItem() {
-        this.item = Util.buildItem(Material.ELYTRA, ChatColor.GOLD + "Flanc éthéré",
-                ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
+        this.item = new ItemBuilder(Material.ELYTRA)
+                .name("Flanc éthéré", NamedTextColor.GOLD)
+                .lore(ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
                         ChatColor.DARK_AQUA + "Vitesse : " + ChatColor.GOLD + speedLevel + Util.NEW_LINE +
-                        ChatColor.DARK_AQUA + "Protection : " + ChatColor.GOLD + protectionLevel, true);
+                        ChatColor.DARK_AQUA + "Protection : " + ChatColor.GOLD + protectionLevel)
+                .enchanted(true)
+                .build();
         ItemMeta meta = item.getItemMeta();
         meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier("generic.armor", protectionLevel, AttributeModifier.Operation.ADD_NUMBER));
 
@@ -235,13 +235,15 @@ public class Elytra extends Invocable {
                 }
                 // Show action bar
                 else {
-                    player.sendActionBar(
-                            ChatColor.GRAY + "Vitesse: " + ChatColor.AQUA + (int) (player.getVelocity().length() * 20)
-                                    + ChatColor.DARK_GRAY + " | "
-                                    + ChatColor.GRAY + "Alt: " + ChatColor.GREEN + player.getLocation().getBlockY()
-                                    + ChatColor.DARK_GRAY + " | "
-                                    + ChatColor.GRAY + "Distance: " + ChatColor.YELLOW + (int) (player.getLocation().distance(player.getCompassTarget()))
-                    );
+                    var comp = Component.text("Vitesse: ", NamedTextColor.GRAY)
+                            .append(Component.text((int) (player.getVelocity().length() * 20), NamedTextColor.AQUA))
+                            .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                            .append(Component.text("Alt: "))
+                            .append(Component.text(player.getLocation().getBlockY(), NamedTextColor.GREEN))
+                            .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                            .append(Component.text("Distance: "))
+                            .append(Component.text((int) (player.getLocation().distance(player.getCompassTarget())), NamedTextColor.YELLOW));
+                    player.sendActionBar(comp);
                     if (trail != Trail.NONE) {
                         ParticleBuilder builder = new ParticleBuilder(trail.getParticle());
                         if (trail == Trail.SHINNING)
@@ -457,7 +459,7 @@ public class Elytra extends Invocable {
     public void setTrail(Trail trail)
     {
         this.trail = trail;
-        equipment.getPlayer().sendMessage(ChatFormat.EQUIPMENT + "Le sillage a été activé !");
+        equipment.getPlayer().sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Le sillage a été activé !")));
     }
 
     public boolean isIgnoreSpeedLevel()
@@ -482,26 +484,16 @@ public class Elytra extends Invocable {
         {
             Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().getLike(Elytra.class);
             el.getPurchasedTrails().add(trail);
-            ((Player) player).sendMessage(ChatFormat.EQUIPMENT_SUCCESS + "Le sillage " + trail.getName() + ChatColor.GREEN +
-                    " a bien été ajouté à vos ailes ! Activez le dans le menu des ailes.");
+            ((Player) player).sendMessage(ChatFormats.EQUIPMENT_SUCCESS
+                                                  .append(Component.text("Le sillage "))
+                                                  .append(Component.text(trail.getName(), NamedTextColor.GREEN))
+                                                  .append(Component.text(" a bien été ajouté à vos ailes ! Activez le dans le menu des ailes.")));
         }
-        File file = new File(TPlayer.folderPath + player.getUniqueId() + ".yml");
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        List<String> trails = yaml.contains("elytraTrails") ? yaml.getStringList("elytraTrails") : new ArrayList<>();
-        trails.add(trail.toString());
-        yaml.set("elytraTrails", trails);
-        try {
-            yaml.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ElytraTrailsFacade.addTrail(player.getUniqueId(),trail);
     }
 
     public static boolean hasTrail(OfflinePlayer player, Trail trail) {
-        File file = new File(TPlayer.folderPath + player.getUniqueId() + ".yml");
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        List<String> trails = yaml.contains("elytraTrails") ? yaml.getStringList("elytraTrails") : new ArrayList<>();
-        return trails.contains(trail.toString());
+        return ElytraTrailsFacade.hasTrail(player.getUniqueId(),trail);
     }
 
     public static void removeTrail(OfflinePlayer player, Trail trail)
@@ -512,17 +504,10 @@ public class Elytra extends Invocable {
             if (el.getTrail() == trail)
                 el.setTrail(Trail.NONE);
         }
-        ((Player) player).sendMessage(ChatFormat.EQUIPMENT_SUCCESS + "Le sillage " + trail.getName() + ChatColor.GREEN +
-                " a été retiré de vos ailes !");
-        File file = new File(TPlayer.folderPath + player.getUniqueId() + ".yml");
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        List<String> trails = yaml.contains("elytraTrails") ? yaml.getStringList("elytraTrails") : new ArrayList<>();
-        trails.remove(trail.toString());
-        yaml.set("elytraTrails", trails);
-        try {
-            yaml.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ((Player) player).sendMessage(ChatFormats.EQUIPMENT_SUCCESS
+                                              .append(Component.text("Le sillage "))
+                                              .append(Component.text(trail.getName(), NamedTextColor.GREEN))
+                                              .append(Component.text(" a été retiré de vos ailes !")));
+        ElytraTrailsFacade.removeTrail(player.getUniqueId(),trail);
     }
 }
