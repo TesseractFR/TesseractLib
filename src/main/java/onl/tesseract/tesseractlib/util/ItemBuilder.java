@@ -200,7 +200,6 @@ public class ItemBuilder {
     public ItemBuilder name(final String name, TextColor color)
     {
         this.name = Component.text(name, color).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
-        ;
         return this;
     }
 
