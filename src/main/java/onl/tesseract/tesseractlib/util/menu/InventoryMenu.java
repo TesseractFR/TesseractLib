@@ -139,6 +139,24 @@ public class InventoryMenu implements Listener {
         addButton(index, new Button(itemStack));
     }
 
+    public void add(int[] indexes, Material material, Component name)
+    {
+        for (int index : indexes)
+            addButton(index, new Button(new ItemBuilder(material).name(name).build()));
+    }
+
+    public void add(int[] indexes, Material material, Component name, Component lore)
+    {
+        for (int index : indexes)
+            addButton(index, new Button(new ItemBuilder(material).name(name).lore(lore).build()));
+    }
+
+    public void add(int[] indexes, final ItemStack itemStack)
+    {
+        for (int index : indexes)
+            addButton(index, new Button(itemStack));
+    }
+
     /**
      * Adds an interactible button.
      * @param index
