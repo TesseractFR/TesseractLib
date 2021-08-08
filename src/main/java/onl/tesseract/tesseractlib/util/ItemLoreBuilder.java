@@ -166,6 +166,21 @@ public class ItemLoreBuilder {
         return this;
     }
 
+    public ItemLoreBuilder newline()
+    {
+        lines.add(lastLine);
+        lastLine = Component.text("");
+        lastLineLength = 0;
+        return this;
+    }
+
+    public ItemLoreBuilder newline(int count)
+    {
+        for (int i = 0; i < count; i++)
+            newline();
+        return this;
+    }
+
     private static Optional<NamedTextColor> colorFromChar(char c)
     {
         var color = switch (c)
