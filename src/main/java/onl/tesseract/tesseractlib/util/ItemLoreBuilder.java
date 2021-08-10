@@ -94,6 +94,8 @@ public class ItemLoreBuilder {
      */
     public ItemLoreBuilder append(String text, TextColor color, @NotNull Set<TextDecoration> decoration)
     {
+        if (text == null)
+            return this;
         var words = text.split(" ");
         for (int i = 0; i < words.length; i++)
         {
@@ -150,6 +152,8 @@ public class ItemLoreBuilder {
      */
     public ItemLoreBuilder append(String text)
     {
+        if (text == null)
+            return this;
         var words = text.split(" ");
         final AtomicReference<NamedTextColor> lastColor = new AtomicReference<>(null);
         final AtomicReference<TextDecoration> lastDeco = new AtomicReference<>(null);
