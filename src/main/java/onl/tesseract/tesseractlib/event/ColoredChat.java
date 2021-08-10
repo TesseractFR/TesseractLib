@@ -21,4 +21,9 @@ public class ColoredChat implements Listener {
         var coloredString = message.content().replaceAll("(&)([0-9a-fklnorm])", "§$2");
         return message.content(coloredString);
     }
+
+    static public String colorMessage(String message)
+    {
+        return message.replaceAll("(&)([0-9a-fklnorm])", "§$2");
+    }
 }

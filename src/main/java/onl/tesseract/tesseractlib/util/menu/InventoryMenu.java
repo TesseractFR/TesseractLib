@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.event.PlayerMenuOpenEvent;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
+import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -87,41 +88,47 @@ public class InventoryMenu implements Listener {
      * @param name Custom display name of the item. Can be null
      * @param lore Custom lore. Can be null
      */
-    @Deprecated
     public void addInactiveButton(int index, Material material, String name, String lore) {
-        ItemStack item = Util.buildItem(material, name, lore);
-        this.inventory.setItem(index, item);
+        addButton(index, new Button(new ItemBuilder(material)
+                                            .name(name)
+                                            .lore(new ItemLoreBuilder().append(lore).get())
+                                            .build()));
     }
 
-    @Deprecated
     public void addInactiveButton(int index, Material material, String name, String lore, boolean enchant) {
-        ItemStack item = Util.buildItem(material, name, lore, enchant);
-        this.inventory.setItem(index, item);
+        addButton(index, new Button(new ItemBuilder(material)
+                                            .name(name)
+                                            .lore(new ItemLoreBuilder().append(lore).get())
+                                            .enchanted(enchant)
+                                            .build()));
     }
 
-    @Deprecated
     public void addInactiveButtons(int[] indexes, Material material, String name, String lore) {
         for (int index : indexes) {
-            ItemStack item = Util.buildItem(material, name, lore);
-            this.inventory.setItem(index, item);
+            addButton(index, new Button(new ItemBuilder(material)
+                                                .name(name)
+                                                .lore(new ItemLoreBuilder().append(lore).get())
+                                                .build()));
         }
     }
 
-    @Deprecated
     public void addInactiveButton(int index, ItemStack item, String name, String lore) {
-        item = Util.buildItem(item, name, lore);
-        this.inventory.setItem(index, item);
+        addButton(index, new Button(new ItemBuilder(item)
+                                            .name(name)
+                                            .lore(new ItemLoreBuilder().append(lore).get())
+                                            .build()));
     }
 
-    @Deprecated
     public void addInactiveButton(int index, ItemStack item, String name, String lore, boolean enchant) {
-        Util.buildItem(item, name, lore, enchant);
-        this.inventory.setItem(index, item);
+        addButton(index, new Button(new ItemBuilder(item)
+                                            .name(name)
+                                            .lore(new ItemLoreBuilder().append(lore).get())
+                                            .enchanted(enchant)
+                                            .build()));
     }
 
-    @Deprecated
     public void addInactiveButton(int index, ItemStack item) {
-        this.inventory.setItem(index, item);
+        addButton(index, new Button(item));
     }
 
     public void add(int index, Material material, Component name)
@@ -175,25 +182,29 @@ public class InventoryMenu implements Listener {
         addButton(index, cloned, function);
     }
 
-    @Deprecated
     public <T> void addButton(int index, ItemStack item, String name, String lore, Consumer<InventoryClickEvent> function) {
         if (item == null) return;
-
-        Util.buildItem(item, name, lore);
+        item = new ItemBuilder(item)
+                .name(name)
+                .lore(new ItemLoreBuilder().append(lore).get())
+                .build();
         addButton(index, item, function);
     }
 
-    @Deprecated
     public <T> void addButton(int index, Material material, String name, String lore, Consumer<InventoryClickEvent> function) {
-        ItemStack item = Util.buildItem(material, name, lore);
-        item.addItemFlags(ItemFlag.values());
+        ItemStack item = new ItemBuilder(material)
+                .name(name)
+                .lore(new ItemLoreBuilder().append(lore).get())
+                .build();
         this.addButton(index, item, function);
     }
 
-    @Deprecated
     public <T> void addButton(int index, Material material, String name, String lore, boolean enchanted, Consumer<InventoryClickEvent> function) {
-        ItemStack item = Util.buildItem(material, name, lore, enchanted);
-        item.addItemFlags(ItemFlag.values());
+        ItemStack item = new ItemBuilder(material)
+                .name(name)
+                .lore(new ItemLoreBuilder().append(lore).get())
+                .enchanted(enchanted)
+                .build();
         this.addButton(index, item, function);
     }
 
@@ -243,9 +254,11 @@ public class InventoryMenu implements Listener {
         this.addButton(index, buttonQuit, event -> this.close());
     }
 
-    @Deprecated
     public void fill(Material material, String name, String lore) {
-        ItemStack item = Util.buildItem(material, name, lore);
+        ItemStack item = new ItemBuilder(material)
+                .name(name)
+                .lore(new ItemLoreBuilder().append(lore).get())
+                .build();
 
         for (int i = 0; i < this.inventory.getSize(); i++) {
             this.inventory.setItem(i, item);
