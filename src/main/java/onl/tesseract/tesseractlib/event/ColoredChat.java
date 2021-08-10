@@ -1,6 +1,7 @@
 package onl.tesseract.tesseractlib.event;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,6 +21,15 @@ public class ColoredChat implements Listener {
     {
         var coloredString = message.content().replaceAll("(&)([0-9a-fklnorm])", "§$2");
         return message.content(coloredString);
+    }
+
+    static public Component colorComponent(Component message)
+    {
+        if (message instanceof TextComponent text)
+        {
+            message = colorMessage(text);
+        }
+        return message;
     }
 
     static public String colorMessage(String message)
