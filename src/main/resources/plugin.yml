@@ -27,3 +27,7 @@ commands:
     usage: "/socialspy"
     description: Espionner les conversations
     permission: tesseract.staff.socialspy
+  familier:
+    aliases: [pet, pets]
+    usage: "/familier"
+    description: Permet d'ouvrir le menu des familiers
