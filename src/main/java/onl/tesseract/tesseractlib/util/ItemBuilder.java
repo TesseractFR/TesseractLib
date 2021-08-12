@@ -193,18 +193,24 @@ public class ItemBuilder {
      */
     public ItemBuilder name(final String name)
     {
+        if (name == null)
+            return this;
         this.name = Component.text(name).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
         return this;
     }
 
     public ItemBuilder name(final String name, TextColor color)
     {
+        if (name == null)
+            return this;
         this.name = Component.text(name, color).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
         return this;
     }
 
     public ItemBuilder name(final String name, TextColor color, TextDecoration decoration)
     {
+        if (name == null)
+            return this;
         this.name = Component.text(name, color)
                              .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
                              .decorate(decoration);
