@@ -6,11 +6,14 @@ import onl.tesseract.tesseractlib.bdd.BDDManager;
 import onl.tesseract.tesseractlib.chat.tag.TagEventHandler;
 import onl.tesseract.tesseractlib.command.*;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
+import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
 import onl.tesseract.tesseractlib.familier.PetManager;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -53,6 +56,11 @@ public final class TesseractLib extends JavaPlugin {
         // Plugin shutdown logic
         bddManager.close();
 
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event){
+        CosmeticManager.loadPlayer(event.getPlayer().getUniqueId());
     }
 
     void registerCommands()

@@ -1,10 +1,11 @@
 package onl.tesseract.tesseractlib.familier;
 
 
+import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.inventory.ItemStack;
 
-public enum Pet {
+public enum Pet implements Cosmetic {
     PIGGY(PetHead.PiggyHead),
     BOARY(PetHead.BoaryHead),
     WILDY(PetHead.WildyHead),
