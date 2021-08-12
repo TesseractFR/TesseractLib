@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 
 public class ColoredChat implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onChat(AsyncChatEvent event)
     {
         if (event.isCancelled()) return;
