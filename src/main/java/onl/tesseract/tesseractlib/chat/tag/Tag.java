@@ -23,7 +23,7 @@ public interface Tag<T> {
         {
             for (var tag : tags)
             {
-                if (tag.matches((TextComponent) component))
+                while (tag.matches((TextComponent) component))
                     component = tag.apply((TextComponent) component, sender);
             }
         }
