@@ -24,12 +24,12 @@ public class TagEventHandler implements Listener {
         }
     }
 
-    public TextComponent insertPlayerTags(final TextComponent text)
+    public static TextComponent insertPlayerTags(final TextComponent text)
     {
         return insertPlayerTags(text, Bukkit.getOnlinePlayers());
     }
 
-    public TextComponent insertPlayerTags(final TextComponent text, Collection<? extends Player> targets)
+    public static TextComponent insertPlayerTags(final TextComponent text, Collection<? extends Player> targets)
     {
         for (var player : targets)
         {
