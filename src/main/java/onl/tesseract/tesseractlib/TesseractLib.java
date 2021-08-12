@@ -3,9 +3,9 @@ package onl.tesseract.tesseractlib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bdd.BDDManager;
+import onl.tesseract.tesseractlib.chat.tag.TagEventHandler;
 import onl.tesseract.tesseractlib.command.*;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
-import onl.tesseract.tesseractlib.event.ChatDing;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
@@ -14,9 +14,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Objects;
 
 public final class TesseractLib extends JavaPlugin {
@@ -70,7 +67,7 @@ public final class TesseractLib extends JavaPlugin {
 
     void registerEvents()
     {
-        this.getServer().getPluginManager().registerEvents(new ChatDing(), this);
+        this.getServer().getPluginManager().registerEvents(new TagEventHandler(), this);
         this.getServer().getPluginManager().registerEvents(new EntityBossBar(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerSit(), this);
         this.getServer().getPluginManager().registerEvents(new ColoredChat(), this);
