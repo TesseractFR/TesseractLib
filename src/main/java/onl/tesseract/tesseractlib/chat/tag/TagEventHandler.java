@@ -18,7 +18,7 @@ public class TagEventHandler implements Listener {
     {
         if (event.message() instanceof TextComponent text)
         {
-            event.message(insertPlayerTags(text));
+            text = insertPlayerTags(text);
             var player = TPlayer.get(event.getPlayer());
             event.message(Tag.applyAll(text, player));
         }
