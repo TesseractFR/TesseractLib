@@ -33,11 +33,11 @@ public class TagEventHandler implements Listener {
     {
         for (var player : targets)
         {
-            var matcher = Pattern.compile(".*(" + player.getName() + ").*")
+            var matcher = Pattern.compile("(.* )?(" + player.getName() + ").*")
                                  .matcher(text.content());
             if (matcher.matches())
             {
-                int index = matcher.toMatchResult().start(1);
+                int index = matcher.toMatchResult().start(2);
                 return text.content(text.content().substring(0, index) + "@" + text.content().substring(index));
             }
         }
