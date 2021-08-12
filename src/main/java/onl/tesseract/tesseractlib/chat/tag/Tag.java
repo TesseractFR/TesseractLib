@@ -19,7 +19,7 @@ public interface Tag<T> {
         for (var tag : tags)
         {
             if (tag.matches(component))
-                return tag.apply(component, sender);
+                component = tag.apply(component, sender);
         }
         return component;
     }
