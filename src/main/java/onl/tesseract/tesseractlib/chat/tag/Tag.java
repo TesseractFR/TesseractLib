@@ -1,9 +1,12 @@
 package onl.tesseract.tesseractlib.chat.tag;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import onl.tesseract.tesseractlib.player.TPlayer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public interface Tag<T> {
     HashSet<Tag<?>> tags = new HashSet<>();
@@ -14,14 +17,23 @@ public interface Tag<T> {
 
     TextComponent hover(T obj);
 
-    static TextComponent applyAll(TextComponent component, TPlayer sender)
+    static Component applyAll(Component component, TPlayer sender)
     {
-        for (var tag : tags)
+        if (component instanceof TextComponent)
         {
-            if (tag.matches(component))
-                component = tag.apply(component, sender);
+            for (var tag : tags)
+            {
+                if (tag.matches((TextComponent) component))
+                    component = tag.apply((TextComponent) component, sender);
+            }
         }
-        return component;
+        List<Component> newChildren = new ArrayList<>();
+        for (var child : component.children())
+        {
+            child = applyAll(child, sender);
+            newChildren.add(child);
+        }
+        return component.children(newChildren);
     }
 
     static <T> void registerTag(final Tag<T> tag)
