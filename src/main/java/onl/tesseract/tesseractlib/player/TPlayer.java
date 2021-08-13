@@ -89,7 +89,6 @@ public class TPlayer implements Listener {
     protected PlayerFacade playerFacade;
     protected List<Achievement> achievements = new ArrayList<>();
     private UUID uuid;
-    private List<Pet> pets = null;
 
     /**
      * Loads a player
@@ -272,40 +271,11 @@ public class TPlayer implements Listener {
 
                 getPlayerInventory().setContents(loadInventory(yaml, "playerInventory"));
                 getAdminInventory().setContents(loadInventory(yaml, "adminInventory"));
-            }
-
-            loadPets();
+            };
         }
     }
 
-    private void loadPets()
-    {
-        pets = PetFacade.getPets(getUUID());
-    }
-    public List<Pet> getPets()
-    {
-        if(pets == null)loadPets();
-        return pets;
-    }
-
-    public void addPet(Pet pet)
-    {
-        pets.add(pet);
-        PetFacade.addPet(getUUID(), pet);
-    }
-
-    public boolean hasPet(Pet p)
-    {
-        return getPets().contains(p);
-    }
-
-    public void removePet(Pet pet)
-    {
-        pets.remove(pet);
-        PetFacade.removePet(getUUID(), pet);
-    }
-
-    public UUID getUUID()
+        public UUID getUUID()
     {
         return getOfflinePlayer().getUniqueId();
     }
