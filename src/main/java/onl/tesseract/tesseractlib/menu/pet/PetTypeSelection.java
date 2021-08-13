@@ -53,7 +53,7 @@ public class PetTypeSelection extends InventoryMenu {
                 , event -> {
             if (PetManager.invokedPets.get(viewer.getUniqueId()) != null)
             {
-                PetManager.invokePet(viewer, null, false);
+                PetManager.invokePet(viewer, null);
                 viewer.sendMessage(ChatFormats.PET.append(Component.text("Votre familier a été désinvoqué", NamedTextColor.GREEN)));
                 this.close();
             }

@@ -20,18 +20,18 @@ public class CosmeticCompleter implements TabCompleter {
         if (args.length == 1)
             return List.of("give", "remove")
                        .stream().filter(sub -> sub.startsWith(args[0])).collect(Collectors.toList());
-        if (args.length == 2)
+        if (args.length == 3)
         {
             return Arrays.stream(CosmeticType.values()).toList().stream().map(CosmeticType::toString)
                          .collect(Collectors.toList())
-                         .stream().filter(sub -> sub.startsWith(args[1])).collect(Collectors.toList());
+                         .stream().filter(sub -> sub.startsWith(args[2])).collect(Collectors.toList());
 
         }
-        if (args.length == 3){
+        if (args.length == 4){
             CosmeticType type;
             try
             {
-                type=CosmeticType.valueOf(args[1]);
+                type=CosmeticType.valueOf(args[2]);
             }
             catch (IllegalArgumentException e){
                 return  List.of("");
@@ -41,12 +41,12 @@ public class CosmeticCompleter implements TabCompleter {
                 case PET -> {
                     return Arrays.stream(Pet.values()).toList().stream().map(Pet::toString)
                                  .collect(Collectors.toList())
-                                 .stream().filter(sub -> sub.startsWith(args[1])).collect(Collectors.toList());
+                                 .stream().filter(sub -> sub.startsWith(args[3])).collect(Collectors.toList());
                 }
                 case ELYTRA_TRAIL -> {
                 }
             }
         }
-        return List.of("");
+        return null;
     }
 }

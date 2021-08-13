@@ -1,5 +1,6 @@
 package onl.tesseract.tesseractlib.command.staff;
 
+import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticType;
@@ -48,19 +49,20 @@ public class CosmeticCommand implements CommandExecutor {
         {
             case "give" -> {
                 CosmeticManager.giveCosmetic(uuid, type, cosmetic);
-                commandSender.sendMessage(ChatFormats.COSMETICS_SUCCESS + "Tentative d'ajout effectuée.");
+                commandSender.sendMessage(ChatFormats.COSMETICS_SUCCESS
+                                                  .append(Component.text("Tentative d'ajout effectuée.")));
                 return true;
             }
             case "remove" -> {
                 CosmeticManager.removeCosmetic(uuid, type, cosmetic);
-                commandSender.sendMessage(ChatFormats.COSMETICS_SUCCESS + "Tentative de retrait effectuée.");
+                commandSender.sendMessage(ChatFormats.COSMETICS_SUCCESS
+                        .append(Component.text("Tentative de retrait effectuée.")));
                 return true;
             }
             default -> {
-                commandSender.sendMessage(ChatFormats.COSMETICS_ERROR + "Commande inconnue.");
-
+                commandSender.sendMessage(ChatFormats.COSMETICS_ERROR.append(Component.text("Commande inconnue.")));
+                return true;
             }
         }
-        return false;
     }
 }
