@@ -1,7 +1,9 @@
 package onl.tesseract.tesseractlib.familier;
 
 
+import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
+import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.inventory.ItemStack;
 
@@ -60,4 +62,9 @@ public enum Pet implements Cosmetic {
         return InventoryMenu.getCustomHead("", head.data, head.signature);
     }
 
+    @Override
+    public Component getObtainMessage()
+    {
+        return Component.text("Vous avez obtenu le familier "+getname());
+    }
 }

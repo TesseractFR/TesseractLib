@@ -16,15 +16,20 @@ public class CosmeticPlayer {
     public boolean hasCosmetics(CosmeticType type,Cosmetic cosmetic){
         return cosmetics.containsKey(type) && cosmetics.get(type).contains(cosmetic);
     }
-    public void addCosmetics(CosmeticType type,Cosmetic cosmetic){
+    public boolean addCosmetics(CosmeticType type, Cosmetic cosmetic){
         if(!cosmetics.containsKey(type))
             cosmetics.put(type,new HashSet<>());
+        if(cosmetics.get(type).contains(cosmetic))return false;
         cosmetics.get(type).add(cosmetic);
+        return true;
     }
-    public void removeCosmetics(CosmeticType type,Cosmetic cosmetic){
+    public boolean removeCosmetics(CosmeticType type,Cosmetic cosmetic){
         if(!cosmetics.containsKey(type))
-            return;
+            return false;
+        if(!cosmetics.get(type).contains(cosmetic))
+            return false;
         cosmetics.get(type).remove(cosmetic);
+        return true;
     }
 
 }

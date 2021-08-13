@@ -52,6 +52,15 @@ public class ChatFormats {
             .append(text("[").color(GOLD))
             .append(text("Familier").color(YELLOW))
             .append(text("] ").color(GOLD));
+
     public static final Component PET_SUCCESS = PET.color(GREEN);
     public static final Component PET_ERROR = PET.color(RED);
+
+    public static final Component COSMETICS = empty()
+            .color(YELLOW)
+            .append(text("[").color(GOLD))
+            .append(text("Cosmetique").color(YELLOW))
+            .append(text("] ").color(GOLD));
+    public static final Component COSMETICS_SUCCESS = COSMETICS.color(GREEN);
+    public static final Component COSMETICS_ERROR = COSMETICS.color(RED);
 }
