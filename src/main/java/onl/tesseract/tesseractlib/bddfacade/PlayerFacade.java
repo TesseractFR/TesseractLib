@@ -2,6 +2,7 @@ package onl.tesseract.tesseractlib.bddfacade;
 
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
+import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.player.TPlayer;
 
 import java.sql.Connection;
@@ -147,6 +148,42 @@ public class PlayerFacade {
                     "DELETE FROM " + bddtableAchivement + " WHERE player_uuid=? AND achievement_id=?");
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setInt(2, achievement.getId());
+            preparedStatement.execute();
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+    }
+
+    public ElytraTrails getActiveTrails()
+    {
+        try
+        {
+            final PreparedStatement preparedStatement =
+                TesseractLib.getBddManager().getBddConnection().getConnection().prepareStatement(
+                        "SELECT active_trail FROM t_player WHERE uuid = ?");
+            preparedStatement.setString(1,uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next())return ElytraTrails.valueOf(resultSet.getString(1));
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+        return ElytraTrails.NONE;
+    }
+
+    public void setActiveTrails(ElytraTrails trails)
+    {
+        try
+        {
+            final PreparedStatement preparedStatement = TesseractLib
+                    .getBddManager().getBddConnection()
+                    .getConnection().prepareStatement(
+                            "UPDATE t_player SET active_trail =? WHERE uuid =?");
+            preparedStatement.setString(1,trails.toString());
+            preparedStatement.setString(2,uuid.toString());
             preparedStatement.execute();
         }
         catch (SQLException throwables)

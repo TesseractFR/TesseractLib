@@ -71,7 +71,7 @@ public class CosmeticManager {
                 return Pet.valueOf(s);
             }
             case ELYTRA_TRAIL -> {
-                return null;
+                return ElytraTrails.valueOf(s);
             }
             default -> {
                 throw new IllegalArgumentException();

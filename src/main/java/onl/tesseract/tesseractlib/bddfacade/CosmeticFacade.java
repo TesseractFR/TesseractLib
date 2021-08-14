@@ -4,7 +4,6 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticType;
-import onl.tesseract.tesseractlib.familier.Pet;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

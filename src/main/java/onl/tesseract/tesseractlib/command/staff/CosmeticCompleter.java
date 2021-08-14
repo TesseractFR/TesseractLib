@@ -1,6 +1,7 @@
 package onl.tesseract.tesseractlib.command.staff;
 
 import onl.tesseract.tesseractlib.cosmetics.CosmeticType;
+import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.familier.Pet;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -44,6 +45,9 @@ public class CosmeticCompleter implements TabCompleter {
                                  .stream().filter(sub -> sub.startsWith(args[3])).collect(Collectors.toList());
                 }
                 case ELYTRA_TRAIL -> {
+                    return Arrays.stream(ElytraTrails.values()).toList().stream().map(ElytraTrails::toString)
+                            .collect(Collectors.toList()).stream().filter(sub -> sub.startsWith(args[3])).collect(
+                                    Collectors.toList());
                 }
             }
         }

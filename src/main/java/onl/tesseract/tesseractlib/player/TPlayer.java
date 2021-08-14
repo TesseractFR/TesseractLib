@@ -12,6 +12,7 @@ import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bddfacade.PetFacade;
 import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
+import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.familier.Pet;
 import onl.tesseract.tesseractlib.util.ChatFormat;
@@ -89,6 +90,7 @@ public class TPlayer implements Listener {
     protected PlayerFacade playerFacade;
     protected List<Achievement> achievements = new ArrayList<>();
     private UUID uuid;
+    protected ElytraTrails trails = ElytraTrails.NONE;
 
     /**
      * Loads a player
@@ -304,6 +306,7 @@ public class TPlayer implements Listener {
     {
         playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
         gender = playerFacade.getGender();
+        trails = playerFacade.getActiveTrails();
         achievements.clear();
         achievements = playerFacade.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
@@ -324,10 +327,12 @@ public class TPlayer implements Listener {
         try
         {
             gender = Gender.valueOf(resultSet.getString("genre"));
+            trails = ElytraTrails.valueOf(resultSet.getString("active_trail"));
         }
         catch (SQLException throwables)
         {
             gender = Gender.OTHER;
+            trails = ElytraTrails.NONE;
         }
         achievements.clear();
         achievements = playerFacade.getAllAchievements();
@@ -701,5 +706,15 @@ public class TPlayer implements Listener {
     {
         achievements.remove(achievement);
         playerFacade.removeAchievement(achievement);
+    }
+
+    public ElytraTrails getActiveTrail()
+    {
+        return trails;
+    }
+
+    public void setActiveTrail(ElytraTrails elytraTrails){
+        trails = elytraTrails;
+        playerFacade.setActiveTrails(trails);
     }
 }

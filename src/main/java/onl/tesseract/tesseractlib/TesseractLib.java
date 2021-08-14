@@ -1,5 +1,6 @@
 package onl.tesseract.tesseractlib;
 
+import com.destroystokyo.paper.ParticleBuilder;
 import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bdd.BDDManager;
@@ -9,16 +10,24 @@ import onl.tesseract.tesseractlib.command.staff.CosmeticCommand;
 import onl.tesseract.tesseractlib.command.staff.CosmeticCompleter;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
+import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
 import onl.tesseract.tesseractlib.familier.PetManager;
 import onl.tesseract.tesseractlib.player.TPlayer;
+import onl.tesseract.tesseractlib.util.Util;
+import org.bukkit.Color;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.Objects;
@@ -31,6 +40,8 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     static private String host, database, username, password;
     private static BDDManager bddManager;
     static public int port;
+
+    BukkitTask elytraFly;
 
     static public BDDManager getBddManager() {
         if(bddManager == null){
@@ -81,6 +92,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         Objects.requireNonNull(instance.getCommand("familier")).setExecutor(new FamilierCommand());
         Objects.requireNonNull(instance.getCommand("cosmetic")).setExecutor(new CosmeticCommand());
         Objects.requireNonNull(instance.getCommand("cosmetic")).setTabCompleter(new CosmeticCompleter());
+        Objects.requireNonNull(instance.getCommand("elytraTrail")).setExecutor(new ElytraTrailCommand());
     }
 
     void registerEvents()
@@ -106,5 +118,44 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         port = yaml.getInt("db_port");
     }
 
+
+    @EventHandler
+    public void onFly(EntityToggleGlideEvent event) {
+        if (event.getEntityType() != EntityType.PLAYER) return;
+        TPlayer tplayer = TPlayer.get((Player) event.getEntity());
+        if(tplayer.getEquipment() == null)
+        {
+            Player player = (Player) event.getEntity();
+            new BukkitRunnable() {
+                @Override
+                public void run()
+                {
+                    if (!player.isOnline() || !player.isGliding())
+                    {
+                        this.cancel();
+                    }
+                        ElytraTrails trail = tplayer.getActiveTrail();
+                        if (trail != ElytraTrails.NONE)
+                        {
+                            ParticleBuilder builder = new ParticleBuilder(trail.getParticle());
+                            if (trail == ElytraTrails.SHINNING)
+                                builder.count(1);
+                            else
+                                builder.count(2);
+                            builder.offset(.5, .5, .5);
+                            if (trail == ElytraTrails.POTION || trail == ElytraTrails.MUSICAL)
+                                builder.extra(0.2);
+                            else
+                                builder.extra(0);
+                            builder.location(Util.Locations.backward(event.getEntity().getLocation(), 2));
+                            builder.receivers(100);
+                            if (trail == ElytraTrails.REDSTONE)
+                                builder.color(Color.RED);
+                            builder.spawn();
+                        }
+                    }
+            }.runTaskTimer(TesseractLib.instance, 0, 2);
+        }
+    }
 
 }
