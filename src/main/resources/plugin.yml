@@ -37,3 +37,6 @@ commands:
   elytraTrail:
     usage: "/elytraTrail"
     description: Permet d'ouvrir le menu de selection des trails d'elytra
+  boutique:
+    usage: "/boutique"
+    description: Ouvre la boutique

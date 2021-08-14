@@ -8,4 +8,6 @@ public interface Cosmetic {
     default int getPrice(){
         return 200;
     };
+
+    String getName();
 }

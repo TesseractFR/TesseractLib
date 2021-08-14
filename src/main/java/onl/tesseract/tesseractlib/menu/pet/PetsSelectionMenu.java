@@ -65,7 +65,7 @@ public class PetsSelectionMenu extends InventoryMenu {
                         });
                     else
                         player.sendMessage(ChatFormats.PET_ERROR.append(
-                                Component.text("Vous n'avez pas assez de lys d'or cliquez ici pour en acheter")
+                                Component.text("Vous n'avez pas assez de lys d'or, cliquez ici pour en acheter")
                                         .hoverEvent(HoverEvent.showText(
                                 Component
                                         .text("Cliquez ici pour accéder à la boutique.", NamedTextColor.GOLD)))

@@ -32,4 +32,9 @@ public class CosmeticPlayer {
         return true;
     }
 
+    public int getTotal(CosmeticType type)
+    {
+        if(!cosmetics.containsKey(type))return 0;
+        return cosmetics.get(type).size();
+    }
 }

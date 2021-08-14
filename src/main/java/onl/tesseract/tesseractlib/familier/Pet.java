@@ -67,4 +67,10 @@ public enum Pet implements Cosmetic {
     {
         return Component.text("Vous avez obtenu le familier "+getname());
     }
+
+    @Override
+    public String getName()
+    {
+        return name;
+    }
 }
