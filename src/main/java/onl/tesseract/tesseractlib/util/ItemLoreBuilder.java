@@ -102,8 +102,6 @@ public class ItemLoreBuilder {
             var word = words[i];
             if (i == words.length - 1 && text.endsWith(" "))
                 word = word + " ";
-            if (i == 0 && text.startsWith(" "))
-                word = " " + word;
             // Get real length
             int wordLen = word.length();
 
@@ -119,7 +117,7 @@ public class ItemLoreBuilder {
             {
                 // Split
                 lines.add(lastLine);
-                lastLine = Component.text(word + " ").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+                lastLine = Component.text(word + (i == words.length - 1 ? "" : " ")).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
                 if (color != null)
                     lastLine = lastLine.color(color);
                 for (var deco : decoration)
@@ -130,9 +128,9 @@ public class ItemLoreBuilder {
             {
                 var component = Component.text(word + (i == words.length - 1 ? "" : " "));
                 if (color != null)
-                    lastLine = lastLine.color(color);
+                    component = component.color(color);
                 for (var deco : decoration)
-                    lastLine = lastLine.decorate(deco);
+                    component = (TextComponent) component.decorate(deco);
                 lastLine = lastLine.append(component);
                 lastLineLength += 1 + wordLen;
             }
@@ -162,8 +160,6 @@ public class ItemLoreBuilder {
             var word = words[i];
             if (i == words.length - 1 && text.endsWith(" "))
                 word = word + " ";
-            if (i == 0 && text.startsWith(" "))
-                word = " " + word;
             // Get real length
             int wordLen = word.replaceAll("§.", "").length();
             // Get the last used color.
