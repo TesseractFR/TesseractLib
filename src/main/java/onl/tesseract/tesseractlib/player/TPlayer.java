@@ -12,6 +12,9 @@ import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bddfacade.PetFacade;
 import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
+import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
+import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
+import onl.tesseract.tesseractlib.cosmetics.CosmeticType;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.familier.Pet;
@@ -91,6 +94,7 @@ public class TPlayer implements Listener {
     protected List<Achievement> achievements = new ArrayList<>();
     private UUID uuid;
     protected ElytraTrails trails = ElytraTrails.NONE;
+    protected int marketCurrency = 0;
 
     /**
      * Loads a player
@@ -115,6 +119,19 @@ public class TPlayer implements Listener {
     static public TPlayer get(Player player)
     {
         return TPlayer.playerMap.get(player.getUniqueId());
+    }
+
+    public void buyCosmetic(CosmeticType type, Cosmetic cosmetic,int price)
+    {
+        CosmeticManager.giveCosmetic(getUUID(),type,cosmetic);
+        marketCurrency-=price;
+        setMarketCurrency(marketCurrency);
+    }
+
+    public void setMarketCurrency(int currency)
+    {
+        marketCurrency = currency;
+        playerFacade.setMarketCurrency(marketCurrency);
     }
 
     /**
@@ -307,6 +324,7 @@ public class TPlayer implements Listener {
         playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
         gender = playerFacade.getGender();
         trails = playerFacade.getActiveTrails();
+        marketCurrency = playerFacade.getMarketCurrency();
         achievements.clear();
         achievements = playerFacade.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
@@ -328,11 +346,13 @@ public class TPlayer implements Listener {
         {
             gender = Gender.valueOf(resultSet.getString("genre"));
             trails = ElytraTrails.valueOf(resultSet.getString("active_trail"));
+            marketCurrency = resultSet.getInt("market_currency");
         }
         catch (SQLException throwables)
         {
             gender = Gender.OTHER;
             trails = ElytraTrails.NONE;
+            marketCurrency = 0;
         }
         achievements.clear();
         achievements = playerFacade.getAllAchievements();
@@ -716,5 +736,10 @@ public class TPlayer implements Listener {
     public void setActiveTrail(ElytraTrails elytraTrails){
         trails = elytraTrails;
         playerFacade.setActiveTrails(trails);
+    }
+
+    public int getMarketCurrency()
+    {
+        return marketCurrency;
     }
 }

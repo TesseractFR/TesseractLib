@@ -2,6 +2,8 @@ package onl.tesseract.tesseractlib.menu.pet;
 
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticType;
@@ -40,11 +42,36 @@ public class PetsSelectionMenu extends InventoryMenu {
         int i = 0;
         for(Pet pet : pets){
             boolean hasPet = CosmeticManager.hasCosmetic(player.getUUID(),CosmeticType.PET,pet);
-            addButton(i++,pet.getHead(),ChatColor.YELLOW+pet.getname(),
-                      NEW_LINE+"Cliquez pour invoquer "+pet.getname()+NEW_LINE+NEW_LINE+
-                    (hasPet?ChatColor.GREEN+"Possédé":ChatColor.RED+"Non Possédé"),event->{
+            String lore = NEW_LINE+(hasPet?ChatColor.GREEN+"Possédé":ChatColor.RED+"Non Possédé")+NEW_LINE+NEW_LINE;
+            if(hasPet){
+                lore += "Cliquez pour invoquer "+pet.getname();
+            }
+            else {
+                lore += "Cliquez pour acheter "+pet.getname()+NEW_LINE+
+                ChatColor.GRAY + "Coût : "+pet.getPrice()+" lys d'or"+NEW_LINE+
+                ChatColor.GRAY + "Vous avez : "+player.getMarketCurrency()+" lys d'or";
+            }
+
+
+
+            addButton(i++,pet.getHead(),ChatColor.YELLOW+pet.getname(),lore,event->{
+                if(hasPet)
                     PetManager.invokePet(viewer,pet);
-                    this.close();
+                else
+                {
+                    if (player.getMarketCurrency() >= pet.getPrice())
+                        openConfirmationMenu(viewer,"Être vous sur de vouloir acheter",this,event2 ->{
+                            player.buyCosmetic(CosmeticType.PET,pet,pet.getPrice());
+                        });
+                    else
+                        player.sendMessage(ChatFormats.PET_ERROR.append(
+                                Component.text("Vous n'avez pas assez de lys d'or cliquez ici pour en acheter")
+                                        .hoverEvent(HoverEvent.showText(
+                                Component
+                                        .text("Cliquez ici pour accéder à la boutique.", NamedTextColor.GOLD)))
+                                         .clickEvent(ClickEvent.openUrl("https://tesseract.craftingstore.net/"))));
+                }
+                this.close();
                     });
         }
 

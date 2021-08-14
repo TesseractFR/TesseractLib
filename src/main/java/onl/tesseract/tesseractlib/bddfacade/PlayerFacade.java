@@ -15,8 +15,8 @@ import java.util.UUID;
 
 public class PlayerFacade {
 
-    static private final String bddtable = "t_player";
     final static String bddtableAchivement = "t_player_achievement";
+    static private final String bddtable = "t_player";
     public UUID uuid;
 
     public PlayerFacade(UUID uuid)
@@ -24,71 +24,87 @@ public class PlayerFacade {
         this.uuid = uuid;
     }
 
-    public static boolean exist(UUID uniqueId){
-        try {
+    public static boolean exist(UUID uniqueId)
+    {
+        try
+        {
             final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM "+bddtable + " WHERE uuid = ?");
+                    "SELECT * FROM " + bddtable + " WHERE uuid = ?");
             preparedStatement.setString(1, String.valueOf(uniqueId));
             ResultSet result = preparedStatement.executeQuery();
-            if(result.next()){
+            if (result.next())
+            {
                 return true;
             }
-        } catch (SQLException throwables) {
+        }
+        catch (SQLException throwables)
+        {
             throwables.printStackTrace();
         }
         return false;
     }
 
-    public static void addtodatabase(UUID uniqueId){
-        try {
-            final Connection connection =  TesseractLib.getBddManager().getBddConnection().getConnection();
-            final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO "+bddtable + "(uuid,genre) VALUES (?,'OTHER')");
-            preparedStatement.setString(1, String.valueOf(uniqueId));
-            preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
-    public void setGender(TPlayer.Gender gender)
+    public static void addtodatabase(UUID uniqueId)
     {
-        try {
+        try
+        {
             final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "UPDATE "+bddtable+" SET genre = ? WHERE uuid = ?");
-            preparedStatement.setString(1,""+gender.toString());
-            preparedStatement.setString(2,uuid.toString());
+                    "INSERT INTO " + bddtable + "(uuid,genre) VALUES (?,'OTHER')");
+            preparedStatement.setString(1, String.valueOf(uniqueId));
             preparedStatement.execute();
-        } catch (SQLException throwables) {
+        }
+        catch (SQLException throwables)
+        {
             throwables.printStackTrace();
         }
     }
 
     public TPlayer.Gender getGender()
     {
-        try {
+        try
+        {
             final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT genre FROM "+bddtable + " WHERE uuid = ?");
-            preparedStatement.setString(1,uuid.toString());
+                    "SELECT genre FROM " + bddtable + " WHERE uuid = ?");
+            preparedStatement.setString(1, uuid.toString());
             ResultSet result = preparedStatement.executeQuery();
-            if(result.next())
+            if (result.next())
                 return TPlayer.Gender.valueOf(result.getString("genre"));
-        } catch (SQLException throwables) {
+        }
+        catch (SQLException throwables)
+        {
             throwables.printStackTrace();
         }
         return TPlayer.Gender.OTHER;
+    }
+
+    public void setGender(TPlayer.Gender gender)
+    {
+        try
+        {
+            final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+            final PreparedStatement preparedStatement = connection.prepareStatement(
+                    "UPDATE " + bddtable + " SET genre = ? WHERE uuid = ?");
+            preparedStatement.setString(1, "" + gender.toString());
+            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.execute();
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
     }
 
     public boolean hasAchievement(Achievement achievement)
     {
         try
         {
-            final PreparedStatement preparedStatement = TesseractLib.getBddManager().getBddConnection().getConnection().prepareStatement(
-                    "SELECT achievement_id FROM " + bddtableAchivement
-                            + " WHERE player_uuid = ? AND achievement_id = ?");
+            final PreparedStatement preparedStatement =
+                    TesseractLib.getBddManager().getBddConnection().getConnection().prepareStatement(
+                            "SELECT achievement_id FROM " + bddtableAchivement
+                                    + " WHERE player_uuid = ? AND achievement_id = ?");
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setInt(2, achievement.getId());
             ResultSet result = preparedStatement.executeQuery();
@@ -105,15 +121,18 @@ public class PlayerFacade {
         return false;
     }
 
-    public List<Achievement> getAllAchievements(){
+    public List<Achievement> getAllAchievements()
+    {
         List<Achievement> achievements = new ArrayList<>();
-        try{
+        try
+        {
             final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT achievement_id FROM "+bddtableAchivement+" WHERE player_uuid = ?");
-            preparedStatement.setString(1,uuid.toString());
+                    "SELECT achievement_id FROM " + bddtableAchivement + " WHERE player_uuid = ?");
+            preparedStatement.setString(1, uuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next())
+            {
                 achievements.add(Achievement.getAchievementFromId(resultSet.getInt("achievement_id")));
             }
         }
@@ -128,8 +147,9 @@ public class PlayerFacade {
     {
         try
         {
-            final PreparedStatement preparedStatement = TesseractLib.getBddManager().getBddConnection().getConnection().prepareStatement(
-                    "INSERT INTO " + bddtableAchivement + " (player_uuid, achievement_id) VALUES (?,?)");
+            final PreparedStatement preparedStatement =
+                    TesseractLib.getBddManager().getBddConnection().getConnection().prepareStatement(
+                            "INSERT INTO " + bddtableAchivement + " (player_uuid, achievement_id) VALUES (?,?)");
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setInt(2, achievement.getId());
             preparedStatement.execute();
@@ -144,8 +164,9 @@ public class PlayerFacade {
     {
         try
         {
-            final PreparedStatement preparedStatement = TesseractLib.getBddManager().getBddConnection().getConnection().prepareStatement(
-                    "DELETE FROM " + bddtableAchivement + " WHERE player_uuid=? AND achievement_id=?");
+            final PreparedStatement preparedStatement =
+                    TesseractLib.getBddManager().getBddConnection().getConnection().prepareStatement(
+                            "DELETE FROM " + bddtableAchivement + " WHERE player_uuid=? AND achievement_id=?");
             preparedStatement.setString(1, uuid.toString());
             preparedStatement.setInt(2, achievement.getId());
             preparedStatement.execute();
@@ -161,11 +182,12 @@ public class PlayerFacade {
         try
         {
             final PreparedStatement preparedStatement =
-                TesseractLib.getBddManager().getBddConnection().getConnection().prepareStatement(
-                        "SELECT active_trail FROM t_player WHERE uuid = ?");
-            preparedStatement.setString(1,uuid.toString());
+                    TesseractLib.getBddManager().getBddConnection().getConnection().prepareStatement(
+                            "SELECT active_trail FROM t_player WHERE uuid = ?");
+            preparedStatement.setString(1, uuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next())return ElytraTrails.valueOf(resultSet.getString(1));
+            if (resultSet.next())
+                return ElytraTrails.valueOf(resultSet.getString(1));
         }
         catch (SQLException throwables)
         {
@@ -182,8 +204,47 @@ public class PlayerFacade {
                     .getBddManager().getBddConnection()
                     .getConnection().prepareStatement(
                             "UPDATE t_player SET active_trail =? WHERE uuid =?");
-            preparedStatement.setString(1,trails.toString());
-            preparedStatement.setString(2,uuid.toString());
+            preparedStatement.setString(1, trails.toString());
+            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.execute();
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+    }
+
+    public int getMarketCurrency()
+    {
+        try
+        {
+            final PreparedStatement preparedStatement = TesseractLib
+                    .getBddManager().getBddConnection()
+                    .getConnection().prepareStatement(
+                            "SELECT market_currency FROM t_player WHERE uuid =?");
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                return resultSet.getInt(1);
+            }
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void setMarketCurrency(int currency)
+    {
+        try
+        {
+            final PreparedStatement preparedStatement = TesseractLib
+                    .getBddManager().getBddConnection()
+                    .getConnection().prepareStatement(
+                            "UPDATE t_player SET market_currency =? WHERE uuid =?");
+            preparedStatement.setInt(1, currency);
+            preparedStatement.setString(2, uuid.toString());
             preparedStatement.execute();
         }
         catch (SQLException throwables)
