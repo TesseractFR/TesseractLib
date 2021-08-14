@@ -163,10 +163,9 @@ public class ItemLoreBuilder {
             // Get real length
             int wordLen = word.replaceAll("§.", "").length();
             // Get the last used color.
-            int colorIndex = word.lastIndexOf('§');
-            if (colorIndex != -1 && colorIndex + 1 < word.length())
+            var colors = getLegacyColorCodes(word);
+            for (char c : colors)
             {
-                char c = word.charAt(colorIndex + 1);
                 colorFromChar(c)
                         .ifPresent(lastColor::set);
                 decorationFromChar(c)
@@ -212,6 +211,17 @@ public class ItemLoreBuilder {
         }
 
         return this;
+    }
+
+    protected List<Character> getLegacyColorCodes(final String str)
+    {
+        List<Character> res = new ArrayList<>();
+        for (int i = 0; i < str.length() - 1; i++)
+        {
+            if (str.charAt(i) == '§')
+                res.add(str.charAt(i + 1));
+        }
+        return res;
     }
 
     /**
