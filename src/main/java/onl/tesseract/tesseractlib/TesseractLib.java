@@ -11,6 +11,7 @@ import onl.tesseract.tesseractlib.command.staff.CosmeticCompleter;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
+import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
@@ -18,6 +19,8 @@ import onl.tesseract.tesseractlib.familier.PetManager;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -25,6 +28,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -40,8 +44,6 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     static private String host, database, username, password;
     private static BDDManager bddManager;
     static public int port;
-
-    BukkitTask elytraFly;
 
     static public BDDManager getBddManager() {
         if(bddManager == null){
@@ -121,7 +123,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
 
 
     @EventHandler
-    public void onFly(EntityToggleGlideEvent event) {
+    public void onGlide(EntityToggleGlideEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
         TPlayer tplayer = TPlayer.get((Player) event.getEntity());
         if(tplayer.getEquipment() == null)
@@ -156,6 +158,33 @@ public final class TesseractLib extends JavaPlugin implements Listener {
                         }
                     }
             }.runTaskTimer(TesseractLib.instance, 0, 2);
+        }
+    }
+
+    @EventHandler void onFly(PlayerToggleFlightEvent event){
+        TPlayer tplayer = TPlayer.get(event.getPlayer());
+        if(tplayer.getEquipment() == null)
+        {
+            new BukkitRunnable() {
+                @Override
+                public void run()
+                {
+                    if(!event.getPlayer().isFlying())this.cancel();
+                    FlyFilter selectedFilter = tplayer.getFlyFilter();
+                    Location loc = event.getPlayer().getLocation();
+                    loc = loc.add(-Math.cos(loc.getYaw()),0,-Math.sin(loc.getYaw()));
+                    Particle particle = selectedFilter.getParticle();
+                    double extra = event.getPlayer().isSprinting() ? .5 : 0;
+                    if (selectedFilter == FlyFilter.REDSTONE)
+                        loc.getWorld()
+                           .spawnParticle(particle, loc, 15, .5, .5, .5, .5, new Particle.DustOptions(Color.RED,
+                                                                                                       1.2f));
+                    else if (selectedFilter == FlyFilter.POTION || selectedFilter == FlyFilter.MUSICAL)
+                        loc.getWorld().spawnParticle(particle, loc, 15, .5, .5, .5, 0.2);
+                    else
+                        loc.getWorld().spawnParticle(particle, loc, 15, .5, .5, .5, extra);
+                }
+            }.runTaskTimer(TesseractLib.instance, 0, 10);
         }
     }
 

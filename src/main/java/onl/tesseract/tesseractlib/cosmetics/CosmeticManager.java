@@ -12,11 +12,9 @@ import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class CosmeticManager {
 

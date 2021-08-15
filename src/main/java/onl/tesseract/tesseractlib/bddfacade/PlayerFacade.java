@@ -3,6 +3,7 @@ package onl.tesseract.tesseractlib.bddfacade;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
+import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.player.TPlayer;
 
 import java.sql.Connection;
@@ -251,5 +252,44 @@ public class PlayerFacade {
         {
             throwables.printStackTrace();
         }
+    }
+
+    public void setFlyFilter(FlyFilter flyFilter)
+    {
+        try
+        {
+            final PreparedStatement preparedStatement = TesseractLib
+                    .getBddManager().getBddConnection()
+                    .getConnection().prepareStatement(
+                            "UPDATE t_player SET active_fly_filter =? WHERE uuid =?");
+            preparedStatement.setString(1, flyFilter.toString());
+            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.execute();
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+    }
+
+    public FlyFilter getFlyFilter()
+    {
+        try
+        {
+            final PreparedStatement preparedStatement = TesseractLib
+                    .getBddManager().getBddConnection()
+                    .getConnection().prepareStatement(
+                            "SELECT active_fly_filter FROM t_player WHERE uuid =?");
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                return FlyFilter.valueOf(resultSet.getString(1));
+            }
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+        return FlyFilter.NONE;
     }
 }

@@ -12,10 +12,7 @@ import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bddfacade.PetFacade;
 import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
-import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
-import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
-import onl.tesseract.tesseractlib.cosmetics.CosmeticType;
-import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
+import onl.tesseract.tesseractlib.cosmetics.*;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.familier.Pet;
 import onl.tesseract.tesseractlib.util.ChatFormat;
@@ -95,6 +92,19 @@ public class TPlayer implements Listener {
     private UUID uuid;
     protected ElytraTrails trails = ElytraTrails.NONE;
     protected int marketCurrency = 0;
+
+    public FlyFilter getFlyFilter()
+    {
+        return flyFilter;
+    }
+
+    public void setFlyFilter(FlyFilter flyFilter)
+    {
+        this.flyFilter = flyFilter;
+        playerFacade.setFlyFilter(flyFilter);
+    }
+
+    protected FlyFilter flyFilter =  FlyFilter.NONE;
 
     /**
      * Loads a player
@@ -325,6 +335,7 @@ public class TPlayer implements Listener {
         gender = playerFacade.getGender();
         trails = playerFacade.getActiveTrails();
         marketCurrency = playerFacade.getMarketCurrency();
+        flyFilter = playerFacade.getFlyFilter();
         achievements.clear();
         achievements = playerFacade.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
@@ -347,11 +358,11 @@ public class TPlayer implements Listener {
             gender = Gender.valueOf(resultSet.getString("genre"));
             trails = ElytraTrails.valueOf(resultSet.getString("active_trail"));
             marketCurrency = resultSet.getInt("market_currency");
+            flyFilter = FlyFilter.valueOf(resultSet.getString("active_fly_filter"));
         }
         catch (SQLException throwables)
         {
             gender = Gender.OTHER;
-            trails = ElytraTrails.NONE;
             marketCurrency = 0;
         }
         achievements.clear();
