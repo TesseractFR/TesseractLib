@@ -9,12 +9,14 @@ import onl.tesseract.tesseractlib.command.*;
 import onl.tesseract.tesseractlib.command.staff.CosmeticCommand;
 import onl.tesseract.tesseractlib.command.staff.CosmeticCompleter;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
+import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
+import onl.tesseract.tesseractlib.familier.Pet;
 import onl.tesseract.tesseractlib.familier.PetManager;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.Util;
@@ -31,10 +33,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public final class TesseractLib extends JavaPlugin implements Listener {
     public static JavaPlugin instance;
@@ -59,6 +63,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         instance = this;
         loadConfig();
         bddManager = new BDDManager(host,port,username,password,database);
+        registerCosmetics();
         registerEvents();
         registerCommands();
         System.out.println("Loading title...");
@@ -66,6 +71,13 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         System.out.println("Loading achievement...");
         Achievement.loadAll();
 
+    }
+
+    private void registerCosmetics()
+    {
+        CosmeticManager.registerCosmetic(Pet.getTypeName(), new HashSet<>(Arrays.asList(Pet.values())));
+        CosmeticManager.registerCosmetic(FlyFilter.getTypeName(), new HashSet<>(Arrays.asList(FlyFilter.values())));
+        CosmeticManager.registerCosmetic(ElytraTrails.getTypeName(), new HashSet<>(Arrays.asList(ElytraTrails.values())));
     }
 
     @Override

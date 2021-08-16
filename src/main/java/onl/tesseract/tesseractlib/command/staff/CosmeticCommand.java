@@ -3,7 +3,6 @@ package onl.tesseract.tesseractlib.command.staff;
 import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
-import onl.tesseract.tesseractlib.cosmetics.CosmeticType;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -26,15 +25,9 @@ public class CosmeticCommand implements CommandExecutor {
         }
         OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
         UUID uuid = player.getUniqueId();
-        CosmeticType type;
+        String type = args[2];
         Cosmetic cosmetic;
-        try
-        {
-            type = CosmeticType.valueOf(args[2]);
-        }catch (IllegalArgumentException e){
-            commandSender.sendMessage(ChatFormats.COSMETICS_ERROR+ "Type de cosmetique inconnu.");
-            return false;
-        }
+
         try{
             cosmetic = CosmeticManager.stringToCosmetic(type, args[3]);
         }

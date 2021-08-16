@@ -131,7 +131,7 @@ public class TPlayer implements Listener {
         return TPlayer.playerMap.get(player.getUniqueId());
     }
 
-    public void buyCosmetic(CosmeticType type, Cosmetic cosmetic,int price)
+    public void buyCosmetic(String type, Cosmetic cosmetic,int price)
     {
         CosmeticManager.giveCosmetic(getUUID(),type,cosmetic);
         marketCurrency-=price;

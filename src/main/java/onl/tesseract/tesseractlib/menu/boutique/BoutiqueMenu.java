@@ -21,7 +21,7 @@ public class BoutiqueMenu extends InventoryMenu {
     public void open(Player viewer) {
         fill(Material.GRAY_STAINED_GLASS_PANE, " ");
 
-        addButton(12,Material.AMETHYST_CLUSTER,ChatColor.LIGHT_PURPLE+"Tous les serveurs",
+        addButton(13,Material.AMETHYST_CLUSTER,ChatColor.LIGHT_PURPLE+"Tous les serveurs",
                   ChatColor.GRAY+"Cliquez pour afficher les cosmetiques disponibles sur tout les serveurs.",
                   event->{new GlobalBoutiqueMenu(player,this).open(viewer);
                   });

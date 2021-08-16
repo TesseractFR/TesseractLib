@@ -1,20 +1,40 @@
 package onl.tesseract.tesseractlib.cosmetics;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 
 public enum FlyFilter implements Cosmetic {
-    AMOUR,
-    COLERE,
-    CONNAISSANCE,
-    MUSICAL,
-    ENDER,
-    INCENDIAIRE,
-    REDSTONE,
-    POTION,
-    FUMEE,
-    NEBULEUX,
-    NONE;
+    AMOUR(ChatColor.GRAY + "Amour", Material.APPLE, 2, Particle.HEART),
+    COLERE(ChatColor.DARK_RED + "Colère", Material.NETHER_WART, 3, Particle.VILLAGER_ANGRY),
+    CONNAISSANCE(ChatColor.BLUE+"Connaissance",Material.BOOK,4,Particle.ENCHANTMENT_TABLE),
+    MUSICAL(ChatColor.DARK_AQUA + "Musical", Material.NOTE_BLOCK, 5, Particle.NOTE),
+    ENDER(ChatColor.DARK_PURPLE + "Ender", Material.ENDER_PEARL,6, Particle.DRAGON_BREATH),
+    INCENDIAIRE(ChatColor.GOLD + "Incendiaire", Material.FIRE_CHARGE, 11, Particle.LAVA),
+    REDSTONE(ChatColor.DARK_RED + "Redstone", Material.REDSTONE, 12, Particle.REDSTONE),
+    POTION(ChatColor.LIGHT_PURPLE + "Potion", Material.DRAGON_BREATH, 13, Particle.SPELL_MOB),
+    FUMEE(ChatColor.DARK_GRAY + "Fumée noire", Material.CHARCOAL, 14, Particle.SMOKE_LARGE),
+    NEBULEUX(ChatColor.WHITE + "Nébuleux", Material.FEATHER, 15, Particle.END_ROD),
+    NONE(ChatColor.GOLD + "Flammes", Material.BLAZE_POWDER, 2, Particle.FLAME);
+
+    String name;
+    Material material;
+    int index;
+    Particle particle;
+
+    FlyFilter(String s, Material m, int i, Particle p)
+    {
+        name = s;
+        material = m;
+        index = i;
+        particle = p;
+    }
+
+    public static String getTypeName()
+    {
+        return "FlyFilter";
+    }
 
     @Override
     public Component getObtainMessage()
@@ -25,24 +45,22 @@ public enum FlyFilter implements Cosmetic {
     @Override
     public String getName()
     {
-        return toString().charAt(0) + toString().substring(1).toLowerCase();
+        return name;
     }
 
     public Particle getParticle()
     {
-        return switch (this)
-                {
-                    case AMOUR -> Particle.HEART;
-                    case COLERE -> Particle.VILLAGER_ANGRY;
-                    case CONNAISSANCE -> Particle.ENCHANTMENT_TABLE;
-                    case MUSICAL -> Particle.NOTE;
-                    case ENDER -> Particle.DRAGON_BREATH;
-                    case INCENDIAIRE -> Particle.LAVA;
-                    case REDSTONE -> Particle.REDSTONE;
-                    case POTION -> Particle.SPELL_MOB;
-                    case FUMEE -> Particle.SMOKE_LARGE;
-                    case NEBULEUX -> Particle.END_ROD;
-                    default -> Particle.FLAME;
-                };
+        return particle;
+    }
+
+
+    public int getIndex()
+    {
+        return index;
+    }
+
+    public Material getMaterial()
+    {
+        return material;
     }
 }

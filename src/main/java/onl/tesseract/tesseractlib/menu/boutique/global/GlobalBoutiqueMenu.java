@@ -2,12 +2,10 @@ package onl.tesseract.tesseractlib.menu.boutique.global;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
-import onl.tesseract.tesseractlib.cosmetics.CosmeticType;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
+import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.familier.Pet;
-import onl.tesseract.tesseractlib.menu.boutique.BoutiqueMenu;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.ChatColor;
@@ -29,8 +27,8 @@ public class GlobalBoutiqueMenu extends InventoryMenu {
     {
         fill(Material.GRAY_STAINED_GLASS_PANE, " ");
 
-        int totalPlayerTrail = CosmeticManager.getTotalPossessed(player.getUUID(), CosmeticType.ELYTRA_TRAIL);
-        addButton(12, Material.ELYTRA,
+        int totalPlayerTrail = CosmeticManager.getTotalPossessed(player.getUUID(), ElytraTrails.getTypeName());
+        addButton(11, Material.ELYTRA,
                   ChatColor.LIGHT_PURPLE + "Sillages des ailes",
                   NEW_LINE +
                           ChatColor.GRAY + totalPlayerTrail + "/" + ElytraTrails.values().length +
@@ -40,18 +38,34 @@ public class GlobalBoutiqueMenu extends InventoryMenu {
                     new ElytraTrailboutiqueMenu(player, this).open(viewer);
 
                 });
-        int totalPlayerPet = CosmeticManager.getTotalPossessed(player.getUUID(), CosmeticType.PET);
-        addButton(14, Material.LEAD,
+        int totalPlayerFlyFilter = CosmeticManager.getTotalPossessed(player.getUUID(),FlyFilter.getTypeName());
+        addButton(13, Material.BLAZE_POWDER,
+                  ChatColor.DARK_GREEN + "Filtre de vol & jetpack",
+                  NEW_LINE +
+                          ChatColor.GRAY + totalPlayerFlyFilter + "/" + FlyFilter.values().length +
+                          " possédé" + (totalPlayerFlyFilter > 2 ? "s" : "")
+                          + NEW_LINE + NEW_LINE +
+                          ChatColor.GRAY + "Des filtres qui apparaissent lorsque vous voler en Créatif ou lors de "
+                          + "l'utilisation du jetpack en Semi-RP",
+                  event -> {
+                    new FlyFilterBoutiqueMenu(player,this).open(viewer);
+                });
+
+
+        int totalPlayerPet = CosmeticManager.getTotalPossessed(player.getUUID(), Pet.getTypeName());
+        addButton(15, Material.LEAD,
                   ChatColor.BLUE + "Familier",
                   NEW_LINE +
                           ChatColor.GRAY + totalPlayerPet + "/" + Pet.values().length +
                           " possédé" + (totalPlayerPet > 2 ? "s" : "")
                           + NEW_LINE + NEW_LINE +
                           ChatColor.GRAY + "De petits familiers qui vous suivent partout", event -> {
-
+                        new PetBoutiqueMenu(player,this).open(viewer);
                 });
 
         addButton(22, Material.RAW_GOLD, ChatColor.GOLD + "Lys d'or",
+                  NEW_LINE+ ChatColor.GRAY + "Vous avez "+ChatColor.DARK_AQUA+player.getMarketCurrency()+ChatColor.GRAY+
+                          " lys d'or."+
                   NEW_LINE + ChatColor.GRAY + "Cliquez ici pour acheter des lys d'or", event -> {
                     player.sendMessage(Component.text(
                             ChatColor.GOLD

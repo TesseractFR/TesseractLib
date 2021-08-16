@@ -6,7 +6,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.bddfacade.CosmeticFacade;
-import onl.tesseract.tesseractlib.familier.Pet;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
@@ -20,6 +19,13 @@ public class CosmeticManager {
 
     private static final Map<UUID,CosmeticPlayer> cosmeticPlayer = new HashMap<>();
 
+    private static final Map<String, Set<Cosmetic>> cosmetics = new HashMap<>();
+
+    public static void registerCosmetic(String type, Set<Cosmetic> cosmetic)
+    {
+       cosmetics.put(type,cosmetic);
+    }
+
 
     public static void loadPlayer(UUID uuid)
     {
@@ -28,13 +34,13 @@ public class CosmeticManager {
             public void run()
             {
                 cosmeticPlayer.remove(uuid);
-                Map<CosmeticType, Set<Cosmetic>> cosmetics = CosmeticFacade.getAll(uuid);
+                Map<String, Set<Cosmetic>> cosmetics = CosmeticFacade.getAll(uuid);
                 cosmeticPlayer.put(uuid,new CosmeticPlayer(cosmetics));
             }
         }.runTaskAsynchronously(TesseractLib.instance);
     }
 
-    public static void giveCosmetic(UUID uuid,CosmeticType type,Cosmetic cosmetic){
+    public static void giveCosmetic(UUID uuid,String type,Cosmetic cosmetic){
 
         new BukkitRunnable() {
             @Override
@@ -53,7 +59,7 @@ public class CosmeticManager {
         }.runTaskAsynchronously(TesseractLib.instance);
     }
 
-    public static void removeCosmetic(UUID uuid,CosmeticType type,Cosmetic cosmetic){
+    public static void removeCosmetic(UUID uuid,String type,Cosmetic cosmetic){
         new BukkitRunnable() {
             @Override
             public void run()
@@ -67,32 +73,27 @@ public class CosmeticManager {
         }.runTaskAsynchronously(TesseractLib.instance);
     }
 
-    public static boolean hasCosmetic(UUID uuid,CosmeticType type,Cosmetic cosmetic){
+    public static boolean hasCosmetic(UUID uuid,String type,Cosmetic cosmetic){
         if(!cosmeticPlayer.containsKey(uuid))loadPlayer(uuid);
         return cosmeticPlayer.get(uuid).hasCosmetics(type,cosmetic);
     }
 
-    public static Cosmetic stringToCosmetic(CosmeticType type,String s) throws IllegalArgumentException{
-        switch (type){
-            case PET -> {
-                return Pet.valueOf(s);
-            }
-            case ELYTRA_TRAIL -> {
-                return ElytraTrails.valueOf(s);
-            }
-            default -> {
-                throw new IllegalArgumentException();
+    public static Cosmetic stringToCosmetic(String type,String cosmetic){
+        if(cosmetics.containsKey(type)){
+            for(Cosmetic c : cosmetics.get(type)){
+                if(c.toString().equals(cosmetic))return c;
             }
         }
+        throw new IllegalArgumentException("Unknow cosmetic "+type + " "+cosmetic);
     }
 
-    public static int getTotalPossessed(UUID uuid, CosmeticType type)
+    public static int getTotalPossessed(UUID uuid, String type)
     {
         if(!cosmeticPlayer.containsKey(uuid))return 0;
         return cosmeticPlayer.get(uuid).getTotal(type);
     }
     public static void tryToBuyEvent(Player viewer,InventoryMenu mainMenu,TPlayer player,
-                                                          CosmeticType type,
+                                                          String type,
                                                           Cosmetic cosmetic){
         if (player.getMarketCurrency() >= cosmetic.getPrice())
             InventoryMenu.openConfirmationMenu(viewer,"Être vous sur de vouloir acheter",mainMenu, event2 ->{
@@ -110,4 +111,13 @@ public class CosmeticManager {
         mainMenu.close();
     }
 
+
+    public static Set<String> getTypes(){
+        return cosmetics.keySet();
+    }
+
+    public static Set<Cosmetic> getCosmetics(String arg)
+    {
+        return cosmetics.get(arg);
+    }
 }

@@ -1,11 +1,9 @@
 package onl.tesseract.tesseractlib.menu;
 
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
-import onl.tesseract.tesseractlib.cosmetics.CosmeticType;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
-import onl.tesseract.tesseractlib.menu.BoussoleMenu;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.ChatColor;
@@ -31,7 +29,7 @@ public class ElytraTrailSelectionMenu extends InventoryMenu {
         {
             if (trail != ElytraTrails.NONE)
             {
-                boolean hasTrail = CosmeticManager.hasCosmetic(player.getUUID(), CosmeticType.ELYTRA_TRAIL,trail);
+                boolean hasTrail = CosmeticManager.hasCosmetic(player.getUUID(), ElytraTrails.getTypeName(),trail);
                 String lore = NEW_LINE + ( hasTrail
                                           ? ChatColor.GREEN + "Débloqué"
                                           : ChatColor.RED + "Bloqué");
@@ -40,12 +38,11 @@ public class ElytraTrailSelectionMenu extends InventoryMenu {
                             if (hasTrail)
                                 player.setActiveTrail(trail);
                             else
-                                viewer.sendMessage(new ComponentBuilder(
+                                viewer.sendMessage(Component.text(
                                         ChatColor.GOLD + "[" + ChatColor.YELLOW + "Accès à la boutique" + ChatColor.GOLD
-                                                + "]")
-                                                           .event(new ClickEvent(ClickEvent.Action.OPEN_URL,
-                                                                                 "https://tesseract.craftingstore.net/"))
-                                                           .create());
+                                                + "]").clickEvent(ClickEvent.openUrl(
+                                                        "https://tesseract.craftingstore.net/"))
+                                );
                             this.close();
                         });
             }

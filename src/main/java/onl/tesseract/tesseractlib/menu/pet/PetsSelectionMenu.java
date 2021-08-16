@@ -6,7 +6,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
-import onl.tesseract.tesseractlib.cosmetics.CosmeticType;
 import onl.tesseract.tesseractlib.familier.Pet;
 import onl.tesseract.tesseractlib.familier.PetCategory;
 import onl.tesseract.tesseractlib.familier.PetManager;
@@ -41,7 +40,7 @@ public class PetsSelectionMenu extends InventoryMenu {
         List<Pet> pets = petCategory.getPets();
         int i = 0;
         for(Pet pet : pets){
-            boolean hasPet = CosmeticManager.hasCosmetic(player.getUUID(),CosmeticType.PET,pet);
+            boolean hasPet = CosmeticManager.hasCosmetic(player.getUUID(),Pet.getTypeName(),pet);
             String lore = NEW_LINE+(hasPet?ChatColor.GREEN+"Possédé":ChatColor.RED+"Non Possédé")+NEW_LINE+NEW_LINE;
             if(hasPet){
                 lore += "Cliquez pour invoquer "+pet.getname();
@@ -60,9 +59,7 @@ public class PetsSelectionMenu extends InventoryMenu {
                 else
                 {
                     if (player.getMarketCurrency() >= pet.getPrice())
-                        openConfirmationMenu(viewer,"Être vous sur de vouloir acheter",this,event2 ->{
-                            player.buyCosmetic(CosmeticType.PET,pet,pet.getPrice());
-                        });
+                        openConfirmationMenu(viewer,"Être vous sur de vouloir acheter",this,event2 -> player.buyCosmetic(Pet.getTypeName(), pet, pet.getPrice()));
                     else
                         player.sendMessage(ChatFormats.PET_ERROR.append(
                                 Component.text("Vous n'avez pas assez de lys d'or, cliquez ici pour en acheter")

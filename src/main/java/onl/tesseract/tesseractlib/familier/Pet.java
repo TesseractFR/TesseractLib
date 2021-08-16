@@ -3,9 +3,13 @@ package onl.tesseract.tesseractlib.familier;
 
 import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
-import onl.tesseract.tesseractlib.util.ChatFormats;
+import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public enum Pet implements Cosmetic {
     PIGGY(PetHead.PiggyHead),
@@ -50,6 +54,11 @@ public enum Pet implements Cosmetic {
     {
         this.name = name;
         this.head = head;
+    }
+
+    public static String getTypeName()
+    {
+        return "Pet";
     }
 
     public String getname()
