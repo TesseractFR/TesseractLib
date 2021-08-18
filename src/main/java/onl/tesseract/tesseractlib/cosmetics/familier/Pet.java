@@ -1,10 +1,12 @@
-package onl.tesseract.tesseractlib.familier;
+package onl.tesseract.tesseractlib.cosmetics.familier;
 
 
+import net.kyori.adventure.text.Component;
+import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.inventory.ItemStack;
 
-public enum Pet {
+public enum Pet implements Cosmetic {
     PIGGY(PetHead.PiggyHead),
     BOARY(PetHead.BoaryHead),
     WILDY(PetHead.WildyHead),
@@ -49,6 +51,11 @@ public enum Pet {
         this.head = head;
     }
 
+    public static String getTypeName()
+    {
+        return "Pet";
+    }
+
     public String getname()
     {
         return name;
@@ -59,4 +66,15 @@ public enum Pet {
         return InventoryMenu.getCustomHead("", head.data, head.signature);
     }
 
+    @Override
+    public Component getObtainMessage()
+    {
+        return Component.text("Vous avez obtenu le familier "+getname());
+    }
+
+    @Override
+    public String getName()
+    {
+        return name;
+    }
 }

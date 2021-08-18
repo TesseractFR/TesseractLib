@@ -12,8 +12,8 @@ public class EquipmentCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args)
     {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
+            if (TPlayer.get(player).getEquipment()==null)return true;
             EquipmentMenu menu = new EquipmentMenu(TPlayer.get(player));
             menu.open(player);
         }

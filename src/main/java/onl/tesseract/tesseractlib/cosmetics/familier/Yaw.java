@@ -1,4 +1,4 @@
-package onl.tesseract.tesseractlib.familier;
+package onl.tesseract.tesseractlib.cosmetics.familier;
 
 import org.bukkit.entity.Player;
 

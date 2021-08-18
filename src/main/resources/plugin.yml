@@ -31,3 +31,15 @@ commands:
     aliases: [pet, pets]
     usage: "/familier"
     description: Permet d'ouvrir le menu des familiers
+  cosmetic:
+    usage: "/cosmetic"
+    description: Permet de donner ou reprendre des cosmetiques
+  elytraTrail:
+    usage: "/elytraTrail"
+    description: Permet d'ouvrir le menu de selection des trails d'elytra
+  boutique:
+    usage: "/boutique"
+    description: Ouvre la boutique
+  marketCurrency:
+    usage: "/marketCurrency"
+    description: Donne des lys d'or au joueur.

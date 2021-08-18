@@ -7,10 +7,9 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.animation.AnimationTarget;
 import onl.tesseract.tesseractlib.animation.Circle;
 import onl.tesseract.tesseractlib.animation.Concentration;
-import onl.tesseract.tesseractlib.bddfacade.ElytraTrailsFacade;
+import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.Util;
@@ -36,8 +35,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class Elytra extends Invocable {
@@ -48,8 +45,6 @@ public class Elytra extends Invocable {
     boolean autoGlide = true;
 
     boolean ignoreSpeedLevel = false;
-    List<Trail> purchasedTrails = new ArrayList<>();
-    Trail trail = Trail.NONE;
 
     int protectionLevel = 0;
     int speedLevel = 0;
@@ -63,45 +58,7 @@ public class Elytra extends Invocable {
         PROTECTION, VITESSE
     }
 
-    public enum Trail {
-        ENDER(ChatColor.DARK_PURPLE + "Ender", Material.ENDER_PEARL,1, Particle.DRAGON_BREATH),
-        FLAME(ChatColor.GOLD + "Flammes", Material.BLAZE_POWDER,2, Particle.FLAME),
-        CLOUD(ChatColor.GRAY + "Nuages", Material.PHANTOM_MEMBRANE,3, Particle.CLOUD),
-        LOVE(ChatColor.GRAY + "Amour", Material.APPLE,4, Particle.HEART),
-        MUSICAL(ChatColor.DARK_AQUA + "Musical", Material.NOTE_BLOCK,5, Particle.NOTE),
-        REDSTONE(ChatColor.DARK_RED + "Redstone", Material.REDSTONE,6, Particle.REDSTONE),
-        SMOKE(ChatColor.DARK_GRAY + "Fumée noire", Material.CHARCOAL,7, Particle.SMOKE_LARGE),
-        GREEN(ChatColor.GREEN + "Verdoyant", Material.LILY_PAD,10, Particle.VILLAGER_HAPPY),
-        ANGER(ChatColor.DARK_RED + "Colère", Material.NETHER_WART,11, Particle.VILLAGER_ANGRY),
-        INCENDIARY(ChatColor.GOLD + "Incendiaire", Material.FIRE_CHARGE,12, Particle.LAVA),
-        NEBULOUS(ChatColor.WHITE + "Nébuleux", Material.FEATHER,13, Particle.END_ROD),
-        TOTEM(ChatColor.DARK_GREEN + "Totem", Material.TOTEM_OF_UNDYING,14, Particle.TOTEM),
-        POTION(ChatColor.LIGHT_PURPLE + "Potion", Material.DRAGON_BREATH,15, Particle.SPELL_MOB),
-        SHINNING(ChatColor.WHITE + "Scintillant", Material.PRISMARINE_CRYSTALS,16, Particle.FIREWORKS_SPARK),
-        NONE(ChatColor.GRAY + "Sans sillage", Material.STRUCTURE_VOID, 0, null)
-        ;
 
-        String name;
-        Material material;
-        int index;
-        Particle particle;
-        Trail(String s, Material m, int i, Particle p)
-        {
-            name = s;
-            material = m;
-            index = i;
-            particle = p;
-        }
-        public int getIndex() {return index;}
-        public Material getMaterial() {return material;}
-        public String getName() {
-            return name;
-        }
-        public Particle getParticle()
-        {
-            return particle;
-        }
-    }
 
     public Elytra(Equipment equipment)
     {
@@ -124,12 +81,8 @@ public class Elytra extends Invocable {
         if (this.topspeedLevel == 0)
             this.topspeedLevel = speedLevel;
         setItem();
-
-        // Load trails
-        purchasedTrails = ElytraTrailsFacade.getPlayedTrails(equipment.getPlayer().getOfflinePlayer().getUniqueId());
         // Load active trail
-        if (yamlMap.containsKey("trail"))
-            trail = Trail.valueOf((String) yamlMap.get("trail"));
+
 
         equipment.unblockedChestplate.add(this);
     }
@@ -170,7 +123,6 @@ public class Elytra extends Invocable {
         map.put("speedLvl", this.speedLevel);
         map.put("topprotectionLvl", this.topprotectionLevel);
         map.put("topspeedLvl", this.topspeedLevel);
-        map.put("trail", this.trail.toString());
         return map;
     }
 
@@ -244,20 +196,21 @@ public class Elytra extends Invocable {
                             .append(Component.text("Distance: "))
                             .append(Component.text((int) (player.getLocation().distance(player.getCompassTarget())), NamedTextColor.YELLOW));
                     player.sendActionBar(comp);
-                    if (trail != Trail.NONE) {
+                    ElytraTrails trail = TPlayer.get(player).getActiveTrail();
+                    if (trail != ElytraTrails.NONE) {
                         ParticleBuilder builder = new ParticleBuilder(trail.getParticle());
-                        if (trail == Trail.SHINNING)
+                        if (trail == ElytraTrails.SHINNING)
                             builder.count(1);
                         else
                             builder.count(2);
                         builder.offset(.5, .5, .5);
-                        if (trail == Trail.POTION || trail == Trail.MUSICAL)
+                        if (trail == ElytraTrails.POTION || trail == ElytraTrails.MUSICAL)
                             builder.extra(0.2);
                         else
                             builder.extra(0);
                         builder.location(Util.Locations.backward(player.getLocation(), 2));
                         builder.receivers(100);
-                        if (trail == Trail.REDSTONE)
+                        if (trail == ElytraTrails.REDSTONE)
                             builder.color(Color.RED);
                         builder.spawn();
                     }
@@ -446,22 +399,6 @@ public class Elytra extends Invocable {
         }
     }
 
-    public List<Trail> getPurchasedTrails()
-    {
-        return purchasedTrails;
-    }
-
-    public Trail getTrail()
-    {
-        return trail;
-    }
-
-    public void setTrail(Trail trail)
-    {
-        this.trail = trail;
-        equipment.getPlayer().sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Le sillage a été activé !")));
-    }
-
     public boolean isIgnoreSpeedLevel()
     {
         return ignoreSpeedLevel;
@@ -479,35 +416,6 @@ public class Elytra extends Invocable {
         return prices;
     }
 
-    public static void addTrail(OfflinePlayer player, Trail trail) {
-        if (player.isOnline())
-        {
-            Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().getLike(Elytra.class);
-            el.getPurchasedTrails().add(trail);
-            ((Player) player).sendMessage(ChatFormats.EQUIPMENT_SUCCESS
-                                                  .append(Component.text("Le sillage "))
-                                                  .append(Component.text(trail.getName(), NamedTextColor.GREEN))
-                                                  .append(Component.text(" a bien été ajouté à vos ailes ! Activez le dans le menu des ailes.")));
-        }
-        ElytraTrailsFacade.addTrail(player.getUniqueId(),trail);
-    }
 
-    public static boolean hasTrail(OfflinePlayer player, Trail trail) {
-        return ElytraTrailsFacade.hasTrail(player.getUniqueId(),trail);
-    }
 
-    public static void removeTrail(OfflinePlayer player, Trail trail)
-    {
-        if (player.isOnline()) {
-            Elytra el = (Elytra) TPlayer.get((Player) player).getEquipment().getLike(Elytra.class);
-            el.getPurchasedTrails().remove(trail);
-            if (el.getTrail() == trail)
-                el.setTrail(Trail.NONE);
-        }
-        ((Player) player).sendMessage(ChatFormats.EQUIPMENT_SUCCESS
-                                              .append(Component.text("Le sillage "))
-                                              .append(Component.text(trail.getName(), NamedTextColor.GREEN))
-                                              .append(Component.text(" a été retiré de vos ailes !")));
-        ElytraTrailsFacade.removeTrail(player.getUniqueId(),trail);
-    }
 }

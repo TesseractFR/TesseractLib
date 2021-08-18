@@ -2,7 +2,7 @@ package onl.tesseract.tesseractlib.bddfacade;
 
 
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.familier.Pet;
+import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

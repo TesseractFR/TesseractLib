@@ -1,13 +1,12 @@
-package onl.tesseract.tesseractlib.menu.pet;
+package onl.tesseract.tesseractlib.menu.cosmetic.pet;
 
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import onl.tesseract.tesseractlib.familier.PetCategory;
-import onl.tesseract.tesseractlib.familier.PetManager;
+import onl.tesseract.tesseractlib.cosmetics.familier.PetCategory;
+import onl.tesseract.tesseractlib.cosmetics.familier.PetManager;
 import onl.tesseract.tesseractlib.menu.BoussoleMenu;
 import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.menu.Button;
@@ -24,11 +23,10 @@ public class PetTypeSelection extends InventoryMenu {
      **************************************************************************************/
 
 
-    public PetTypeSelection(TPlayer player)
+    public PetTypeSelection(TPlayer player, InventoryMenu previous)
     {
-        super(18, ChatColor.BLUE + "Les familiers");
+        super(18, ChatColor.BLUE + "Les familiers",previous==null?new BoussoleMenu(player):previous);
         this.player = player;
-        this.previous = new BoussoleMenu(player);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class PetTypeSelection extends InventoryMenu {
                 , event -> {
             if (PetManager.invokedPets.get(viewer.getUniqueId()) != null)
             {
-                PetManager.invokePet(viewer, null, false);
+                PetManager.invokePet(viewer, null);
                 viewer.sendMessage(ChatFormats.PET.append(Component.text("Votre familier a été désinvoqué", NamedTextColor.GREEN)));
                 this.close();
             }
