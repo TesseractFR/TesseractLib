@@ -40,3 +40,6 @@ commands:
   boutique:
     usage: "/boutique"
     description: Ouvre la boutique
+  marketCurrency:
+    usage: "/marketCurrency"
+    description: Donne des lys d'or au joueur.

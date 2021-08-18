@@ -9,12 +9,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
-import onl.tesseract.tesseractlib.achievement.Title;
-import onl.tesseract.tesseractlib.bddfacade.PetFacade;
 import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
 import onl.tesseract.tesseractlib.cosmetics.*;
 import onl.tesseract.tesseractlib.equipment.Equipment;
-import onl.tesseract.tesseractlib.familier.Pet;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
@@ -134,14 +131,18 @@ public class TPlayer implements Listener {
     public void buyCosmetic(String type, Cosmetic cosmetic,int price)
     {
         CosmeticManager.giveCosmetic(getUUID(),type,cosmetic);
-        marketCurrency-=price;
-        setMarketCurrency(marketCurrency);
+        addMarketCurrency(-price);
     }
 
     public void setMarketCurrency(int currency)
     {
         marketCurrency = currency;
         playerFacade.setMarketCurrency(marketCurrency);
+    }
+
+    public void addMarketCurrency(int amount){
+        marketCurrency = playerFacade.getMarketCurrency();
+        setMarketCurrency(marketCurrency+amount);
     }
 
     /**

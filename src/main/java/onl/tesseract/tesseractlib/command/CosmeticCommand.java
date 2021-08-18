@@ -1,14 +1,17 @@
-package onl.tesseract.tesseractlib.command.staff;
+package onl.tesseract.tesseractlib.command;
 
 import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
+import onl.tesseract.tesseractlib.menu.cosmetic.CosmeticMenu;
+import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -19,9 +22,11 @@ public class CosmeticCommand implements CommandExecutor {
                              @NotNull String[] args)
     {
 
-        if(!commandSender.hasPermission("cosmetic"))return false;
-        if(args.length < 3){
-            return false;
+        if(!commandSender.hasPermission("cosmetic.admin") || args.length < 3){
+            if(commandSender instanceof Player player){
+                new CosmeticMenu(TPlayer.get(player),null).open(player);
+            }
+            return true;
         }
         OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
         UUID uuid = player.getUniqueId();

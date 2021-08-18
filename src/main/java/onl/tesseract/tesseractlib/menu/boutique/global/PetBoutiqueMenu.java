@@ -1,9 +1,8 @@
 package onl.tesseract.tesseractlib.menu.boutique.global;
 
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
-import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
-import onl.tesseract.tesseractlib.familier.Pet;
-import onl.tesseract.tesseractlib.familier.PetCategory;
+import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
+import onl.tesseract.tesseractlib.cosmetics.familier.PetCategory;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.ChatColor;
@@ -33,7 +32,7 @@ public class PetBoutiqueMenu extends InventoryMenu {
                               "Cliquez pour acheter "+pet.getName()+NEW_LINE+
                                       ChatColor.GRAY + "Coût : "+pet.getPrice()+" lys d'or"+NEW_LINE+
                                       ChatColor.GRAY + "Vous avez : "+player.getMarketCurrency()+" lys d'or",
-                              event-> CosmeticManager.tryToBuyEvent(viewer, this, player, ElytraTrails.getTypeName(), pet));
+                              event-> CosmeticManager.tryToBuyEvent(viewer, this, player, Pet.getTypeName(), pet));
                 }else {
                     addInactiveButton(i++,Material.STRUCTURE_VOID,pet.getName(),ChatColor.GRAY+"Vous possedez "
                             + "déjà ce famillié");

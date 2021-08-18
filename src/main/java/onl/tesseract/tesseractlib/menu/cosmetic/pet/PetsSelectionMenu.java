@@ -1,4 +1,4 @@
-package onl.tesseract.tesseractlib.menu.pet;
+package onl.tesseract.tesseractlib.menu.cosmetic.pet;
 
 
 import net.kyori.adventure.text.Component;
@@ -6,9 +6,9 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
-import onl.tesseract.tesseractlib.familier.Pet;
-import onl.tesseract.tesseractlib.familier.PetCategory;
-import onl.tesseract.tesseractlib.familier.PetManager;
+import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
+import onl.tesseract.tesseractlib.cosmetics.familier.PetCategory;
+import onl.tesseract.tesseractlib.cosmetics.familier.PetManager;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
@@ -30,7 +30,7 @@ public class PetsSelectionMenu extends InventoryMenu {
         super(18, ChatColor.BLUE + "Sélection d'un familier");
         this.petCategory = petCategory;
         this.player = player;
-        this.previous = new PetTypeSelection(player);
+        this.previous = new PetTypeSelection(player, this);
     }
 
     @Override

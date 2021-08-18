@@ -16,6 +16,7 @@ public class CosmeticCompleter implements TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command,
                                                 @NotNull String s, @NotNull String[] args)
     {
+        if(!commandSender.hasPermission("cosmetic.admin"))return null;
         if (args.length == 1)
             return List.of("give", "remove")
                        .stream().filter(sub -> sub.startsWith(args[0])).collect(Collectors.toList());

@@ -1,6 +1,6 @@
 package onl.tesseract.tesseractlib.command;
 
-import onl.tesseract.tesseractlib.menu.ElytraTrailSelectionMenu;
+import onl.tesseract.tesseractlib.menu.cosmetic.ElytraTrailSelectionMenu;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,7 +14,7 @@ public class ElytraTrailCommand implements CommandExecutor {
                              @NotNull String[] strings)
     {
         if(commandSender instanceof Player player)
-            new ElytraTrailSelectionMenu(TPlayer.get(player)).open(player);
+            new ElytraTrailSelectionMenu(TPlayer.get(player),null).open(player);
         return true;
     }
 }

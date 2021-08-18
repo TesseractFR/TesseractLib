@@ -1,4 +1,4 @@
-package onl.tesseract.tesseractlib.familier;
+package onl.tesseract.tesseractlib.cosmetics.familier;
 
 import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;

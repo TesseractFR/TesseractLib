@@ -1,7 +1,7 @@
 package onl.tesseract.tesseractlib.command;
 
 
-import onl.tesseract.tesseractlib.menu.pet.PetTypeSelection;
+import onl.tesseract.tesseractlib.menu.cosmetic.pet.PetTypeSelection;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,7 +15,7 @@ public class FamilierCommand implements CommandExecutor {
                              @NotNull String[] args)
     {
         if(sender instanceof Player player)
-            new PetTypeSelection(TPlayer.get(player)).open(player);
+            new PetTypeSelection(TPlayer.get(player), null).open(player);
         return true;
     }
 

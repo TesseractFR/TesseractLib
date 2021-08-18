@@ -13,7 +13,7 @@ public class FlyFilterBoutiqueMenu extends InventoryMenu {
     TPlayer player;
     public FlyFilterBoutiqueMenu(TPlayer player, InventoryMenu previous)
     {
-        super(54, "Boutique des filtres de vol", previous);
+        super(27, "Boutique des filtres de vol", previous);
         this.player = player;
     }
 
@@ -29,7 +29,7 @@ public class FlyFilterBoutiqueMenu extends InventoryMenu {
                           "Cliquez pour acheter "+filter.getName()+NEW_LINE+
                                   ChatColor.GRAY + "Coût : "+filter.getPrice()+" lys d'or"+NEW_LINE+
                                   ChatColor.GRAY + "Vous avez : "+player.getMarketCurrency()+" lys d'or",event->{
-                            CosmeticManager.tryToBuyEvent(viewer,this,player,ElytraTrails.getTypeName(),filter);
+                            CosmeticManager.tryToBuyEvent(viewer,this,player,FlyFilter.getTypeName(),filter);
                         });
             }else {
                 addInactiveButton(filter.getIndex(),Material.STRUCTURE_VOID,filter.getName(),ChatColor.GRAY+"Vous possedez "

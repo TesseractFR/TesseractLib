@@ -98,17 +98,16 @@ public class CosmeticManager {
         if (player.getMarketCurrency() >= cosmetic.getPrice())
             InventoryMenu.openConfirmationMenu(viewer,"Être vous sur de vouloir acheter",mainMenu, event2 ->{
                 player.buyCosmetic(type,cosmetic,cosmetic.getPrice());
-                player.sendMessage(ChatFormats.COSMETICS_SUCCESS.append(Component.text("Vous avez bien acheté la "
-                                                                                               + "cosmétique "+cosmetic.getName())));
             });
-        else
+        else{
             player.sendMessage(ChatFormats.COSMETICS_ERROR.append(
                     Component.text("Vous n'avez pas assez de lys d'or, cliquez ici pour en acheter")
                              .hoverEvent(HoverEvent.showText(
                                      Component
                                              .text("Cliquez ici pour accéder à la boutique.", NamedTextColor.GOLD)))
                              .clickEvent(ClickEvent.openUrl("https://tesseract.craftingstore.net/"))));
-        mainMenu.close();
+            mainMenu.close();
+        }
     }
 
 

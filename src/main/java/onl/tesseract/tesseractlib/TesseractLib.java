@@ -6,18 +6,18 @@ import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bdd.BDDManager;
 import onl.tesseract.tesseractlib.chat.tag.TagEventHandler;
 import onl.tesseract.tesseractlib.command.*;
-import onl.tesseract.tesseractlib.command.staff.CosmeticCommand;
+import onl.tesseract.tesseractlib.command.CosmeticCommand;
 import onl.tesseract.tesseractlib.command.staff.CosmeticCompleter;
+import onl.tesseract.tesseractlib.command.staff.MarketCurrencyCommand;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
-import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
-import onl.tesseract.tesseractlib.familier.Pet;
-import onl.tesseract.tesseractlib.familier.PetManager;
+import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
+import onl.tesseract.tesseractlib.cosmetics.familier.PetManager;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.Color;
@@ -38,7 +38,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 public final class TesseractLib extends JavaPlugin implements Listener {
     public static JavaPlugin instance;
@@ -106,8 +105,8 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         Objects.requireNonNull(instance.getCommand("familier")).setExecutor(new FamilierCommand());
         Objects.requireNonNull(instance.getCommand("cosmetic")).setExecutor(new CosmeticCommand());
         Objects.requireNonNull(instance.getCommand("cosmetic")).setTabCompleter(new CosmeticCompleter());
-        Objects.requireNonNull(instance.getCommand("elytraTrail")).setExecutor(new ElytraTrailCommand());
         Objects.requireNonNull(instance.getCommand("boutique")).setExecutor(new BoutiqueCommand());
+        Objects.requireNonNull(instance.getCommand("marketCurrency")).setExecutor(new MarketCurrencyCommand());
     }
 
     void registerEvents()
