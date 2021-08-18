@@ -7,11 +7,12 @@ import onl.tesseract.tesseractlib.player.TPlayer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
 
 public interface Tag<T> {
     HashSet<Tag<?>> tags = new HashSet<>();
 
-    boolean matches(TextComponent component);
+    Matcher getMatcher(TextComponent component);
 
     TextComponent apply(TextComponent component, TPlayer sender);
 
@@ -23,8 +24,13 @@ public interface Tag<T> {
         {
             for (var tag : tags)
             {
-                while (tag.matches((TextComponent) component))
+                var matcher = tag.getMatcher((TextComponent) component);
+                while (matcher.matches())
+                {
                     component = tag.apply((TextComponent) component, sender);
+                    int nextMatchIndex = matcher.end();
+                    matcher.region(nextMatchIndex, matcher.regionEnd());
+                }
             }
         }
         List<Component> newChildren = new ArrayList<>();
