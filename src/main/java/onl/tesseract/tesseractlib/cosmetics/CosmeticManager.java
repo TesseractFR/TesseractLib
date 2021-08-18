@@ -119,4 +119,9 @@ public class CosmeticManager {
     {
         return cosmetics.get(arg);
     }
+
+    public static Set<Cosmetic> getPlayerCosmetics(UUID uuid,String cosmeticType){
+        if(!cosmeticPlayer.containsKey(uuid))return null;
+        return cosmeticPlayer.get(uuid).getCosmetics(cosmeticType);
+    }
 }

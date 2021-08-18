@@ -37,4 +37,10 @@ public class CosmeticPlayer {
         if(!cosmetics.containsKey(type))return 0;
         return cosmetics.get(type).size();
     }
+
+    public Set<Cosmetic> getCosmetics(String cosmeticType)
+    {
+        if(!cosmetics.containsKey(cosmeticType))return null;
+        return cosmetics.get(cosmeticType);
+    }
 }
