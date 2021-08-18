@@ -77,7 +77,8 @@ public class FlyFilterSelectionMenu extends InventoryMenu {
             }
             else
             {
-                addButton(22, filter.getMaterial(), filter.getName(), null, player.getFlyFilter() == filter,
+                addButton(22, filter.getMaterial(), filter.getName(), "Cliquez pour utiliser le filtre par défaut",
+                          player.getFlyFilter() == filter,
                           event -> {
                               player.setFlyFilter(filter);
                               this.close();
