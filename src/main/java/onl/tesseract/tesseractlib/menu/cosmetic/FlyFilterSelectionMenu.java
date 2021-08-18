@@ -28,7 +28,7 @@ public class FlyFilterSelectionMenu extends InventoryMenu {
     @Override
     public void open(Player viewer)
     {
-        // For each existing trails
+
         fill(Material.GRAY_STAINED_GLASS_PANE, " ");
         for (FlyFilter filter : FlyFilter.values())
         {
@@ -74,6 +74,14 @@ public class FlyFilterSelectionMenu extends InventoryMenu {
                             }
                             this.close();
                         });
+            }
+            else
+            {
+                addButton(22, filter.getMaterial(), filter.getName(), null, player.getFlyFilter() == filter,
+                          event -> {
+                              player.setFlyFilter(filter);
+                              this.close();
+                          });
             }
         }
 
