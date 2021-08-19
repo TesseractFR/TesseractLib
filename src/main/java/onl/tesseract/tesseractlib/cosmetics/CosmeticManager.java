@@ -96,7 +96,10 @@ public class CosmeticManager {
                                                           String type,
                                                           Cosmetic cosmetic){
         if (player.getMarketCurrency() >= cosmetic.getPrice())
-            InventoryMenu.openConfirmationMenu(viewer,"Être vous sur de vouloir acheter",mainMenu, event2 ->{
+            InventoryMenu.openConfirmationMenu(viewer,
+                                               "Êtes vous sur de vouloir acheter le cosmétique "+cosmetic.getName(),
+                                               mainMenu,
+                                               event2 ->{
                 player.buyCosmetic(type,cosmetic,cosmetic.getPrice());
             });
         else{
