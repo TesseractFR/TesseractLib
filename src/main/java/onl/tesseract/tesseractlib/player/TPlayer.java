@@ -276,7 +276,7 @@ public class TPlayer implements Listener {
     /**
      * Loading done only once when the server starts
      */
-    protected void loadOnServerStarts()
+    public void loadOnServerStarts()
     {
 
     }

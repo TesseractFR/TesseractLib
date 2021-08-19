@@ -27,6 +27,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -38,9 +39,11 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.function.Function;
 
 public final class TesseractLib extends JavaPlugin implements Listener {
     public static JavaPlugin instance;
+    private static Function<Player, ? extends TPlayer> playerSupplier;
 
     static public final String configFilepath = "plugins/Tesseract/config.yml";
 
@@ -59,6 +62,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        setPlayerSupplier(TPlayer::new);
         instance = this;
         loadConfig();
         bddManager = new BDDManager(host,port,username,password,database);
@@ -70,6 +74,11 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         System.out.println("Loading achievement...");
         Achievement.loadAll();
 
+    }
+
+    public static void setPlayerSupplier(final Function<Player, ? extends TPlayer> supplier)
+    {
+        playerSupplier = supplier;
     }
 
     private void registerCosmetics()
@@ -86,11 +95,20 @@ public final class TesseractLib extends JavaPlugin implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.LOW)
     public void onJoin(PlayerJoinEvent event){
-        if(!TPlayer.playerMap.containsKey(event.getPlayer().getUniqueId())){
-            TPlayer.playerMap.put(event.getPlayer().getUniqueId(),new TPlayer(event.getPlayer()));
-            TPlayer.playerMap.get(event.getPlayer().getUniqueId()).load();
+        // If first join
+        if(!TPlayer.playerMap.containsKey(event.getPlayer().getUniqueId()))
+        {
+            var player = playerSupplier.apply(event.getPlayer());
+            TPlayer.playerMap.put(event.getPlayer().getUniqueId(), player);
+            player.load();
+            player.loadOnServerStarts();
+        }
+        else
+        {
+            var player = TPlayer.get(event.getPlayer());
+            player.onJoin(event.getPlayer());
         }
         CosmeticManager.loadPlayer(event.getPlayer().getUniqueId());
     }
