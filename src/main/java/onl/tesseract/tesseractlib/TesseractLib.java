@@ -200,6 +200,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
                 {
                     if(!event.getPlayer().isFlying())this.cancel();
                     FlyFilter selectedFilter = tplayer.getFlyFilter();
+                    if(selectedFilter==FlyFilter.NONE)return;
                     Location loc = event.getPlayer().getLocation();
                     loc = loc.add(-Math.cos(loc.getYaw()),0,-Math.sin(loc.getYaw()));
                     Particle particle = selectedFilter.getParticle();
