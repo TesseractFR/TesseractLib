@@ -621,7 +621,6 @@ public class TPlayer implements Listener {
 
     public boolean hasPlayedToday()
     {
-        System.out.println(getBukkitPlayer().getLastSeen());
         return playedToday;
     }
 
