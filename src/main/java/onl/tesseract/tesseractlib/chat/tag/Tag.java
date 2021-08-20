@@ -14,6 +14,8 @@ public interface Tag<T> {
 
     Matcher getMatcher(TextComponent component);
 
+    TextComponent getComponent(T obj);
+
     TextComponent apply(TextComponent component, TPlayer sender);
 
     TextComponent hover(T obj);
