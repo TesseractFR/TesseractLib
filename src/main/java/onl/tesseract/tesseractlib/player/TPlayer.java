@@ -218,10 +218,10 @@ public class TPlayer implements Listener {
     {
         if (event.getPlayer().equals(getOfflinePlayer()))
         {
-            this.save();
             HandlerList.unregisterAll(this.equipment);
-            this.equipment = null;
             HandlerList.unregisterAll(this);
+            this.save();
+            this.equipment = null;
         }
     }
 
