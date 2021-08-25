@@ -8,30 +8,42 @@ import org.bukkit.Particle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class Animation implements CommandExecutor {
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+public class Animation implements CommandExecutor, TabCompleter {
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player) {
-            if (args.length == 0) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
+    {
+        if (sender instanceof Player)
+        {
+            if (args.length == 0)
+            {
                 sender.sendMessage("Nope");
                 return true;
             }
-            Player player = (Player)sender;
+            Player player = (Player) sender;
             int radius;
             double delay;
             Location loc;
-            switch (args[0]) {
+            switch (args[0])
+            {
                 case "shockwave":
                     radius = (args.length >= 2) ? Integer.parseInt(args[1]) : 15;
                     delay = (args.length >= 3) ? Double.parseDouble(args[2]) : 0;
-                    loc = new Location(((Player)sender).getWorld(), 140, 71, 155);
+                    loc = new Location(((Player) sender).getWorld(), 140, 71, 155);
                     if (delay > 0)
                         new ShockWave(Particle.DRIP_LAVA, null, loc, radius, delay, Animation::callbackDamage);
-                    else {
+                    else
+                    {
                         new ShockWave(Particle.REDSTONE, Color.AQUA, player.getLocation(), radius, Animation::callbackDamage);
                     }
                     break;
@@ -60,7 +72,7 @@ public class Animation implements CommandExecutor {
 
                 case "ring":
                     radius = (args.length >= 2) ? Integer.parseInt(args[1]) : 15;
-                    loc = new Location(((Player)sender).getWorld(), 140, 71, 155);
+                    loc = new Location(((Player) sender).getWorld(), 140, 71, 155);
                     new Ring(Particle.REDSTONE, Color.FUCHSIA, loc, 3, 5, Animation::callbackDamage);
                     break;
 
@@ -88,11 +100,17 @@ public class Animation implements CommandExecutor {
                     new Sphere(Particle.REDSTONE, Color.FUCHSIA, new AnimationTarget(player), 4, 0.5f, 5, null);
                     break;
 
-                case "flameRosette":
+                case "rosette":
                     Particle particle = Particle.valueOf(args[1]);
-                    new FlameRosette().location(player.getLocation())
-                                      .particle(particle)
-                                      .draw();
+                    new CollapsingRosette().location(player.getLocation())
+                                           .particle(particle)
+                                           .speed(Double.parseDouble(args[2]))
+                                           .radius(Double.parseDouble(args[3]))
+                                           .count(Integer.parseInt(args[4]))
+                                           .time(Double.parseDouble(args[5]))
+                                           .draw();
+
+                    break;
 
                 default:
                     sender.sendMessage(ChatColor.RED + "Animation non trouvée");
@@ -102,13 +120,46 @@ public class Animation implements CommandExecutor {
         return true;
     }
 
-    static public void callbackDamage(Player player) {
+    static public void callbackDamage(Player player)
+    {
         player.sendMessage("Tu as été touché");
     }
-    static public void callbackImpact(LivingEntity entity) {
+
+    static public void callbackImpact(LivingEntity entity)
+    {
         System.out.println("touché !");
     }
-    static public void callbackImpact(Impact entity) {
+
+    static public void callbackImpact(Impact entity)
+    {
         System.out.println("touché !");
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull final CommandSender sender, @NotNull final Command command, @NotNull final String alias,
+                                                final @NotNull String[] args)
+    {
+        if (args.length == 1)
+            return List.of("rosette");
+        if (args[0].equals("rosette"))
+        {
+            switch (args.length)
+            {
+                case 2:
+                    return Arrays.stream(Particle.values()).map(Objects::toString)
+                                 .filter(s -> s.startsWith(args[1]))
+                                 .collect(Collectors.toList());
+                case 3:
+                    return List.of("speed");
+                case 4:
+                    return List.of("radius");
+                case 5:
+                    return List.of("count");
+                case 6:
+                    return List.of("time");
+            }
+        }
+
+        return null;
     }
 }

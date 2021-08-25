@@ -6,31 +6,61 @@ import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class FlameRosette {
+public class CollapsingRosette {
     Location location;
-    private Particle particle;
+    private Particle particle = Particle.FLAME;
+    private double speed = 0.18;
+    private double radius = 3.5;
+    private int count = 75;
+    private double time = 300;
 
-    public FlameRosette location(final Location location)
+    public CollapsingRosette location(final Location location)
     {
         this.location = location.add(0, 0.25, 0);
         return this;
     }
 
-    public FlameRosette particle(final Particle particle)
+    public CollapsingRosette particle(final Particle particle)
     {
         this.particle = particle;
         return this;
     }
 
-    public FlameRosette draw()
+    public CollapsingRosette speed(final double speed)
     {
-        var circle = Animation.getCircle(location, 3.5, 75);
+        this.speed = speed;
+        return this;
+    }
+
+    public CollapsingRosette radius(final double radius)
+    {
+        this.radius = radius;
+        return this;
+    }
+
+    public CollapsingRosette count(final int count)
+    {
+        this.count = count;
+        return this;
+    }
+
+    public CollapsingRosette time(final double time)
+    {
+        this.time = time;
+        return this;
+    }
+
+    public CollapsingRosette draw()
+    {
+        var circle = Animation.getCircle(location, radius, count);
         Vector center = location.toVector();
         var world = location.getWorld();
 
         new BukkitRunnable() {
             int i = 0;
-            int j = 74;
+            final int maxIndex = count - 1;
+            final int indexStep = maxIndex / 4;
+            int j = maxIndex;
 
             int timer = 0;
 
@@ -42,14 +72,16 @@ public class FlameRosette {
             @Override
             public void run()
             {
+                if (maxIndex == 0)
+                    this.cancel();
                 for (var k = 0; k < 4; k++)
                 {
-                    inward[k] = circle.get((i + (k * 18)) % 74);
+                    inward[k] = circle.get((i + (k * indexStep)) % maxIndex);
                     inwardVector[k] = inward[k].toVector().subtract(center).normalize();
                 }
                 for (var k = 0; k < 4; k++)
                 {
-                    outward[k] = circle.get((j + (k * 18)) % 74);
+                    outward[k] = circle.get((j + (k * indexStep)) % maxIndex);
                     outwardVector[k] = outward[k].toVector().subtract(center).normalize();
                 }
 
@@ -57,8 +89,8 @@ public class FlameRosette {
                 {
                     for (int k = 0; k < 4; k++)
                     {
-                        world.spawnParticle(particle, inward[k], 0, -inwardVector[k].getX(), 0, -inwardVector[k].getZ(), 0.2);
-                        world.spawnParticle(particle, outward[k], 0, -outwardVector[k].getX(), 0, -outwardVector[k].getZ(), 0.2);
+                        world.spawnParticle(particle, inward[k], 0, -inwardVector[k].getX(), 0, -inwardVector[k].getZ(), speed);
+                        world.spawnParticle(particle, outward[k], 0, -outwardVector[k].getX(), 0, -outwardVector[k].getZ(), speed);
                     }
                 }catch (IllegalArgumentException e)
                 {
@@ -66,10 +98,10 @@ public class FlameRosette {
                     this.cancel();
                 }
 
-                i = ++i % 74;
-                j = 74 - i;
+                i = ++i % maxIndex;
+                j = maxIndex - i;
 
-                if (++timer > 300)
+                if (++timer > time)
                     this.cancel();
             }
         }.runTaskTimer(TesseractLib.instance, 0, 1);
