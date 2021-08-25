@@ -21,7 +21,7 @@ public class Title {
     private final String text_f;
     private final String name;
 
-    Title(String name, String text_m, String text_f)
+    protected Title(String name, String text_m, String text_f)
     {
         this.text_m = text_m;
         this.text_f = text_f;
