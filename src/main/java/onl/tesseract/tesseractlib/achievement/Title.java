@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class Title {
@@ -27,6 +28,12 @@ public class Title {
         this.name = name;
         titles.put(name,this);
     }
+
+    public static Collection<Title> getTitles()
+    {
+        return titles.values();
+    }
+
     static public void loadAll(){
         try
         {
