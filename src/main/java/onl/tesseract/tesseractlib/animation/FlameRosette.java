@@ -34,28 +34,32 @@ public class FlameRosette {
 
             int timer = 0;
 
+            final Location[] inward = new Location[4];
+            final Location[] outward = new Location[4];
+            final Vector[] inwardVector = new Vector[4];
+            final Vector[] outwardVector = new Vector[4];
+
             @Override
             public void run()
             {
-                var v1 = circle.get(i).toVector().subtract(center).normalize();
-                var v2 = circle.get((i + 37) % 74).toVector().subtract(center).normalize();
-                var v3 = circle.get(j).toVector().subtract(center).normalize();
-                var v4 = circle.get((j + 37) % 74).toVector().subtract(center).normalize();
-                var v5 = circle.get((j + 18) % 74).toVector().subtract(center).normalize();
-                var v6 = circle.get((i + 18) % 74).toVector().subtract(center).normalize();
-                var v7 = circle.get((j + 56) % 74).toVector().subtract(center).normalize();
-                var v8 = circle.get((i + 56) % 74).toVector().subtract(center).normalize();
+                for (var k = 0; k < 4; k++)
+                {
+                    inward[k] = circle.get((i + (k * 18)) % 74);
+                    inwardVector[k] = inward[k].toVector().subtract(center).normalize();
+                }
+                for (var k = 0; k < 4; k++)
+                {
+                    outward[k] = circle.get((j + (k * 18)) % 74);
+                    outwardVector[k] = outward[k].toVector().subtract(center).normalize();
+                }
 
                 try
                 {
-                    world.spawnParticle(particle, circle.get(i), 0, -v1.getX(), 0, -v1.getZ(), 0.2);
-                    world.spawnParticle(particle, circle.get((i + 37) % 74), 0, -v2.getX(), 0, -v2.getZ(), 0.2);
-                    world.spawnParticle(particle, circle.get(j), 0, -v3.getX(), 0, -v3.getZ(), 0.2);
-                    world.spawnParticle(particle, circle.get((j + 37) % 74), 0, -v4.getX(), 0, -v4.getZ(), 0.2);
-                    world.spawnParticle(particle, circle.get((j + 18) % 74), 0, -v5.getX(), 0, -v5.getZ(), 0.2);
-                    world.spawnParticle(particle, circle.get((i + 18) % 74), 0, -v6.getX(), 0, -v6.getZ(), 0.2);
-                    world.spawnParticle(particle, circle.get((j + 56) % 74), 0, -v7.getX(), 0, -v7.getZ(), 0.2);
-                    world.spawnParticle(particle, circle.get((i + 56) % 74), 0, -v8.getX(), 0, -v8.getZ(), 0.2);
+                    for (int k = 0; k < 4; k++)
+                    {
+                        world.spawnParticle(particle, inward[k], 0, -inwardVector[k].getX(), 0, -inwardVector[k].getZ(), 0.2);
+                        world.spawnParticle(particle, outward[k], 0, -outwardVector[k].getX(), 0, -outwardVector[k].getZ(), 0.2);
+                    }
                 }catch (IllegalArgumentException e)
                 {
                     e.printStackTrace();
