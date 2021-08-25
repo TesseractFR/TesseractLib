@@ -88,6 +88,12 @@ public class Animation implements CommandExecutor {
                     new Sphere(Particle.REDSTONE, Color.FUCHSIA, new AnimationTarget(player), 4, 0.5f, 5, null);
                     break;
 
+                case "flameRosette":
+                    Particle particle = Particle.valueOf(args[1]);
+                    new FlameRosette().location(player.getLocation())
+                                      .particle(particle)
+                                      .draw();
+
                 default:
                     sender.sendMessage(ChatColor.RED + "Animation non trouvée");
                     break;
