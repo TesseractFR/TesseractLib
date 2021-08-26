@@ -491,7 +491,8 @@ public class TPlayer implements Listener {
     {
         if (!player.isOnline())
             return;
-        Objects.requireNonNull(player.getPlayer()).sendMessage(message);
+        Objects.requireNonNull(player.getPlayer()).sendMessage(ChatFormats.CHAT.append(message)
+                                                                               .append(Component.text(" : ", NamedTextColor.GRAY)));
         this.chatEntryComponentCallback = function;
         this.chatEntryRunnable = new BukkitRunnable() {
             @Override
