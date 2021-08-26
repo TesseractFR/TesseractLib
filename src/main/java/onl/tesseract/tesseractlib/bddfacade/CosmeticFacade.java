@@ -16,16 +16,18 @@ public class CosmeticFacade {
 
         Map<String, Set<Cosmetic>> out = new HashMap<>();
         try
-        {Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+        {
+            Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT cosmetic_type,cosmetic FROM t_player_cosmetics WHERE player_uuid = ?");
-            preparedStatement.setString(1,uuid.toString());
+            preparedStatement.setString(1, uuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next())
+            {
                 String type = resultSet.getString(1);
-                Cosmetic cosmetic = CosmeticManager.stringToCosmetic(type,resultSet.getString(2));
-                if(!out.containsKey(type))
-                    out.put(type,new HashSet<>());
+                Cosmetic cosmetic = CosmeticManager.stringToCosmetic(type, resultSet.getString(2));
+                if (!out.containsKey(type))
+                    out.put(type, new HashSet<>());
                 out.get(type).add(cosmetic);
             }
         }
@@ -38,13 +40,14 @@ public class CosmeticFacade {
 
     public static void add(UUID uuid, String type, Cosmetic cosmetic)
     {
-        try{
+        try
+        {
             Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "INSERT INTO t_player_cosmetics (player_uuid, cosmetic_type, cosmetic) VALUES (?,?,?)");
-            preparedStatement.setString(1,uuid.toString());
+            preparedStatement.setString(1, uuid.toString());
             preparedStatement.setString(2, type);
-            preparedStatement.setString(3,cosmetic.toString());
+            preparedStatement.setString(3, cosmetic.toString());
             preparedStatement.execute();
         }
         catch (SQLException throwables)
@@ -54,19 +57,21 @@ public class CosmeticFacade {
     }
 
     public static void remove(UUID uuid, String type, Cosmetic cosmetic)
-    {        try{
-        Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(
-                "DELETE FROM t_player_cosmetics WHERE player_uuid= ? AND cosmetic_type = ? AND cosmetic=?");
-        preparedStatement.setString(1,uuid.toString());
-        preparedStatement.setString(2, type);
-        preparedStatement.setString(3,cosmetic.toString());
-        preparedStatement.executeUpdate();
-    }
-    catch (SQLException throwables)
     {
-        throwables.printStackTrace();
-    }
+        try
+        {
+            Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "DELETE FROM t_player_cosmetics WHERE player_uuid= ? AND cosmetic_type = ? AND cosmetic=?");
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, type);
+            preparedStatement.setString(3, cosmetic.toString());
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
 
     }
 }
