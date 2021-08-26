@@ -29,6 +29,11 @@ public class CosmeticManager {
 
     public static void loadPlayer(UUID uuid)
     {
+        loadPlayer(uuid, () -> {});
+    }
+
+    public static void loadPlayer(UUID uuid, Runnable callback)
+    {
         new BukkitRunnable() {
             @Override
             public void run()
@@ -36,17 +41,17 @@ public class CosmeticManager {
                 cosmeticPlayer.remove(uuid);
                 Map<String, Set<Cosmetic>> cosmetics = CosmeticFacade.getAll(uuid);
                 cosmeticPlayer.put(uuid,new CosmeticPlayer(cosmetics));
+                callback.run();
             }
         }.runTaskAsynchronously(TesseractLib.instance);
     }
 
     public static void giveCosmetic(UUID uuid,String type,Cosmetic cosmetic){
 
-        new BukkitRunnable() {
+        var runnable = new BukkitRunnable() {
             @Override
             public void run()
             {
-                if(!cosmeticPlayer.containsKey(uuid))loadPlayer(uuid);
                 if(cosmeticPlayer.get(uuid).addCosmetics(type,cosmetic)){
                     CosmeticFacade.add(uuid,type,cosmetic);
                     if(Bukkit.getOfflinePlayer(uuid).isOnline()){
@@ -56,21 +61,28 @@ public class CosmeticManager {
                 }
 
             }
-        }.runTaskAsynchronously(TesseractLib.instance);
+        };
+        if (!cosmeticPlayer.containsKey(uuid))
+            loadPlayer(uuid, () -> runnable.runTaskAsynchronously(TesseractLib.instance));
+        else
+            runnable.runTaskAsynchronously(TesseractLib.instance);
     }
 
     public static void removeCosmetic(UUID uuid,String type,Cosmetic cosmetic){
-        new BukkitRunnable() {
+        var runnable = new BukkitRunnable() {
             @Override
             public void run()
             {
-                if(!cosmeticPlayer.containsKey(uuid))loadPlayer(uuid);
                 if(cosmeticPlayer.get(uuid).removeCosmetics(type,cosmetic)){
                     CosmeticFacade.remove(uuid,type,cosmetic);
                 }
 
             }
-        }.runTaskAsynchronously(TesseractLib.instance);
+        };
+        if (!cosmeticPlayer.containsKey(uuid))
+            loadPlayer(uuid, () -> runnable.runTaskAsynchronously(TesseractLib.instance));
+        else
+            runnable.runTaskAsynchronously(TesseractLib.instance);
     }
 
     public static boolean hasCosmetic(UUID uuid,String type,Cosmetic cosmetic){
