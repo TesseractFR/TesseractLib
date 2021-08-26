@@ -61,7 +61,7 @@ public class CosmeticFacade {
         preparedStatement.setString(1,uuid.toString());
         preparedStatement.setString(2, type);
         preparedStatement.setString(3,cosmetic.toString());
-        preparedStatement.executeQuery();
+        preparedStatement.executeUpdate();
     }
     catch (SQLException throwables)
     {
