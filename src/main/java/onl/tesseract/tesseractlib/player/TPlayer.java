@@ -37,7 +37,9 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.*;
 
 public class TPlayer implements Listener {
@@ -622,7 +624,11 @@ public class TPlayer implements Listener {
 
     public boolean hasPlayedToday()
     {
-        return playedToday;
+        var instant = Instant.ofEpochMilli(getOfflinePlayer().getLastSeen());
+        if (Duration.between(instant, Instant.now()).toDays() > 0)
+            return false;
+        var dateTime = instant.atZone(ZoneId.systemDefault());
+        return dateTime.getHour() <= Instant.now().atZone(ZoneId.systemDefault()).getHour();
     }
 
     public void setPlayedToday(boolean playedToday)
