@@ -31,7 +31,7 @@ public class PetManager implements Listener {
             if(pet == null)return;
         }
 
-        if (CosmeticManager.hasCosmetic(p.getUniqueId(), Pet.getTypeName(),pet))
+        if (CosmeticManager.hasCosmetic(p, Pet.getTypeName(),pet))
         {
             ArmorStand armorStand;
             armorStand = (ArmorStand) p.getWorld().spawnEntity(p.getLocation().add(+0, +1.5, +0.3),

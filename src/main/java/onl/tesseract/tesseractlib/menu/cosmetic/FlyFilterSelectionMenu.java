@@ -35,7 +35,7 @@ public class FlyFilterSelectionMenu extends InventoryMenu {
             if (filter != FlyFilter.NONE)
             {
 
-                boolean hasTrail = CosmeticManager.hasCosmetic(player.getUUID(), FlyFilter.getTypeName(), filter);
+                boolean hasTrail = CosmeticManager.hasCosmetic(player.getBukkitPlayer(), FlyFilter.getTypeName(), filter);
 
 
                 String lore = NEW_LINE + (hasTrail ? ChatColor.GREEN + "Débloqué" : ChatColor.RED + "Bloqué") + NEW_LINE

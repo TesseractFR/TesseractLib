@@ -40,7 +40,7 @@ public class PetsSelectionMenu extends InventoryMenu {
         List<Pet> pets = petCategory.getPets();
         int i = 0;
         for(Pet pet : pets){
-            boolean hasPet = CosmeticManager.hasCosmetic(player.getUUID(),Pet.getTypeName(),pet);
+            boolean hasPet = CosmeticManager.hasCosmetic(player.getBukkitPlayer(),Pet.getTypeName(),pet);
             String lore = NEW_LINE+(hasPet?ChatColor.GREEN+"Possédé":ChatColor.RED+"Non Possédé")+NEW_LINE+NEW_LINE;
             if(hasPet){
                 lore += "Cliquez pour invoquer "+pet.getname();

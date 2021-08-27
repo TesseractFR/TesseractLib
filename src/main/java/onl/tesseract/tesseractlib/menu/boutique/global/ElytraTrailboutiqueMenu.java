@@ -24,7 +24,7 @@ public class ElytraTrailboutiqueMenu extends InventoryMenu {
         for (ElytraTrails trail : ElytraTrails.values())
         {
             if(trail.equals(ElytraTrails.NONE))continue;
-            if(!CosmeticManager.hasCosmetic(player.getUUID(),ElytraTrails.getTypeName(),trail)){
+            if(!CosmeticManager.hasCosmetic(player.getBukkitPlayer() ,ElytraTrails.getTypeName(),trail)){
                 addButton(trail.getIndex(),trail.getMaterial(),trail.getName(),
                           "Cliquez pour acheter "+trail.getName()+NEW_LINE+
                         ChatColor.GRAY + "Coût : "+trail.getPrice()+" lys d'or"+NEW_LINE+

@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class CosmeticManager {
 
@@ -85,9 +86,25 @@ public class CosmeticManager {
             runnable.runTaskAsynchronously(TesseractLib.instance);
     }
 
-    public static boolean hasCosmetic(UUID uuid,String type,Cosmetic cosmetic){
-        if(!cosmeticPlayer.containsKey(uuid))loadPlayer(uuid);
-        return cosmeticPlayer.get(uuid).hasCosmetics(type,cosmetic);
+    public static boolean hasCosmetic(Player player, String type, Cosmetic cosmetic){
+        if(!cosmeticPlayer.containsKey(player.getUniqueId()))
+            loadPlayer(player.getUniqueId());
+        return cosmeticPlayer.get(player.getUniqueId()).hasCosmetics(type,cosmetic);
+    }
+
+    public static void hasCosmetic(UUID uuid, String type, Cosmetic cosmetic, Consumer<Boolean> callback)
+    {
+        if (!cosmeticPlayer.containsKey(uuid))
+        {
+            loadPlayer(uuid, () -> {
+                var res = cosmeticPlayer.get(uuid).hasCosmetics(type,cosmetic);
+                callback.accept(res);
+            });
+        }
+        else
+        {
+            callback.accept(cosmeticPlayer.get(uuid).hasCosmetics(type,cosmetic));
+        }
     }
 
     public static Cosmetic stringToCosmetic(String type,String cosmetic){

@@ -27,7 +27,7 @@ public class PetBoutiqueMenu extends InventoryMenu {
         for(PetCategory category : PetCategory.values()){
             for (Pet pet : category.getPets())
             {
-                if(!CosmeticManager.hasCosmetic(player.getUUID(), Pet.getTypeName(), pet)){
+                if(!CosmeticManager.hasCosmetic(player.getBukkitPlayer(), Pet.getTypeName(), pet)){
                     addButton(i++,pet.getHead(),pet.getName(),
                               "Cliquez pour acheter "+pet.getName()+NEW_LINE+
                                       ChatColor.GRAY + "Coût : "+pet.getPrice()+" lys d'or"+NEW_LINE+

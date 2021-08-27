@@ -33,7 +33,7 @@ public class ElytraTrailSelectionMenu extends InventoryMenu {
         {
             if (trail != ElytraTrails.NONE)
             {
-                boolean hasTrail = CosmeticManager.hasCosmetic(player.getUUID(), ElytraTrails.getTypeName(), trail);
+                boolean hasTrail = CosmeticManager.hasCosmetic(player.getBukkitPlayer(), ElytraTrails.getTypeName(), trail);
 
 
                 String lore = NEW_LINE + (hasTrail ? ChatColor.GREEN + "Débloqué" : ChatColor.RED + "Bloqué") + NEW_LINE

@@ -24,7 +24,7 @@ public class FlyFilterBoutiqueMenu extends InventoryMenu {
         for (FlyFilter filter : FlyFilter.values())
         {
             if(filter.equals(FlyFilter.NONE))continue;
-            if(!CosmeticManager.hasCosmetic(player.getUUID(), FlyFilter.getTypeName(), filter)){
+            if(!CosmeticManager.hasCosmetic(player.getBukkitPlayer(), FlyFilter.getTypeName(), filter)){
                 addButton(filter.getIndex(),filter.getMaterial(),filter.getName(),
                           "Cliquez pour acheter "+filter.getName()+NEW_LINE+
                                   ChatColor.GRAY + "Coût : "+filter.getPrice()+" lys d'or"+NEW_LINE+
