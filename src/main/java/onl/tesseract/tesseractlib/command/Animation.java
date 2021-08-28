@@ -34,6 +34,7 @@ public class Animation implements CommandExecutor, TabCompleter {
             int radius;
             double delay;
             Location loc;
+            Particle particle;
             switch (args[0])
             {
                 case "shockwave":
@@ -101,7 +102,7 @@ public class Animation implements CommandExecutor, TabCompleter {
                     break;
 
                 case "rosette":
-                    Particle particle = Particle.valueOf(args[1]);
+                    particle = Particle.valueOf(args[1]);
                     new CollapsingRosette().location(player.getLocation())
                                            .particle(particle)
                                            .speed(Double.parseDouble(args[2]))
@@ -109,6 +110,18 @@ public class Animation implements CommandExecutor, TabCompleter {
                                            .count(Integer.parseInt(args[4]))
                                            .time(Double.parseDouble(args[5]))
                                            .draw();
+
+                    break;
+
+                case "star":
+                    particle = Particle.valueOf(args[1]);
+                    new Star().target(args[6].equals("follow") ? new AnimationTarget(player) : new AnimationTarget(player.getLocation()))
+                              .particle(particle)
+                              .color(args[2].equals("null") ? null : Color.fromRGB(Integer.parseInt(args[2], 16)))
+                              .radius(Double.parseDouble(args[3]))
+                              .angleCount(Integer.parseInt(args[4]))
+                              .time(Double.parseDouble(args[5]))
+                              .draw();
 
                     break;
 
@@ -140,7 +153,7 @@ public class Animation implements CommandExecutor, TabCompleter {
                                                 final @NotNull String[] args)
     {
         if (args.length == 1)
-            return List.of("rosette");
+            return List.of("rosette", "star");
         if (args[0].equals("rosette"))
         {
             switch (args.length)
@@ -157,6 +170,26 @@ public class Animation implements CommandExecutor, TabCompleter {
                     return List.of("count");
                 case 6:
                     return List.of("time");
+            }
+        }
+        if (args[0].equals("star"))
+        {
+            switch (args.length)
+            {
+                case 2:
+                    return Arrays.stream(Particle.values()).map(Objects::toString)
+                                 .filter(s -> s.startsWith(args[1]))
+                                 .collect(Collectors.toList());
+                case 3:
+                    return List.of("color (rgb hex. ex: 'ff0012')");
+                case 4:
+                    return List.of("radius");
+                case 5:
+                    return List.of("count");
+                case 6:
+                    return List.of("time");
+                case 7:
+                    return List.of("follow", "fix");
             }
         }
 
