@@ -17,16 +17,15 @@ public class Title {
     static private final String bddtable = "t_title";
 
     static private final HashMap<String, Title> titles = new HashMap<>();
-    private final String text_m;
-    private final String text_f;
-    private final String name;
+    protected final String text_m;
+    protected final String text_f;
+    protected final String name;
 
     protected Title(String name, String text_m, String text_f)
     {
         this.text_m = text_m;
         this.text_f = text_f;
         this.name = name;
-        titles.put(name,this);
     }
 
     public static Collection<Title> getTitles()
@@ -42,7 +41,8 @@ public class Title {
                     "SELECT * FROM "+bddtable);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                Title.getTitleFromSQLResult(resultSet);
+                var title = Title.getTitleFromSQLResult(resultSet);
+                titles.put(title.name, title);
             }
         }
         catch (SQLException throwables)
