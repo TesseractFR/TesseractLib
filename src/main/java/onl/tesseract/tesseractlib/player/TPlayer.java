@@ -628,7 +628,7 @@ public class TPlayer implements Listener {
         if (Duration.between(instant, Instant.now()).toDays() > 0)
             return false;
         var dateTime = instant.atZone(ZoneId.systemDefault());
-        return dateTime.getHour() <= Instant.now().atZone(ZoneId.systemDefault()).getHour();
+        return dateTime.getHour() > Instant.now().atZone(ZoneId.systemDefault()).getHour();
     }
 
     public void setPlayedToday(boolean playedToday)
