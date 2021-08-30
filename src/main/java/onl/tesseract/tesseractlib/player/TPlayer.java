@@ -624,11 +624,9 @@ public class TPlayer implements Listener {
 
     public boolean hasPlayedToday()
     {
-        var instant = Instant.ofEpochMilli(getOfflinePlayer().getLastSeen());
-        if (Duration.between(instant, Instant.now()).toDays() > 0)
-            return false;
-        var dateTime = instant.atZone(ZoneId.systemDefault());
-        return dateTime.getHour() > Instant.now().atZone(ZoneId.systemDefault()).getHour();
+        long millisInDay = 1000 * 3600 * 24;
+        var lastConnection = Instant.ofEpochMilli(getOfflinePlayer().getLastSeen());
+        return Duration.between(lastConnection, Instant.now()).toMillis() < millisInDay;
     }
 
     public void setPlayedToday(boolean playedToday)
