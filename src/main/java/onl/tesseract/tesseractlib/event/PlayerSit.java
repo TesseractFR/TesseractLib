@@ -122,7 +122,9 @@ public class PlayerSit implements Listener {
 
     static public void standUp(Player player)
     {
-        map.get(player).remove();
+        var pig = map.get(player);
+        player.teleport(pig.getLocation().add(0, 1, 0));
+        pig.remove();
         map.remove(player);
     }
 }
