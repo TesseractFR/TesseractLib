@@ -124,6 +124,12 @@ public class Achievement {
     public static HashMap<String,Achievement> getAll(){
         return achievements;
     }
+
+    @Override
+    public String toString()
+    {
+        return name;
+    }
 }
 
 
