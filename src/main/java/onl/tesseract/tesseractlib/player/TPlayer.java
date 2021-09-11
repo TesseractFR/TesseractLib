@@ -530,6 +530,11 @@ public class TPlayer implements Listener {
         }
     }
 
+    public void sendMessage(Component format, String message)
+    {
+        sendMessage(format.append(Component.text(message)));
+    }
+
     @EventHandler
     public void onChat(AsyncChatEvent event)
     {

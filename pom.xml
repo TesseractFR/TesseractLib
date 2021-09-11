@@ -6,7 +6,7 @@
 
     <groupId>onl.tesseract</groupId>
     <artifactId>tesseractlib</artifactId>
-    <version>2.0.9-SNAPSHOT</version>
+    <version>2.0.10-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
