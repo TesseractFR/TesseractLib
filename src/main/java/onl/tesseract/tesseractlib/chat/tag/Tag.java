@@ -30,8 +30,7 @@ public interface Tag<T> {
                 while (matcher.matches())
                 {
                     component = tag.apply((TextComponent) component, sender);
-                    int nextMatchIndex = matcher.end();
-                    matcher.region(nextMatchIndex, matcher.regionEnd());
+                    matcher = tag.getMatcher((TextComponent) component);
                 }
             }
         }

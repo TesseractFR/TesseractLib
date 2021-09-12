@@ -29,16 +29,17 @@ public class TagEventHandler implements Listener {
         return insertPlayerTags(text, Bukkit.getOnlinePlayers());
     }
 
-    public static TextComponent insertPlayerTags(final TextComponent text, Collection<? extends Player> targets)
+    public static TextComponent insertPlayerTags(TextComponent text, Collection<? extends Player> targets)
     {
         for (var player : targets)
         {
-            var matcher = Pattern.compile("(.* )?(" + player.getName() + ").*")
-                                 .matcher(text.content());
-            if (matcher.matches())
+            var pattern = Pattern.compile("(.* )?(" + player.getName() + ").*");
+            var matcher = pattern.matcher(text.content());
+            while (matcher.matches())
             {
                 int index = matcher.toMatchResult().start(2);
-                return text.content(text.content().substring(0, index) + "@" + text.content().substring(index));
+                text = text.content(text.content().substring(0, index) + "@" + text.content().substring(index));
+                matcher = pattern.matcher(text.content());
             }
         }
         return text;
