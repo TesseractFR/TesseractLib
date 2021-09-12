@@ -6,9 +6,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -31,14 +29,13 @@ public class EntityBossBar implements Listener {
     public void onDamage(EntityDamageEvent event)
     {
         if (event.isCancelled()) return;
-        if (! (event.getEntity() instanceof LivingEntity))
+        if (! (event.getEntity() instanceof LivingEntity living))
             return;
 
         if (event.getEntityType() == EntityType.ENDER_DRAGON || event.getEntityType() == EntityType.WITHER || event.getEntityType() == EntityType.ARMOR_STAND)
             return;
 
         // Update the bar
-        LivingEntity living = (LivingEntity) event.getEntity();
         if (! map.containsKey(event.getEntity().getUniqueId())) return;
         map.get(event.getEntity().getUniqueId()).setProgress(Math.max(0, (living.getHealth() - event.getFinalDamage())) / living.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
 
@@ -67,25 +64,35 @@ public class EntityBossBar implements Listener {
         {
             if (event.getEntityType() == EntityType.ENDER_DRAGON || event.getEntityType() == EntityType.WITHER || event.getEntityType() == EntityType.ARMOR_STAND)
                 return;
-            LivingEntity living = (LivingEntity) event.getEntity();
             // If the entity is damaged by a player
             if (event.getDamager().getType() == EntityType.PLAYER)
             {
                 Player player = (Player) event.getDamager();
-                // Create a bossBar
-                if (! map.containsKey(event.getEntity().getUniqueId()))
+                showBossBar(event.getEntity(), player);
+            }
+            else if (event.getDamager() instanceof Projectile projectile)
+            {
+                if (projectile.getShooter() instanceof Player player)
                 {
-                    BossBar created = Bukkit.createBossBar(event.getEntity().getName(), BarColor.GREEN, BarStyle.SEGMENTED_10);
-                    map.put(event.getEntity().getUniqueId(), created);
-                    // created.setProgress(Math.max(0, (living.getHealth() - event.getFinalDamage())) / living.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-                    created.addPlayer(player);
-                }else
-                {
-                    // Display the bossBar to the player
-                    BossBar bar = map.get(event.getEntity().getUniqueId());
-                    bar.addPlayer(player);
+                    showBossBar(event.getEntity(), player);
                 }
             }
+        }
+    }
+
+    private void showBossBar(final Entity damaged, final Player player)
+    {
+        if (!map.containsKey(damaged.getUniqueId()))
+        {
+            BossBar created = Bukkit.createBossBar(damaged.getName(), BarColor.GREEN, BarStyle.SEGMENTED_10);
+            map.put(damaged.getUniqueId(), created);
+            created.addPlayer(player);
+        }
+        else
+        {
+            // Display the bossBar to the player
+            BossBar bar = map.get(damaged.getUniqueId());
+            bar.addPlayer(player);
         }
     }
 }
