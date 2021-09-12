@@ -42,7 +42,7 @@ public class PetTypeSelection extends InventoryMenu {
                                         .name("Familiers de type " + petCategories[Index].name(), NamedTextColor.YELLOW)
                                         .lore(NEW_LINE + ChatColor.GRAY + "Cliquez pour avoir la liste des familiers du type " + petCategories[Index])
                                         .build()
-                    , event -> new PetsSelectionMenu(player, petCategories[finalIndex]).open(viewer)));
+                    , event -> new PetsSelectionMenu(player, petCategories[finalIndex], this).open(viewer)));
         }
         addButton(13, new Button(new ItemBuilder(Material.NAME_TAG)
                                             .name("Désinvocation", NamedTextColor.YELLOW)

@@ -25,12 +25,11 @@ public class PetsSelectionMenu extends InventoryMenu {
     TPlayer player;
 
 
-    public PetsSelectionMenu(TPlayer player, PetCategory petCategory)
+    public PetsSelectionMenu(TPlayer player, PetCategory petCategory, final InventoryMenu previous)
     {
-        super(18, ChatColor.BLUE + "Sélection d'un familier");
+        super(18, ChatColor.BLUE + "Sélection d'un familier", previous);
         this.petCategory = petCategory;
         this.player = player;
-        this.previous = new PetTypeSelection(player, this);
     }
 
     @Override
