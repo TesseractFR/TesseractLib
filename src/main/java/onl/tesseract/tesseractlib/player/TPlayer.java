@@ -10,7 +10,10 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
-import onl.tesseract.tesseractlib.cosmetics.*;
+import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
+import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
+import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
+import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
@@ -37,9 +40,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.*;
 
 public class TPlayer implements Listener {
@@ -128,6 +129,11 @@ public class TPlayer implements Listener {
     static public TPlayer get(Player player)
     {
         return TPlayer.playerMap.get(player.getUniqueId());
+    }
+
+    static public TPlayer get(UUID uuid)
+    {
+        return playerMap.get(uuid);
     }
 
     public void buyCosmetic(String type, Cosmetic cosmetic,int price)
@@ -629,18 +635,12 @@ public class TPlayer implements Listener {
 
     public boolean hasPlayedToday()
     {
-        var instant = Instant.ofEpochMilli(getOfflinePlayer().getLastSeen());
-        if (Duration.between(instant, Instant.now()).toDays() > 0)
-            return false;
-        var dateTime = instant.atZone(ZoneId.systemDefault());
-        return dateTime.getDayOfYear() == Instant.now().atZone(ZoneId.systemDefault()).getDayOfYear();
+        return playedToday;
     }
 
     public void setPlayedToday(boolean playedToday)
     {
         this.playedToday = playedToday;
-        if (playedToday)
-            this.dailyConnection();
     }
 
     public boolean isAdminMode()

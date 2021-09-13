@@ -6,23 +6,20 @@ import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bdd.BDDManager;
 import onl.tesseract.tesseractlib.chat.tag.TagEventHandler;
 import onl.tesseract.tesseractlib.command.*;
-import onl.tesseract.tesseractlib.command.CosmeticCommand;
 import onl.tesseract.tesseractlib.command.staff.CosmeticCompleter;
 import onl.tesseract.tesseractlib.command.staff.MarketCurrencyCommand;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
+import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
+import onl.tesseract.tesseractlib.cosmetics.familier.PetManager;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
-import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
-import onl.tesseract.tesseractlib.cosmetics.familier.PetManager;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.Util;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -30,15 +27,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Function;
 
 public final class TesseractLib extends JavaPlugin implements Listener {
@@ -111,6 +113,24 @@ public final class TesseractLib extends JavaPlugin implements Listener {
             player.onJoin(event.getPlayer());
         }
         CosmeticManager.loadPlayer(event.getPlayer().getUniqueId());
+    }
+
+    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPreJoin(AsyncPlayerPreLoginEvent event)
+    {
+        if (event.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED)
+        {
+            UUID uuid = event.getPlayerProfile().getId();
+            if (uuid == null)
+                return;
+            OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+            var instant = Instant.ofEpochMilli(player.getLastLogin());
+            if (Duration.between(instant, Instant.now()).toDays() > 0)
+                return;
+            var dateTime = instant.atZone(ZoneId.systemDefault());
+            boolean hasPlayedToday = dateTime.getDayOfYear() == Instant.now().atZone(ZoneId.systemDefault()).getDayOfYear();
+            TPlayer.get(uuid).setPlayedToday(hasPlayedToday);
+        }
     }
 
     void registerCommands()
