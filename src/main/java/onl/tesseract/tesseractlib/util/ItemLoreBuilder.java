@@ -141,6 +141,9 @@ public class ItemLoreBuilder {
     {
         if (text == null)
             return this;
+        if(text.equals("")){
+            return this.newline();
+        }
         var words = text.split(" ");
         for (int i = 0; i < words.length; i++)
         {
