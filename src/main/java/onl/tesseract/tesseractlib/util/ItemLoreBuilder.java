@@ -12,18 +12,19 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Builder class to construct an item lore, and to automatically wrap it to fit a given maximum width.
- * The result is a collection of {@link Component} that can be used to set the lore of an {@link org.bukkit.inventory.meta.ItemMeta}
+ * The result is a collection of {@link Component} that can be used to set the lore of an {@link
+ * org.bukkit.inventory.meta.ItemMeta}
  *
  * @see org.bukkit.inventory.ItemStack
  * @see org.bukkit.inventory.meta.ItemMeta
  * @see Component
  */
 public class ItemLoreBuilder {
+    private static final int DEFAULT_LINE_WIDTH = 35;
     final int width;
     final List<Component> lines = new ArrayList<>();
     Component lastLine = Component.text("").decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     int lastLineLength = 0;
-    private static final int DEFAULT_LINE_WIDTH = 35;
 
     /**
      * Instantiate a new builder with the given line width
@@ -41,6 +42,50 @@ public class ItemLoreBuilder {
     public ItemLoreBuilder()
     {
         this(DEFAULT_LINE_WIDTH);
+    }
+
+    private static Optional<NamedTextColor> colorFromChar(char c)
+    {
+        var color = switch (c)
+                {
+                    case '0' -> NamedTextColor.BLACK;
+                    case '1' -> NamedTextColor.DARK_BLUE;
+                    case '2' -> NamedTextColor.DARK_GREEN;
+                    case '3' -> NamedTextColor.DARK_AQUA;
+                    case '4' -> NamedTextColor.DARK_RED;
+                    case '5' -> NamedTextColor.DARK_PURPLE;
+                    case '6' -> NamedTextColor.GOLD;
+                    case '7' -> NamedTextColor.GRAY;
+                    case '8' -> NamedTextColor.DARK_GRAY;
+                    case '9' -> NamedTextColor.BLUE;
+                    case 'a' -> NamedTextColor.GREEN;
+                    case 'b' -> NamedTextColor.AQUA;
+                    case 'c' -> NamedTextColor.RED;
+                    case 'd' -> NamedTextColor.LIGHT_PURPLE;
+                    case 'e' -> NamedTextColor.YELLOW;
+                    case 'f' -> NamedTextColor.WHITE;
+                    default -> null;
+                };
+        return Optional.ofNullable(color);
+    }
+
+    private static Optional<TextDecoration> decorationFromChar(char c)
+    {
+        var deco = switch (c)
+                {
+                    case 'n' -> TextDecoration.UNDERLINED;
+                    case 'l' -> TextDecoration.BOLD;
+                    case 'm' -> TextDecoration.STRIKETHROUGH;
+                    case 'k' -> TextDecoration.OBFUSCATED;
+                    case 'o' -> TextDecoration.ITALIC;
+                    default -> null;
+                };
+        return Optional.ofNullable(deco);
+    }
+
+    private static boolean isReset(char c)
+    {
+        return c == 'r';
     }
 
     /**
@@ -117,7 +162,8 @@ public class ItemLoreBuilder {
             {
                 // Split
                 lines.add(lastLine);
-                lastLine = Component.text(word + (i == words.length - 1 ? "" : " ")).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+                lastLine = Component.text(word + (i == words.length - 1 ? "" : " "))
+                                    .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
                 if (color != null)
                     lastLine = lastLine.color(color);
                 for (var deco : decoration)
@@ -140,7 +186,8 @@ public class ItemLoreBuilder {
     }
 
     /**
-     * Append a text. This text can include values of {@link org.bukkit.ChatColor}, as they will be converted to Component
+     * Append a text. This text can include values of {@link org.bukkit.ChatColor}, as they will be converted to
+     * Component
      *
      * @param text text
      *
@@ -251,6 +298,17 @@ public class ItemLoreBuilder {
     }
 
     /**
+     * Append a list of component. TextComponents will be split to fit the width
+     */
+    public ItemLoreBuilder append(List<Component> components)
+    {
+        for(Component component : components){
+            append(component);
+        }
+        return this;
+    }
+
+    /**
      * Insert a newline
      *
      * @return this
@@ -275,50 +333,6 @@ public class ItemLoreBuilder {
         for (int i = 0; i < count; i++)
             newline();
         return this;
-    }
-
-    private static Optional<NamedTextColor> colorFromChar(char c)
-    {
-        var color = switch (c)
-                {
-                    case '0' -> NamedTextColor.BLACK;
-                    case '1' -> NamedTextColor.DARK_BLUE;
-                    case '2' -> NamedTextColor.DARK_GREEN;
-                    case '3' -> NamedTextColor.DARK_AQUA;
-                    case '4' -> NamedTextColor.DARK_RED;
-                    case '5' -> NamedTextColor.DARK_PURPLE;
-                    case '6' -> NamedTextColor.GOLD;
-                    case '7' -> NamedTextColor.GRAY;
-                    case '8' -> NamedTextColor.DARK_GRAY;
-                    case '9' -> NamedTextColor.BLUE;
-                    case 'a' -> NamedTextColor.GREEN;
-                    case 'b' -> NamedTextColor.AQUA;
-                    case 'c' -> NamedTextColor.RED;
-                    case 'd' -> NamedTextColor.LIGHT_PURPLE;
-                    case 'e' -> NamedTextColor.YELLOW;
-                    case 'f' -> NamedTextColor.WHITE;
-                    default -> null;
-                };
-        return Optional.ofNullable(color);
-    }
-
-    private static Optional<TextDecoration> decorationFromChar(char c)
-    {
-        var deco = switch (c)
-                {
-                    case 'n' -> TextDecoration.UNDERLINED;
-                    case 'l' -> TextDecoration.BOLD;
-                    case 'm' -> TextDecoration.STRIKETHROUGH;
-                    case 'k' -> TextDecoration.OBFUSCATED;
-                    case 'o' -> TextDecoration.ITALIC;
-                    default -> null;
-                };
-        return Optional.ofNullable(deco);
-    }
-
-    private static boolean isReset(char c)
-    {
-        return c == 'r';
     }
 
     /**
