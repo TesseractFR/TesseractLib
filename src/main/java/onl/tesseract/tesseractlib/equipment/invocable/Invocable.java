@@ -6,11 +6,9 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.event.PlayerInvocableInvokeEvent;
 import onl.tesseract.tesseractlib.menu.EquipmentMenu;
-import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -82,20 +80,27 @@ public abstract class Invocable implements Listener {
         this.invoked = (boolean) yamlMap.get("invoked");
         // Invoke
         if (this.invoked) {
-            if (slotType == EquipmentSlot.HAND) {
-                this.slot = (int) yamlMap.get("slot");
-                if (slot > -1)
-                    inv.setItem(slot, this.item);
-                else if (slot == -1)
-                    inv.setItem(EquipmentSlot.OFF_HAND, this.item);
-                else
-                    return;
-            }else {
-                inv.setItem(slotType, this.item);
-            }
-            if (this.excludesOther())
-                this.equipment.set(this.slotType, this);
-            this.onInvoke(false);
+            var that = this;
+            new BukkitRunnable() {
+                @Override
+                public void run()
+                {
+                    if (slotType == EquipmentSlot.HAND) {
+                        slot = (int) yamlMap.get("slot");
+                        if (slot > -1)
+                            inv.setItem(slot, item);
+                        else if (slot == -1)
+                            inv.setItem(EquipmentSlot.OFF_HAND, item);
+                        else
+                            return;
+                    }else {
+                        inv.setItem(slotType, item);
+                    }
+                    if (excludesOther())
+                        equipment.set(slotType, that);
+                    onInvoke(false);
+                }
+            }.runTask(TesseractLib.instance);
         }
         ItemMeta meta = item.getItemMeta();
     }
