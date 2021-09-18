@@ -144,6 +144,12 @@ public class ItemLoreBuilder {
         if(text.equals("")){
             return this.newline();
         }
+        if (text.isBlank())
+        {
+            lastLine = lastLine.append(Component.text(text, color, decoration));
+            lastLineLength += text.length();
+            return this;
+        }
         var words = text.split(" ");
         for (int i = 0; i < words.length; i++)
         {
@@ -261,6 +267,11 @@ public class ItemLoreBuilder {
         }
 
         return this;
+    }
+
+    public ItemLoreBuilder horizontalLine(final int width, final TextColor color)
+    {
+        return append(" ".repeat(width), color, TextDecoration.STRIKETHROUGH);
     }
 
     protected List<Character> getLegacyColorCodes(final String str)
