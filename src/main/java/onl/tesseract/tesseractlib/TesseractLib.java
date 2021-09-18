@@ -118,6 +118,8 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPreJoin(AsyncPlayerPreLoginEvent event)
     {
+        if (!TPlayer.playerMap.containsKey(event.getUniqueId()))
+            return;
         if (event.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED)
         {
             UUID uuid = event.getPlayerProfile().getId();
