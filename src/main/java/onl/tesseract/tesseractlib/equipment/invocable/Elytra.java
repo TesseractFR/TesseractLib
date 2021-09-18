@@ -10,7 +10,6 @@ import onl.tesseract.tesseractlib.animation.Concentration;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.*;
@@ -153,7 +152,7 @@ public class Elytra extends Invocable {
                         vector.add(player.getLocation().getDirection().multiply(0.7));
 
                         player.setVelocity(vector);
-                        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
+                        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1, 1);
                     }
                 }
             }.runTaskTimer(TesseractLib.instance, 0, 10);
