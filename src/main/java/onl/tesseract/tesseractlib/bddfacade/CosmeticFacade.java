@@ -25,7 +25,12 @@ public class CosmeticFacade {
             while (resultSet.next())
             {
                 String type = resultSet.getString(1);
-                Cosmetic cosmetic = CosmeticManager.stringToCosmetic(type, resultSet.getString(2));
+                Cosmetic cosmetic;
+                try{
+                    cosmetic = CosmeticManager.stringToCosmetic(type, resultSet.getString(2));
+                }catch (IllegalArgumentException e){
+                    continue;
+                }
                 if (!out.containsKey(type))
                     out.put(type, new HashSet<>());
                 out.get(type).add(cosmetic);
