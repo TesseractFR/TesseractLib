@@ -149,8 +149,8 @@ public class TPlayer implements Listener {
     }
 
     public void addMarketCurrency(int amount){
+        playerFacade.addMarketCurrency(amount);
         marketCurrency = playerFacade.getMarketCurrency();
-        setMarketCurrency(marketCurrency+amount);
     }
 
     /**

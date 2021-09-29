@@ -282,7 +282,8 @@ public class PlayerFacade {
                             "SELECT active_fly_filter FROM t_player WHERE uuid =?");
             preparedStatement.setString(1, uuid.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next())
+            {
                 return FlyFilter.valueOf(resultSet.getString(1));
             }
         }
@@ -291,5 +292,24 @@ public class PlayerFacade {
             throwables.printStackTrace();
         }
         return FlyFilter.NONE;
+    }
+
+    public void addMarketCurrency(int amount)
+    {
+        try
+        {
+            PreparedStatement preparedStatement = TesseractLib.getBddManager().getBddConnection().getConnection()
+                                                              .prepareStatement(
+                                                                      "UPDATE " + bddtable
+                                                                              + " SET market_currency = market_currency + ? WHERE uuid = ?");
+            preparedStatement.setInt(1, amount);
+            preparedStatement.setString(2, uuid.toString());
+            preparedStatement.execute();
+
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
     }
 }
