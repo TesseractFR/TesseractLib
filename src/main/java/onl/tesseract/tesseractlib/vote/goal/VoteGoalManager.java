@@ -5,6 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 
 import java.sql.Date;
 import java.util.Collection;
@@ -68,6 +69,11 @@ public class VoteGoalManager {
             Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(component));
             return;
         }
+        Component component = ChatFormats.VOTE.append(Component.text("Le vote goal a été atteint !"));
+        Bukkit.getOnlinePlayers().forEach(p -> {
+            p.sendMessage(component);
+            p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0.9f);
+        });
 
         final VoteGoalReward reward = goal.getReward();
         reward.giveAll();
