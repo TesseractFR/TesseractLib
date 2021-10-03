@@ -69,6 +69,8 @@ public class VoteGoalManager {
             return;
         }
 
-        // FIXME
+        final VoteGoalReward reward = goal.getReward();
+        reward.giveAll();
+        Bukkit.getOnlinePlayers().forEach(reward::give);
     }
 }

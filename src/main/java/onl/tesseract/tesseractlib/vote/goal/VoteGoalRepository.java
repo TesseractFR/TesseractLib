@@ -19,15 +19,19 @@ public final class VoteGoalRepository {
                     "SELECT * FROM t_vote_goal WHERE start <= NOW() AND end > NOW()");
             final ResultSet resultSet = statement.executeQuery();
 
-            final HashSet<VoteGoal> goals = new HashSet<>();
+            final Collection<VoteGoal> goals = new HashSet<>();
             while (resultSet.next())
             {
                 final int id = resultSet.getInt("id");
                 final Date start = resultSet.getDate("start");
                 final Date end = resultSet.getDate("end");
                 final int quantity = resultSet.getInt("quantity");
+                final String rewardTypeName = resultSet.getString("reward_type");
+                final String rewardRaw = resultSet.getString("reward_raw");
+                final VoteGoalRewardType type = VoteGoalRewardManager.getRewardType(rewardTypeName);
+                final VoteGoalReward reward = type != null ? type.deserialize(rewardRaw) : null;
 
-                goals.add(new VoteGoal(id, Instant.ofEpochMilli(start.getTime()), Instant.ofEpochMilli(end.getTime()), quantity));
+                goals.add(new VoteGoal(id, Instant.ofEpochMilli(start.getTime()), Instant.ofEpochMilli(end.getTime()), quantity, reward));
             }
             return goals;
         }

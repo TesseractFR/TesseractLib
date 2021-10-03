@@ -9,13 +9,16 @@ public class VoteGoal {
     private final Instant start;
     private final Instant end;
     private final int requiredQuantity;
+    private final VoteGoalReward reward;
 
-    public VoteGoal(final int id, final Instant start, final Instant end, final int requiredQuantity)
+    public VoteGoal(final int id, final Instant start, final Instant end, final int requiredQuantity,
+                    final VoteGoalReward reward)
     {
         this.id = id;
         this.start = start;
         this.end = end;
         this.requiredQuantity = requiredQuantity;
+        this.reward = reward;
     }
 
     public int getId()
@@ -36,6 +39,11 @@ public class VoteGoal {
     public int getRequiredQuantity()
     {
         return requiredQuantity;
+    }
+
+    public VoteGoalReward getReward()
+    {
+        return reward;
     }
 
     public Duration getDuration()
