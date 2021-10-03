@@ -3,8 +3,10 @@ package onl.tesseract.tesseractlib.vote.goal;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
 
+import java.sql.Date;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -59,6 +61,14 @@ public class VoteGoalManager {
 
     private void onGoalFinished(final VoteGoal goal)
     {
+        int voteCount = VoteGoalRepository.getVoteCount(new Date(goal.getStart().toEpochMilli()), new Date(goal.getEnd().toEpochMilli()));
+        if (voteCount < goal.getRequiredQuantity())
+        {
+            Component component = ChatFormats.VOTE.append(Component.text("Le vote goal n'a pas été atteint ='("));
+            Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(component));
+            return;
+        }
 
+        // FIXME
     }
 }

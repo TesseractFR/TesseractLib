@@ -1,10 +1,11 @@
 package onl.tesseract.tesseractlib.util;
 
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
-import static net.kyori.adventure.text.Component.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class ChatFormats {
     public static final Component EQUIPMENT = empty()
@@ -63,4 +64,9 @@ public class ChatFormats {
             .append(text("] ").color(GOLD));
     public static final Component COSMETICS_SUCCESS = COSMETICS.color(GREEN);
     public static final Component COSMETICS_ERROR = COSMETICS.color(RED);
+
+    public static final Component VOTE = Component.text("", YELLOW)
+                                                  .append(Component.text("[", RED, BOLD))
+                                                  .append(Component.text("Vote", GOLD))
+                                                  .append(Component.text("] ", RED, BOLD));
 }
