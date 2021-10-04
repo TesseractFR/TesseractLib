@@ -1,5 +1,9 @@
 package onl.tesseract.tesseractlib.vote.goal;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
 /**
  * Defines a type of reward.
  */
@@ -13,5 +17,9 @@ public interface VoteGoalRewardType {
      * Deserialize a reward from a raw string
      */
     VoteGoalReward deserialize(final String raw);
+
+    VoteGoalReward fromArgs(final String[] args);
+
+    @Nullable List<String> tabCompletion(final String[] args);
 }
 

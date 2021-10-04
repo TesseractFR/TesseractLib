@@ -2,6 +2,7 @@ package onl.tesseract.tesseractlib.vote.goal;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class VoteGoalRewardManager {
@@ -17,5 +18,10 @@ public class VoteGoalRewardManager {
     public static VoteGoalRewardType getRewardType(final String name)
     {
         return rewardTypes.get(name);
+    }
+
+    public static Collection<String> getRegisteredRewardTypes()
+    {
+        return rewardTypes.keySet();
     }
 }

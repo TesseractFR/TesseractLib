@@ -9,6 +9,7 @@ import onl.tesseract.tesseractlib.command.*;
 import onl.tesseract.tesseractlib.command.staff.CosmeticCompleter;
 import onl.tesseract.tesseractlib.command.staff.MarketCurrencyCommand;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
+import onl.tesseract.tesseractlib.command.staff.VoteGoalCommand;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
@@ -151,6 +152,8 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         Objects.requireNonNull(instance.getCommand("cosmetic")).setTabCompleter(new CosmeticCompleter());
         Objects.requireNonNull(instance.getCommand("boutique")).setExecutor(new BoutiqueCommand());
         Objects.requireNonNull(instance.getCommand("marketCurrency")).setExecutor(new MarketCurrencyCommand());
+        Objects.requireNonNull(instance.getCommand("votegoal")).setExecutor(new VoteGoalCommand());
+        Objects.requireNonNull(instance.getCommand("votegoal")).setTabCompleter(new VoteGoalCommand());
     }
 
     void registerEvents()

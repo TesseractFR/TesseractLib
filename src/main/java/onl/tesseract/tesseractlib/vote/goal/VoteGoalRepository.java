@@ -23,15 +23,15 @@ public final class VoteGoalRepository {
             while (resultSet.next())
             {
                 final int id = resultSet.getInt("id");
-                final Date start = resultSet.getDate("start");
-                final Date end = resultSet.getDate("end");
+                final Instant start = resultSet.getTimestamp("start").toInstant();
+                final Instant end = resultSet.getTimestamp("end").toInstant();
                 final int quantity = resultSet.getInt("quantity");
                 final String rewardTypeName = resultSet.getString("reward_type");
                 final String rewardRaw = resultSet.getString("reward_raw");
                 final VoteGoalRewardType type = VoteGoalRewardManager.getRewardType(rewardTypeName);
                 final VoteGoalReward reward = type != null ? type.deserialize(rewardRaw) : null;
 
-                goals.add(new VoteGoal(id, Instant.ofEpochMilli(start.getTime()), Instant.ofEpochMilli(end.getTime()), quantity, reward));
+                goals.add(new VoteGoal(id, start, end, quantity, reward));
             }
             return goals;
         }
@@ -42,15 +42,15 @@ public final class VoteGoalRepository {
         return Collections.emptyList();
     }
 
-    public static int getVoteCount(final Date start, final Date end)
+    public static int getVoteCount(final Timestamp start, final Timestamp end)
     {
         try
         {
             final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             final PreparedStatement statement = connection.prepareStatement(
                     "SELECT count(*) FROM t_vote WHERE date >= ? AND date <= ?");
-            statement.setDate(1, start);
-            statement.setDate(2, end);
+            statement.setTimestamp(1, start);
+            statement.setTimestamp(2, end);
             final ResultSet resultSet = statement.executeQuery();
             return resultSet.next() ? resultSet.getInt(1) : 0;
         }
@@ -63,6 +63,26 @@ public final class VoteGoalRepository {
 
     public static int getVoteCount(final VoteGoal goal)
     {
-        return getVoteCount(new Date(goal.getStart().toEpochMilli()), new Date(goal.getEnd().toEpochMilli()));
+        return getVoteCount(new Timestamp(goal.getStart().toEpochMilli()), new Timestamp(goal.getEnd().toEpochMilli()));
+    }
+
+    public static void createVoteGoal(final VoteGoal toCreate)
+    {
+        try
+        {
+            final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+            final PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO t_vote_goal (start, end, quantity, reward_type, reward_raw) VALUES (?, ?, ?, ?, ?)");
+            statement.setTimestamp(1, new Timestamp(toCreate.getStart().toEpochMilli()));
+            statement.setTimestamp(2, new Timestamp(toCreate.getEnd().toEpochMilli()));
+            statement.setInt(3, toCreate.getRequiredQuantity());
+            statement.setString(4, toCreate.getReward() == null ? null : toCreate.getReward().getType().getName());
+            statement.setString(5, toCreate.getReward() == null ? null : toCreate.getReward().toString());
+            statement.executeUpdate();
+        }
+        catch (SQLException throwables)
+        {
+            TesseractLib.instance.getLogger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
+        }
     }
 }

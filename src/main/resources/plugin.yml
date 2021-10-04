@@ -43,3 +43,7 @@ commands:
   marketCurrency:
     usage: "/marketCurrency"
     description: Donne des lys d'or au joueur.
+  votegoal:
+    usage: "/votegoal help"
+    description: Gérer les vote goal
+    permission: tesseract.staff.votegoal
