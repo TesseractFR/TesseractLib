@@ -24,6 +24,7 @@ public class VoteGoalManager {
 
     public static void startLoops()
     {
+        TesseractLib.logger().info("Starting VoteGoalManager");
         new BukkitRunnable() {
             int step = 0;
 
@@ -98,6 +99,8 @@ public class VoteGoalManager {
 
     private static void onNewGoal(final VoteGoal goal)
     {
+        TesseractLib.logger().info("Detected new vote goal of duration " + goal.getPrintableDuration() + ", goal: " + goal.getRequiredQuantity());
+
         String duration = goal.getPrintableDuration();
         Component[] components = new Component[] {
                 Component.text("                                                                       ", NamedTextColor.RED, TextDecoration.STRIKETHROUGH),
@@ -114,12 +117,16 @@ public class VoteGoalManager {
 
         Bukkit.getOnlinePlayers().forEach(p -> {
             for (var component : components)
+            {
                 p.sendMessage(component);
+                p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0.9f);
+            }
         });
     }
 
     private static void onGoalFinished(final VoteGoal goal)
     {
+        TesseractLib.logger().info("Vote goal ended");
         int voteCount = VoteGoalRepository.getVoteCount(goal);
         if (voteCount < goal.getRequiredQuantity())
         {

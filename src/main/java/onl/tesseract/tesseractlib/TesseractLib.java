@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 public final class TesseractLib extends JavaPlugin implements Listener {
     public static JavaPlugin instance;
@@ -243,4 +244,8 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         }
     }
 
+    public static Logger logger()
+    {
+        return TesseractLib.instance.getLogger();
+    }
 }
