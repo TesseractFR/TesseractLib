@@ -104,10 +104,10 @@ public class VoteGoalManager {
         String duration = goal.getPrintableDuration();
         Component[] components = new Component[] {
                 Component.text("                                                                       ", NamedTextColor.RED, TextDecoration.STRIKETHROUGH),
-                Component.text("    ")
+                Component.text("                ")
                          .append(Component.text("lll", NamedTextColor.WHITE, TextDecoration.OBFUSCATED))
-                         .append(Component.text(" VOTE GOAL  " + duration, NamedTextColor.GOLD))
-                        .append(Component.text("lll", NamedTextColor.WHITE, TextDecoration.OBFUSCATED)),
+                         .append(Component.text(" VOTE GOAL" + duration, NamedTextColor.GOLD))
+                        .append(Component.text(" lll", NamedTextColor.WHITE, TextDecoration.OBFUSCATED)),
                 Component.text("                     → ", NamedTextColor.RED, TextDecoration.BOLD)
                          .append(Component.text("/vote", NamedTextColor.YELLOW, TextDecoration.BOLD))
                          .append(Component.text(" ← ", NamedTextColor.RED, TextDecoration.BOLD))
