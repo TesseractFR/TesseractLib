@@ -3,18 +3,46 @@ package onl.tesseract.tesseractlib.vote.goal;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.Date;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class VoteGoalManager {
-    private final Collection<VoteGoal> goals = new HashSet<>();
+    private static final Collection<VoteGoal> goals = new HashSet<>();
+    private static final Map<VoteGoal, BossBar> bossBars = new HashMap<>();
 
-    public void update()
+    public static void startLoops()
+    {
+        new BukkitRunnable() {
+            int step = 0;
+
+            @Override
+            public void run()
+            {
+                update();
+                if (step == 0)
+                    displayAll();
+                else
+                    hideAll();
+
+                // Display boss bars for 30 seconds every 3 minutes
+                step = (step + 1) % 6;
+            }
+        }.runTaskTimer(TesseractLib.instance, 30 * 20, 30 * 20);
+    }
+
+    public static void update()
     {
         Collection<VoteGoal> currentGoals = VoteGoalRepository.getCurrentGoals();
 
@@ -38,7 +66,37 @@ public class VoteGoalManager {
         }
     }
 
-    private void onNewGoal(final VoteGoal goal)
+    public static void displayAll()
+    {
+        for (VoteGoal goal : goals)
+        {
+            if (!bossBars.containsKey(goal))
+                bossBars.put(goal, Bukkit.createBossBar(" ", BarColor.GREEN, BarStyle.SEGMENTED_10));
+            display(goal);
+        }
+    }
+
+    private static void display(VoteGoal goal)
+    {
+        BossBar bar = bossBars.get(goal);
+        int voteCount = VoteGoalRepository.getVoteCount(goal);
+        String title = ChatColor.GOLD + String.format("VOTE GOAL | %s - %d/%d", goal.getPrintableDuration(), voteCount, goal.getRequiredQuantity());
+        bar.setTitle(title);
+        double progress = voteCount / (float) goal.getRequiredQuantity();
+        bar.setProgress(Math.min(1d, progress));
+
+        // Show to all players
+        bossBars.values().forEach(b -> b.setVisible(true));
+        Bukkit.getOnlinePlayers().forEach(bar::addPlayer);
+    }
+
+    public static void hideAll()
+    {
+        bossBars.values().forEach(bar -> bar.setVisible(false));
+    }
+
+
+    private static void onNewGoal(final VoteGoal goal)
     {
         String duration = goal.getPrintableDuration();
         Component[] components = new Component[] {
@@ -60,9 +118,9 @@ public class VoteGoalManager {
         });
     }
 
-    private void onGoalFinished(final VoteGoal goal)
+    private static void onGoalFinished(final VoteGoal goal)
     {
-        int voteCount = VoteGoalRepository.getVoteCount(new Date(goal.getStart().toEpochMilli()), new Date(goal.getEnd().toEpochMilli()));
+        int voteCount = VoteGoalRepository.getVoteCount(goal);
         if (voteCount < goal.getRequiredQuantity())
         {
             Component component = ChatFormats.VOTE.append(Component.text("Le vote goal n'a pas été atteint ='("));

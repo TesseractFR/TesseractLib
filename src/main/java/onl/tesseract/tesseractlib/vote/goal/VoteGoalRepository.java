@@ -60,4 +60,9 @@ public final class VoteGoalRepository {
             return 0;
         }
     }
+
+    public static int getVoteCount(final VoteGoal goal)
+    {
+        return getVoteCount(new Date(goal.getStart().toEpochMilli()), new Date(goal.getEnd().toEpochMilli()));
+    }
 }

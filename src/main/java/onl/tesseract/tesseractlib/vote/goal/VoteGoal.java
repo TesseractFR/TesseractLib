@@ -56,9 +56,18 @@ public class VoteGoal {
         return Duration.between(Instant.now(), end);
     }
 
+    public String getPrintableRemainingDuration()
+    {
+        return getPrintableDurationHelper(getRemainingDuration());
+    }
+
     public String getPrintableDuration()
     {
-        Duration duration = getDuration();
+        return getPrintableDurationHelper(getDuration());
+    }
+
+    private String getPrintableDurationHelper(final Duration duration)
+    {
         long days = duration.toDays();
         if (days > 0)
             return String.format("%dj", days);

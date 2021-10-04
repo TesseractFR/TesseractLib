@@ -19,6 +19,7 @@ import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.Util;
+import onl.tesseract.tesseractlib.vote.goal.VoteGoalManager;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
@@ -76,6 +77,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         System.out.println("Loading achievement...");
         Achievement.loadAll();
 
+        VoteGoalManager.startLoops();
     }
 
     public static void setPlayerSupplier(final Function<Player, ? extends TPlayer> supplier)
