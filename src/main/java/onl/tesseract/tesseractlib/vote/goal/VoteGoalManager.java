@@ -144,4 +144,9 @@ public class VoteGoalManager {
         reward.giveAll();
         Bukkit.getOnlinePlayers().forEach(reward::give);
     }
+
+    public static Collection<VoteGoal> getGoals()
+    {
+        return goals;
+    }
 }

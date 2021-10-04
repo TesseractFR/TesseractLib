@@ -26,46 +26,65 @@ public class VoteGoalCommand implements CommandExecutor, TabCompleter {
 
         if (args[0].equalsIgnoreCase("create") && args.length >= 4)
         {
-            SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy-HH:mm");
-            Date start;
-            Date end;
-            int quantity;
-            try
-            {
-                start = parser.parse(args[1]);
-                end = parser.parse(args[2]);
-                quantity = Integer.parseInt(args[3]);
-            }
-            catch (ParseException e)
-            {
-                sender.sendMessage(ChatColor.RED + "Date invalide");
-                return true;
-            }
-            catch (NumberFormatException e)
-            {
-                sender.sendMessage(ChatColor.RED + "Quantité invalide");
-                return true;
-            }
-
-            VoteGoalReward reward = null;
-            VoteGoalRewardType rewardType = null;
-            if (args.length >= 5)
-            {
-                rewardType = VoteGoalRewardManager.getRewardType(args[4]);
-                if (rewardType == null)
-                {
-                    sender.sendMessage(ChatColor.RED + "Type de récompense invalide");
-                    return true;
-                }
-                reward = rewardType.fromArgs(Arrays.copyOfRange(args, 5, args.length));
-            }
-            VoteGoal newVoteGoal = new VoteGoal(-1, start.toInstant(), end.toInstant(), quantity, reward);
-            VoteGoalRepository.createVoteGoal(newVoteGoal);
-            sender.sendMessage(ChatColor.GREEN + "Vote goal créé !");
-            TesseractLib.logger().info("Created new vote goal");
-            return true;
+            create(sender, args);
         }
-        return false;
+        if (args[0].equalsIgnoreCase("list"))
+        {
+            list(sender, args);
+        }
+        else
+            return false;
+        return true;
+    }
+
+    public void create(final CommandSender sender, final String[] args)
+    {
+        SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy-HH:mm");
+        Date start;
+        Date end;
+        int quantity;
+        try
+        {
+            start = parser.parse(args[1]);
+            end = parser.parse(args[2]);
+            quantity = Integer.parseInt(args[3]);
+        }
+        catch (ParseException e)
+        {
+            sender.sendMessage(ChatColor.RED + "Date invalide");
+            return;
+        }
+        catch (NumberFormatException e)
+        {
+            sender.sendMessage(ChatColor.RED + "Quantité invalide");
+            return;
+        }
+
+        VoteGoalReward reward = null;
+        VoteGoalRewardType rewardType = null;
+        if (args.length >= 5)
+        {
+            rewardType = VoteGoalRewardManager.getRewardType(args[4]);
+            if (rewardType == null)
+            {
+                sender.sendMessage(ChatColor.RED + "Type de récompense invalide");
+                return;
+            }
+            reward = rewardType.fromArgs(Arrays.copyOfRange(args, 5, args.length));
+        }
+        VoteGoal newVoteGoal = new VoteGoal(-1, start.toInstant(), end.toInstant(), quantity, reward);
+        VoteGoalRepository.createVoteGoal(newVoteGoal);
+        sender.sendMessage(ChatColor.GREEN + "Vote goal créé !");
+        TesseractLib.logger().info("Created new vote goal");
+    }
+
+    public void list(final CommandSender sender, final String[] args)
+    {
+        for (VoteGoal goal : VoteGoalManager.getGoals())
+        {
+            int voteCount = VoteGoalRepository.getVoteCount(goal);
+            sender.sendMessage(String.format("- %s : %d/%d", goal.getPrintableRemainingDuration(), voteCount, goal.getRequiredQuantity()));
+        }
     }
 
     @Override
