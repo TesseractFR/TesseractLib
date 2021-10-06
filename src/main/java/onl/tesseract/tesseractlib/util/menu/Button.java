@@ -4,36 +4,33 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class Button implements IButton {
+public class Button extends AButton {
     private ItemStack itemStack;
-    private final Consumer<InventoryClickEvent> function;
     private final Function<ItemStack, ItemStack> onPlace;
-    private boolean replace;
 
     public Button(@NotNull final ItemStack itemStack, final Consumer<InventoryClickEvent> function)
     {
+        super(function);
         this.itemStack = itemStack;
-        this.function = function;
         this.onPlace = null;
     }
 
     public Button(@NotNull final ItemStack itemStack, final Function<ItemStack, ItemStack> function, boolean replace)
     {
+        super(null);
         this.itemStack = itemStack;
         this.onPlace = function;
         this.replace = replace;
-        this.function = null;
     }
 
     public Button(@NotNull final ItemStack itemStack)
     {
+        super(null);
         this.itemStack = itemStack;
-        this.function = null;
         this.onPlace = null;
     }
 
@@ -41,12 +38,6 @@ public class Button implements IButton {
     public ItemStack getItemStack()
     {
         return itemStack;
-    }
-
-    @Nullable
-    public Consumer<InventoryClickEvent> getFunction()
-    {
-        return function;
     }
 
     public void onClick(final InventoryClickEvent event)
@@ -63,6 +54,12 @@ public class Button implements IButton {
 
     @Override
     public void draw(final InventoryMenu menu, final int index)
+    {
+        menu.setItem(index, getItemStack());
+    }
+
+    @Override
+    protected void refreshItem()
     {
         menu.setItem(index, getItemStack());
     }
