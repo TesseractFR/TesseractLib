@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class Button {
+public class Button implements IButton {
     private ItemStack itemStack;
     private final Consumer<InventoryClickEvent> function;
     private final Function<ItemStack, ItemStack> onPlace;
@@ -60,4 +60,11 @@ public class Button {
         else if (function != null)
             function.accept(event);
     }
+
+    @Override
+    public void draw(final InventoryMenu menu, final int index)
+    {
+        menu.setItem(index, getItemStack());
+    }
 }
+

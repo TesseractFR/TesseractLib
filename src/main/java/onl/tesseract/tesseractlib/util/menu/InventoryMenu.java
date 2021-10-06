@@ -8,7 +8,6 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.event.PlayerMenuOpenEvent;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
-import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,12 +18,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -40,7 +39,7 @@ public class InventoryMenu implements Listener {
     /**
      * Map of buttons. Each button is represented by an ItemStack, and maps to a function
      */
-    HashMap<Integer, Button> buttons = new HashMap<>();
+    Map<Integer, IButton> buttons = new HashMap<>();
     static public final String NEW_LINE = " {nl} ";
 
     static ItemStack buttonBack = getCustomHead(ChatColor.RED + "Retour", "eyJ0aW1lc3RhbXAiOjE1MzQ0NTU2Njg3MTgsInByb2ZpbGVJZCI6ImE2OGYwYjY0OGQxNDQwMDBhOTVmNGI5YmExNGY4ZGY5IiwicHJvZmlsZU5hbWUiOiJNSEZfQXJyb3dMZWZ0Iiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mN2FhY2FkMTkzZTIyMjY5NzFlZDk1MzAyZGJhNDMzNDM4YmU0NjQ0ZmJhYjVlYmY4MTgwNTQwNjE2NjdmYmUyIn19fQ==", "P1pFjz8nr9mcyMiBoisU0ON86W+7MG4K3ieuuLKrAvBwd11KFNrKqY7t0vp3kUVF0TNCaN/1oPEN27Ahl/L7l0yrM6c+tiPBQQkEGQiQpMqHPPM0bSVdT6m9Sv0zW7ZAytJXuRoK/JFr6InxMoAcd/lvhZvuNyL60nW7NRDtKYyac2/Z1X0Hk+aEI6XwuAE1g2SVkxyv7FWTrOWE+KO2Umv/w3GteV9fT6moHYOHhs0PmhqzrXHtqK+jfXB0b/eiVhQSBBiR4e9A8Svj+XJDzvH2csfZu9XeQ2kAUuJMQ09CpxvrBeQ1E8FFBFk8UAxQH/ANLMCcg+SsmJxnrR1SS45PP1BM+arm/VdmVsqzk60VBDyREhQmqtB+h6IDbYLOzIvggZhF3nQyolC/uklYy7SJ4WP5R3XuQtT/wPeS9s6BixtNhvbTVA7Yv02c8XTKMZpI4gN9sX2icbtOuYlIBf7w4aXNLBfi896RONuU4odS7X3mz7HwmNN2Zyu+XOPU8njTcbbIDxBWmTsfK/ROnFol19b4Vd8geyQSbFDZvsvqrLYS83mnBoQXODowHnSH8rRXAdQ0F8o/QkmUylz4tlSk5oi+y4Vv1EOKtut05HGyor38WFbO0niBYDv0EmHSO33m9vLYVJzoE65wXGT6bLhhrxdasBAr+WvkExtcgPg=");
@@ -208,10 +207,15 @@ public class InventoryMenu implements Listener {
         this.addButton(index, item, function);
     }
 
-    public void addButton(final int index, final Button button)
+    public void addButton(final int index, final IButton button)
     {
         buttons.put(index, button);
-        inventory.setItem(index, button.getItemStack());
+        button.draw(this, index);
+    }
+
+    void setItem(final int index, final ItemStack item)
+    {
+        inventory.setItem(index, item);
     }
 
     /**
@@ -281,7 +285,7 @@ public class InventoryMenu implements Listener {
         }
     }
 
-    public void fill(final Button button) {
+    public void fill(final IButton button) {
         for (int i = 0; i < this.inventory.getSize(); i++) {
             addButton(i, button);
         }
