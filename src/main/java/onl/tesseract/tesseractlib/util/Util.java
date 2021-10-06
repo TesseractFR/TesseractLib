@@ -4,7 +4,10 @@ import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -17,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -463,5 +467,13 @@ public class Util {
             }
             return locs;
         }
+    }
+
+    public static String getPrintableDuration(final Duration duration)
+    {
+        return String.format("%dh%02dm%02ds",
+                duration.toHours(),
+                duration.toMinutesPart(),
+                duration.toSecondsPart());
     }
 }
