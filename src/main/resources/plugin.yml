@@ -47,3 +47,6 @@ commands:
     usage: "/votegoal help"
     description: Gérer les vote goal
     permission: tesseract.staff.votegoal
+  vote:
+    usage: "/vote"
+    description: Voter pour le serveur

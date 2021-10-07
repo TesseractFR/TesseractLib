@@ -350,6 +350,11 @@ public class InventoryMenu implements Listener {
         this.inventory.clear();
     }
 
+    public boolean hasViewers()
+    {
+        return !inventory.getViewers().isEmpty();
+    }
+
     public static ItemStack getCustomHead(String name, String data, String signature) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) head.getItemMeta();

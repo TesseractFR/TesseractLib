@@ -47,8 +47,10 @@ public class VoteRepository {
         {
             final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM t_vote WHERE player_uuid = ? ORDER BY date DESC LIMIT 1"
+                    "SELECT * FROM t_vote WHERE player_uuid = ? AND service_name = ? ORDER BY date DESC LIMIT 1"
             );
+            statement.setString(1, playerUUID.toString());
+            statement.setString(2, serviceName);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next())
             {

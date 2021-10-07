@@ -20,6 +20,7 @@ import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.Util;
+import onl.tesseract.tesseractlib.vote.VoteManager;
 import onl.tesseract.tesseractlib.vote.goal.VoteGoalManager;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -79,6 +80,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         System.out.println("Loading achievement...");
         Achievement.loadAll();
 
+        VoteManager.getInstance().init();
         VoteGoalManager.startLoops();
     }
 
@@ -154,6 +156,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         Objects.requireNonNull(instance.getCommand("marketCurrency")).setExecutor(new MarketCurrencyCommand());
         Objects.requireNonNull(instance.getCommand("votegoal")).setExecutor(new VoteGoalCommand());
         Objects.requireNonNull(instance.getCommand("votegoal")).setTabCompleter(new VoteGoalCommand());
+        Objects.requireNonNull(instance.getCommand("vote")).setExecutor(new VoteCommand());
     }
 
     void registerEvents()
