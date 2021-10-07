@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
+import onl.tesseract.tesseractlib.bddfacade.VoteRepository;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
@@ -39,8 +40,33 @@ public class VoteMenu extends InventoryMenu {
         addQuitButton();
         addQuitButton(18);
 
-        buttonsTask = new ButtonPlacerRunnable(this, viewer, player)
-                .runTaskTimerAsynchronously(TesseractLib.instance, 0, 20);
+        this.buttonsTask = new BukkitRunnable() {
+            @Override
+            public void run()
+            {
+                if (!hasViewers())
+                {
+                    close();
+                    return;
+                }
+                Map<VoteSite, Duration> remainingDurations = VoteManager.getInstance().getRemainingTimeUntilVote(player);
+
+                putAllSitesButton(remainingDurations, viewer);
+            }
+        }.runTaskTimerAsynchronously(TesseractLib.instance, 0, 20);
+
+        new BukkitRunnable() {
+            @Override
+            public void run()
+            {
+                Map<VoteSite, Duration> remainingDurations = VoteManager.getInstance().getRemainingTimeUntilVote(player);
+                int index = 10;
+                for (VoteSite site : VoteManager.getInstance().getVoteSites())
+                {
+                    putSiteButton(site, remainingDurations.get(site), viewer, index++);
+                }
+            }
+        }.runTaskAsynchronously(TesseractLib.instance);
 
         super.open(viewer);
     }
@@ -59,67 +85,76 @@ public class VoteMenu extends InventoryMenu {
         }.runTask(TesseractLib.instance);
     }
 
-    protected static class ButtonPlacerRunnable extends BukkitRunnable {
-        private final InventoryMenu menu;
-        private final Player viewer;
-        private final TPlayer player;
+    private void putSiteButton(final VoteSite voteSite, final Duration remainingDuration, final Audience viewer, final int index)
+    {
+        ItemLoreBuilder lore = new ItemLoreBuilder().newline();
+        if (remainingDuration.isZero() || remainingDuration.isNegative())
+            lore.append("Va voter !", NamedTextColor.GREEN);
+        else
+            lore.append(Util.getPrintableDuration(remainingDuration), NamedTextColor.RED);
 
-        public ButtonPlacerRunnable(final InventoryMenu menu, final Player viewer, final TPlayer player)
-        {
-            this.menu = menu;
-            this.viewer = viewer;
-            this.player = player;
-        }
+        lore.newline()
+            .append("Mes votes ce mois-ci : ", NamedTextColor.GRAY)
+            .append("" + VoteRepository.getMonthlyVote(player.getUUID(), voteSite.serviceName()))
+            .newline()
+            .append("Mes votes (total) : ", NamedTextColor.GRAY)
+            .append("" + VoteRepository.getAllVotes(player.getUUID(), voteSite.serviceName()))
+            .newline()
+            .horizontalLine(40, NamedTextColor.YELLOW)
+            .newline()
+            .append("Tous les votes ce mois-ci : ", NamedTextColor.GRAY)
+            .append("" + VoteRepository.getMonthlyVote(voteSite.serviceName()))
+            .newline()
+            .append("Tous les votes (total) : ", NamedTextColor.GRAY)
+            .append("" + VoteRepository.getAllVotes(voteSite.serviceName()))
+            .newline(2)
+            .append("Clique pour obtenir le lien", NamedTextColor.AQUA);
 
-        @Override
-        public void run()
-        {
-            if (!menu.hasViewers())
-            {
-                menu.close();
-                return;
-            }
-            Map<VoteSite, Duration> remainingDurations = VoteManager.getInstance().getRemainingTimeUntilVote(player);
+        boolean canVote = remainingDuration.isNegative() || remainingDuration.isZero();
+        addButton(index, new Button(new ItemBuilder(canVote ? Material.EMERALD_BLOCK : Material.STRUCTURE_VOID)
+                .name(voteSite.serviceName(), NamedTextColor.YELLOW)
+                .lore(lore.get())
+                .build(), event -> {
+            close();
+            sendVoteLink(viewer, voteSite);
+        }));
+    }
 
-            putAllSitesButton(remainingDurations, viewer);
-        }
+    private void putAllSitesButton(final Map<VoteSite, Duration> remainingDurations, final Audience viewer)
+    {
+        ItemLoreBuilder lore = new ItemLoreBuilder();
+        remainingDurations.forEach((voteSite, duration) -> {
+            lore.newline()
+                .append(voteSite.serviceName(), NamedTextColor.YELLOW)
+                .append(" : ", NamedTextColor.GRAY);
+            if (duration.isZero() || duration.isNegative())
+                lore.append("Va voter !", NamedTextColor.GREEN);
+            else
+                lore.append(Util.getPrintableDuration(duration), NamedTextColor.RED);
+        });
+        lore.newline(2)
+            .append("Clic pour obtenir les liens", NamedTextColor.AQUA);
 
-        private void putAllSitesButton(final Map<VoteSite, Duration> remainingDurations, final Audience viewer)
-        {
-            ItemLoreBuilder lore = new ItemLoreBuilder();
-            remainingDurations.forEach((voteSite, duration) -> {
-                lore.newline()
-                    .append(voteSite.serviceName(), NamedTextColor.YELLOW)
-                    .append(" : ", NamedTextColor.GRAY);
-                if (duration.isZero() || duration.isNegative())
-                    lore.append("Va voter !", NamedTextColor.GREEN);
-                else
-                    lore.append(Util.getPrintableDuration(duration), NamedTextColor.RED);
-            });
-            lore.newline(2)
-                .append("Clic pour obtenir les liens", NamedTextColor.AQUA);
+        addButton(9, new Button(new ItemBuilder(Material.COMMAND_BLOCK)
+                .name("Tous les sites", NamedTextColor.GOLD)
+                .lore(lore.get())
+                .build(), event -> {
+            close();
+            sendVoteLinks(viewer);
+        }));
+    }
 
-            menu.addButton(9, new Button(new ItemBuilder(Material.COMMAND_BLOCK)
-                    .name("Tous les sites", NamedTextColor.GOLD)
-                    .lore(lore.get())
-                    .build(), event -> {
-                menu.close();
-                sendVoteLinks(viewer);
-            }));
-        }
+    public static void sendVoteLinks(final Audience player)
+    {
+        VoteManager.getInstance().getVoteSites()
+                   .forEach(voteSite -> sendVoteLink(player, voteSite));
+    }
 
-        public static void sendVoteLinks(final Audience player)
-        {
-            VoteManager.getInstance().getVoteSites()
-                       .forEach(voteSite -> sendVoteLink(player, voteSite));
-        }
-
-        public static void sendVoteLink(final Audience player, final VoteSite site)
-        {
-            player.sendMessage(Component.text(site.serviceName(), NamedTextColor.YELLOW)
-                                        .append(Component.text(" : ", NamedTextColor.GRAY))
-                                        .append(Component.text(site.address(), NamedTextColor.GOLD)
-                                                         .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, site.address()))));
-        }
+    public static void sendVoteLink(final Audience player, final VoteSite site)
+    {
+        player.sendMessage(Component.text(site.serviceName(), NamedTextColor.YELLOW)
+                                    .append(Component.text(" : ", NamedTextColor.GRAY))
+                                    .append(Component.text(site.address(), NamedTextColor.GOLD)
+                                                     .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, site.address()))));
     }
 }
