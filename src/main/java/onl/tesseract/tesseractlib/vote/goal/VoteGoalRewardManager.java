@@ -1,6 +1,6 @@
 package onl.tesseract.tesseractlib.vote.goal;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,9 +14,11 @@ public class VoteGoalRewardManager {
         rewardTypes.put(reward.getName(), reward);
     }
 
-    @Nullable
-    public static VoteGoalRewardType getRewardType(final String name)
+    @NotNull
+    public static VoteGoalRewardType getRewardType(final String name) throws IllegalArgumentException
     {
+        if (!rewardTypes.containsKey(name))
+            throw new IllegalArgumentException("Unknown reward type " + name);
         return rewardTypes.get(name);
     }
 
