@@ -14,6 +14,80 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class VoteRepository {
+    public enum VotePeriod {
+        DAILY("DAYOFYEAR(DATE(date)) = DAYOFYEAR(NOW()) AND YEAR(DATE(date)) = YEAR(NOW())"),
+        MONTHLY("MONTH(DATE(date)) = MONTH(NOW()) AND YEAR(DATE(date)) = YEAR(NOW())"),
+        YEARLY("YEAR(DATE(date)) = YEAR(NOW())"),
+        ;
+        private final String sqlCondition;
+
+        VotePeriod(final String sqlCondition) {this.sqlCondition = sqlCondition;}
+
+        public String getSqlCondition()
+        {
+            return sqlCondition;
+        }
+    }
+
+    public static class GetVoteStatementBuilder {
+        private String periodCondition;
+        private String playerUUIDCondition;
+        private String serviceCondition;
+
+        public int build()
+        {
+            try
+            {
+                final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+
+                String statementString = "SELECT count(*) FROM t_vote ";
+                StringJoiner conditions = new StringJoiner(" AND ", "WHERE ", "");
+
+                if (playerUUIDCondition != null)
+                    conditions.add(playerUUIDCondition);
+                if (serviceCondition != null)
+                    conditions.add(serviceCondition);
+                if (periodCondition != null)
+                    conditions.add(periodCondition);
+
+                final String conditionsString = conditions.length() > 0
+                                                ? conditions.toString()
+                                                : "";
+
+                PreparedStatement statement = connection.prepareStatement(statementString + conditionsString);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next())
+                {
+                    return resultSet.getInt(1);
+                }
+                return 0;
+            }
+            catch (SQLException throwables)
+            {
+                TesseractLib.logger().log(Level.SEVERE, "Failed to retrieve vote sites", throwables);
+            }
+            return 0;
+        }
+
+        public GetVoteStatementBuilder setPeriod(final VotePeriod period)
+        {
+            this.periodCondition = period.sqlCondition;
+            return this;
+        }
+
+        public GetVoteStatementBuilder setPlayerUUID(final UUID playerUUID)
+        {
+            this.playerUUIDCondition = "player_uuid = '" + playerUUID.toString() + "'";
+            return this;
+        }
+
+        public GetVoteStatementBuilder setService(final String service)
+        {
+            this.serviceCondition = "service_name = '" + service + "'";
+            return this;
+        }
+    }
+
     public static Collection<VoteSite> getVoteSites()
     {
         try
@@ -69,117 +143,5 @@ public class VoteRepository {
             TesseractLib.logger().log(Level.SEVERE, "Failed to retrieve vote sites", throwables);
         }
         return Optional.empty();
-    }
-
-    public static int getPeriodVoteHelper(final String playerCondition, final String dateCondition, final String serviceCondition)
-    {
-        try
-        {
-            final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
-
-            StringJoiner conditions = new StringJoiner(" AND ", "WHERE ", "");
-
-            if (playerCondition != null)
-                conditions.add(playerCondition);
-            if (serviceCondition != null)
-                conditions.add(serviceCondition);
-            if (dateCondition != null)
-                conditions.add(dateCondition);
-
-            final String conditionsString = conditions.length() > 0
-                                            ? conditions.toString()
-                                            : "";
-
-            PreparedStatement statement = connection.prepareStatement(
-                    "SELECT count(*) FROM t_vote " + conditionsString
-            );
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next())
-            {
-                return resultSet.getInt(1);
-            }
-            return 0;
-        }
-        catch (SQLException throwables)
-        {
-            TesseractLib.logger().log(Level.SEVERE, "Failed to retrieve vote sites", throwables);
-        }
-        return 0;
-    }
-
-    public static int getDailyVote(final UUID playerUUID, final String serviceName)
-    {
-        return getPeriodVoteHelper(
-                "player_uuid = '" + playerUUID.toString() + "'",
-                "DAYOFYEAR(DATE(date)) = DAYOFYEAR(NOW())"
-                        + " AND YEAR(DATE(date)) = YEAR(NOW())",
-                "service_name = '" + serviceName + "'"
-        );
-    }
-
-    public static int getMonthlyVote(final UUID playerUUID, final String serviceName)
-    {
-        return getPeriodVoteHelper(
-                "player_uuid = '" + playerUUID.toString() + "'",
-                "MONTH(DATE(date)) = MONTH(NOW())"
-                        + " AND YEAR(DATE(date)) = YEAR(NOW())",
-                "service_name = '" + serviceName + "'"
-        );
-    }
-
-    public static int getYearlyVote(final UUID playerUUID, final String serviceName)
-    {
-        return getPeriodVoteHelper(
-                "player_uuid = '" + playerUUID.toString() + "'",
-                "YEAR(DATE(date)) = YEAR(NOW())",
-                "service_name = '" + serviceName + "'"
-        );
-    }
-
-    public static int getDailyVote(final String serviceName)
-    {
-        return getPeriodVoteHelper(
-                null,
-                "DAYOFYEAR(DATE(date)) = DAYOFYEAR(NOW())"
-                        + " AND YEAR(DATE(date)) = YEAR(NOW())",
-                "service_name = '" + serviceName + "'"
-        );
-    }
-
-    public static int getMonthlyVote(final String serviceName)
-    {
-        return getPeriodVoteHelper(
-                null,
-                "MONTH(DATE(date)) = MONTH(NOW())"
-                        + " AND YEAR(DATE(date)) = YEAR(NOW())",
-                "service_name = '" + serviceName + "'"
-        );
-    }
-
-    public static int getYearlyVote(final String serviceName)
-    {
-        return getPeriodVoteHelper(
-                null,
-                "YEAR(DATE(date)) = YEAR(NOW())",
-                "service_name = '" + serviceName + "'"
-        );
-    }
-
-    public static int getAllVotes(final UUID playerUUID, final String serviceName)
-    {
-        return getPeriodVoteHelper(
-                "player_uuid = '" + playerUUID.toString() + "'",
-                null,
-                "service_name = '" + serviceName + "'"
-        );
-    }
-
-    public static int getAllVotes(final String serviceName)
-    {
-        return getPeriodVoteHelper(
-                null,
-                null,
-                "service_name = '" + serviceName + "'"
-        );
     }
 }

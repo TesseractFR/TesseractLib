@@ -65,6 +65,10 @@ public class VoteMenu extends InventoryMenu {
                 {
                     putSiteButton(site, remainingDurations.get(site), viewer, index++);
                 }
+                for (; index < 18; index++)
+                {
+                    add(index, Material.BARRIER, Component.empty());
+                }
             }
         }.runTaskAsynchronously(TesseractLib.instance);
 
@@ -95,18 +99,26 @@ public class VoteMenu extends InventoryMenu {
 
         lore.newline()
             .append("Mes votes ce mois-ci : ", NamedTextColor.GRAY)
-            .append("" + VoteRepository.getMonthlyVote(player.getUUID(), voteSite.serviceName()))
+            .append("" + new VoteRepository.GetVoteStatementBuilder().setPeriod(VoteRepository.VotePeriod.MONTHLY)
+                                                                     .setPlayerUUID(player.getUUID())
+                                                                     .setService(voteSite.serviceName())
+                                                                     .build())
             .newline()
             .append("Mes votes (total) : ", NamedTextColor.GRAY)
-            .append("" + VoteRepository.getAllVotes(player.getUUID(), voteSite.serviceName()))
+            .append("" + new VoteRepository.GetVoteStatementBuilder().setPlayerUUID(player.getUUID())
+                                                                     .setService(voteSite.serviceName())
+                                                                     .build())
             .newline()
             .horizontalLine(40, NamedTextColor.YELLOW)
             .newline()
             .append("Tous les votes ce mois-ci : ", NamedTextColor.GRAY)
-            .append("" + VoteRepository.getMonthlyVote(voteSite.serviceName()))
+            .append("" + new VoteRepository.GetVoteStatementBuilder().setPeriod(VoteRepository.VotePeriod.MONTHLY)
+                                                                     .setService(voteSite.serviceName())
+                                                                     .build())
             .newline()
             .append("Tous les votes (total) : ", NamedTextColor.GRAY)
-            .append("" + VoteRepository.getAllVotes(voteSite.serviceName()))
+            .append("" + new VoteRepository.GetVoteStatementBuilder().setService(voteSite.serviceName())
+                                                                     .build())
             .newline(2)
             .append("Clique pour obtenir le lien", NamedTextColor.AQUA);
 
