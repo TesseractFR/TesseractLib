@@ -14,14 +14,18 @@ import onl.tesseract.tesseractlib.util.menu.Button;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import onl.tesseract.tesseractlib.vote.VoteManager;
 import onl.tesseract.tesseractlib.vote.VoteSite;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class VoteMenu extends InventoryMenu {
     private final TPlayer player;
@@ -69,6 +73,9 @@ public class VoteMenu extends InventoryMenu {
                 {
                     add(index, Material.BARRIER, Component.empty());
                 }
+
+                putPlayerButton();
+                putTopButton();
             }
         }.runTaskAsynchronously(TesseractLib.instance);
 
@@ -87,6 +94,55 @@ public class VoteMenu extends InventoryMenu {
                 superMethod.run();
             }
         }.runTask(TesseractLib.instance);
+    }
+
+    private void putTopButton()
+    {
+        ItemLoreBuilder lore = new ItemLoreBuilder();
+        LinkedHashMap<UUID, Integer> top = VoteRepository.getTop();
+        int index = 1;
+        for (Map.Entry<UUID, Integer> entry : top.entrySet())
+        {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(entry.getKey());
+            lore.newline()
+                .append(index + ". ", NamedTextColor.RED)
+                .append(offlinePlayer.getName(), NamedTextColor.YELLOW)
+                .append(" : ", NamedTextColor.GRAY)
+                .append("" + entry.getValue(), NamedTextColor.GOLD);
+        }
+
+        addButton(5, new Button(new ItemBuilder(Material.DIAMOND)
+                .name("Top Voteurs", NamedTextColor.GOLD)
+                .lore(lore.get())
+                .build()));
+    }
+
+    private void putPlayerButton()
+    {
+        ItemLoreBuilder lore = new ItemLoreBuilder()
+                .newline()
+                .append("Aujourd'hui : ", NamedTextColor.YELLOW)
+                .append("" + new VoteRepository.GetVoteStatementBuilder().setPeriod(VoteRepository.VotePeriod.DAILY)
+                                                                         .setPlayerUUID(player.getUUID())
+                                                                         .build())
+                .newline()
+                .append("Semaine : ", NamedTextColor.YELLOW)
+                .append("" + new VoteRepository.GetVoteStatementBuilder().setPeriod(VoteRepository.VotePeriod.WEEKLY)
+                                                                         .setPlayerUUID(player.getUUID())
+                                                                         .build())
+                .newline()
+                .append("Mois : ", NamedTextColor.YELLOW)
+                .append("" + new VoteRepository.GetVoteStatementBuilder().setPeriod(VoteRepository.VotePeriod.MONTHLY)
+                                                                         .setPlayerUUID(player.getUUID())
+                                                                         .build())
+                .newline()
+                .append("Total : ", NamedTextColor.YELLOW)
+                .append("" + new VoteRepository.GetVoteStatementBuilder().setPlayerUUID(player.getUUID())
+                                                                         .build());
+        addButton(3, new Button(new ItemBuilder(getHead(player.getUUID()))
+                .name(player.getOfflinePlayer().getName(), NamedTextColor.GOLD)
+                .lore(lore.get())
+                .build()));
     }
 
     private void putSiteButton(final VoteSite voteSite, final Duration remainingDuration, final Audience viewer, final int index)

@@ -16,6 +16,7 @@ import java.util.logging.Level;
 public class VoteRepository {
     public enum VotePeriod {
         DAILY("DAYOFYEAR(DATE(date)) = DAYOFYEAR(NOW()) AND YEAR(DATE(date)) = YEAR(NOW())"),
+        WEEKLY("WEEKOFYEAR(DATE(date)) = WEEKOFYEAR(NOW()) AND YEAR(DATE(date)) = YEAR(NOW())"),
         MONTHLY("MONTH(DATE(date)) = MONTH(NOW()) AND YEAR(DATE(date)) = YEAR(NOW())"),
         YEARLY("YEAR(DATE(date)) = YEAR(NOW())"),
         ;
@@ -143,5 +144,25 @@ public class VoteRepository {
             TesseractLib.logger().log(Level.SEVERE, "Failed to retrieve vote sites", throwables);
         }
         return Optional.empty();
+    }
+
+    public static LinkedHashMap<UUID, Integer> getTop()
+    {
+        LinkedHashMap<UUID, Integer> map = new LinkedHashMap<>();
+        try
+        {
+            Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT player_uuid, count(*) as amount FROM t_vote WHERE MONTH(DATE(date)) = MONTH(NOW()) AND YEAR(DATE(date)) = YEAR(NOW()) GROUP BY player_uuid ORDER BY count(*) DESC LIMIT 10");
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next())
+            {
+                map.put(UUID.fromString(resultSet.getString("player_uuid")), resultSet.getInt("amount"));
+            }
+        }
+        catch (SQLException throwables)
+        {
+            TesseractLib.logger().log(Level.SEVERE, "Failed to retrieve votes", throwables);
+        }
+        return map;
     }
 }
