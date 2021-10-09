@@ -165,4 +165,45 @@ public class VoteRepository {
         }
         return map;
     }
+
+    public static int getKeys(final UUID playerUUID)
+    {
+        try
+        {
+            Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT amount FROM t_vote_keys WHERE player_uuid = ?"
+            );
+            statement.setString(1, playerUUID.toString());
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next())
+            {
+                return resultSet.getInt(1);
+            }
+            return 0;
+        }
+        catch (SQLException throwables)
+        {
+            TesseractLib.logger().log(Level.SEVERE, "Failed to retrieve vote keys", throwables);
+        }
+        return 0;
+    }
+
+    public static void removeKeys(final UUID playerUUID, final int amount)
+    {
+        try
+        {
+            Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+            PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE t_vote_keys SET amount = amount - ? WHERE player_uuid = ?"
+            );
+            statement.setInt(1, amount);
+            statement.setString(2, playerUUID.toString());
+            statement.executeUpdate();
+        }
+        catch (SQLException throwables)
+        {
+            TesseractLib.logger().log(Level.SEVERE, "Failed to retrieve vote keys", throwables);
+        }
+    }
 }

@@ -26,13 +26,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class VoteMenu extends InventoryMenu {
+    private static Class<? extends AVoteRewardMenu> rewardMenuClass = DefaultVoteRewardMenu.class;
+
     private final TPlayer player;
     private BukkitTask buttonsTask;
 
@@ -55,7 +60,7 @@ public class VoteMenu extends InventoryMenu {
             {
                 if (!hasViewers())
                 {
-                    close();
+                    buttonsTask.cancel();
                     return;
                 }
                 Map<VoteSite, Duration> remainingDurations = VoteManager.getInstance().getRemainingTimeUntilVote(player);
@@ -82,6 +87,7 @@ public class VoteMenu extends InventoryMenu {
                 putVoteGoalButton();
                 putPlayerButton();
                 putTopButton();
+                putRewardButton();
             }
         }.runTaskAsynchronously(TesseractLib.instance);
 
@@ -100,6 +106,32 @@ public class VoteMenu extends InventoryMenu {
                 superMethod.run();
             }
         }.runTask(TesseractLib.instance);
+    }
+
+    private void putRewardButton()
+    {
+        int keys = VoteRepository.getKeys(player.getUUID());
+        addButton(22, new Button(new ItemBuilder(Material.RAW_GOLD)
+                .name("Récompenses", NamedTextColor.GOLD)
+                .lore(new ItemLoreBuilder().newline()
+                                           .append("Mes clés", NamedTextColor.YELLOW)
+                                           .append(" : ", NamedTextColor.GRAY)
+                                           .append("" + keys, NamedTextColor.GOLD)
+                                           .newline(2)
+                                           .append("Cliquez pour voir les différentes récompenses", NamedTextColor.AQUA, TextDecoration.ITALIC)
+                                           .get())
+                .build(), event -> {
+            try
+            {
+                Constructor<? extends AVoteRewardMenu> constructor = rewardMenuClass.getDeclaredConstructor(TPlayer.class, InventoryMenu.class);
+                InventoryMenu menu = constructor.newInstance(player, this);
+                menu.open(player.getBukkitPlayer());
+            }
+            catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e)
+            {
+                TesseractLib.logger().log(Level.SEVERE, "Failed to instantiate reward menu", e);
+            }
+        }));
     }
 
     private void putVoteGoalButton()
@@ -262,5 +294,10 @@ public class VoteMenu extends InventoryMenu {
                                     .append(Component.text(" : ", NamedTextColor.GRAY))
                                     .append(Component.text(site.address(), NamedTextColor.GOLD)
                                                      .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, site.address()))));
+    }
+
+    public static void setRewardMenuClass(final Class<? extends AVoteRewardMenu> rewardMenuClass)
+    {
+        VoteMenu.rewardMenuClass = rewardMenuClass;
     }
 }
