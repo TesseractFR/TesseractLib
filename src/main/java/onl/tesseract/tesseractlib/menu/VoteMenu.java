@@ -105,7 +105,7 @@ public class VoteMenu extends InventoryMenu {
         {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(entry.getKey());
             lore.newline()
-                .append(index + ". ", NamedTextColor.RED)
+                .append(index++ + ". ", NamedTextColor.RED)
                 .append(offlinePlayer.getName(), NamedTextColor.YELLOW)
                 .append(" : ", NamedTextColor.GRAY)
                 .append("" + entry.getValue(), NamedTextColor.GOLD);
