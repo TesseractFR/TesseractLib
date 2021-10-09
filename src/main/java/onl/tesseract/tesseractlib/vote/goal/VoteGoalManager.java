@@ -13,10 +13,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class VoteGoalManager {
     private static final Collection<VoteGoal> goals = new HashSet<>();
@@ -57,11 +54,12 @@ public class VoteGoalManager {
             }
         }
 
-        for (VoteGoal goal : goals)
+        for (Iterator<VoteGoal> iterator = goals.iterator(); iterator.hasNext(); )
         {
+            VoteGoal goal = iterator.next();
             if (!currentGoals.contains(goal))
             {
-                currentGoals.remove(goal);
+                iterator.remove();
                 onGoalFinished(goal);
             }
         }
