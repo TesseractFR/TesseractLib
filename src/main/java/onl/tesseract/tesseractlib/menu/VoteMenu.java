@@ -43,7 +43,7 @@ public class VoteMenu extends InventoryMenu {
 
     public VoteMenu(final TPlayer player)
     {
-        super(27, ChatColor.GOLD + "Votes");
+        super(27, ChatColor.RED + "Votes");
         this.player = player;
     }
 
@@ -194,21 +194,21 @@ public class VoteMenu extends InventoryMenu {
                 .append("Aujourd'hui : ", NamedTextColor.YELLOW)
                 .append("" + new VoteRepository.GetVoteStatementBuilder().setPeriod(VoteRepository.VotePeriod.DAILY)
                                                                          .setPlayerUUID(player.getUUID())
-                                                                         .build())
+                                                                         .build(), NamedTextColor.GOLD)
                 .newline()
                 .append("Semaine : ", NamedTextColor.YELLOW)
                 .append("" + new VoteRepository.GetVoteStatementBuilder().setPeriod(VoteRepository.VotePeriod.WEEKLY)
                                                                          .setPlayerUUID(player.getUUID())
-                                                                         .build())
+                                                                         .build(), NamedTextColor.GOLD)
                 .newline()
                 .append("Mois : ", NamedTextColor.YELLOW)
                 .append("" + new VoteRepository.GetVoteStatementBuilder().setPeriod(VoteRepository.VotePeriod.MONTHLY)
                                                                          .setPlayerUUID(player.getUUID())
-                                                                         .build())
+                                                                         .build(), NamedTextColor.GOLD)
                 .newline()
                 .append("Total : ", NamedTextColor.YELLOW)
                 .append("" + new VoteRepository.GetVoteStatementBuilder().setPlayerUUID(player.getUUID())
-                                                                         .build());
+                                                                         .build(), NamedTextColor.GOLD);
         addButton(4, new Button(new ItemBuilder(getHead(player.getUUID()))
                 .name(player.getOfflinePlayer().getName(), NamedTextColor.GOLD)
                 .lore(lore.get())
@@ -221,30 +221,31 @@ public class VoteMenu extends InventoryMenu {
         if (remainingDuration.isZero() || remainingDuration.isNegative())
             lore.append("Va voter !", NamedTextColor.GREEN);
         else
-            lore.append(Util.getPrintableDuration(remainingDuration), NamedTextColor.RED);
+            lore.append("Temps restant : ", NamedTextColor.GRAY)
+                    .append(Util.getPrintableDuration(remainingDuration), NamedTextColor.RED);
 
-        lore.newline()
+        lore.newline(2)
             .append("Mes votes ce mois-ci : ", NamedTextColor.GRAY)
             .append("" + new VoteRepository.GetVoteStatementBuilder().setPeriod(VoteRepository.VotePeriod.MONTHLY)
                                                                      .setPlayerUUID(player.getUUID())
                                                                      .setService(voteSite.serviceName())
-                                                                     .build())
+                                                                     .build(), NamedTextColor.GOLD)
             .newline()
             .append("Mes votes (total) : ", NamedTextColor.GRAY)
             .append("" + new VoteRepository.GetVoteStatementBuilder().setPlayerUUID(player.getUUID())
                                                                      .setService(voteSite.serviceName())
-                                                                     .build())
+                                                                     .build(), NamedTextColor.GOLD)
             .newline()
             .horizontalLine(40, NamedTextColor.YELLOW)
             .newline()
             .append("Tous les votes ce mois-ci : ", NamedTextColor.GRAY)
             .append("" + new VoteRepository.GetVoteStatementBuilder().setPeriod(VoteRepository.VotePeriod.MONTHLY)
                                                                      .setService(voteSite.serviceName())
-                                                                     .build())
+                                                                     .build(), NamedTextColor.GOLD)
             .newline()
             .append("Tous les votes (total) : ", NamedTextColor.GRAY)
             .append("" + new VoteRepository.GetVoteStatementBuilder().setService(voteSite.serviceName())
-                                                                     .build())
+                                                                     .build(), NamedTextColor.GOLD)
             .newline(2)
             .append("Clique pour obtenir le lien", NamedTextColor.AQUA);
 
@@ -271,7 +272,7 @@ public class VoteMenu extends InventoryMenu {
                 lore.append(Util.getPrintableDuration(duration), NamedTextColor.RED);
         });
         lore.newline(2)
-            .append("Clic pour obtenir les liens", NamedTextColor.AQUA);
+            .append("Clique pour obtenir les liens", NamedTextColor.AQUA);
 
         addButton(9, new Button(new ItemBuilder(Material.COMMAND_BLOCK)
                 .name("Tous les sites", NamedTextColor.GOLD)
