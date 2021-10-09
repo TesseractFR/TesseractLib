@@ -1,6 +1,9 @@
 package onl.tesseract.tesseractlib.bdd;
 
+import onl.tesseract.tesseractlib.TesseractLib;
+
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class BDDManager {
 
@@ -19,7 +22,7 @@ public class BDDManager {
         try {
             bddConnection.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to close database connection", throwables);
         }
     }
 }

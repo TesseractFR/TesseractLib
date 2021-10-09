@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class CosmeticFacade {
     public static Map<String, Set<Cosmetic>> getAll(UUID uuid)
@@ -38,7 +39,7 @@ public class CosmeticFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to get cosmetics from database for uuid " + uuid.toString(), throwables);
         }
         return out;
     }
@@ -57,7 +58,7 @@ public class CosmeticFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to add a cosmetic to the database", throwables);
         }
     }
 
@@ -75,7 +76,7 @@ public class CosmeticFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to remove cosmetic from database", throwables);
         }
 
     }

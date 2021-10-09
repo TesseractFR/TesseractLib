@@ -30,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 
 /**
  * Represents an invocable item, like a jetpack or elytra.
@@ -435,8 +436,7 @@ public abstract class Invocable implements Listener {
             Object obj = constructor.newInstance(equipment, yamlMap);
             return (Invocable) obj;
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
-            System.err.println("Error while loading equipment of player " + equipment.getPlayer().getBukkitPlayer().getUniqueId());
-            e.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Error while loading equipment of player " + equipment.getPlayer().getBukkitPlayer().getUniqueId(), e);
             return null;
         }
     }

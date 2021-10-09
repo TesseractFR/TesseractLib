@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class PetFacade {
     final static String bddtable = "t_player_pet";
@@ -29,7 +30,7 @@ public class PetFacade {
                 out.add(Pet.valueOf(resultSet.getString(1)));
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to load pets", throwables);
         }
         return out;
     }
@@ -46,7 +47,7 @@ public class PetFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to add pet", throwables);
         }
     }
 
@@ -63,7 +64,7 @@ public class PetFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to remove pet", throwables);
         }
     }
 }

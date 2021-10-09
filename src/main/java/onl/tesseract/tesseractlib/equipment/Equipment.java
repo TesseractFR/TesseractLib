@@ -7,10 +7,8 @@ import onl.tesseract.tesseractlib.equipment.invocable.Boussole;
 import onl.tesseract.tesseractlib.equipment.invocable.Elytra;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
@@ -22,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Represents the equipment container of the player. It is created only when a player joins, and is unavailable when
@@ -181,7 +180,7 @@ public class Equipment implements Listener {
         try {
             equipementData.save(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to save equipment", e);
         }
     }
 

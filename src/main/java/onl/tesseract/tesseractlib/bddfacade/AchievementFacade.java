@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class AchievementFacade {
     static private final String bddtable = "t_achievement";
@@ -41,8 +42,8 @@ public class AchievementFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to get achievement from name " + name, throwables);
         }
-        throw new NullPointerException("This achievement doesn't exsit");
+        throw new IllegalArgumentException("This achievement doesn't exsit : " + name);
     }
 }

@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class PlayerFacade {
 
@@ -41,7 +42,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
         return false;
     }
@@ -58,7 +59,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
     }
 
@@ -76,7 +77,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
         return TPlayer.Gender.OTHER;
     }
@@ -94,7 +95,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
     }
 
@@ -116,7 +117,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
 
         return false;
@@ -139,7 +140,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
         return achievements;
     }
@@ -157,7 +158,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
     }
 
@@ -174,7 +175,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
     }
 
@@ -192,7 +193,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
         return ElytraTrails.NONE;
     }
@@ -211,7 +212,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
     }
 
@@ -231,7 +232,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
         return 0;
     }
@@ -250,7 +251,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
     }
 
@@ -268,7 +269,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
     }
 
@@ -289,7 +290,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
         return FlyFilter.NONE;
     }
@@ -309,7 +310,7 @@ public class PlayerFacade {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
     }
 }

@@ -42,6 +42,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Level;
 
 public class TPlayer implements Listener {
     public enum Gender {
@@ -277,7 +278,7 @@ public class TPlayer implements Listener {
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to save player file", e);
         }
     }
 

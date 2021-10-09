@@ -6,6 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.logging.Level;
+
 public class Star {
     AnimationTarget target;
     private Particle particle = Particle.FLAME;
@@ -83,7 +85,7 @@ public class Star {
                                 .draw();
                     }catch (Exception e)
                     {
-                        e.printStackTrace();
+                        TesseractLib.logger().log(Level.SEVERE, "Exception during line drawing", e);
                         cancel();
                     }
                 }

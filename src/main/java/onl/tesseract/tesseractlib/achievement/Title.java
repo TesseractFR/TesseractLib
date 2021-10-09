@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 public class Title {
 
@@ -47,7 +48,7 @@ public class Title {
         }
         catch (SQLException throwables)
         {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Failed to load all titles", throwables);
         }
     }
 
