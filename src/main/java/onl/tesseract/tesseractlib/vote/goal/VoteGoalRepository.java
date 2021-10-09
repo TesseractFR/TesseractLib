@@ -1,12 +1,15 @@
 package onl.tesseract.tesseractlib.vote.goal;
 
 import onl.tesseract.tesseractlib.TesseractLib;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import java.sql.*;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.UUID;
 import java.util.logging.Level;
 
 /**
@@ -112,6 +115,34 @@ public final class VoteGoalRepository {
         catch (SQLException throwables)
         {
             TesseractLib.instance.getLogger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
+        }
+    }
+
+    /**
+     * Get a collection of all players that contributed to the completion of the given vote goal
+     */
+    public static Collection<OfflinePlayer> getContributors(final VoteGoal voteGoal)
+    {
+        try
+        {
+            Collection<OfflinePlayer> contributors = new HashSet<>();
+            final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+            final PreparedStatement statement = connection.prepareStatement(
+                    "SELECT DISTINCT player_uuid FROM t_vote WHERE date >= ? AND date <= ?");
+            statement.setTimestamp(1, new Timestamp(voteGoal.start().toEpochMilli()));
+            statement.setTimestamp(2, new Timestamp(voteGoal.end().toEpochMilli()));
+            final ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next())
+            {
+                contributors.add(Bukkit.getOfflinePlayer(UUID.fromString(resultSet.getString(1))));
+            }
+
+            return contributors;
+        }
+        catch (SQLException throwables)
+        {
+            TesseractLib.instance.getLogger().log(Level.SEVERE, "Failed to retrieve vote goal contributors", throwables);
+            return Collections.emptyList();
         }
     }
 }

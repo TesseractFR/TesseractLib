@@ -8,6 +8,7 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -149,7 +150,8 @@ public class VoteGoalManager {
 
         final VoteGoalReward reward = goal.reward();
         reward.giveAll();
-        Bukkit.getOnlinePlayers().forEach(reward::give);
+        Collection<OfflinePlayer> contributors = VoteGoalRepository.getContributors(goal);
+        contributors.forEach(reward::give);
     }
 
     public static Collection<VoteGoal> getGoals()
