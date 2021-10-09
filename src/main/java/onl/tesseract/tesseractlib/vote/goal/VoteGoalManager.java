@@ -67,10 +67,24 @@ public class VoteGoalManager {
         for (Iterator<VoteGoal> iterator = goals.iterator(); iterator.hasNext(); )
         {
             VoteGoal goal = iterator.next();
+            int voteCount = VoteGoalRepository.getVoteCount(goal);
+            // If vote goal expired
             if (!currentGoals.contains(goal))
             {
                 iterator.remove();
-                onGoalFinished(goal);
+                if (voteCount >= goal.requiredQuantity())
+                    onGoalCompleted(goal);
+                else
+                    onGoalFailed();
+            }
+            else
+            {
+                // If goal not expired, but enough votes anyway
+                if (voteCount >= goal.requiredQuantity())
+                {
+                    iterator.remove();
+                    onGoalCompleted(goal);
+                }
             }
         }
     }
@@ -132,16 +146,9 @@ public class VoteGoalManager {
         });
     }
 
-    private static void onGoalFinished(final VoteGoal goal)
+    private static void onGoalCompleted(final VoteGoal goal)
     {
-        TesseractLib.logger().info("Vote goal ended");
-        int voteCount = VoteGoalRepository.getVoteCount(goal);
-        if (voteCount < goal.requiredQuantity())
-        {
-            Component component = ChatFormats.VOTE.append(Component.text("Le vote goal n'a pas été atteint ='("));
-            Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(component));
-            return;
-        }
+        TesseractLib.logger().info("Vote goal completed");
         Component component = ChatFormats.VOTE.append(Component.text("Le vote goal a été atteint !"));
         Bukkit.getOnlinePlayers().forEach(p -> {
             p.sendMessage(component);
@@ -152,6 +159,13 @@ public class VoteGoalManager {
         reward.giveAll();
         Collection<OfflinePlayer> contributors = VoteGoalRepository.getContributors(goal);
         contributors.forEach(reward::give);
+    }
+
+    private static void onGoalFailed()
+    {
+        TesseractLib.logger().info("Vote goal failed");
+        Component component = ChatFormats.VOTE.append(Component.text("Le vote goal n'a pas été atteint ='("));
+        Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(component));
     }
 
     public static Collection<VoteGoal> getGoals()
