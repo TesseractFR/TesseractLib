@@ -1,11 +1,13 @@
 package onl.tesseract.tesseractlib.bdd;
 
+import onl.tesseract.tesseractlib.TesseractLib;
+
 public class BDD {
-    private String host;
-    private String user;
-    private String password;
-    private int port;
-    private String dbName;
+    private final String host;
+    private final String user;
+    private final String password;
+    private final int port;
+    private final String dbName;
 
     public BDD(String host, String user, String password, String dbName, int port) {
         this.host = host;
@@ -16,7 +18,7 @@ public class BDD {
     }
 
     public String getUrl(){
-        System.out.println("jdbc:mysql://"+host+":"+port+"/"+dbName);
+        TesseractLib.logger().info("jdbc:mysql://"+host+":"+port+"/"+dbName);
         return "jdbc:mysql://"+host+":"+port+"/"+dbName;
 
     }

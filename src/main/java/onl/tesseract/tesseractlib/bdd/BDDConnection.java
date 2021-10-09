@@ -1,11 +1,14 @@
 package onl.tesseract.tesseractlib.bdd;
 
+import onl.tesseract.tesseractlib.TesseractLib;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class BDDConnection {
-    private BDD database;
+    private final BDD database;
     private Connection connection;
 
 
@@ -20,9 +23,9 @@ public class BDDConnection {
             Class.forName("com.mysql.jdbc.Driver");
             this.connection = DriverManager.getConnection(database.getUrl(),database.getUser(), database.getPassword());
 
-            System.out.println("[BDD] : connection done");
+            TesseractLib.logger().info("[BDD] : connection done");
         } catch (SQLException | ClassNotFoundException throwables) {
-            throwables.printStackTrace();
+            TesseractLib.logger().log(Level.SEVERE, "Could not connect to database", throwables);
         }
     }
 

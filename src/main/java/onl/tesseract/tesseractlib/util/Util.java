@@ -182,7 +182,6 @@ public class Util {
         int length = title.replaceAll("§.", "").length();
         int spaceLength = (41 - length) / 2;
         String space = " ".repeat(spaceLength);
-        System.out.println(length + " " + spaceLength);
         return space + title;
     }
 

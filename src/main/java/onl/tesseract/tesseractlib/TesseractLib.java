@@ -75,9 +75,9 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         registerCosmetics();
         registerEvents();
         registerCommands();
-        System.out.println("Loading title...");
+        logger().info("Loading title...");
         Title.loadAll();
-        System.out.println("Loading achievement...");
+        logger().info("Loading achievement...");
         Achievement.loadAll();
 
         VoteManager.getInstance().init();
