@@ -38,11 +38,11 @@ public class VoteGoalManager {
             @Override
             public void run()
             {
-                update();
                 if (step == 0)
                     displayAll();
                 else
                     hideAll();
+                update();
 
                 // Display boss bars for 30 seconds every 3 minutes
                 step = (step + 1) % 6;
@@ -127,10 +127,15 @@ public class VoteGoalManager {
         String duration = goal.getPrintableDuration();
         Component[] components = new Component[] {
                 Component.text("                                                                       ", NamedTextColor.RED, TextDecoration.STRIKETHROUGH),
-                Component.text("                ")
+                Component.text("                     ")
                          .append(Component.text("lll", NamedTextColor.WHITE, TextDecoration.OBFUSCATED))
-                         .append(Component.text(" VOTE GOAL  " + duration, NamedTextColor.GOLD))
+                         .append(Component.text(" VOTE GOAL " + duration, NamedTextColor.GOLD))
                         .append(Component.text(" lll", NamedTextColor.WHITE, TextDecoration.OBFUSCATED)),
+                Component.empty(),
+                Component.text("                     Objectif : ", NamedTextColor.YELLOW)
+                         .append(Component.text(goal.requiredQuantity(), NamedTextColor.GOLD))
+                        .append(Component.text(" votes", NamedTextColor.YELLOW)),
+                Component.empty(),
                 Component.text("                     → ", NamedTextColor.RED, TextDecoration.BOLD)
                          .append(Component.text("/vote", NamedTextColor.YELLOW, TextDecoration.BOLD))
                          .append(Component.text(" ← ", NamedTextColor.RED, TextDecoration.BOLD))

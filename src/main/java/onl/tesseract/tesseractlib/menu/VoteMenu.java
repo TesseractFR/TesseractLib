@@ -4,6 +4,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.bddfacade.VoteRepository;
 import onl.tesseract.tesseractlib.player.TPlayer;
@@ -14,6 +15,9 @@ import onl.tesseract.tesseractlib.util.menu.Button;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import onl.tesseract.tesseractlib.vote.VoteManager;
 import onl.tesseract.tesseractlib.vote.VoteSite;
+import onl.tesseract.tesseractlib.vote.goal.VoteGoal;
+import onl.tesseract.tesseractlib.vote.goal.VoteGoalManager;
+import onl.tesseract.tesseractlib.vote.goal.VoteGoalRepository;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,6 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -74,6 +79,7 @@ public class VoteMenu extends InventoryMenu {
                     add(index, Material.BARRIER, Component.empty());
                 }
 
+                putVoteGoalButton();
                 putPlayerButton();
                 putTopButton();
             }
@@ -96,6 +102,38 @@ public class VoteMenu extends InventoryMenu {
         }.runTask(TesseractLib.instance);
     }
 
+    private void putVoteGoalButton()
+    {
+        ItemLoreBuilder lore = new ItemLoreBuilder(45).newline()
+                                                      .append("Votez pendant les ", NamedTextColor.YELLOW)
+                                                      .append("Vote Goals", NamedTextColor.GOLD)
+                                                      .append(" pour obtenir encore plus de récompenses !", NamedTextColor.YELLOW).newline(2);
+
+        Collection<VoteGoal> goals = VoteGoalManager.getGoals();
+        if (goals.isEmpty())
+            lore.append("Il n'y a pas de Vote Goal en cours pour le moment...", NamedTextColor.GRAY);
+        else
+        {
+            for (VoteGoal goal : goals)
+            {
+                int voteCount = VoteGoalRepository.getVoteCount(goal);
+                lore.append("→ ", NamedTextColor.RED)
+                    .append("" + voteCount, NamedTextColor.YELLOW)
+                    .append("/", NamedTextColor.GRAY)
+                    .append("" + goal.requiredQuantity(), NamedTextColor.YELLOW)
+                    .append(" | ", NamedTextColor.WHITE, TextDecoration.OBFUSCATED)
+                    .append("Temps restant : ", NamedTextColor.GRAY)
+                    .append(goal.getPrintableRemainingDuration(), NamedTextColor.YELLOW)
+                    .newline();
+            }
+        }
+
+        addButton(2, new Button(new ItemBuilder(Material.CLOCK)
+                .name("Vote Goals", NamedTextColor.GOLD)
+                .lore(lore.get())
+                .build()));
+    }
+
     private void putTopButton()
     {
         ItemLoreBuilder lore = new ItemLoreBuilder();
@@ -111,7 +149,7 @@ public class VoteMenu extends InventoryMenu {
                 .append("" + entry.getValue(), NamedTextColor.GOLD);
         }
 
-        addButton(5, new Button(new ItemBuilder(Material.DIAMOND)
+        addButton(6, new Button(new ItemBuilder(Material.DIAMOND)
                 .name("Top Voteurs", NamedTextColor.GOLD)
                 .lore(lore.get())
                 .build()));
@@ -139,7 +177,7 @@ public class VoteMenu extends InventoryMenu {
                 .append("Total : ", NamedTextColor.YELLOW)
                 .append("" + new VoteRepository.GetVoteStatementBuilder().setPlayerUUID(player.getUUID())
                                                                          .build());
-        addButton(3, new Button(new ItemBuilder(getHead(player.getUUID()))
+        addButton(4, new Button(new ItemBuilder(getHead(player.getUUID()))
                 .name(player.getOfflinePlayer().getName(), NamedTextColor.GOLD)
                 .lore(lore.get())
                 .build()));
