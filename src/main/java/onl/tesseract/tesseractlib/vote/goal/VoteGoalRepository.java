@@ -9,7 +9,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.logging.Level;
 
+/**
+ * Get vote goals from the database
+ */
 public final class VoteGoalRepository {
+    /**
+     * Find all current goals, i.e, goals that are started and not yet ended
+     *
+     * @return Collection of current goals
+     */
     public static Collection<VoteGoal> getCurrentGoals()
     {
         try
@@ -52,6 +60,9 @@ public final class VoteGoalRepository {
         return Collections.emptyList();
     }
 
+    /**
+     * Get the amount of votes made between two timestamps
+     */
     public static int getVoteCount(final Timestamp start, final Timestamp end)
     {
         try
@@ -71,11 +82,19 @@ public final class VoteGoalRepository {
         }
     }
 
+    /**
+     * Get the amount of votes made during the period of time defined by the given vote goal
+     */
     public static int getVoteCount(final VoteGoal goal)
     {
         return getVoteCount(new Timestamp(goal.start().toEpochMilli()), new Timestamp(goal.end().toEpochMilli()));
     }
 
+    /**
+     * Insert a new vote goal into the database. An ID will be generated on the database, but won't be set on the given object.
+     *
+     * @param toCreate Goal to create. Should have an id of -1
+     */
     public static void createVoteGoal(final VoteGoal toCreate)
     {
         try

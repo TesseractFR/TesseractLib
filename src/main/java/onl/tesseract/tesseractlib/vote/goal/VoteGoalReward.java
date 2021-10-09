@@ -11,8 +11,14 @@ public interface VoteGoalReward {
      */
     VoteGoalRewardType getType();
 
+    /**
+     * Give the reward to a specific player. This method is called by the {@link VoteGoalManager} for every player who participated in the vote goal
+     */
     void give(final Player player);
 
+    /**
+     * Give a reward to the server. Called once per vote goal
+     */
     void giveAll();
 
     /**

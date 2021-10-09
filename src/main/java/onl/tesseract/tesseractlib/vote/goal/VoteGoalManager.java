@@ -16,10 +16,18 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
+/**
+ * Manages all current vote goals. Once {@link VoteGoalManager#startLoops()} is called, the manager regularly requests the database to get current
+ * vote goals
+ */
 public class VoteGoalManager {
     private static final Collection<VoteGoal> goals = new HashSet<>();
     private static final Map<VoteGoal, BossBar> bossBars = new HashMap<>();
+    private static final int REFRESH_RATE = 30;
 
+    /**
+     * Start the auto-update loop. Calls to {@link VoteGoalManager#update()} are made every {@value REFRESH_RATE} seconds
+     */
     public static void startLoops()
     {
         TesseractLib.logger().info("Starting VoteGoalManager");
@@ -38,7 +46,7 @@ public class VoteGoalManager {
                 // Display boss bars for 30 seconds every 3 minutes
                 step = (step + 1) % 6;
             }
-        }.runTaskTimer(TesseractLib.instance, 30 * 20, 30 * 20);
+        }.runTaskTimer(TesseractLib.instance, REFRESH_RATE * 20, REFRESH_RATE * 20);
     }
 
     public static void update()

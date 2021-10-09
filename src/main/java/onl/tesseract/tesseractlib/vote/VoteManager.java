@@ -51,9 +51,7 @@ public class VoteManager {
     public Map<VoteSite, Duration> getRemainingTimeUntilVote(final TPlayer player)
     {
         Map<VoteSite, Duration> map = new HashMap<>();
-        voteSites.forEach(voteSite -> {
-            map.put(voteSite, getRemainingTimeUntilVote(player, voteSite));
-        });
+        voteSites.forEach(voteSite -> map.put(voteSite, getRemainingTimeUntilVote(player, voteSite)));
         return map;
     }
 

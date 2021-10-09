@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public record VoteGoal(int id, Instant start, Instant end, int requiredQuantity, VoteGoalReward reward) {
 
     public Duration getDuration()
