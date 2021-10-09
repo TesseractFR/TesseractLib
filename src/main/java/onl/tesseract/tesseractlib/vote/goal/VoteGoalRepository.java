@@ -73,7 +73,7 @@ public final class VoteGoalRepository {
 
     public static int getVoteCount(final VoteGoal goal)
     {
-        return getVoteCount(new Timestamp(goal.getStart().toEpochMilli()), new Timestamp(goal.getEnd().toEpochMilli()));
+        return getVoteCount(new Timestamp(goal.start().toEpochMilli()), new Timestamp(goal.end().toEpochMilli()));
     }
 
     public static void createVoteGoal(final VoteGoal toCreate)
@@ -83,11 +83,11 @@ public final class VoteGoalRepository {
             final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             final PreparedStatement statement = connection.prepareStatement(
                     "INSERT INTO t_vote_goal (start, end, quantity, reward_type, reward_raw) VALUES (?, ?, ?, ?, ?)");
-            statement.setTimestamp(1, new Timestamp(toCreate.getStart().toEpochMilli()));
-            statement.setTimestamp(2, new Timestamp(toCreate.getEnd().toEpochMilli()));
-            statement.setInt(3, toCreate.getRequiredQuantity());
-            statement.setString(4, toCreate.getReward() == null ? null : toCreate.getReward().getType().getName());
-            statement.setString(5, toCreate.getReward() == null ? null : toCreate.getReward().serialize());
+            statement.setTimestamp(1, new Timestamp(toCreate.start().toEpochMilli()));
+            statement.setTimestamp(2, new Timestamp(toCreate.end().toEpochMilli()));
+            statement.setInt(3, toCreate.requiredQuantity());
+            statement.setString(4, toCreate.reward() == null ? null : toCreate.reward().getType().getName());
+            statement.setString(5, toCreate.reward() == null ? null : toCreate.reward().serialize());
             statement.executeUpdate();
         }
         catch (SQLException throwables)

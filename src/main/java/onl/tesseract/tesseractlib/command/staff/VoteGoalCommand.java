@@ -94,7 +94,7 @@ public class VoteGoalCommand implements CommandExecutor, TabCompleter {
         for (VoteGoal goal : VoteGoalManager.getGoals())
         {
             int voteCount = VoteGoalRepository.getVoteCount(goal);
-            sender.sendMessage(String.format("- %s : %d/%d", goal.getPrintableRemainingDuration(), voteCount, goal.getRequiredQuantity()));
+            sender.sendMessage(String.format("- %s : %d/%d", goal.getPrintableRemainingDuration(), voteCount, goal.requiredQuantity()));
         }
     }
 

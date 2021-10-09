@@ -80,9 +80,9 @@ public class VoteGoalManager {
     {
         BossBar bar = bossBars.get(goal);
         int voteCount = VoteGoalRepository.getVoteCount(goal);
-        String title = ChatColor.GOLD + String.format("VOTE GOAL | %s - %d/%d", goal.getPrintableRemainingDuration(), voteCount, goal.getRequiredQuantity());
+        String title = ChatColor.GOLD + String.format("VOTE GOAL | %s - %d/%d", goal.getPrintableRemainingDuration(), voteCount, goal.requiredQuantity());
         bar.setTitle(title);
-        double progress = voteCount / (float) goal.getRequiredQuantity();
+        double progress = voteCount / (float) goal.requiredQuantity();
         bar.setProgress(Math.min(1d, progress));
 
         // Show to all players
@@ -98,7 +98,7 @@ public class VoteGoalManager {
 
     private static void onNewGoal(final VoteGoal goal)
     {
-        TesseractLib.logger().info("Detected new vote goal of duration " + goal.getPrintableDuration() + ", goal: " + goal.getRequiredQuantity());
+        TesseractLib.logger().info("Detected new vote goal of duration " + goal.getPrintableDuration() + ", goal: " + goal.requiredQuantity());
 
         String duration = goal.getPrintableDuration();
         Component[] components = new Component[] {
@@ -127,7 +127,7 @@ public class VoteGoalManager {
     {
         TesseractLib.logger().info("Vote goal ended");
         int voteCount = VoteGoalRepository.getVoteCount(goal);
-        if (voteCount < goal.getRequiredQuantity())
+        if (voteCount < goal.requiredQuantity())
         {
             Component component = ChatFormats.VOTE.append(Component.text("Le vote goal n'a pas été atteint ='("));
             Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(component));
@@ -139,7 +139,7 @@ public class VoteGoalManager {
             p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0.9f);
         });
 
-        final VoteGoalReward reward = goal.getReward();
+        final VoteGoalReward reward = goal.reward();
         reward.giveAll();
         Bukkit.getOnlinePlayers().forEach(reward::give);
     }
