@@ -62,6 +62,7 @@ public class VoteGoalManager {
             {
                 goals.add(currentGoal);
                 onNewGoal(currentGoal);
+                display(currentGoal);
             }
         }
 
@@ -94,14 +95,13 @@ public class VoteGoalManager {
     {
         for (VoteGoal goal : goals)
         {
-            if (!bossBars.containsKey(goal))
-                bossBars.put(goal, Bukkit.createBossBar(" ", BarColor.GREEN, BarStyle.SEGMENTED_10));
             display(goal);
         }
     }
 
     private static void display(VoteGoal goal)
     {
+        bossBars.putIfAbsent(goal, Bukkit.createBossBar(" ", BarColor.GREEN, BarStyle.SEGMENTED_10));
         BossBar bar = bossBars.get(goal);
         int voteCount = VoteGoalRepository.getVoteCount(goal);
         String title = ChatColor.GOLD + String.format("VOTE GOAL | %s - %d/%d", goal.getPrintableRemainingDuration(), voteCount, goal.requiredQuantity());
