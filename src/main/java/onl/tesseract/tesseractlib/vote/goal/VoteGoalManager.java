@@ -1,6 +1,7 @@
 package onl.tesseract.tesseractlib.vote.goal;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import onl.tesseract.tesseractlib.TesseractLib;
@@ -79,7 +80,7 @@ public class VoteGoalManager {
     {
         BossBar bar = bossBars.get(goal);
         int voteCount = VoteGoalRepository.getVoteCount(goal);
-        String title = ChatColor.GOLD + String.format("VOTE GOAL | %s - %d/%d", goal.getPrintableDuration(), voteCount, goal.getRequiredQuantity());
+        String title = ChatColor.GOLD + String.format("VOTE GOAL | %s - %d/%d", goal.getPrintableRemainingDuration(), voteCount, goal.getRequiredQuantity());
         bar.setTitle(title);
         double progress = voteCount / (float) goal.getRequiredQuantity();
         bar.setProgress(Math.min(1d, progress));
@@ -104,12 +105,12 @@ public class VoteGoalManager {
                 Component.text("                                                                       ", NamedTextColor.RED, TextDecoration.STRIKETHROUGH),
                 Component.text("                ")
                          .append(Component.text("lll", NamedTextColor.WHITE, TextDecoration.OBFUSCATED))
-                         .append(Component.text(" VOTE GOAL" + duration, NamedTextColor.GOLD))
+                         .append(Component.text(" VOTE GOAL  " + duration, NamedTextColor.GOLD))
                         .append(Component.text(" lll", NamedTextColor.WHITE, TextDecoration.OBFUSCATED)),
                 Component.text("                     → ", NamedTextColor.RED, TextDecoration.BOLD)
                          .append(Component.text("/vote", NamedTextColor.YELLOW, TextDecoration.BOLD))
                          .append(Component.text(" ← ", NamedTextColor.RED, TextDecoration.BOLD))
-                        .clickEvent(net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND, "/vote")),
+                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/vote")),
                 Component.text("                                                                       ", NamedTextColor.RED, TextDecoration.STRIKETHROUGH),
                 };
 
