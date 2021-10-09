@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class VoteGoalRewardManager {
-    private static final HashMap<Integer, VoteGoalRewardType> goalToReward = new HashMap<>();
     private static final HashMap<String, VoteGoalRewardType> rewardTypes = new HashMap<>();
 
     public static void registerRewardType(final VoteGoalRewardType reward)

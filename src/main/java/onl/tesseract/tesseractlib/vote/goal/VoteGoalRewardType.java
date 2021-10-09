@@ -16,9 +16,9 @@ public interface VoteGoalRewardType {
     /**
      * Deserialize a reward from a raw string
      */
-    VoteGoalReward deserialize(final String raw);
+    VoteGoalReward deserialize(final String raw) throws IllegalArgumentException;
 
-    VoteGoalReward fromArgs(final String[] args);
+    VoteGoalReward fromArgs(final String[] args) throws IllegalArgumentException;
 
     @Nullable List<String> tabCompletion(final String[] args);
 }

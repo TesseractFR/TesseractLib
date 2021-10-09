@@ -61,16 +61,27 @@ public class VoteGoalCommand implements CommandExecutor, TabCompleter {
         }
 
         VoteGoalReward reward = null;
-        VoteGoalRewardType rewardType = null;
+        VoteGoalRewardType rewardType;
         if (args.length >= 5)
         {
-            rewardType = VoteGoalRewardManager.getRewardType(args[4]);
-            if (rewardType == null)
+            try
+            {
+                rewardType = VoteGoalRewardManager.getRewardType(args[4]);
+            }
+            catch (IllegalArgumentException e)
             {
                 sender.sendMessage(ChatColor.RED + "Type de récompense invalide");
                 return;
             }
-            reward = rewardType.fromArgs(Arrays.copyOfRange(args, 5, args.length));
+            try
+            {
+                reward = rewardType.fromArgs(Arrays.copyOfRange(args, 5, args.length));
+            }
+            catch (IllegalArgumentException e)
+            {
+                sender.sendMessage(ChatColor.RED + "Options de récompense invalides");
+                return;
+            }
         }
         VoteGoal newVoteGoal = new VoteGoal(-1, start.toInstant(), end.toInstant(), quantity, reward);
         VoteGoalRepository.createVoteGoal(newVoteGoal);
@@ -102,10 +113,13 @@ public class VoteGoalCommand implements CommandExecutor, TabCompleter {
                 return List.of("<quantity>");
             if (args.length == 5)
                 return VoteGoalRewardManager.getRegisteredRewardTypes().stream().toList();
-            VoteGoalRewardType type = VoteGoalRewardManager.getRewardType(args[4]);
-            if (type == null)
+            try
+            {
+                VoteGoalRewardType type = VoteGoalRewardManager.getRewardType(args[4]);return type.tabCompletion(Arrays.copyOfRange(args, 5, args.length));
+            }catch (IllegalArgumentException e)
+            {
                 return List.of("");
-            return type.tabCompletion(Arrays.copyOfRange(args, 5, args.length));
+            }
         }
 
         return List.of("");

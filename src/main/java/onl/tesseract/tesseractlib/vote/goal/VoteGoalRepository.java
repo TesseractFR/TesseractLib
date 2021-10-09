@@ -29,16 +29,17 @@ public final class VoteGoalRepository {
                 final String rewardTypeName = resultSet.getString("reward_type");
                 final String rewardRaw = resultSet.getString("reward_raw");
                 final VoteGoalRewardType type;
+                final VoteGoalReward reward;
                 try
                 {
                     type = VoteGoalRewardManager.getRewardType(rewardTypeName);
+                    reward = type.deserialize(rewardRaw);
                 }
                 catch (IllegalArgumentException e)
                 {
                     TesseractLib.logger().log(Level.WARNING, "Failed to load vote goal from database", e);
                     continue;
                 }
-                final VoteGoalReward reward = type.deserialize(rewardRaw);
 
                 goals.add(new VoteGoal(id, start, end, quantity, reward));
             }
@@ -86,7 +87,7 @@ public final class VoteGoalRepository {
             statement.setTimestamp(2, new Timestamp(toCreate.getEnd().toEpochMilli()));
             statement.setInt(3, toCreate.getRequiredQuantity());
             statement.setString(4, toCreate.getReward() == null ? null : toCreate.getReward().getType().getName());
-            statement.setString(5, toCreate.getReward() == null ? null : toCreate.getReward().toString());
+            statement.setString(5, toCreate.getReward() == null ? null : toCreate.getReward().serialize());
             statement.executeUpdate();
         }
         catch (SQLException throwables)
