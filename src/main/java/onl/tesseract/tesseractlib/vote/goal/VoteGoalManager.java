@@ -57,7 +57,8 @@ public class VoteGoalManager {
         // Determine newly started goals
         for (VoteGoal currentGoal : currentGoals)
         {
-            if (!goals.contains(currentGoal))
+            int voteCount = VoteGoalRepository.getVoteCount(currentGoal);
+            if (!goals.contains(currentGoal) && voteCount < currentGoal.requiredQuantity())
             {
                 goals.add(currentGoal);
                 onNewGoal(currentGoal);
