@@ -47,7 +47,7 @@ public class VoteGoalManager {
                 // Display boss bars for 30 seconds every 3 minutes
                 step = (step + 1) % 6;
             }
-        }.runTaskTimer(TesseractLib.instance, REFRESH_RATE * 20, REFRESH_RATE * 20);
+        }.runTaskTimerAsynchronously(TesseractLib.instance, REFRESH_RATE * 20, REFRESH_RATE * 20);
     }
 
     public static void update()
