@@ -471,6 +471,11 @@ public abstract class Invocable implements Listener {
         return localizedName;
     }
 
+    public int getSlot()
+    {
+        return slot;
+    }
+
     /**
      * Checks if a given item is an invocable
      * @param item Item to check

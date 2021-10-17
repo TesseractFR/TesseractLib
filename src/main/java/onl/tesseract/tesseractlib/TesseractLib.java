@@ -18,6 +18,7 @@ import onl.tesseract.tesseractlib.cosmetics.familier.PetManager;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
+import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.Util;
 import onl.tesseract.tesseractlib.vote.VoteManager;
@@ -79,6 +80,8 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         Title.loadAll();
         logger().info("Loading achievement...");
         Achievement.loadAll();
+
+        InventoryInstanceManager.loadConfigurations();
 
         VoteManager.getInstance().init();
         VoteGoalManager.startLoops();
