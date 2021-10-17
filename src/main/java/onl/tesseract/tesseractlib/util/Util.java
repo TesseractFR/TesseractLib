@@ -24,6 +24,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Util {
     static public final String NEW_LINE = " {nl} ";
@@ -212,6 +213,25 @@ public class Util {
         return count;
     }
 
+    static public int countItems(Inventory inv, Predicate<ItemStack> predicate) {
+        int count = 0;
+        for (ItemStack item : inv.getContents()) {
+            if (item != null && predicate.test(item))
+                count += item.getAmount();
+        }
+
+        return count;
+    }
+
+    static public int countItems(PlayerInventory inv, Predicate<ItemStack> predicate) {
+        ItemStack item = inv.getItem(EquipmentSlot.OFF_HAND);
+        if (item != null) {
+            if (predicate.test(item))
+                return item.getAmount() + countItems((Inventory) inv, predicate);
+        }
+        return countItems((Inventory) inv, predicate);
+    }
+
     /**
      * Returns the number of items matching this material, excluding items having a localizedName
      * @param inv Inventory to search
@@ -257,6 +277,45 @@ public class Util {
             }
         }
         return start - count;
+    }
+
+    static public int removeItems(Inventory inv, Predicate<ItemStack> predicate, int count) {
+        int start = count;
+        var content = inv.getContents();
+        for (int i = 0; i < content.length; i++)
+        {
+            ItemStack item = content[i];
+            if (item == null || !predicate.test(item))
+                continue;
+            if (item.getAmount() >= count) {
+                item.setAmount(item.getAmount() - count);
+                inv.clear(i);
+                inv.setItem(i, item);
+                return start;
+            }else {
+                count -= item.getAmount();
+                inv.clear(i);
+            }
+        }
+
+        return start - count;
+    }
+
+    static public int removeItems(PlayerInventory inv, Predicate<ItemStack> predicate, int count) {
+        int remaining = count - removeItems((Inventory) inv, predicate, count);
+        // Check off hand
+        if (remaining > 0) {
+            ItemStack item = inv.getItemInOffHand();
+            if (predicate.test(item))
+            {
+                int tmp = item.getAmount() - remaining;
+                remaining -= item.getAmount();
+                item.setAmount(tmp);
+                inv.setItem(EquipmentSlot.OFF_HAND, item);
+            }
+
+        }
+        return count - Math.max(remaining, 0);
     }
 
     /**
