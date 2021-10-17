@@ -466,6 +466,11 @@ public abstract class Invocable implements Listener {
             inv.setItem(EquipmentSlot.OFF_HAND, item);
     }
 
+    public String getLocalizedName()
+    {
+        return localizedName;
+    }
+
     /**
      * Checks if a given item is an invocable
      * @param item Item to check
