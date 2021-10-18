@@ -49,7 +49,8 @@ public class InventoryInstanceManager {
                 UUID uuid = UUID.fromString(key);
                 String configName = yaml.getString(key);
                 playerToConfig.put(uuid, configName);
-            }catch (IllegalArgumentException e)
+            }
+            catch (IllegalArgumentException e)
             {
                 TesseractLib.logger().log(Level.SEVERE, "Failed to load player's inventory configuration for uuid " + key, e);
             }
@@ -61,7 +62,7 @@ public class InventoryInstanceManager {
      */
     public static void save(final Player player)
     {
-        InventoryInstanceConfiguration config = getInstance(player);
+        InventoryInstanceConfiguration config = getSelectedConfig(player);
         File file = new File(FOLDER_PATH + config.getName() + "/" + player.getUniqueId() + ".yml");
         YamlConfiguration yaml = new YamlConfiguration();
         yaml.set("items", player.getInventory().getContents());
@@ -84,7 +85,55 @@ public class InventoryInstanceManager {
         }
     }
 
-    public static InventoryInstanceConfiguration getInstance(final Player player)
+    public static void selectConfig(final Player player, final String configName)
+    {
+        if (!configurations.containsKey(configName))
+            throw new IllegalArgumentException("This configuration does not exist");
+        if (configName.equals(getSelectedConfig(player).getName()))
+            return;
+        InventoryInstanceConfiguration config = configurations.get(configName);
+
+        save(player);
+        TPlayer tPlayer = TPlayer.get(player);
+        tPlayer.getEquipment().uninvokeAll();
+
+        File file = new File(FOLDER_PATH + configName + "/" + player.getUniqueId() + ".yml");
+        if (file.exists())
+        {
+            applyExistingConfig(tPlayer, config);
+        }
+    }
+
+    private static void applyExistingConfig(final TPlayer player, final InventoryInstanceConfiguration config)
+    {
+        ConfigurationSection yaml = new YamlConfiguration();
+
+        // Load items
+        var content = TPlayer.loadInventory(yaml, "items");
+        player.getBukkitPlayer().getInventory().setContents(content);
+
+        // Load invocables
+        if (config.isRestrictInvocables())
+            return;
+        ConfigurationSection invocableSection = yaml.getConfigurationSection("invocables");
+        if (invocableSection == null)
+            return;
+        for (String invocableName : invocableSection.getKeys(false))
+        {
+            if (!config.getInvocables().contains(invocableName))
+                continue;
+            int slot = invocableSection.getInt(invocableName);
+            player.getEquipment().get(invocableName)
+                  .ifPresent(invocable -> {
+                      if (slot == -1)
+                          invocable.invoke(false);
+                      else
+                          invocable.invoke(slot);
+                  });
+        }
+    }
+
+    public static InventoryInstanceConfiguration getSelectedConfig(final Player player)
     {
         if (playerToConfig.containsKey(player.getUniqueId()))
             return configurations.get(playerToConfig.get(player.getUniqueId()));

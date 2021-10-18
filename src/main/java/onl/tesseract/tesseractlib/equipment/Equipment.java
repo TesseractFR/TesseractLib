@@ -256,6 +256,14 @@ public class Equipment implements Listener {
         return null;
     }
 
+    public Optional<Invocable> get(final String localizedName) {
+        for (Invocable i : invocables) {
+            if (i.getLocalizedName().equals(localizedName))
+                return Optional.of(i);
+        }
+        return Optional.empty();
+    }
+
     /**
      * Gets an invocable by class or super-class
      * @param clazz Class of the invocable

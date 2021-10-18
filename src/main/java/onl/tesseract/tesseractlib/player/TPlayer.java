@@ -20,6 +20,7 @@ import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -319,7 +320,7 @@ public class TPlayer implements Listener {
         return getOfflinePlayer().getUniqueId();
     }
 
-    protected ItemStack[] loadInventory(YamlConfiguration yaml, String inv)
+    public static ItemStack[] loadInventory(ConfigurationSection yaml, String inv)
     {
         ItemStack[] list = new ItemStack[41];
         if (yaml.contains(inv))
