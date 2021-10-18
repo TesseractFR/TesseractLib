@@ -1,6 +1,7 @@
 package onl.tesseract.tesseractlib.inventory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import org.bukkit.Material;
 
 import java.io.File;
@@ -8,6 +9,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * Defines the configuration of an inventory a player can switch to.
+ */
 public class InventoryInstanceConfiguration {
     private String name;
     private boolean restrictInvocables;
@@ -43,11 +47,21 @@ public class InventoryInstanceConfiguration {
         return restrictInvocables;
     }
 
+    /**
+     * If {@link InventoryInstanceConfiguration#isRestrictInvocables()} is true, this returns the list of allowed invocables
+     *
+     * @return list of localized names. To match to {@link Invocable#getLocalizedName()}
+     */
     public Collection<String> getInvocables()
     {
         return invocables;
     }
 
+    /**
+     * Default items given to the player the first time he uses this inventory
+     *
+     * @return A map of item (material to quantity)
+     */
     public Map<Material, Integer> getItems()
     {
         return items;

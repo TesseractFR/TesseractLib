@@ -14,18 +14,33 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 
+/**
+ * Manage inventory configurations and player's inventory instances.
+ *
+ * This manager holds a collection of existing inventory configurations, that defines all inventories a player can switch to. Each player is mapped to
+ * the name of his selected inventory configuration.
+ */
 public class InventoryInstanceManager {
     private static final String FOLDER_PATH = "plugins/Tesseract/inventories/";
+    private static final String CONFIG_PATH = FOLDER_PATH + "config.json";
+    private static final String PLAYERS_PATH = FOLDER_PATH + "players.yml";
     private static final Map<String, InventoryInstanceConfiguration> configurations = new HashMap<>();
     private static final Map<UUID, String> playerToConfig = new HashMap<>();
 
-    static {
+    static
+    {
         configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap()));
     }
 
+    /**
+     * Load from file the inventory configurations and the selected configuration of each player.
+     * Inventories configurations are loaded from {@value CONFIG_PATH}
+     * Player's selected configurations are loaded from {@value PLAYERS_PATH}
+     * It is not recommended calling this function after startup as it will not update inventories of connected players.
+     */
     public static void loadConfigurations()
     {
-        File configFile = new File(FOLDER_PATH + "config.json");
+        File configFile = new File(CONFIG_PATH);
         File folder = new File(FOLDER_PATH);
         if (!configFile.exists())
         {
@@ -43,7 +58,7 @@ public class InventoryInstanceManager {
         {
             TesseractLib.logger().log(Level.SEVERE, "Failed to load inventories configurations", e);
         }
-        File playersFile = new File(FOLDER_PATH + "players.yml");
+        File playersFile = new File(PLAYERS_PATH);
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(playersFile);
         for (String key : yaml.getKeys(false))
         {
@@ -60,18 +75,19 @@ public class InventoryInstanceManager {
         }
     }
 
+    /**
+     * Save inventory configurations and player's selected inventories mapping
+     */
     public static void save() throws IOException
     {
         File playersFile = new File(FOLDER_PATH + "players.yml");
         YamlConfiguration yaml = new YamlConfiguration();
-        playerToConfig.forEach(((uuid, config) -> {
-            yaml.set(uuid.toString(), config);
-        }));
+        playerToConfig.forEach(((uuid, config) -> yaml.set(uuid.toString(), config)));
         yaml.save(playersFile);
 
         File configFile = new File(FOLDER_PATH + "config.json");
         InventoryInstanceConfigurations configs = new InventoryInstanceConfigurations(configurations.values()
-                .stream().toList());
+                                                                                                    .stream().toList());
         ObjectMapper mapper = new ObjectMapper();
         mapper.writerWithDefaultPrettyPrinter().writeValue(configFile, configs);
     }
@@ -105,7 +121,10 @@ public class InventoryInstanceManager {
     }
 
     /**
-     * Load and apply a configuration to a player. The current player's inventory will be saved and replaced
+     * Load and apply a configuration to a player. The current player's inventory will be saved then replaced with the one specified by configName.
+     * If the player has no inventory saved under that configuration, it will create a new inventory and give the configuration's default items.
+     *
+     * @throws IllegalArgumentException if the configuration does not exist.
      */
     public static void selectConfig(final Player player, final String configName)
     {
@@ -118,6 +137,9 @@ public class InventoryInstanceManager {
         applyConfig(player, configName);
     }
 
+    /**
+     * Apply a configuration. This does not save the player's current inventory.
+     */
     static void applyConfig(final Player player, final String configName)
     {
         InventoryInstanceConfiguration config = configurations.get(configName);
@@ -177,10 +199,22 @@ public class InventoryInstanceManager {
         }
     }
 
+    /**
+     * Get the inventory configuration currently used by the player.
+     *
+     * @throws IllegalStateException if the selected configuration does not exist, probably because it has been removed while the player was offline.
+     * This exception is not expected to be thrown as {@link InventoryInstanceEventHandler} handles this case on player connection.
+     */
     public static InventoryInstanceConfiguration getSelectedConfig(final Player player)
     {
         if (playerToConfig.containsKey(player.getUniqueId()))
-            return configurations.get(playerToConfig.get(player.getUniqueId()));
+        {
+            String configName = playerToConfig.get(player.getUniqueId());
+            var config = configurations.get(configName);
+            if (config == null)
+                throw new IllegalStateException("Configuration is not defined.");
+            return config;
+        }
         return new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap());
     }
 
