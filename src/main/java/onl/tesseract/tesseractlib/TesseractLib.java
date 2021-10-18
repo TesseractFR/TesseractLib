@@ -18,6 +18,7 @@ import onl.tesseract.tesseractlib.cosmetics.familier.PetManager;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
+import onl.tesseract.tesseractlib.inventory.InventoryInstanceEventHandler;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.Util;
@@ -181,6 +182,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(new ColoredChat(), this);
         this.getServer().getPluginManager().registerEvents(new PetManager(), this);
         this.getServer().getPluginManager().registerEvents(this,this);
+        this.getServer().getPluginManager().registerEvents(new InventoryInstanceEventHandler(),this);
     }
 
 

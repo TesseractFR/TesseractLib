@@ -113,9 +113,14 @@ public class InventoryInstanceManager {
             throw new IllegalArgumentException("This configuration does not exist");
         if (configName.equals(getSelectedConfig(player).getName()))
             return;
-        InventoryInstanceConfiguration config = configurations.get(configName);
 
         save(player);
+        applyConfig(player, configName);
+    }
+
+    static void applyConfig(final Player player, final String configName)
+    {
+        InventoryInstanceConfiguration config = configurations.get(configName);
         if (configName.equals("default"))
             playerToConfig.remove(player.getUniqueId());
         else
@@ -177,6 +182,11 @@ public class InventoryInstanceManager {
         if (playerToConfig.containsKey(player.getUniqueId()))
             return configurations.get(playerToConfig.get(player.getUniqueId()));
         return new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap());
+    }
+
+    public static String getSelectedConfigName(final Player player)
+    {
+        return playerToConfig.getOrDefault(player.getUniqueId(), "default");
     }
 
     public static Collection<InventoryInstanceConfiguration> getAllConfigs()
