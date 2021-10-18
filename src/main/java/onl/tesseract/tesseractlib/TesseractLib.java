@@ -160,6 +160,8 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         Objects.requireNonNull(instance.getCommand("votegoal")).setExecutor(new VoteGoalCommand());
         Objects.requireNonNull(instance.getCommand("votegoal")).setTabCompleter(new VoteGoalCommand());
         Objects.requireNonNull(instance.getCommand("vote")).setExecutor(new VoteCommand());
+        Objects.requireNonNull(instance.getCommand("inventory")).setExecutor(new InventoryCommand());
+        Objects.requireNonNull(instance.getCommand("inventory")).setTabCompleter(new InventoryCommand());
     }
 
     void registerEvents()

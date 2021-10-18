@@ -6,19 +6,21 @@ import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class InventoryInstanceManager {
     private static final String FOLDER_PATH = "plugins/Tesseract/inventories/";
     private static final Map<String, InventoryInstanceConfiguration> configurations = new HashMap<>();
     private static final Map<UUID, String> playerToConfig = new HashMap<>();
+
+    static {
+        configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap()));
+    }
 
     public static void loadConfigurations()
     {
@@ -85,6 +87,9 @@ public class InventoryInstanceManager {
         }
     }
 
+    /**
+     * Load and apply a configuration to a player. The current player's inventory will be saved and replaced
+     */
     public static void selectConfig(final Player player, final String configName)
     {
         if (!configurations.containsKey(configName))
@@ -94,19 +99,36 @@ public class InventoryInstanceManager {
         InventoryInstanceConfiguration config = configurations.get(configName);
 
         save(player);
+        if (configName.equals("default"))
+            playerToConfig.remove(player.getUniqueId());
+        else
+            playerToConfig.put(player.getUniqueId(), configName);
+        player.getInventory().clear();
         TPlayer tPlayer = TPlayer.get(player);
         tPlayer.getEquipment().uninvokeAll();
 
         File file = new File(FOLDER_PATH + configName + "/" + player.getUniqueId() + ".yml");
         if (file.exists())
         {
-            applyExistingConfig(tPlayer, config);
+            applyExistingConfig(tPlayer, file, config);
+        }
+        else
+        {
+            applyNewConfig(tPlayer, config);
         }
     }
 
-    private static void applyExistingConfig(final TPlayer player, final InventoryInstanceConfiguration config)
+    private static void applyNewConfig(final TPlayer player, final InventoryInstanceConfiguration config)
     {
-        ConfigurationSection yaml = new YamlConfiguration();
+        config.getItems().forEach(((material, integer) -> {
+            ItemStack item = new ItemStack(material, integer);
+            player.getBukkitPlayer().getInventory().addItem(item);
+        }));
+    }
+
+    private static void applyExistingConfig(final TPlayer player, final File file, final InventoryInstanceConfiguration config)
+    {
+        ConfigurationSection yaml = YamlConfiguration.loadConfiguration(file);
 
         // Load items
         var content = TPlayer.loadInventory(yaml, "items");
@@ -138,6 +160,11 @@ public class InventoryInstanceManager {
         if (playerToConfig.containsKey(player.getUniqueId()))
             return configurations.get(playerToConfig.get(player.getUniqueId()));
         return new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap());
+    }
+
+    public static Collection<InventoryInstanceConfiguration> getAllConfigs()
+    {
+        return configurations.values();
     }
 }
 

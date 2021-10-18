@@ -50,3 +50,6 @@ commands:
   vote:
     usage: "/vote"
     description: Voter pour le serveur
+  inventory:
+    usage: "/inv"
+    description: Changer d'inventaire
