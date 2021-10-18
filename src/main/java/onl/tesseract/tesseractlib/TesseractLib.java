@@ -38,6 +38,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -46,6 +47,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class TesseractLib extends JavaPlugin implements Listener {
@@ -103,7 +105,14 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     public void onDisable() {
         // Plugin shutdown logic
         bddManager.close();
-
+        try
+        {
+            InventoryInstanceManager.save();
+        }
+        catch (IOException e)
+        {
+            logger().log(Level.SEVERE, "Failed to save inventory configurations!", e);
+        }
     }
 
     @EventHandler (priority = EventPriority.LOW)

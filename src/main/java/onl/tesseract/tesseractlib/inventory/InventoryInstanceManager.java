@@ -1,5 +1,6 @@
 package onl.tesseract.tesseractlib.inventory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
@@ -57,6 +58,22 @@ public class InventoryInstanceManager {
                 TesseractLib.logger().log(Level.SEVERE, "Failed to load player's inventory configuration for uuid " + key, e);
             }
         }
+    }
+
+    public static void save() throws IOException
+    {
+        File playersFile = new File(FOLDER_PATH + "players.yml");
+        YamlConfiguration yaml = new YamlConfiguration();
+        playerToConfig.forEach(((uuid, config) -> {
+            yaml.set(uuid.toString(), config);
+        }));
+        yaml.save(playersFile);
+
+        File configFile = new File(FOLDER_PATH + "config.json");
+        InventoryInstanceConfigurations configs = new InventoryInstanceConfigurations(configurations.values()
+                .stream().toList());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writerWithDefaultPrettyPrinter().writeValue(configFile, configs);
     }
 
     /**
