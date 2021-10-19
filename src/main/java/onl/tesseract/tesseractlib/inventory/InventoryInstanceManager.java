@@ -227,5 +227,10 @@ public class InventoryInstanceManager {
     {
         return configurations.values();
     }
+
+    public static void addConfig(InventoryInstanceConfiguration config)
+    {
+        configurations.put(config.getName(), config);
+    }
 }
 

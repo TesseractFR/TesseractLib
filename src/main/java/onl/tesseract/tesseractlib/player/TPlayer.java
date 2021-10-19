@@ -26,13 +26,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 
@@ -85,8 +83,6 @@ public class TPlayer implements Listener {
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
     protected boolean adminMode = false;
-    protected Inventory adminInventory;
-    protected Inventory playerInventory;
     protected PlayerProfile playerProfile;
     protected Gender gender;
     protected PlayerFacade playerFacade;
@@ -116,16 +112,12 @@ public class TPlayer implements Listener {
     public TPlayer(OfflinePlayer player)
     {
         this.player = player;
-        this.adminInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
-        this.playerInventory = Bukkit.createInventory(null, InventoryType.PLAYER);
         checkFirstJoin(player.getUniqueId());
     }
 
     public TPlayer(OfflinePlayer player, Inventory adminInventory, Inventory playerInventory)
     {
         this.player = player;
-        this.adminInventory = adminInventory;
-        this.playerInventory = playerInventory;
     }
 
     static public TPlayer get(Player player)
@@ -266,11 +258,7 @@ public class TPlayer implements Listener {
         // Save the second inventory if admin
         if (player.isOnline())
         {
-            yaml.set("playerInventory", playerInventory.getContents());
-
             yaml.set("adminmode", adminMode);
-            if (!adminMode)
-                yaml.set("adminInventory", adminInventory.getContents());
         }
 
         try
@@ -308,9 +296,6 @@ public class TPlayer implements Listener {
                 YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
                 adminMode = yaml.getBoolean("adminmode");
                 player.getPlayer().setGameMode(adminMode ? GameMode.CREATIVE : GameMode.SURVIVAL);
-
-                getPlayerInventory().setContents(loadInventory(yaml, "playerInventory"));
-                getAdminInventory().setContents(loadInventory(yaml, "adminInventory"));
             };
         }
     }
@@ -655,28 +640,8 @@ public class TPlayer implements Listener {
         this.adminMode = adminMode;
     }
 
-    public Inventory getAdminInventory()
-    {
-        return adminInventory;
-    }
-
-    public void setAdminInventory(PlayerInventory adminInventory)
-    {
-        this.adminInventory = adminInventory;
-    }
-
     ////////////////////
     // Static methods //
-
-    public Inventory getPlayerInventory()
-    {
-        return playerInventory;
-    }
-
-    public void setPlayerInventory(PlayerInventory playerInventory)
-    {
-        this.playerInventory = playerInventory;
-    }
 
     @Override
     public boolean equals(Object other)
