@@ -3,6 +3,7 @@ package onl.tesseract.tesseractlib.inventory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
+import onl.tesseract.tesseractlib.event.inventory.InventorySwitchEvent;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -133,16 +134,26 @@ public class InventoryInstanceManager {
         if (configName.equals(getSelectedConfig(player).getName()))
             return;
 
+        InventorySwitchEvent event = new InventorySwitchEvent(player, getSelectedConfigName(player), configurations.get(configName));
+        if (!event.callEvent())
+            return;
+
         save(player);
-        applyConfig(player, configName);
+        applyConfig(player, event.getTo());
+    }
+
+    static void applyConfig(final Player player, final String configName)
+    {
+        InventoryInstanceConfiguration config = configurations.get(configName);
+        applyConfig(player, config);
     }
 
     /**
      * Apply a configuration. This does not save the player's current inventory.
      */
-    static void applyConfig(final Player player, final String configName)
+    static void applyConfig(final Player player, final InventoryInstanceConfiguration config)
     {
-        InventoryInstanceConfiguration config = configurations.get(configName);
+        final String configName = config.getName();
         if (configName.equals("default"))
             playerToConfig.remove(player.getUniqueId());
         else
