@@ -4,7 +4,10 @@ import onl.tesseract.tesseractlib.event.PlayerInvocableInvokeEvent;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import java.util.Optional;
 
 public class InventoryInstanceEventHandler implements Listener {
     @EventHandler
@@ -28,6 +31,26 @@ public class InventoryInstanceEventHandler implements Listener {
         {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatFormats.EQUIPMENT_ERROR, "Vous ne pouvez pas invoquer cet équipement pour l'instant");
+        }
+    }
+
+    @EventHandler
+    public void onChangeWorld(final PlayerChangedWorldEvent event)
+    {
+        if (InventoryInstanceManager.getSelectedConfigName(event.getPlayer()).equals("admin"))
+            return;
+        final String from = event.getFrom().getName();
+        final String to = event.getPlayer().getWorld().getName();
+
+        final Optional<InventoryInstanceConfiguration> config = InventoryInstanceManager.getForWorld(to);
+        if (config.isPresent())
+        {
+            InventoryInstanceManager.selectConfig(event.getPlayer(), config.get().getName());
+        }
+        else
+        {
+            InventoryInstanceManager.getForWorld(from)
+                                    .ifPresent(any -> InventoryInstanceManager.selectConfig(event.getPlayer(), "default"));
         }
     }
 }

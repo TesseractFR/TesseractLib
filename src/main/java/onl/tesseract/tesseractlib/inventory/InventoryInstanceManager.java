@@ -30,7 +30,7 @@ public class InventoryInstanceManager {
 
     static
     {
-        configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap()));
+        configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null));
     }
 
     /**
@@ -53,7 +53,7 @@ public class InventoryInstanceManager {
         try
         {
             InventoryInstanceConfiguration.load(configFile)
-                                          .forEach(config -> configurations.put(config.getName(), config));
+                                          .forEach(InventoryInstanceManager::addConfig);
         }
         catch (IOException e)
         {
@@ -226,7 +226,7 @@ public class InventoryInstanceManager {
                 throw new IllegalStateException("Configuration is not defined.");
             return config;
         }
-        return new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap());
+        return new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null);
     }
 
     public static String getSelectedConfigName(final Player player)
@@ -241,7 +241,20 @@ public class InventoryInstanceManager {
 
     public static void addConfig(InventoryInstanceConfiguration config)
     {
+        if (config.getWorld() != null && configurations.values().stream().anyMatch(existing -> config.getWorld().equals(existing.getWorld())))
+        {
+            TesseractLib.logger().log(Level.WARNING, "Cannot register two inventories for the same world " + config.getWorld() + ", tried to register config " + config.getName());
+            return;
+        }
         configurations.put(config.getName(), config);
+    }
+
+    public static Optional<InventoryInstanceConfiguration> getForWorld(final String worldName)
+    {
+        return configurations.values()
+                             .stream()
+                             .filter(config -> worldName.equalsIgnoreCase(config.getWorld()))
+                             .findAny();
     }
 }
 

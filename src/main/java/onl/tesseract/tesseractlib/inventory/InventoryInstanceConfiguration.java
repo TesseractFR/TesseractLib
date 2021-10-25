@@ -17,18 +17,20 @@ public class InventoryInstanceConfiguration {
     private boolean restrictInvocables;
     private Collection<String> invocables;
     private Map<Material, Integer> items;
+    private String world;
 
     public InventoryInstanceConfiguration()
     {
     }
 
     public InventoryInstanceConfiguration(final String name, final boolean restrictInvocables, final Collection<String> invocables,
-                                          final Map<Material, Integer> items)
+                                          final Map<Material, Integer> items, final String world)
     {
         this.name = name;
         this.restrictInvocables = restrictInvocables;
         this.invocables = invocables;
         this.items = items;
+        this.world = world;
     }
 
     public static Collection<InventoryInstanceConfiguration> load(final File file) throws IOException
@@ -65,6 +67,11 @@ public class InventoryInstanceConfiguration {
     public Map<Material, Integer> getItems()
     {
         return items;
+    }
+
+    public String getWorld()
+    {
+        return world;
     }
 }
 
