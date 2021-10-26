@@ -26,6 +26,7 @@ public class ItemBuilder {
     protected int quantity;
     protected int lineWidth;
     protected ItemFlag[] flags = ItemFlag.values();
+    protected int customModelData = -1;
 
     /**
      * Default constructor. Instantiate a new builder by initializing all parameters.
@@ -142,6 +143,8 @@ public class ItemBuilder {
             meta.displayName(name);
         if (lore != null)
             meta.lore(lore);
+        if (customModelData != -1)
+            meta.setCustomModelData(customModelData);
         item.setItemMeta(meta);
         if (enchanted)
         {
@@ -299,6 +302,12 @@ public class ItemBuilder {
     public ItemBuilder lineWidth(final int lineWidth)
     {
         this.lineWidth = lineWidth;
+        return this;
+    }
+
+    public ItemBuilder setCustomModelData(final int modelData)
+    {
+        this.customModelData = modelData;
         return this;
     }
 }
