@@ -85,6 +85,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         Achievement.loadAll();
 
         InventoryInstanceManager.loadConfigurations();
+        InventoryInstanceManager.loadPlayers();
 
         VoteManager.getInstance().init();
         VoteGoalManager.startLoops();

@@ -52,6 +52,7 @@ public class InventoryInstanceManager {
 
         try
         {
+            configurations.clear();
             InventoryInstanceConfiguration.load(configFile)
                                           .forEach(InventoryInstanceManager::addConfig);
         }
@@ -59,6 +60,9 @@ public class InventoryInstanceManager {
         {
             TesseractLib.logger().log(Level.SEVERE, "Failed to load inventories configurations", e);
         }
+    }
+
+    public static void loadPlayers() {
         File playersFile = new File(PLAYERS_PATH);
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(playersFile);
         for (String key : yaml.getKeys(false))
