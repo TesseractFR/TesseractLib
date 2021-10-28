@@ -16,11 +16,13 @@ public class KnifeInHeadHat extends Invocable {
     public KnifeInHeadHat(final Equipment equipment)
     {
         super(equipment, EquipmentSlot.HEAD, "INVOCABLE_KNIFE_IN_HEAD", buildItem());
+        equipment.unblockedHelmet.add(this);
     }
 
     public KnifeInHeadHat(final Equipment equipment, final Map<String, Object> yamlMap)
     {
         super(equipment, EquipmentSlot.HEAD, "INVOCABLE_KNIFE_IN_HEAD", buildItem(), yamlMap);
+        equipment.unblockedHelmet.add(this);
     }
 
     public static ItemStack buildItem() {

@@ -16,11 +16,13 @@ public class SpiderHat extends Invocable {
     public SpiderHat(final Equipment equipment)
     {
         super(equipment, EquipmentSlot.HEAD, "INVOCABLE_SPIDER_HAT", buildItem());
+        equipment.unblockedHelmet.add(this);
     }
 
     public SpiderHat(final Equipment equipment, final Map<String, Object> yamlMap)
     {
         super(equipment, EquipmentSlot.HEAD, "INVOCABLE_SPIDER_HAT", buildItem(), yamlMap);
+        equipment.unblockedHelmet.add(this);
     }
 
     public static ItemStack buildItem() {

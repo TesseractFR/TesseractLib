@@ -16,11 +16,13 @@ public class WitchHat extends Invocable {
     public WitchHat(final Equipment equipment)
     {
         super(equipment, EquipmentSlot.HEAD, "INVOCABLE_WHITCH_HAT", buildItem());
+        equipment.unblockedHelmet.add(this);
     }
 
     public WitchHat(final Equipment equipment, final Map<String, Object> yamlMap)
     {
         super(equipment, EquipmentSlot.HEAD, "INVOCABLE_WHITCH_HAT", buildItem(), yamlMap);
+        equipment.unblockedHelmet.add(this);
     }
 
     public static ItemStack buildItem() {

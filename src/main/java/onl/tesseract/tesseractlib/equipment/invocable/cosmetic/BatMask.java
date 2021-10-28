@@ -16,11 +16,13 @@ public class BatMask extends Invocable {
     public BatMask(final Equipment equipment)
     {
         super(equipment, EquipmentSlot.HEAD, "INVOCABLE_BATMASK", buildItem());
+        equipment.unblockedHelmet.add(this);
     }
 
     public BatMask(final Equipment equipment, final Map<String, Object> yamlMap)
     {
         super(equipment, EquipmentSlot.HEAD, "INVOCABLE_BATMASK", buildItem(), yamlMap);
+        equipment.unblockedHelmet.add(this);
     }
 
     public static ItemStack buildItem() {

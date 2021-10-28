@@ -16,11 +16,13 @@ public class Horne extends Invocable {
     public Horne(final Equipment equipment)
     {
         super(equipment, EquipmentSlot.HEAD, "INVOCABLE_HORNE", buildItem());
+        equipment.unblockedHelmet.add(this);
     }
 
     public Horne(final Equipment equipment, final Map<String, Object> yamlMap)
     {
         super(equipment, EquipmentSlot.HEAD, "INVOCABLE_HORNE", buildItem(), yamlMap);
+        equipment.unblockedHelmet.add(this);
     }
 
     public static ItemStack buildItem() {
