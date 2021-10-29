@@ -149,7 +149,8 @@ public class InventoryInstanceManager {
     static void applyConfig(final Player player, final String configName)
     {
         InventoryInstanceConfiguration config = configurations.get(configName);
-        applyConfig(player, config);
+        if (config != null)
+            applyConfig(player, config);
     }
 
     /**
