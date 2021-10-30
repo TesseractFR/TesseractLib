@@ -145,6 +145,15 @@ public class InventoryInstanceManager {
 
         save(player);
         applyConfig(player, event.getTo());
+
+        try
+        {
+            save();
+        }
+        catch (IOException e)
+        {
+            TesseractLib.logger().log(Level.SEVERE, "failed to save inventories", e);
+        }
     }
 
     static void applyConfig(final Player player, final String configName)
