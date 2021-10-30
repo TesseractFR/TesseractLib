@@ -89,13 +89,13 @@ public abstract class Invocable implements Listener {
                     if (slotType == EquipmentSlot.HAND) {
                         slot = (int) yamlMap.get("slot");
                         if (slot > -1)
-                            inv.setItem(slot, item);
+                            inv.setItem(slot, getItem());
                         else if (slot == -1)
-                            inv.setItem(EquipmentSlot.OFF_HAND, item);
+                            inv.setItem(EquipmentSlot.OFF_HAND, getItem());
                         else
                             return;
                     }else {
-                        inv.setItem(slotType, item);
+                        inv.setItem(slotType, getItem());
                     }
                     if (excludesOther())
                         equipment.set(slotType, that);
@@ -103,7 +103,6 @@ public abstract class Invocable implements Listener {
                 }
             }.runTask(TesseractLib.instance);
         }
-        ItemMeta meta = item.getItemMeta();
     }
 
     /**
