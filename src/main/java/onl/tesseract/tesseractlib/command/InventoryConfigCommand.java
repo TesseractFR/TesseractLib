@@ -11,8 +11,17 @@ import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InventoryConfigCommand extends CommandBuilder {
-    public InventoryConfigCommand(final String commandName)
+public final class InventoryConfigCommand extends CommandBuilder {
+    private static InventoryConfigCommand INSTANCE;
+
+    public static InventoryConfigCommand get()
+    {
+        if (INSTANCE == null)
+            INSTANCE = new InventoryConfigCommand("config");
+        return INSTANCE;
+    }
+
+    private InventoryConfigCommand(final String commandName)
     {
         super(commandName);
         description("Configurer les différents inventaires.");
