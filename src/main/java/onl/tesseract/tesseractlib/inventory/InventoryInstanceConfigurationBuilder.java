@@ -1,0 +1,49 @@
+package onl.tesseract.tesseractlib.inventory;
+
+import org.bukkit.Material;
+
+import java.util.Collection;
+import java.util.Map;
+
+public class InventoryInstanceConfigurationBuilder {
+    private String name;
+    private boolean restrictInvocables;
+    private Collection<String> invocables;
+    private Map<Material, Integer> items;
+    private String world;
+
+    public InventoryInstanceConfigurationBuilder setName(final String name)
+    {
+        this.name = name;
+        return this;
+    }
+
+    public InventoryInstanceConfigurationBuilder setRestrictInvocables(final boolean restrictInvocables)
+    {
+        this.restrictInvocables = restrictInvocables;
+        return this;
+    }
+
+    public InventoryInstanceConfigurationBuilder setInvocables(final Collection<String> invocables)
+    {
+        this.invocables = invocables;
+        return this;
+    }
+
+    public InventoryInstanceConfigurationBuilder setItems(final Map<Material, Integer> items)
+    {
+        this.items = items;
+        return this;
+    }
+
+    public InventoryInstanceConfigurationBuilder setWorld(final String world)
+    {
+        this.world = world;
+        return this;
+    }
+
+    public InventoryInstanceConfiguration build()
+    {
+        return new InventoryInstanceConfiguration(name, restrictInvocables, invocables, items, world);
+    }
+}

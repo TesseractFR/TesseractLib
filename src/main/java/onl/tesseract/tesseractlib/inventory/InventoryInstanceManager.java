@@ -5,6 +5,7 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.event.inventory.InventorySwitchEvent;
 import onl.tesseract.tesseractlib.player.TPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -252,6 +253,24 @@ public class InventoryInstanceManager {
             return;
         }
         configurations.put(config.getName(), config);
+    }
+
+    public static void removeConfig(final String configName) {
+        configurations.remove(configName);
+        playerToConfig.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().equals(configName))
+                .map(Map.Entry::getKey)
+                .forEach(uuid -> {
+                    Player player = Bukkit.getPlayer(uuid);
+                    if (player == null)
+                        return;
+                    String worldName = player.getWorld().getName();
+                    String defaultConfig = getForWorld(worldName)
+                            .map(InventoryInstanceConfiguration::getName)
+                            .orElse("default");
+                    selectConfig(player, defaultConfig);
+                });
     }
 
     public static Optional<InventoryInstanceConfiguration> getForWorld(final String worldName)

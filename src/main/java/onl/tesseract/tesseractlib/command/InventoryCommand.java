@@ -36,6 +36,7 @@ public class InventoryCommand implements CommandExecutor, TabCompleter {
                             Player player = (Player) sender;
                             InventoryInstanceManager.selectConfig(player, invName);
                         }))
+                .subCommand(new InventoryConfigCommand("config"))
                 .command(((sender, commandEnvironment) -> {}));
     }
 
