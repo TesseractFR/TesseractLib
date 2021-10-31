@@ -10,6 +10,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -205,14 +206,12 @@ public class InventoryInstanceManager {
         player.getBukkitPlayer().getInventory().setContents(content);
 
         // Load invocables
-        if (config.isRestrictInvocables())
-            return;
         ConfigurationSection invocableSection = yaml.getConfigurationSection("invocables");
         if (invocableSection == null)
             return;
         for (String invocableName : invocableSection.getKeys(false))
         {
-            if (!config.getInvocables().contains(invocableName))
+            if (config.isRestrictInvocables() && !config.getInvocables().contains(invocableName))
                 continue;
             int slot = invocableSection.getInt(invocableName);
             player.getEquipment().get(invocableName)
@@ -288,6 +287,12 @@ public class InventoryInstanceManager {
                              .stream()
                              .filter(config -> worldName.equalsIgnoreCase(config.getWorld()))
                              .findAny();
+    }
+
+    @Nullable
+    public static InventoryInstanceConfiguration get(final String configName)
+    {
+        return configurations.get(configName);
     }
 }
 
