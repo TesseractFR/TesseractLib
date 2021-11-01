@@ -1,7 +1,10 @@
 package onl.tesseract.tesseractlib.animation;
 
 import onl.tesseract.tesseractlib.TesseractLib;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -49,7 +52,7 @@ public class Meteorite {
                 charging.cancel();
                 callback.accept(null);
             }
-        }.runTaskLater(TesseractLib.instance, 20 * duration);
+        }.runTaskLater(TesseractLib.instance, 20L * duration);
     }
 
     public void move(float speed, Consumer<Void> callback) {

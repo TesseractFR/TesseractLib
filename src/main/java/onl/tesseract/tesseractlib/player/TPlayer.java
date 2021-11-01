@@ -461,7 +461,7 @@ public class TPlayer implements Listener {
                 chatEntryCallback = null;
             }
         };
-        chatEntryRunnable.runTaskLater(TesseractLib.instance, 20 * seconds);
+        chatEntryRunnable.runTaskLater(TesseractLib.instance, 20L * seconds);
     }
 
     public void chatEntry(Component message, Consumer<Component> function)
