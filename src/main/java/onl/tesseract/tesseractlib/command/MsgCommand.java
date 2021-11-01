@@ -23,7 +23,7 @@ public class MsgCommand implements CommandExecutor {
     /**
      * Maps a receiver to its last sender.
      */
-    static Map<CommandSender, CommandSender> messages = new HashMap<>();
+    static final Map<CommandSender, CommandSender> messages = new HashMap<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)

@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerInvocableEvent extends Event {
     private static final HandlerList handlerList = new HandlerList();
-    TPlayer player;
-    Invocable invocable;
+    final TPlayer player;
+    final Invocable invocable;
 
     public PlayerInvocableEvent(TPlayer player, Invocable invocable)
     {

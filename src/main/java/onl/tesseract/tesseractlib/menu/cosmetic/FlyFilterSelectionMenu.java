@@ -15,7 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class FlyFilterSelectionMenu extends InventoryMenu {
-    TPlayer player;
+    final TPlayer player;
 
 
     public FlyFilterSelectionMenu(TPlayer player, InventoryMenu previous)

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class ElytraTrailboutiqueMenu extends InventoryMenu {
 
-    TPlayer player;
+    final TPlayer player;
     public ElytraTrailboutiqueMenu(TPlayer player, InventoryMenu previous)
     {
         super(27, "Boutique des sillages d'ailes", previous);

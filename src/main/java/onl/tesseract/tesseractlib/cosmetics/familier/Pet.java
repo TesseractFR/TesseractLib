@@ -36,8 +36,8 @@ public enum Pet implements Cosmetic {
     TEEPY(PetHead.TeepyHead);
 
 
-    PetHead head;
-    String name;
+    final PetHead head;
+    final String name;
 
     Pet(PetHead head)
     {

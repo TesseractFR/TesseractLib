@@ -12,7 +12,7 @@ import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
 
 public class Ray {
-    BukkitTask task;
+    final BukkitTask task;
 
     public Ray(Particle particle, Color color, LivingEntity sender, short range, float delay, Consumer<Impact> onHit)
     {

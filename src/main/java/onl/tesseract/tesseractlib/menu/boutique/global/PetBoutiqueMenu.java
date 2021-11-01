@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class PetBoutiqueMenu extends InventoryMenu {
-    TPlayer player;
+    final TPlayer player;
     public PetBoutiqueMenu(TPlayer player, InventoryMenu previous)
     {
         super(54, "Boutique des sillages d'ailes", previous);

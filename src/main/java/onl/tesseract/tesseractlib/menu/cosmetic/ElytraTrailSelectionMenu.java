@@ -15,7 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class ElytraTrailSelectionMenu extends InventoryMenu {
-    TPlayer player;
+    final TPlayer player;
 
 
     public ElytraTrailSelectionMenu(TPlayer player,InventoryMenu previous)

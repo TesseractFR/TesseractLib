@@ -22,10 +22,10 @@ public enum ElytraTrails implements Cosmetic {
     SHINNING(ChatColor.WHITE + "Scintillant", Material.PRISMARINE_CRYSTALS, 16, Particle.FIREWORKS_SPARK),
     NONE(ChatColor.GRAY + "Sans sillage", Material.STRUCTURE_VOID, 0, null);
 
-    String name;
-    Material material;
-    int index;
-    Particle particle;
+    final String name;
+    final Material material;
+    final int index;
+    final Particle particle;
 
     ElytraTrails(String s, Material m, int i, Particle p)
     {

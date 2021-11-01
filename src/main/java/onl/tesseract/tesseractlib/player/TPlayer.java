@@ -65,7 +65,7 @@ public class TPlayer implements Listener {
     /**
      * Maps every Player who has played before with a TPlayer instance.
      */
-    static public HashMap<UUID, TPlayer> playerMap = new HashMap<>();
+    static public final HashMap<UUID, TPlayer> playerMap = new HashMap<>();
     public String skinValue;
     public String skinSignature;
     protected OfflinePlayer player;

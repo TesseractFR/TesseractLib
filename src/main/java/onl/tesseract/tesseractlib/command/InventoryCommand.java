@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class InventoryCommand implements CommandExecutor, TabCompleter {
-    CommandBuilder builder;
+    final CommandBuilder builder;
 
     public InventoryCommand()
     {

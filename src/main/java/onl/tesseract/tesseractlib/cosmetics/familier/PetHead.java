@@ -115,8 +115,8 @@ public enum PetHead {
             "ff481f77347fe59c083665c9efbb49071d493ea2027454aee87735d63bf3b");
 
 
-    String data;
-    String signature;
+    final String data;
+    final String signature;
 
     PetHead(String data, String signature)
     {

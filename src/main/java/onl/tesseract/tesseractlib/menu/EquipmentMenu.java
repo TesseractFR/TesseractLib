@@ -21,7 +21,7 @@ import org.bukkit.inventory.PlayerInventory;
 import java.util.List;
 
 public class EquipmentMenu extends InventoryMenu {
-    TPlayer player;
+    final TPlayer player;
 
     /**
      * Opens the equipment menu

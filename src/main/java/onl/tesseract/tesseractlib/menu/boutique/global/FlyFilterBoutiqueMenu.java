@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class FlyFilterBoutiqueMenu extends InventoryMenu {
-    TPlayer player;
+    final TPlayer player;
     public FlyFilterBoutiqueMenu(TPlayer player, InventoryMenu previous)
     {
         super(27, "Boutique des filtres de vol", previous);

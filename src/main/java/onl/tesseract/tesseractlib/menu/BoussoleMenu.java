@@ -13,7 +13,7 @@ public class BoussoleMenu extends InventoryMenu {
     static final ItemStack discordHead = getCustomHead(ChatColor.GOLD + "Lien du discord", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg3M2MxMmJmZmI1MjUxYTBiODhkNWFlNzVjNzI0N2NiMzlhNzVmZjFhODFjYmU0YzhhMzliMzExZGRlZGEifX19", "7873c12bffb5251a0b88d5ae75c7247cb39a75ff1a81cbe4c8a39b311ddeda");
     static final ItemStack facebookHead = getCustomHead(ChatColor.GOLD + "Lien du facebook", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGViNDYxMjY5MDQ0NjNmMDdlY2ZjOTcyYWFhMzczNzNhMjIzNTliNWJhMjcxODIxYjY4OWNkNTM2N2Y3NTc2MiJ9fX0=", "deb46126904463f07ecfc972aaa37373a22359b5ba271821b689cd5367f75762");
     static final ItemStack boutiqueHead = getCustomHead(ChatColor.GOLD + "Lien de la boutique", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzhmODhiMTYxNzYzZjYyZTRjNTFmNWViMWQzOGZhZjNiODJjNDhhODM5YWMzMTcxMjI5NTU3YWRlNDI3NDM0In19fQ==", "78f88b161763f62e4c51f5eb1d38faf3b82c48a839ac3171229557ade427434");
-    TPlayer player;
+    final TPlayer player;
 
     public BoussoleMenu(TPlayer player)
     {

@@ -15,7 +15,7 @@ public class SocialSpy implements CommandExecutor {
     /**
      * Set of players who are spying
      */
-    static public Collection<TPlayer> spies = new HashSet<>();
+    static public final Collection<TPlayer> spies = new HashSet<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)

@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class Boussole extends Invocable {
     BukkitTask propulsionTask;
-    BoussoleMenu menu;
+    final BoussoleMenu menu;
 
     public Boussole(Equipment equipment)
     {

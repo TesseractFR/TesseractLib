@@ -23,8 +23,8 @@ import java.util.UUID;
  * Displays a bossBar for entities damaged by players
  */
 public class EntityBossBar implements Listener {
-    static HashMap<UUID, BossBar> map = new HashMap<>();
-    static Map<UUID, BukkitTask> tasks = new HashMap<>();
+    static final HashMap<UUID, BossBar> map = new HashMap<>();
+    static final Map<UUID, BukkitTask> tasks = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageEvent event)

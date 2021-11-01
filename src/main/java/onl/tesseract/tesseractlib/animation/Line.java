@@ -12,8 +12,8 @@ import org.bukkit.util.Vector;
 public class Line {
     Particle particle;
     Color color;
-    Location source;
-    Location dest;
+    final Location source;
+    final Location dest;
     float delay = 1;
     double spacing = 0.3f;
     Consumer<Void> onFinish;

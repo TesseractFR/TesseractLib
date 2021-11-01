@@ -32,16 +32,16 @@ import java.util.logging.Level;
  */
 public class Equipment implements Listener {
     static public final String pathToFolder = "plugins/Tesseract/joueurs/equipements/";
-    TPlayer player;
+    final TPlayer player;
     int invocationPower = 100;
 
-    public HashSet<Invocable> invocables = new HashSet<>();
-    public List<Invocable> unblockedMainHand = new ArrayList<>();
-    public List<Invocable> unblockedOffHand = new ArrayList<>();
-    public List<Invocable> unblockedHelmet = new ArrayList<>();
-    public List<Invocable> unblockedChestplate = new ArrayList<>();
-    public List<Invocable> unblockedLeggings = new ArrayList<>();
-    public List<Invocable> unblockedBoots = new ArrayList<>();
+    public final HashSet<Invocable> invocables = new HashSet<>();
+    public final List<Invocable> unblockedMainHand = new ArrayList<>();
+    public final List<Invocable> unblockedOffHand = new ArrayList<>();
+    public final List<Invocable> unblockedHelmet = new ArrayList<>();
+    public final List<Invocable> unblockedChestplate = new ArrayList<>();
+    public final List<Invocable> unblockedLeggings = new ArrayList<>();
+    public final List<Invocable> unblockedBoots = new ArrayList<>();
 
     public Invocable mainHand;
     public Invocable offHand;

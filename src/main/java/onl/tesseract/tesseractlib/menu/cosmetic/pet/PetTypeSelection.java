@@ -16,7 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class PetTypeSelection extends InventoryMenu {
-    TPlayer player;
+    final TPlayer player;
 
     /***************************************************************************************
      Declaration head

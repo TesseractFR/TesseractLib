@@ -22,7 +22,7 @@ import java.util.List;
 
 public class PetsSelectionMenu extends InventoryMenu {
     private final PetCategory petCategory;
-    TPlayer player;
+    final TPlayer player;
 
 
     public PetsSelectionMenu(TPlayer player, PetCategory petCategory, final InventoryMenu previous)

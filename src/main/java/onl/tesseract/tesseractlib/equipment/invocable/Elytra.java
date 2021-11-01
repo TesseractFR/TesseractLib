@@ -51,7 +51,7 @@ public class Elytra extends Invocable {
     int topspeedLevel = 0;
 
     // static int[] prices = new int[] {2000,4000,8000,14000,19000,25000,30000,35000,40000};
-    static int[] prices = new int[] {100,200,300,400,500,600,700,800,900};
+    static final int[] prices = new int[] {100, 200, 300, 400, 500, 600, 700, 800, 900};
 
     public enum Upgrade {
         PROTECTION, VITESSE

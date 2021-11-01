@@ -18,10 +18,10 @@ public enum FlyFilter implements Cosmetic {
     NEBULEUX(ChatColor.WHITE + "Nébuleux", Material.FEATHER, 15, Particle.END_ROD),
     NONE(ChatColor.GOLD + "Flammes", Material.BLAZE_POWDER, 2, Particle.FLAME);
 
-    String name;
-    Material material;
-    int index;
-    Particle particle;
+    final String name;
+    final Material material;
+    final int index;
+    final Particle particle;
 
     FlyFilter(String s, Material m, int i, Particle p)
     {

@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class BoutiqueMenu extends InventoryMenu {
-    TPlayer player;
+    final TPlayer player;
     public BoutiqueMenu(TPlayer player)
     {
         super(27, ChatColor.BLUE + "Boutique de Tesseract");

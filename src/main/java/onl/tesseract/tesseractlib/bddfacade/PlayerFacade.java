@@ -19,7 +19,7 @@ public class PlayerFacade {
 
     final static String bddtableAchivement = "t_player_achievement";
     static private final String bddtable = "t_player";
-    public UUID uuid;
+    public final UUID uuid;
 
     public PlayerFacade(UUID uuid)
     {

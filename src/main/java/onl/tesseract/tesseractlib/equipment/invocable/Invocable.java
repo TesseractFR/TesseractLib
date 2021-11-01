@@ -38,16 +38,16 @@ import java.util.logging.Level;
  */
 public abstract class Invocable implements Listener {
     ItemStack item;
-    protected Equipment equipment;
+    protected final Equipment equipment;
     String name;
-    protected String localizedName;
+    protected final String localizedName;
     boolean invoked = false;
-    public EquipmentSlot slotType;
+    public final EquipmentSlot slotType;
     /**
      * Slots in which the item currently is. From 0 to 8, or -1 if in off hand or armor slot.
      */
     public int slot = -1;
-    protected Player player;
+    protected final Player player;
 
     /**
      * Creates a new invocable that will be added to the given equipment.

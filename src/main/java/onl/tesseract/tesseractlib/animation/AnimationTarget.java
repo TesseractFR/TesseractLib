@@ -10,7 +10,7 @@ public class AnimationTarget {
 
     Entity entity;
     Location location;
-    Type type;
+    final Type type;
 
     public AnimationTarget(Entity entity) {
         this.entity = entity;

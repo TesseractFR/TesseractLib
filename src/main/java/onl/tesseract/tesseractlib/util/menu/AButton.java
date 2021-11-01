@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 
 public abstract class AButton {
-    protected Consumer<InventoryClickEvent> function;
+    protected final Consumer<InventoryClickEvent> function;
     protected InventoryMenu menu;
     protected int index;
     protected boolean replace;

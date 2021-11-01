@@ -18,8 +18,8 @@ public enum PetCategory {
     Poisson(new ArrayList<>(Arrays.asList(Pet.FISHY, Pet.PUFFER, Pet.MAGIKARP)), PetHead.FishEggHead),
     Mouton(new ArrayList<>(Arrays.asList(Pet.SHEEPY, Pet.BLUEPY, Pet.TEEPY)), PetHead.SheepEggHead);
 
-    List<Pet> pets;
-    PetHead head;
+    final List<Pet> pets;
+    final PetHead head;
 
     PetCategory(List<Pet> pets, PetHead head)
     {

@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Meteorite {
-    List<ArmorStand> blocks = new ArrayList<>();
-    Location impactLocation;
-    Location spawnLocation;
+    final List<ArmorStand> blocks = new ArrayList<>();
+    final Location impactLocation;
+    final Location spawnLocation;
 
     public Meteorite(Location impactLocation, int spawnOffset) {
         this.impactLocation = impactLocation;

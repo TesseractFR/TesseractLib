@@ -13,7 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class CosmeticMenu extends InventoryMenu {
-    TPlayer player;
+    final TPlayer player;
 
 
     public CosmeticMenu(TPlayer player,InventoryMenu previous)

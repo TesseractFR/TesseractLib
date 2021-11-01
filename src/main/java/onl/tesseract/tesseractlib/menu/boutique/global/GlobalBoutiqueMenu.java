@@ -13,7 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class GlobalBoutiqueMenu extends InventoryMenu {
-    TPlayer player;
+    final TPlayer player;
 
     public GlobalBoutiqueMenu(TPlayer player, InventoryMenu previous)
     {

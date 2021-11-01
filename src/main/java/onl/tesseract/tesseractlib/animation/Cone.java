@@ -14,7 +14,7 @@ import java.util.*;
 
 public class Cone {
     Particle particle;
-    Location origin;
+    final Location origin;
     Color color;
     int radius;
     double openingAngle;
