@@ -14,11 +14,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 public class PetManager implements Listener {
-    static public HashMap<UUID, ArmorStand> invokedPets = new HashMap<>();
+    static public Map<UUID, ArmorStand> invokedPets = new HashMap<>();
 
 
     public static void invokePet(Player p, Pet pet)

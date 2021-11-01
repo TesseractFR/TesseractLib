@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -23,7 +24,7 @@ import java.util.UUID;
  */
 public class EntityBossBar implements Listener {
     static HashMap<UUID, BossBar> map = new HashMap<>();
-    static HashMap<UUID, BukkitTask> tasks = new HashMap<>();
+    static Map<UUID, BukkitTask> tasks = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageEvent event)

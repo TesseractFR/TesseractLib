@@ -7,10 +7,11 @@ import onl.tesseract.tesseractlib.player.TPlayer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 public interface Tag<T> {
-    HashSet<Tag<?>> tags = new HashSet<>();
+    Set<Tag<?>> tags = new HashSet<>();
 
     Matcher getMatcher(TextComponent component);
 

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class Achievement {
@@ -122,7 +123,7 @@ public class Achievement {
         return id;
     }
 
-    public static HashMap<String,Achievement> getAll(){
+    public static Map<String,Achievement> getAll(){
         return achievements;
     }
 

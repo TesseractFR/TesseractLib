@@ -59,7 +59,7 @@ public class Equipment implements Listener {
      * Returns a set of all invocables owned by this equipment.
      * @return Set of invocables.
      */
-    public HashSet<Invocable> getInvocables()
+    public Iterable<Invocable> getInvocables()
     {
         return invocables;
     }

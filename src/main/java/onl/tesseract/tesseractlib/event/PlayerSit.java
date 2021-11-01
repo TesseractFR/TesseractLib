@@ -22,12 +22,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Makes a player sit down when he right clicks a slab or stairs
  */
 public class PlayerSit implements Listener {
-    static HashMap<Player, Pig> map = new HashMap<>();
+    static Map<Player, Pig> map = new HashMap<>();
 
     @EventHandler
     public void onSit(PlayerInteractEvent event)
