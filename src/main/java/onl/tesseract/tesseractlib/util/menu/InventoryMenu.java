@@ -165,7 +165,6 @@ public class InventoryMenu implements Listener {
 
     /**
      * Adds an interactible button.
-     * @param index
      * @param item Item to display
      * @param function Function to execute
      * @param <T> The click event
@@ -324,7 +323,6 @@ public class InventoryMenu implements Listener {
 
     /**
      * Opens the menu
-     * @param player
      */
     public void open(Player player) {
         PlayerMenuOpenEvent event = new PlayerMenuOpenEvent(this, player);

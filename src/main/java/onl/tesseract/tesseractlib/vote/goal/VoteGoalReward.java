@@ -13,7 +13,6 @@ public interface VoteGoalReward {
 
     /**
      * Give the reward to a specific player. This method is called by the {@link VoteGoalManager} for every player who participated in the vote goal
-     * @param player
      */
     void give(final OfflinePlayer player);
 

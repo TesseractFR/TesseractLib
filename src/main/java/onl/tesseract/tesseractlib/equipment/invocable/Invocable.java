@@ -447,7 +447,6 @@ public abstract class Invocable implements Listener {
 
     /**
      * Does this invocable excludes other invocables when invoked
-     * @return
      */
     public boolean excludesOther() { return true; }
 
