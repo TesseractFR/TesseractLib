@@ -234,7 +234,7 @@ public class TPlayer implements Listener {
     {
         if (equipment != null)
             this.equipment.save();
-        File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
+        File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         yaml.set("name", getOfflinePlayer().getName());
         yaml.set("First_co", dateFirstConnection);
@@ -277,13 +277,13 @@ public class TPlayer implements Listener {
             //Tesseract.permissions.playerAddGroup(getOfflinePlayer().getPlayer(), rank.getPermGroup());
 
             // Load secondary staff inventory
-            File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
+            File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
             if (file.exists())
             {
                 YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
                 adminMode = yaml.getBoolean("adminmode");
                 player.getPlayer().setGameMode(adminMode ? GameMode.CREATIVE : GameMode.SURVIVAL);
-            };
+            }
         }
     }
 
@@ -321,7 +321,7 @@ public class TPlayer implements Listener {
         flyFilter = playerFacade.getFlyFilter();
         achievements.clear();
         achievements = playerFacade.getAllAchievements();
-        File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
+        File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         if (file.exists())
         {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
@@ -350,7 +350,7 @@ public class TPlayer implements Listener {
         }
         achievements.clear();
         achievements = playerFacade.getAllAchievements();
-        File file = new File(folderPath + getOfflinePlayer().getUniqueId().toString() + ".yml");
+        File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         if (file.exists())
         {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);

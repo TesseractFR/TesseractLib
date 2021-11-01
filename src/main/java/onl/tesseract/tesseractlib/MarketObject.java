@@ -7,7 +7,7 @@ public interface MarketObject {
 
     default int getPrice(){
         return 200;
-    };
+    }
 
     String getName();
 }

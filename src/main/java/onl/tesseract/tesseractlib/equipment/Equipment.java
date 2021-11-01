@@ -151,7 +151,7 @@ public class Equipment implements Listener {
     {
         // Load the file
         Equipment eq = new Equipment(player);
-        File file = new File(pathToFolder + player.getBukkitPlayer().getUniqueId().toString()
+        File file = new File(pathToFolder + player.getBukkitPlayer().getUniqueId()
                 + "_equipement.yml");
         FileConfiguration equipementData = YamlConfiguration.loadConfiguration(file);
         eq.invocationPower = equipementData.getInt("invocationPower");
@@ -168,7 +168,7 @@ public class Equipment implements Listener {
      * Saves the player's equipment into the yaml file
      */
     public void save() {
-        File file = new File(pathToFolder + player.getOfflinePlayer().getUniqueId().toString()
+        File file = new File(pathToFolder + player.getOfflinePlayer().getUniqueId()
                 + "_equipement.yml");
         FileConfiguration equipementData = YamlConfiguration.loadConfiguration(file);
         List<Map<?, ?>> yamlMap = new ArrayList<>();
