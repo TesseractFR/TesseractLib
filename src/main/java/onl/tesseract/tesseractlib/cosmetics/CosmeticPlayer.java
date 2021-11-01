@@ -40,7 +40,8 @@ public class CosmeticPlayer {
 
     public Set<Cosmetic> getCosmetics(String cosmeticType)
     {
-        if(!cosmetics.containsKey(cosmeticType))return null;
+        if (!cosmetics.containsKey(cosmeticType))
+            return Set.of();
         return cosmetics.get(cosmeticType);
     }
 }

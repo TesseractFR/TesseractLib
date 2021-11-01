@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -423,6 +424,7 @@ public abstract class Invocable implements Listener {
      * @param equipment Equipment to which the invocable belongs
      * @return The invocable instance
      */
+    @Nullable
     public static Invocable newInvocable(Map<?, ?> yamlMap, Equipment equipment)
     {
         // Try to make a new instance of the Invocable via its class name
@@ -490,6 +492,7 @@ public abstract class Invocable implements Listener {
      * @param item Item of the invocable
      * @return Invocable instance
      */
+    @Nullable
     static public Invocable asInvocable(Equipment equipment, ItemStack item) {
         if (isInvocable(item)) {
             String name = item.getItemMeta().getLocalizedName();

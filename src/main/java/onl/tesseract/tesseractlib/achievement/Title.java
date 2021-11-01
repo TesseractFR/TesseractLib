@@ -3,6 +3,7 @@ package onl.tesseract.tesseractlib.achievement;
 
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.player.TPlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -52,6 +53,7 @@ public class Title {
         }
     }
 
+    @Nullable
     static public Title getTitleFromName(String name)
     {
         if (name == null)
@@ -61,7 +63,7 @@ public class Title {
             return null;
         if (titles.containsKey(name))
             return titles.get(name);
-        throw new NullPointerException("This title doesn't exsit (" + name + ")");
+        throw new IllegalArgumentException("This title doesn't exsit (" + name + ")");
     }
 
     private static Title getTitleFromSQLResult(ResultSet result) throws SQLException

@@ -13,6 +13,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -88,6 +89,7 @@ public class MsgCommand implements CommandExecutor {
         });
     }
 
+    @Nullable
     public static CommandSender getReplyTo(CommandSender sender)
     {
         if (messages.containsKey(sender))

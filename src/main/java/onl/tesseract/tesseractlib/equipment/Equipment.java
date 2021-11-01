@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -231,6 +232,7 @@ public class Equipment implements Listener {
      * @param clazz Class of the invocable
      * @return The invocable, or null
      */
+    @Nullable
     public Invocable get(Class<?> clazz) {
         for (Invocable i : invocables) {
             if (i.getClass().equals(clazz))
@@ -252,6 +254,7 @@ public class Equipment implements Listener {
      * @param clazz Class of the invocable
      * @return The invocable that is an instance of clazz, or null
      */
+    @Nullable
     public Invocable getLike(Class<?> clazz) {
         for (Invocable i : invocables) {
             if (clazz.isInstance(i))

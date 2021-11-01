@@ -169,7 +169,7 @@ public class CosmeticManager {
     public static Set<Cosmetic> getPlayerCosmetics(UUID uuid, String cosmeticType)
     {
         if (!cosmeticPlayer.containsKey(uuid))
-            return null;
+            return Set.of();
         return cosmeticPlayer.get(uuid).getCosmetics(cosmeticType);
     }
 }
