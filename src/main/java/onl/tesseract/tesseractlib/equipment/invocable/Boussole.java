@@ -85,8 +85,9 @@ public class Boussole extends Invocable {
                     public void run()
                     {
                         if (! player.getOfflinePlayer().isOnline()) {
+                            return;
                         }
-                        else if (! el.isInvoked()) {
+                        if (! el.isInvoked()) {
                             player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage annulé (ailes désinvoquées).")));
                             propulsionTask = null;
                         }
