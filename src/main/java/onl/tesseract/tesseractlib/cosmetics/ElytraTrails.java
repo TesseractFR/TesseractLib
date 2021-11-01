@@ -5,10 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 public enum ElytraTrails implements Cosmetic {
     ENDER(ChatColor.DARK_PURPLE + "Ender", Material.ENDER_PEARL, 1, Particle.DRAGON_BREATH),
     FLAME(ChatColor.GOLD + "Flammes", Material.BLAZE_POWDER, 2, Particle.FLAME),

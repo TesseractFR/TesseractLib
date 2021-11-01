@@ -3,7 +3,6 @@ package onl.tesseract.tesseractlib.util;
 import org.bukkit.ChatColor;
 
 import static org.bukkit.ChatColor.*;
-import static org.bukkit.ChatColor.DARK_AQUA;
 
 @Deprecated
 public class ChatFormat {

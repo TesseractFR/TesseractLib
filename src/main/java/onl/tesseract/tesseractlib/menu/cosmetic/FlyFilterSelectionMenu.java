@@ -7,7 +7,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.menu.BoussoleMenu;
-import onl.tesseract.tesseractlib.menu.cosmetic.CosmeticMenu;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;

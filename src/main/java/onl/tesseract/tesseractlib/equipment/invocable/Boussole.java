@@ -6,7 +6,6 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.menu.BoussoleMenu;
 import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.Util;

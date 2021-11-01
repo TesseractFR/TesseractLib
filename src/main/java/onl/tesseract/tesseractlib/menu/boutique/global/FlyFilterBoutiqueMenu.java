@@ -1,7 +1,6 @@
 package onl.tesseract.tesseractlib.menu.boutique.global;
 
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
-import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
