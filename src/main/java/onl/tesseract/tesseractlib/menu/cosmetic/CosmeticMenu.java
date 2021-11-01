@@ -34,10 +34,7 @@ public class CosmeticMenu extends InventoryMenu {
                           ChatColor.GRAY + totalPlayerTrail + "/" + ElytraTrails.values().length +
                           " possédé" + (totalPlayerTrail > 2 ? "s" : "")
                           + NEW_LINE + NEW_LINE
-                          + ChatColor.GRAY + "Customisez les particules de vos ailes", event -> {
-                    new ElytraTrailSelectionMenu(player, this).open(viewer);
-
-                });
+                          + ChatColor.GRAY + "Customisez les particules de vos ailes", event -> new ElytraTrailSelectionMenu(player, this).open(viewer));
         int totalPlayerFlyFilter = CosmeticManager.getTotalPossessed(player.getUUID(), FlyFilter.getTypeName());
         addButton(13, Material.BLAZE_POWDER,
                   ChatColor.DARK_GREEN + "Filtre de vol & jetpack",
@@ -47,9 +44,7 @@ public class CosmeticMenu extends InventoryMenu {
                           + NEW_LINE + NEW_LINE +
                           ChatColor.GRAY + "Des filtres qui apparaissent lorsque vous voler en Créatif ou lors de "
                           + "l'utilisation du jetpack en Semi-RP",
-                  event -> {
-                      new FlyFilterSelectionMenu(player, this).open(viewer);
-                  });
+                  event -> new FlyFilterSelectionMenu(player, this).open(viewer));
 
 
         int totalPlayerPet = CosmeticManager.getTotalPossessed(player.getUUID(), Pet.getTypeName());
@@ -59,9 +54,7 @@ public class CosmeticMenu extends InventoryMenu {
                           ChatColor.GRAY + totalPlayerPet + "/" + Pet.values().length +
                           " possédé" + (totalPlayerPet > 2 ? "s" : "")
                           + NEW_LINE + NEW_LINE +
-                          ChatColor.GRAY + "De petits familiers qui vous suivent partout", event -> {
-                    new PetTypeSelection(player, this).open(viewer);
-                });
+                          ChatColor.GRAY + "De petits familiers qui vous suivent partout", event -> new PetTypeSelection(player, this).open(viewer));
 
         super.addBackButton();
         super.addQuitButton();

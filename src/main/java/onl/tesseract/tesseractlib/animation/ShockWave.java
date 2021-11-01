@@ -70,7 +70,7 @@ public class ShockWave {
                 }
 
                 Vector direction = player.getLocation().subtract(location).toVector().normalize();
-                RayTraceResult result = player.getWorld().rayTrace(location, direction, radius, FluidCollisionMode.NEVER, true, 1, entity -> {return entity.getType() == EntityType.PLAYER;});
+                RayTraceResult result = player.getWorld().rayTrace(location, direction, radius, FluidCollisionMode.NEVER, true, 1, entity -> entity.getType() == EntityType.PLAYER);
                 if (result != null && result.getHitEntity() != null) {
                     Player hitPlayer = (Player) result.getHitEntity();
                     onHit.accept(hitPlayer);

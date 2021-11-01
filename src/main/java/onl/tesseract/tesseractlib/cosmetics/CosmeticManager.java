@@ -142,9 +142,7 @@ public class CosmeticManager {
             InventoryMenu.openConfirmationMenu(viewer,
                                                "Êtes vous sur de vouloir acheter le cosmétique " + cosmetic.getName(),
                                                mainMenu,
-                                               event2 -> {
-                                                   player.buyCosmetic(type, cosmetic, cosmetic.getPrice());
-                                               });
+                                               event2 -> player.buyCosmetic(type, cosmetic, cosmetic.getPrice()));
         else
         {
             player.sendMessage(ChatFormats.COSMETICS_ERROR.append(

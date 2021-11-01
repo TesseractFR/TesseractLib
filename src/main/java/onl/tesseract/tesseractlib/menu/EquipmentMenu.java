@@ -5,7 +5,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.equipment.invocable.Boussole;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.*;
+import onl.tesseract.tesseractlib.util.ChatFormats;
+import onl.tesseract.tesseractlib.util.ItemBuilder;
+import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
+import onl.tesseract.tesseractlib.util.Util;
 import onl.tesseract.tesseractlib.util.menu.Button;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.ChatColor;
@@ -65,9 +68,7 @@ public class EquipmentMenu extends InventoryMenu {
         else
             chestplate = new ItemBuilder(Material.STRUCTURE_VOID)
                     .name("Emplacement de plastron", NamedTextColor.DARK_AQUA).build();
-        this.addButton(22, chestplate, event -> {
-            this.subMenu(this.player.getEquipment().unblockedChestplate, ChatColor.BLUE + "Emplacement de plastron", player);
-        });
+        this.addButton(22, chestplate, event -> this.subMenu(this.player.getEquipment().unblockedChestplate, ChatColor.BLUE + "Emplacement de plastron", player));
 
         ItemStack helmet;
         if (this.player.getEquipment().helmet != null)
@@ -75,9 +76,7 @@ public class EquipmentMenu extends InventoryMenu {
         else
             helmet = new ItemBuilder(Material.STRUCTURE_VOID)
                     .name("Emplacement de casque", NamedTextColor.DARK_AQUA).build();
-        this.addButton(13, helmet, event -> {
-            this.subMenu(this.player.getEquipment().unblockedHelmet, ChatColor.BLUE + "Emplacement de casque", player);
-        });
+        this.addButton(13, helmet, event -> this.subMenu(this.player.getEquipment().unblockedHelmet, ChatColor.BLUE + "Emplacement de casque", player));
 
         ItemStack leggings;
         if (this.player.getEquipment().leggings != null)
@@ -85,9 +84,7 @@ public class EquipmentMenu extends InventoryMenu {
         else
             leggings = new ItemBuilder(Material.STRUCTURE_VOID)
                     .name("Emplacement de jambières", NamedTextColor.DARK_AQUA).build();
-        this.addButton(31, leggings, event -> {
-            this.subMenu(this.player.getEquipment().unblockedLeggings, ChatColor.BLUE + "Emplacement de jambières", player);
-        });
+        this.addButton(31, leggings, event -> this.subMenu(this.player.getEquipment().unblockedLeggings, ChatColor.BLUE + "Emplacement de jambières", player));
 
         ItemStack boots;
         if (this.player.getEquipment().boots != null)
@@ -95,9 +92,7 @@ public class EquipmentMenu extends InventoryMenu {
         else
             boots = new ItemBuilder(Material.STRUCTURE_VOID)
                     .name("Emplacement de bottes", NamedTextColor.DARK_AQUA).build();
-        this.addButton(40, boots, event -> {
-            this.subMenu(this.player.getEquipment().unblockedBoots, ChatColor.BLUE + "Emplacement de bottes", player);
-        });
+        this.addButton(40, boots, event -> this.subMenu(this.player.getEquipment().unblockedBoots, ChatColor.BLUE + "Emplacement de bottes", player));
 
         ItemStack mainHand;
         if (this.player.getEquipment().mainHand != null)
@@ -105,9 +100,7 @@ public class EquipmentMenu extends InventoryMenu {
         else
             mainHand = new ItemBuilder(Material.STRUCTURE_VOID)
                     .name("Emplacement de main principale", NamedTextColor.DARK_AQUA).build();
-        this.addButton(21, mainHand, event -> {
-            this.subMenu(this.player.getEquipment().unblockedMainHand, ChatColor.BLUE + "Emplacement de main principale", player);
-        });
+        this.addButton(21, mainHand, event -> this.subMenu(this.player.getEquipment().unblockedMainHand, ChatColor.BLUE + "Emplacement de main principale", player));
 
         ItemStack offHand;
         if (this.player.getEquipment().offHand != null)
@@ -115,16 +108,12 @@ public class EquipmentMenu extends InventoryMenu {
         else
             offHand = new ItemBuilder(Material.STRUCTURE_VOID)
                     .name("Emplacement de main secondaire", NamedTextColor.DARK_AQUA).build();
-        this.addButton(23, offHand, event -> {
-            this.subMenu(this.player.getEquipment().unblockedOffHand, ChatColor.BLUE + "Emplacement de main secondaire", player);
-        });
+        this.addButton(23, offHand, event -> this.subMenu(this.player.getEquipment().unblockedOffHand, ChatColor.BLUE + "Emplacement de main secondaire", player));
 
         // SECONDARY INVOCATIONS
         Boussole boussole = (Boussole) this.player.getEquipment().getLike(Boussole.class);
         if (boussole != null) {
-            this.addButton(38, boussole.getItem(), boussole.isInvoked(), event -> {
-                mainHandInvocationMenu(boussole, player);
-            });
+            this.addButton(38, boussole.getItem(), boussole.isInvoked(), event -> mainHandInvocationMenu(boussole, player));
         }else {
             add(38, Material.BARRIER, Component.text("Emplacement de boussole", NamedTextColor.RED));
         }
