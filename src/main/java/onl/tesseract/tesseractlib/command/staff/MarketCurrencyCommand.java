@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MarketCurrencyCommand implements CommandExecutor {
     @Override
+    @SuppressWarnings("deprecation")
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s,
                              @NotNull String[] args)
     {
