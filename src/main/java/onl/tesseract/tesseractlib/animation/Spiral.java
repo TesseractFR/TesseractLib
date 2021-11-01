@@ -11,6 +11,7 @@ import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class Spiral {
     ParticleBuilder builder;
@@ -132,7 +133,7 @@ public class Spiral {
     {
         builder = Animation.buildParticle(particle, color, target.getLocation());
         // Set containing entities that have been hit
-        HashSet<LivingEntity> hits = new HashSet<>();
+        Set<LivingEntity> hits = new HashSet<>();
         double radiusStep = spacing * (finalRadius - startRadius) / length;
         // Creates a runnable that will be ran each tick
         new BukkitRunnable() {

@@ -682,7 +682,7 @@ public class TPlayer implements Listener {
 
     }
 
-    public boolean hasAllAchievement(List<Achievement> list)
+    public boolean hasAllAchievement(Iterable<Achievement> list)
     {
         for (Achievement a : list)
         {

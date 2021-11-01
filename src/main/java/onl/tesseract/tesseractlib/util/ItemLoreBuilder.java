@@ -314,7 +314,7 @@ public class ItemLoreBuilder {
     /**
      * Append a list of component. TextComponents will be split to fit the width
      */
-    public ItemLoreBuilder append(List<Component> components)
+    public ItemLoreBuilder append(Iterable<Component> components)
     {
         for(Component component : components){
             append(component);

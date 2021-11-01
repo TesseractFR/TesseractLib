@@ -10,6 +10,7 @@ import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class Cone3D {
     Particle particle;
@@ -33,7 +34,7 @@ public class Cone3D {
     public void draw()
     {
         Vector vector = direction.multiply(0.3);
-        HashSet<LivingEntity> hits = new HashSet<>();
+        Set<LivingEntity> hits = new HashSet<>();
 
         new BukkitRunnable() {
             float i = 0;

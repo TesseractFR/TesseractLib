@@ -428,7 +428,7 @@ public class Util {
          * @param entity Entity
          * @param location Target
          */
-        static public double facing(LivingEntity entity, Location location)
+        static public double facing(org.bukkit.entity.Entity entity, Location location)
         {
             Vector v = location.subtract(entity.getLocation()).toVector().setY(0).normalize();
             double z = v.getZ();

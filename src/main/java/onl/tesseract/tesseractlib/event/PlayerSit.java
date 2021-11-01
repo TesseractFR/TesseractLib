@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.type.Campfire;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
@@ -49,7 +50,7 @@ public class PlayerSit implements Listener {
             }
             else if (event.getClickedBlock().getType().equals(Material.CAMPFIRE))
             {
-                Campfire campfire = (Campfire) event.getClickedBlock().getBlockData();
+                Lightable campfire = (Campfire) event.getClickedBlock().getBlockData();
                 if (!campfire.isLit())
                 {
                     Location sitLocation = event.getClickedBlock().getLocation().add(0.5, -.4, 0.5);
@@ -60,7 +61,7 @@ public class PlayerSit implements Listener {
             {
                 if (event.getClickedBlock().getRelative(BlockFace.UP).getType().isSolid())
                     return;
-                Stairs stairs = (Stairs)event.getClickedBlock().getBlockData();
+                Bisected stairs = (Stairs)event.getClickedBlock().getBlockData();
                 if (stairs.getHalf() == Bisected.Half.TOP)
                     return;
 

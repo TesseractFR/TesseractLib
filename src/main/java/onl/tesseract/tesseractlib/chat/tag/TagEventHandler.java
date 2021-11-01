@@ -9,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.Collection;
 import java.util.regex.Pattern;
 
 public class TagEventHandler implements Listener {
@@ -29,7 +28,7 @@ public class TagEventHandler implements Listener {
         return insertPlayerTags(text, Bukkit.getOnlinePlayers());
     }
 
-    public static TextComponent insertPlayerTags(TextComponent text, Collection<? extends Player> targets)
+    public static TextComponent insertPlayerTags(TextComponent text, Iterable<? extends Player> targets)
     {
         for (var player : targets)
         {

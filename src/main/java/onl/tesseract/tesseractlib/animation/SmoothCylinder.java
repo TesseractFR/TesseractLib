@@ -9,11 +9,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class SmoothCylinder {
     public SmoothCylinder(Particle particle, Color color, Location location, int radius, int height, boolean rev, double delay, Consumer<Player> onHit)
     {
-        HashSet<Player> players = new HashSet<>();
+        Set<Player> players = new HashSet<>();
         int sign = rev ? -1 : 1;
         int start = rev ? height : 0;
         // Creates a runnable that will be ran each tick

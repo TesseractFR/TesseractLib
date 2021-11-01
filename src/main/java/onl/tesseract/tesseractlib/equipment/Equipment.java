@@ -172,7 +172,7 @@ public class Equipment implements Listener {
         File file = new File(pathToFolder + player.getOfflinePlayer().getUniqueId()
                 + "_equipement.yml");
         FileConfiguration equipementData = YamlConfiguration.loadConfiguration(file);
-        List<Map<?, ?>> yamlMap = new ArrayList<>();
+        Collection<Map<?, ?>> yamlMap = new ArrayList<>();
         for (Invocable invocable : this.invocables) {
             yamlMap.add(invocable.save());
         }

@@ -10,10 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Cone {
     Particle particle;
@@ -74,11 +71,11 @@ public class Cone {
         openingAngle = (float)(Math.toRadians(openingAngle) / 2);
         direction = (float)Math.toRadians(direction);
         // Register all angles at which to draw lines
-        List<Double> angles = new ArrayList<>();
+        Collection<Double> angles = new ArrayList<>();
         for (double theta = direction - openingAngle; theta <= direction + openingAngle; theta += 0.05)
             angles.add(theta);
         // Set of hit players
-        HashSet<Player> hit = new HashSet<>();
+        Set<Player> hit = new HashSet<>();
 
         // Creates a runnable that will be ran each tick
         new BukkitRunnable() {

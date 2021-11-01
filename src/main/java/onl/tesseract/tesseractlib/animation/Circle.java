@@ -12,6 +12,7 @@ import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class Circle {
     ParticleBuilder builder;
@@ -130,7 +131,7 @@ public class Circle {
         // Compute the maximum angle to reach
         final float maxAngle = (float)(Math.PI * 2 * rotationCount);
         // Set containing entities that have been hit
-        HashSet<LivingEntity> hits = new HashSet<>();
+        Set<LivingEntity> hits = new HashSet<>();
         // Creates a runnable that will be ran each tick
         Circle that = this;
         task = new BukkitRunnable() {
