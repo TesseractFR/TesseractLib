@@ -70,25 +70,24 @@ public class PetManager implements Listener {
             return;
         switch (yaw)
         {
-            case NORTH:
+            case NORTH -> {
                 invokedPets.get(p.getUniqueId()).teleport(p.getLocation().add(0.3, +1.5, +0.3));
                 invokedPets.get(p.getUniqueId()).setRotation(p.getLocation().getYaw(), p.getLocation().getPitch());
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 invokedPets.get(p.getUniqueId()).teleport(p.getLocation().add(-0.3, +1.5, +0.3));
                 invokedPets.get(p.getUniqueId()).setRotation(p.getLocation().getYaw(), p.getLocation().getPitch());
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 invokedPets.get(p.getUniqueId()).teleport(p.getLocation().add(+0.3, +1.5, -0.3));
                 invokedPets.get(p.getUniqueId()).setRotation(p.getLocation().getYaw(), p.getLocation().getPitch());
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 invokedPets.get(p.getUniqueId()).teleport(p.getLocation().add(-0.3, +1.5, -0.3));
                 invokedPets.get(p.getUniqueId()).setRotation(p.getLocation().getYaw(), p.getLocation().getPitch());
-                break;
-            default:
-                break;
-
+            }
+            default -> {
+            }
         }
     }
 

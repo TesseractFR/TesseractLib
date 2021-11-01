@@ -190,27 +190,16 @@ public class Equipment implements Listener {
      * @param invokable Invocable to invoke.
      */
     public void set(EquipmentSlot slot, Invocable invokable) {
-        switch (slot) {
-            case HEAD:
-                this.helmet = invokable;
-                break;
-            case CHEST:
-                this.chestplate = invokable;
-                break;
-            case LEGS:
-                this.leggings = invokable;
-                break;
-            case FEET:
-                this.boots = invokable;
-                break;
-            case HAND:
-                this.mainHand = invokable;
-                break;
-            case OFF_HAND:
-                this.offHand = invokable;
-                break;
-            default:
-                break;
+        switch (slot)
+        {
+            case HEAD -> this.helmet = invokable;
+            case CHEST -> this.chestplate = invokable;
+            case LEGS -> this.leggings = invokable;
+            case FEET -> this.boots = invokable;
+            case HAND -> this.mainHand = invokable;
+            case OFF_HAND -> this.offHand = invokable;
+            default -> {
+            }
         }
     }
 
@@ -225,22 +214,16 @@ public class Equipment implements Listener {
      * @return Invocable, or null
      */
     public Invocable get(EquipmentSlot slot) {
-        switch (slot) {
-            case HEAD:
-                return this.helmet;
-            case CHEST:
-                return this.chestplate;
-            case LEGS:
-                return this.leggings;
-            case FEET:
-                return this.boots;
-            case HAND:
-                return this.mainHand;
-            case OFF_HAND:
-                return this.offHand;
-            default:
-                return null;
-        }
+        return switch (slot)
+                {
+                    case HEAD -> this.helmet;
+                    case CHEST -> this.chestplate;
+                    case LEGS -> this.leggings;
+                    case FEET -> this.boots;
+                    case HAND -> this.mainHand;
+                    case OFF_HAND -> this.offHand;
+                    default -> null;
+                };
     }
 
     /**
