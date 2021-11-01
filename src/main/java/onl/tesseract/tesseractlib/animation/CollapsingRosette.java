@@ -6,6 +6,8 @@ import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.logging.Level;
+
 public class CollapsingRosette {
     Location location;
     private Particle particle = Particle.FLAME;
@@ -94,7 +96,7 @@ public class CollapsingRosette {
                     }
                 }catch (IllegalArgumentException e)
                 {
-                    e.printStackTrace();
+                    TesseractLib.logger().log(Level.SEVERE, "Failed to draw animation", e);
                     this.cancel();
                 }
 
