@@ -23,14 +23,13 @@ public class Animation implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
     {
-        if (sender instanceof Player)
+        if (sender instanceof Player player)
         {
             if (args.length == 0)
             {
                 sender.sendMessage("Nope");
                 return true;
             }
-            Player player = (Player) sender;
             int radius;
             double delay;
             Location loc;
