@@ -366,7 +366,7 @@ public abstract class Invocable implements Listener {
         ItemStack main = event.getMainHandItem();
         ItemStack off = event.getOffHandItem();
 
-        if (main != null && isInvocable(main)) {
+        if (isInvocable(main)) {
             Invocable invocable = asInvocable(equipment, main);
             if (invocable != null && invocable.excludesOther()) {
                 event.setCancelled(true);
@@ -383,7 +383,7 @@ public abstract class Invocable implements Listener {
             }
         }
 
-        if (off != null && isInvocable(off)) {
+        if (isInvocable(off)) {
             Invocable invocable = asInvocable(equipment, off);
             if (invocable != null && invocable.excludesOther())
                 event.setCancelled(true);
