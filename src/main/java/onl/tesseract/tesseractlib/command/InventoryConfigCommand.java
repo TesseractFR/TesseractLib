@@ -17,13 +17,13 @@ public final class InventoryConfigCommand extends CommandBuilder {
     public static InventoryConfigCommand get()
     {
         if (INSTANCE == null)
-            INSTANCE = new InventoryConfigCommand("config");
+            INSTANCE = new InventoryConfigCommand();
         return INSTANCE;
     }
 
-    private InventoryConfigCommand(final String commandName)
+    private InventoryConfigCommand()
     {
-        super(commandName);
+        super("config");
         description("Configurer les différents inventaires.");
         permission("inventory.config");
 
