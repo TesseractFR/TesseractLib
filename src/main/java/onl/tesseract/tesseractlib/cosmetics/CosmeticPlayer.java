@@ -1,12 +1,11 @@
 package onl.tesseract.tesseractlib.cosmetics;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class CosmeticPlayer {
-    Map<String, Set<Cosmetic>> cosmetics = new HashMap<>();
+    Map<String, Set<Cosmetic>> cosmetics;
 
     public CosmeticPlayer(Map<String, Set<Cosmetic>> cosmetics)
     {
