@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import onl.tesseract.tesseractlib.command.staff.SocialSpy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -50,7 +51,7 @@ public class MsgCommand implements CommandExecutor {
     public static void sendMessage(@NotNull CommandSender sender, @NotNull CommandSender receiver, @NotNull String message , boolean doSound)
     {
         if (sender.equals(receiver)) return;
-        if (receiver instanceof Player && !((Player) receiver).isOnline())
+        if (receiver instanceof Player && !((OfflinePlayer) receiver).isOnline())
         {
             sender.sendMessage(ChatColor.RED + receiver.getName() + " s'est déconnecté.");
             messages.remove(sender);
