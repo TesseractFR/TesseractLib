@@ -245,15 +245,6 @@ public class TPlayer implements Listener {
             String date = sdf.format(new Date());
             yaml.set("dateSinceLastConnection", date);
         }
-        /*
-        List<String> achievlist = new ArrayList<>();
-        for(Achievement a : achievements){
-            achievlist.add(a.toString());
-        }
-        yaml.set("Achievement",achievlist);
-
-         */
-        //this.mailer.save(yaml);
 
         // Save the second inventory if admin
         if (player.isOnline())
@@ -591,13 +582,6 @@ public class TPlayer implements Listener {
         }
         if (parts[0].equals("/command"))
             event.setCancelled(true);
-
-        /*
-        if (!parts[0].equals("/mail") && mailer.hasUnreadMail())
-            sendMessage(new ComponentBuilder(ChatFormat.MAIL + "Vous avez des messages non lus. Cliquez pour les consulter.")
-                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mail read")).create());
-
-         */
     }
 
     public OfflinePlayer getOfflinePlayer()
