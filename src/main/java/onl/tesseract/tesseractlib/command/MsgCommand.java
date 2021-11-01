@@ -47,7 +47,7 @@ public class MsgCommand implements CommandExecutor {
         return true;
     }
 
-    public static void sendMessage(CommandSender sender, CommandSender receiver, String message , boolean doSound)
+    public static void sendMessage(@NotNull CommandSender sender, @NotNull CommandSender receiver, @NotNull String message , boolean doSound)
     {
         if (sender.equals(receiver)) return;
         if (receiver instanceof Player && !((Player) receiver).isOnline())
@@ -64,9 +64,8 @@ public class MsgCommand implements CommandExecutor {
                              .append(Component.text(sender.getName() + " » ", NamedTextColor.RED))
                              .clickEvent(ClickEvent.suggestCommand("/msg " + sender.getName() + " "))
                              .append(Component.text(message, NamedTextColor.AQUA, TextDecoration.ITALIC)));
-        if (doSound)
+        if (doSound && receiver instanceof Player player)
         {
-            Player player = (Player)receiver;
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 5, 1);
         }
 

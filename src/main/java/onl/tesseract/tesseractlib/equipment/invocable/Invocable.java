@@ -160,12 +160,12 @@ public abstract class Invocable implements Listener {
         // Remove any present invokable
         this.equipment.uninvoke(this.slotType);
         // If there is already an item at that spot
-        if (inv.getItem(this.slotType) != null) {
+        ItemStack other = inv.getItem(this.slotType);
+        if (other != null) {
             // If there is no slot to move this item, cancel
             if (inv.firstEmpty() == -1)
                 return false;
             // Move the item, and put the invokable
-            ItemStack other = inv.getItem(this.slotType);
             inv.setItem(this.slotType, this.item);
             inv.addItem(other);
         }else {
@@ -200,7 +200,7 @@ public abstract class Invocable implements Listener {
         if (inv.getItem(index) != null) {
             // If the present item is an invocable, uninvoke it
             if (isInvocable(inv.getItem(index)))
-                asInvocable(equipment, inv.getItem(index)).uninvoke();
+                Objects.requireNonNull(asInvocable(equipment, inv.getItem(index))).uninvoke();
             // If there is no slot to move this item, cancel
             if (inv.firstEmpty() == -1)
                 return;

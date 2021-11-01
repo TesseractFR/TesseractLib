@@ -282,7 +282,7 @@ public class TPlayer implements Listener {
             {
                 YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
                 adminMode = yaml.getBoolean("adminmode");
-                player.getPlayer().setGameMode(adminMode ? GameMode.CREATIVE : GameMode.SURVIVAL);
+                Objects.requireNonNull(player.getPlayer()).setGameMode(adminMode ? GameMode.CREATIVE : GameMode.SURVIVAL);
             }
         }
     }
@@ -452,7 +452,7 @@ public class TPlayer implements Listener {
     {
         if (!player.isOnline())
             return;
-        player.getPlayer().sendMessage(format + message);
+        Objects.requireNonNull(player.getPlayer()).sendMessage(format + message);
         this.chatEntryCallback = function;
         this.chatEntryRunnable = new BukkitRunnable() {
             @Override
