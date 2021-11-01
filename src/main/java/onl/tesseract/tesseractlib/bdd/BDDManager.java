@@ -7,7 +7,7 @@ import java.util.logging.Level;
 
 public class BDDManager {
 
-    private BDDConnection bddConnection;
+    private final BDDConnection bddConnection;
 
 
     public BDDManager(String host, int port, String username, String password, String database) {
