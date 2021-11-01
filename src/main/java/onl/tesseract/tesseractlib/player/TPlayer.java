@@ -246,11 +246,7 @@ public class TPlayer implements Listener {
             yaml.set("dateSinceLastConnection", date);
         }
 
-        // Save the second inventory if admin
-        if (player.isOnline())
-        {
-            yaml.set("adminmode", adminMode);
-        }
+        yaml.set("adminmode", adminMode);
 
         try
         {
