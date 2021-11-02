@@ -214,7 +214,7 @@ public class Equipment implements Listener {
      * @param slot Slot of the invocable
      * @return Invocable, or null
      */
-    public Invocable get(EquipmentSlot slot) {
+    public @Nullable Invocable get(EquipmentSlot slot) {
         return switch (slot)
                 {
                     case HEAD -> this.helmet;
