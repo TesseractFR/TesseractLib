@@ -476,12 +476,25 @@ public abstract class Invocable implements Listener {
         return slot;
     }
 
+    public Equipment getEquipment()
+    {
+        return equipment;
+    }
+
+    public Player getPlayer()
+    {
+        return player;
+    }
+
     /**
      * Checks if a given item is an invocable
+     *
      * @param item Item to check
+     *
      * @return True if is an invocable
      */
-    static public boolean isInvocable(ItemStack item) {
+    static public boolean isInvocable(ItemStack item)
+    {
         return item != null && item.hasItemMeta() && (item.getItemMeta().hasLocalizedName() &&
                 item.getItemMeta().getLocalizedName().contains("INVOCABLE"));
     }
