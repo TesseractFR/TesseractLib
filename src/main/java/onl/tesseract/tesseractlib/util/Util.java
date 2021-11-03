@@ -1,6 +1,7 @@
 package onl.tesseract.tesseractlib.util;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
@@ -533,5 +534,22 @@ public class Util {
                 duration.toHours(),
                 duration.toMinutesPart(),
                 duration.toSecondsPart());
+    }
+
+    public static TextComponent replace(TextComponent origin, int start, int end, Component replacement)
+    {
+        String raw = origin.content();
+        TextComponent res = Component.text(raw.substring(0, start))
+                                     .style(origin.style());
+
+        Component next = Component.text(raw.substring(end))
+                                  .style(origin.style());
+        for (var child : origin.children())
+            next = next.append(child);
+
+        res = res.append(replacement)
+                 .append(next);
+
+        return res;
     }
 }
