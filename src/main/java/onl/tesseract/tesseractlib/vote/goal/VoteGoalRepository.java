@@ -43,8 +43,13 @@ public final class VoteGoalRepository {
                 final VoteGoalReward reward;
                 try
                 {
-                    type = VoteGoalRewardManager.getRewardType(rewardTypeName);
-                    reward = type.deserialize(rewardRaw);
+                    if (rewardTypeName == null)
+                        reward = null;
+                    else
+                    {
+                        type = VoteGoalRewardManager.getRewardType(rewardTypeName);
+                        reward = type.deserialize(rewardRaw);
+                    }
                 }
                 catch (IllegalArgumentException e)
                 {
