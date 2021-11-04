@@ -8,6 +8,7 @@ import onl.tesseract.tesseractlib.event.PlayerInvocableInvokeEvent;
 import onl.tesseract.tesseractlib.menu.EquipmentMenu;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.Util;
+import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
@@ -315,10 +316,21 @@ public abstract class Invocable implements Listener {
                         uninvoke();
                         equipment.getPlayer().sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Équipement désinvoqué. Vous pouvez ré-invoquer un équipement via "))
                                                           .append(Component.text("/equipement", NamedTextColor.GOLD)));
-                    }else if (slotType == EquipmentSlot.HAND) {
-                        EquipmentMenu menu = new EquipmentMenu(finalThis.equipment.getPlayer());
-                        menu.mainHandInvocationMenu(finalThis, finalThis.equipment.getPlayer().getBukkitPlayer());
-                    }else {
+                    }else if (slotType == EquipmentSlot.HAND)
+                    {
+                        final InventoryMenu subMenu = subMenu();
+                        if (event.getClick() == ClickType.RIGHT || subMenu == null)
+                        {
+                            EquipmentMenu menu = new EquipmentMenu(finalThis.equipment.getPlayer());
+                            menu.mainHandInvocationMenu(finalThis, finalThis.equipment.getPlayer().getBukkitPlayer());
+                        }
+                        else
+                        {
+                            subMenu.open(player);
+                        }
+                    }
+                    else
+                    {
                         useInInventory(event);
                     }
                 }
@@ -326,15 +338,24 @@ public abstract class Invocable implements Listener {
         }
     }
 
+    protected InventoryMenu subMenu()
+    {
+        return null;
+    }
+
     @EventHandler
-    public void onUse(PlayerInteractEvent event) {
-        if (! event.getPlayer().equals(equipment.getPlayer().getBukkitPlayer())) return;
-        if (! event.hasItem()) return;
+    public void onUse(PlayerInteractEvent event)
+    {
+        if (!event.getPlayer().equals(equipment.getPlayer().getBukkitPlayer()))
+            return;
+        if (!event.hasItem())
+            return;
         ItemStack item = event.getItem();
         // Check that it is a invokable item
         assert item != null;
         if (item.hasItemMeta() && item.getItemMeta().hasLocalizedName() &&
-                item.getItemMeta().getLocalizedName().equals(this.localizedName)) {
+                item.getItemMeta().getLocalizedName().equals(this.localizedName))
+        {
             this.use(event);
         }
     }
