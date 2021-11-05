@@ -118,7 +118,7 @@ public abstract class Invocable implements Listener {
     }
 
     /**
-     * Returns the itemStack this invocable represents
+     * Returns the itemStack this invocable represents. Constructs the item if no item is in cache
      *
      * @return Itemstack of this invokable
      */
@@ -129,8 +129,21 @@ public abstract class Invocable implements Listener {
         return item;
     }
 
+    /**
+     * Create the item shown in the player's inventory and invocation menu.
+     *
+     * @return Newly constructed item stack
+     *
+     * @see Invocable#updateItem(boolean)
+     * @see Invocable#getItem()
+     */
     protected abstract ItemStack createItem();
 
+    /**
+     * Update the item in cache by calling {@link Invocable#createItem()}
+     *
+     * @param updateInInventory If true, the player's inventory will be searched to replace the item if invoked
+     */
     protected void updateItem(final boolean updateInInventory)
     {
         final ItemStack item = createItem();
