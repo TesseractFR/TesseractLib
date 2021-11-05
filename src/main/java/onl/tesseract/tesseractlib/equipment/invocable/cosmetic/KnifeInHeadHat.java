@@ -15,17 +15,19 @@ import java.util.Map;
 public class KnifeInHeadHat extends Invocable {
     public KnifeInHeadHat(final Equipment equipment)
     {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_KNIFE_IN_HEAD", buildItem());
+        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_KNIFE_IN_HEAD");
         equipment.unblockedHelmet.add(this);
     }
 
     public KnifeInHeadHat(final Equipment equipment, final Map<String, Object> yamlMap)
     {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_KNIFE_IN_HEAD", buildItem(), yamlMap);
+        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_KNIFE_IN_HEAD", yamlMap);
         equipment.unblockedHelmet.add(this);
     }
 
-    public static ItemStack buildItem() {
+    @Override
+    protected ItemStack createItem()
+    {
         return new ItemBuilder(Material.QUARTZ)
                 .setCustomModelData(4)
                 .name("Couteau", NamedTextColor.LIGHT_PURPLE)

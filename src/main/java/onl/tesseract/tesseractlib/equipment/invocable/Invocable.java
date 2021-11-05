@@ -38,7 +38,7 @@ import java.util.logging.Level;
  * Represents an invocable item, like a jetpack or elytra.
  */
 public abstract class Invocable implements Listener {
-    ItemStack item;
+    private ItemStack item;
     protected final Equipment equipment;
     String name;
     protected final String localizedName;
@@ -52,43 +52,40 @@ public abstract class Invocable implements Listener {
 
     /**
      * Creates a new invocable that will be added to the given equipment.
+     *
      * @param equipment Equipment of the player
      * @param slotType Slot type of this equipment.
      * @param localizedName Localized name of the itemStack
-     * @param item itemStack model.
      */
-    public Invocable(Equipment equipment, EquipmentSlot slotType, String localizedName, ItemStack item) {
+    public Invocable(Equipment equipment, EquipmentSlot slotType, String localizedName)
+    {
         // Register the item's event
         Bukkit.getServer().getPluginManager().registerEvents(this, TesseractLib.instance);
         this.equipment = equipment;
         this.slotType = slotType;
         this.localizedName = localizedName;
-        // Create the itemStack
-        ItemMeta meta = item.getItemMeta();
-        meta.setLocalizedName(localizedName);
-        meta.setUnbreakable(true);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
-        item.setItemMeta(meta);
-        this.item = item;
 
         this.equipment.invocables.add(this);
         this.player = this.equipment.getPlayer().getBukkitPlayer();
     }
 
-    public Invocable(Equipment equipment, EquipmentSlot slotType, String localizedName, ItemStack item, Map<String, Object> yamlMap) {
+    public Invocable(Equipment equipment, EquipmentSlot slotType, String localizedName, Map<String, Object> yamlMap)
+    {
         // Call main constructor
-        this(equipment, slotType, localizedName, item);
+        this(equipment, slotType, localizedName);
         // Load from yaml
         PlayerInventory inv = this.equipment.getPlayer().getBukkitPlayer().getInventory();
         this.invoked = (boolean) yamlMap.get("invoked");
         // Invoke
-        if (this.invoked) {
+        if (this.invoked)
+        {
             var that = this;
             new BukkitRunnable() {
                 @Override
                 public void run()
                 {
-                    if (slotType == EquipmentSlot.HAND) {
+                    if (slotType == EquipmentSlot.HAND)
+                    {
                         slot = (int) yamlMap.get("slot");
                         if (slot > -1)
                             inv.setItem(slot, getItem());
@@ -122,16 +119,29 @@ public abstract class Invocable implements Listener {
 
     /**
      * Returns the itemStack this invocable represents
+     *
      * @return Itemstack of this invokable
      */
     public ItemStack getItem()
     {
+        if (item == null)
+            updateItem(false);
         return item;
     }
 
-    public void setItem(ItemStack item)
+    protected abstract ItemStack createItem();
+
+    protected void updateItem(final boolean updateInInventory)
     {
+        final ItemStack item = createItem();
+        ItemMeta meta = item.getItemMeta();
+        meta.setLocalizedName(localizedName);
+        meta.setUnbreakable(true);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
+        item.setItemMeta(meta);
         this.item = item;
+        if (updateInInventory)
+            updateItemInInventory();
     }
 
     /**

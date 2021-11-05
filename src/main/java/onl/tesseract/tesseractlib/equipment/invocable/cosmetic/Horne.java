@@ -15,17 +15,19 @@ import java.util.Map;
 public class Horne extends Invocable {
     public Horne(final Equipment equipment)
     {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_HORNE", buildItem());
+        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_HORNE");
         equipment.unblockedHelmet.add(this);
     }
 
     public Horne(final Equipment equipment, final Map<String, Object> yamlMap)
     {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_HORNE", buildItem(), yamlMap);
+        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_HORNE", yamlMap);
         equipment.unblockedHelmet.add(this);
     }
 
-    public static ItemStack buildItem() {
+    @Override
+    protected ItemStack createItem()
+    {
         return new ItemBuilder(Material.QUARTZ)
                 .setCustomModelData(3)
                 .name("Cornes", NamedTextColor.LIGHT_PURPLE)

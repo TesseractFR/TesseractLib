@@ -27,27 +27,29 @@ public class Boussole extends Invocable {
 
     public Boussole(Equipment equipment)
     {
-        super(equipment, EquipmentSlot.HAND, "INVOCABLE_BOUSSOLE", createItem());
+        super(equipment, EquipmentSlot.HAND, "INVOCABLE_BOUSSOLE");
         menu = new BoussoleMenu(equipment.getPlayer());
     }
 
     public Boussole(Equipment equipment, Map<String, Object> yamlMap)
     {
-        super(equipment, EquipmentSlot.HAND, "INVOCABLE_BOUSSOLE", createItem(), yamlMap);
+        super(equipment, EquipmentSlot.HAND, "INVOCABLE_BOUSSOLE", yamlMap);
         menu = new BoussoleMenu(equipment.getPlayer());
     }
 
-    static ItemStack createItem() {
+    @Override
+    protected ItemStack createItem()
+    {
         String left = ChatColor.DARK_GRAY + "« " + ChatColor.GRAY;
         String right = ChatColor.DARK_GRAY + " »" + Util.NEW_LINE;
         String wave = ChatColor.DARK_GRAY + "~ " + ChatColor.DARK_AQUA;
         return new ItemBuilder(Material.COMPASS)
                 .name("Boussole des voeux", NamedTextColor.BLUE)
                 .lore(Util.NEW_LINE
-                              + left + "Des possibilités incroyables !" + right + wave + "F.I.A (Force d'Intervention Ailée) " + wave + Util.NEW_LINE
-                              + Util.NEW_LINE + left + "Un concentré de magie à l'état pur !" + right + wave + "Parangon Transport Inc. "
-                              + wave + Util.NEW_LINE + Util.NEW_LINE + left + "À utiliser sans modération !" + right + wave
-                              + "Flying Whales Corp. " + wave + Util.NEW_LINE
+                        + left + "Des possibilités incroyables !" + right + wave + "F.I.A (Force d'Intervention Ailée) " + wave + Util.NEW_LINE
+                        + Util.NEW_LINE + left + "Un concentré de magie à l'état pur !" + right + wave + "Parangon Transport Inc. "
+                        + wave + Util.NEW_LINE + Util.NEW_LINE + left + "À utiliser sans modération !" + right + wave
+                        + "Flying Whales Corp. " + wave + Util.NEW_LINE
                               + Util.NEW_LINE + left + "La boussole des voeux me donne tout ce que je veux !" + right + wave
                               + "Anonyme " + wave + Util.NEW_LINE
                               + Util.NEW_LINE + ChatColor.DARK_GREEN + ChatColor.UNDERLINE + "Utilisation en main :" + ChatColor.RESET
@@ -84,18 +86,22 @@ public class Boussole extends Invocable {
                     @Override
                     public void run()
                     {
-                        if (! player.getOfflinePlayer().isOnline()) {
+                        if (!player.getOfflinePlayer().isOnline())
+                        {
                             return;
                         }
-                        if (! el.isInvoked()) {
+                        if (!el.isInvoked())
+                        {
                             player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage annulé (ailes désinvoquées).")));
                             propulsionTask = null;
                         }
-                        else if (! player.getBukkitPlayer().getInventory().getItemInMainHand().equals(item)) {
+                        else if (!player.getBukkitPlayer().getInventory().getItemInMainHand().equals(getItem()))
+                        {
                             player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage annulé (boussole pas en main).")));
                             propulsionTask = null;
                         }
-                        else {
+                        else
+                        {
                             player.getBukkitPlayer().setVelocity(player.getBukkitPlayer().getLocation().getDirection().multiply(2));
                             new BukkitRunnable() {
                                 @Override
