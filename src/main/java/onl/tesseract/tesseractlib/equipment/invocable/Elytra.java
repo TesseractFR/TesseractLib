@@ -57,47 +57,34 @@ public class Elytra extends Invocable {
         PROTECTION, VITESSE
     }
 
-
-
     public Elytra(Equipment equipment)
     {
-        super(equipment, EquipmentSlot.CHEST, "INVOCABLE_ELYTRA", createItem());
+        super(equipment, EquipmentSlot.CHEST, "INVOCABLE_ELYTRA");
         setAutoGlide(true);
-        setItem();
         equipment.unblockedChestplate.add(this);
     }
 
     public Elytra(Equipment equipment, Map<String, Object> yamlMap)
     {
-        super(equipment, EquipmentSlot.CHEST, "INVOCABLE_ELYTRA", createItem(), yamlMap);
+        super(equipment, EquipmentSlot.CHEST, "INVOCABLE_ELYTRA", yamlMap);
         setAutoGlide((boolean) yamlMap.get("autoGlide"));
         protectionLevel = (int) yamlMap.get("protectionLvl");
         speedLevel = (int)yamlMap.get("speedLvl");
         topprotectionLevel = (int) yamlMap.getOrDefault("topprotectionLvl", 0);
-        topspeedLevel = (int)yamlMap.getOrDefault("topspeedLvl", 0);
+        topspeedLevel = (int) yamlMap.getOrDefault("topspeedLvl", 0);
         if (this.topprotectionLevel == 0)
             this.topprotectionLevel = protectionLevel;
         if (this.topspeedLevel == 0)
             this.topspeedLevel = speedLevel;
-        setItem();
         // Load active trail
-
 
         equipment.unblockedChestplate.add(this);
     }
 
-    static ItemStack createItem() {
-        return new ItemBuilder(Material.ELYTRA)
-                .name("Flanc éthéré", NamedTextColor.GOLD)
-                .lore(ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
-                              ChatColor.DARK_AQUA + "Vitesse : " + ChatColor.GOLD + "0" + Util.NEW_LINE +
-                              ChatColor.DARK_AQUA + "Protection : " + ChatColor.GOLD + "0")
-                .enchanted(true)
-                .build();
-    }
-
-    void setItem() {
-        this.item = new ItemBuilder(Material.ELYTRA)
+    @Override
+    protected ItemStack createItem()
+    {
+        final ItemStack item = new ItemBuilder(Material.ELYTRA)
                 .name("Flanc éthéré", NamedTextColor.GOLD)
                 .lore(ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
                         ChatColor.DARK_AQUA + "Vitesse : " + ChatColor.GOLD + speedLevel + Util.NEW_LINE +
@@ -111,7 +98,7 @@ public class Elytra extends Invocable {
         meta.setUnbreakable(true);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
         item.setItemMeta(meta);
-        updateItemInInventory();
+        return item;
     }
 
     @Override
@@ -305,7 +292,7 @@ public class Elytra extends Invocable {
             topprotectionLevel++;
         else
             topspeedLevel++;
-        setItem();
+        updateItem(true);
     }
     public int getTopLevel(Upgrade type) {
         return type == Upgrade.PROTECTION ? topprotectionLevel : getTopSpeedLevel();
@@ -316,7 +303,7 @@ public class Elytra extends Invocable {
             this.topprotectionLevel = level;
         else
             this.topspeedLevel = level;
-        setItem();
+        updateItem(true);
     }
     public int getLevel(Upgrade type) {
         return type == Upgrade.PROTECTION ? protectionLevel : getSpeedLevel();
@@ -327,7 +314,7 @@ public class Elytra extends Invocable {
             this.protectionLevel = level;
         else
             this.speedLevel = level;
-        setItem();
+        updateItem(true);
     }
 
     public void upgradeLevel(Upgrade type) {
@@ -341,7 +328,7 @@ public class Elytra extends Invocable {
             this.topspeedLevel ++;
             speedLevel = this.topspeedLevel;
         }
-        setItem();
+        updateItem(true);
     }
 
     @Override

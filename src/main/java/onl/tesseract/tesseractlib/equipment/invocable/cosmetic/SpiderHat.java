@@ -15,17 +15,19 @@ import java.util.Map;
 public class SpiderHat extends Invocable {
     public SpiderHat(final Equipment equipment)
     {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_SPIDER_HAT", buildItem());
+        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_SPIDER_HAT");
         equipment.unblockedHelmet.add(this);
     }
 
     public SpiderHat(final Equipment equipment, final Map<String, Object> yamlMap)
     {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_SPIDER_HAT", buildItem(), yamlMap);
+        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_SPIDER_HAT", yamlMap);
         equipment.unblockedHelmet.add(this);
     }
 
-    public static ItemStack buildItem() {
+    @Override
+    protected ItemStack createItem()
+    {
         return new ItemBuilder(Material.QUARTZ)
                 .setCustomModelData(8)
                 .name("Araignée", NamedTextColor.LIGHT_PURPLE)

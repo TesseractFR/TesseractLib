@@ -8,6 +8,7 @@ import onl.tesseract.tesseractlib.event.PlayerInvocableInvokeEvent;
 import onl.tesseract.tesseractlib.menu.EquipmentMenu;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.Util;
+import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
@@ -37,7 +38,7 @@ import java.util.logging.Level;
  * Represents an invocable item, like a jetpack or elytra.
  */
 public abstract class Invocable implements Listener {
-    ItemStack item;
+    private ItemStack item;
     protected final Equipment equipment;
     String name;
     protected final String localizedName;
@@ -51,43 +52,40 @@ public abstract class Invocable implements Listener {
 
     /**
      * Creates a new invocable that will be added to the given equipment.
+     *
      * @param equipment Equipment of the player
      * @param slotType Slot type of this equipment.
      * @param localizedName Localized name of the itemStack
-     * @param item itemStack model.
      */
-    public Invocable(Equipment equipment, EquipmentSlot slotType, String localizedName, ItemStack item) {
+    public Invocable(Equipment equipment, EquipmentSlot slotType, String localizedName)
+    {
         // Register the item's event
         Bukkit.getServer().getPluginManager().registerEvents(this, TesseractLib.instance);
         this.equipment = equipment;
         this.slotType = slotType;
         this.localizedName = localizedName;
-        // Create the itemStack
-        ItemMeta meta = item.getItemMeta();
-        meta.setLocalizedName(localizedName);
-        meta.setUnbreakable(true);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
-        item.setItemMeta(meta);
-        this.item = item;
 
         this.equipment.invocables.add(this);
         this.player = this.equipment.getPlayer().getBukkitPlayer();
     }
 
-    public Invocable(Equipment equipment, EquipmentSlot slotType, String localizedName, ItemStack item, Map<String, Object> yamlMap) {
+    public Invocable(Equipment equipment, EquipmentSlot slotType, String localizedName, Map<String, Object> yamlMap)
+    {
         // Call main constructor
-        this(equipment, slotType, localizedName, item);
+        this(equipment, slotType, localizedName);
         // Load from yaml
         PlayerInventory inv = this.equipment.getPlayer().getBukkitPlayer().getInventory();
         this.invoked = (boolean) yamlMap.get("invoked");
         // Invoke
-        if (this.invoked) {
+        if (this.invoked)
+        {
             var that = this;
             new BukkitRunnable() {
                 @Override
                 public void run()
                 {
-                    if (slotType == EquipmentSlot.HAND) {
+                    if (slotType == EquipmentSlot.HAND)
+                    {
                         slot = (int) yamlMap.get("slot");
                         if (slot > -1)
                             inv.setItem(slot, getItem());
@@ -120,17 +118,43 @@ public abstract class Invocable implements Listener {
     }
 
     /**
-     * Returns the itemStack this invocable represents
+     * Returns the itemStack this invocable represents. Constructs the item if no item is in cache
+     *
      * @return Itemstack of this invokable
      */
     public ItemStack getItem()
     {
+        if (item == null)
+            updateItem(false);
         return item;
     }
 
-    public void setItem(ItemStack item)
+    /**
+     * Create the item shown in the player's inventory and invocation menu.
+     *
+     * @return Newly constructed item stack
+     *
+     * @see Invocable#updateItem(boolean)
+     * @see Invocable#getItem()
+     */
+    protected abstract ItemStack createItem();
+
+    /**
+     * Update the item in cache by calling {@link Invocable#createItem()}
+     *
+     * @param updateInInventory If true, the player's inventory will be searched to replace the item if invoked
+     */
+    protected void updateItem(final boolean updateInInventory)
     {
+        final ItemStack item = createItem();
+        ItemMeta meta = item.getItemMeta();
+        meta.setLocalizedName(localizedName);
+        meta.setUnbreakable(true);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
+        item.setItemMeta(meta);
         this.item = item;
+        if (updateInInventory)
+            updateItemInInventory();
     }
 
     /**
@@ -315,10 +339,21 @@ public abstract class Invocable implements Listener {
                         uninvoke();
                         equipment.getPlayer().sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Équipement désinvoqué. Vous pouvez ré-invoquer un équipement via "))
                                                           .append(Component.text("/equipement", NamedTextColor.GOLD)));
-                    }else if (slotType == EquipmentSlot.HAND) {
-                        EquipmentMenu menu = new EquipmentMenu(finalThis.equipment.getPlayer());
-                        menu.mainHandInvocationMenu(finalThis, finalThis.equipment.getPlayer().getBukkitPlayer());
-                    }else {
+                    }else if (slotType == EquipmentSlot.HAND)
+                    {
+                        final InventoryMenu subMenu = subMenu();
+                        if (event.getClick() == ClickType.RIGHT || subMenu == null)
+                        {
+                            EquipmentMenu menu = new EquipmentMenu(finalThis.equipment.getPlayer());
+                            menu.mainHandInvocationMenu(finalThis, finalThis.equipment.getPlayer().getBukkitPlayer());
+                        }
+                        else
+                        {
+                            subMenu.open(player);
+                        }
+                    }
+                    else
+                    {
                         useInInventory(event);
                     }
                 }
@@ -326,15 +361,24 @@ public abstract class Invocable implements Listener {
         }
     }
 
+    protected InventoryMenu subMenu()
+    {
+        return null;
+    }
+
     @EventHandler
-    public void onUse(PlayerInteractEvent event) {
-        if (! event.getPlayer().equals(equipment.getPlayer().getBukkitPlayer())) return;
-        if (! event.hasItem()) return;
+    public void onUse(PlayerInteractEvent event)
+    {
+        if (!event.getPlayer().equals(equipment.getPlayer().getBukkitPlayer()))
+            return;
+        if (!event.hasItem())
+            return;
         ItemStack item = event.getItem();
         // Check that it is a invokable item
         assert item != null;
         if (item.hasItemMeta() && item.getItemMeta().hasLocalizedName() &&
-                item.getItemMeta().getLocalizedName().equals(this.localizedName)) {
+                item.getItemMeta().getLocalizedName().equals(this.localizedName))
+        {
             this.use(event);
         }
     }
@@ -476,12 +520,25 @@ public abstract class Invocable implements Listener {
         return slot;
     }
 
+    public Equipment getEquipment()
+    {
+        return equipment;
+    }
+
+    public Player getPlayer()
+    {
+        return player;
+    }
+
     /**
      * Checks if a given item is an invocable
+     *
      * @param item Item to check
+     *
      * @return True if is an invocable
      */
-    static public boolean isInvocable(ItemStack item) {
+    static public boolean isInvocable(ItemStack item)
+    {
         return item != null && item.hasItemMeta() && (item.getItemMeta().hasLocalizedName() &&
                 item.getItemMeta().getLocalizedName().contains("INVOCABLE"));
     }

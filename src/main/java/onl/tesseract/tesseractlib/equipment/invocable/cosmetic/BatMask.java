@@ -15,17 +15,19 @@ import java.util.Map;
 public class BatMask extends Invocable {
     public BatMask(final Equipment equipment)
     {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_BATMASK", buildItem());
+        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_BATMASK");
         equipment.unblockedHelmet.add(this);
     }
 
     public BatMask(final Equipment equipment, final Map<String, Object> yamlMap)
     {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_BATMASK", buildItem(), yamlMap);
+        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_BATMASK", yamlMap);
         equipment.unblockedHelmet.add(this);
     }
 
-    public static ItemStack buildItem() {
+    @Override
+    protected ItemStack createItem()
+    {
         return new ItemBuilder(Material.QUARTZ)
                 .setCustomModelData(1)
                 .name("Masque de Chauve-Souris", NamedTextColor.LIGHT_PURPLE)

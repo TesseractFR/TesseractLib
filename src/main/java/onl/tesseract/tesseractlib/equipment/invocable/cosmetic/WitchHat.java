@@ -15,17 +15,19 @@ import java.util.Map;
 public class WitchHat extends Invocable {
     public WitchHat(final Equipment equipment)
     {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_WHITCH_HAT", buildItem());
+        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_WHITCH_HAT");
         equipment.unblockedHelmet.add(this);
     }
 
     public WitchHat(final Equipment equipment, final Map<String, Object> yamlMap)
     {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_WHITCH_HAT", buildItem(), yamlMap);
+        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_WHITCH_HAT", yamlMap);
         equipment.unblockedHelmet.add(this);
     }
 
-    public static ItemStack buildItem() {
+    @Override
+    protected ItemStack createItem()
+    {
         return new ItemBuilder(Material.QUARTZ)
                 .setCustomModelData(2)
                 .name("Chapeau de sorcière", NamedTextColor.LIGHT_PURPLE)

@@ -141,9 +141,9 @@ public class ItemLoreBuilder {
     {
         if (text == null)
             return this;
-        if(text.equals("")){
-            return this.newline();
-        }
+        //        if(text.equals("")){
+        //            return this.newline();
+        //        }
         if (text.isBlank())
         {
             lastLine = lastLine.append(Component.text(text, color, decoration));
@@ -317,6 +317,7 @@ public class ItemLoreBuilder {
     public ItemLoreBuilder append(Iterable<Component> components)
     {
         for(Component component : components){
+            newline();
             append(component);
         }
         return this;
