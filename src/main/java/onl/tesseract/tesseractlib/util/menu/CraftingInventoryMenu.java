@@ -50,6 +50,8 @@ public class CraftingInventoryMenu extends InventoryMenu {
         if (! event.getInventory().equals(this.inventory) || event.getClickedInventory() == null || (!event.getClickedInventory().equals(this.inventory) && !event.getClickedInventory().equals(view.getBottomInventory())))
             return;
 
+        if (!event.getClickedInventory().equals(inventory) && event.getAction() != InventoryAction.MOVE_TO_OTHER_INVENTORY)
+            return;
         if (event.getSlot() != resultSlot && !ingredientSlots.contains(event.getSlot()) && event.getAction() != InventoryAction.MOVE_TO_OTHER_INVENTORY)
         {
             event.setCancelled(true);
