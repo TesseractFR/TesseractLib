@@ -57,6 +57,10 @@ public class InventoryInstanceManager {
             configurations.clear();
             InventoryInstanceConfiguration.load(configFile)
                                           .forEach(InventoryInstanceManager::addConfig);
+            if (configurations.keySet().stream().noneMatch("default"::equals))
+            {
+                configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null));
+            }
         }
         catch (IOException e)
         {
@@ -237,7 +241,7 @@ public class InventoryInstanceManager {
             String configName = playerToConfig.get(player.getUniqueId());
             var config = configurations.get(configName);
             if (config == null)
-                throw new IllegalStateException("Configuration is not defined.");
+                throw new IllegalStateException("Configuration " + configName + " is not defined.");
             return config;
         }
         return new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null);
