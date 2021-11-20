@@ -172,7 +172,7 @@ public class VoteRepository {
         {
             Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             PreparedStatement statement = connection.prepareStatement(
-                    "SELECT amount FROM t_vote_keys WHERE player_uuid = ?"
+                    "SELECT amount FROM t_vote_points WHERE player_uuid = ?"
             );
             statement.setString(1, playerUUID.toString());
             ResultSet resultSet = statement.executeQuery();
@@ -195,7 +195,7 @@ public class VoteRepository {
         {
             Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
             PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE t_vote_keys SET amount = amount - ? WHERE player_uuid = ?"
+                    "UPDATE t_vote_points SET amount = amount - ? WHERE player_uuid = ?"
             );
             statement.setInt(1, amount);
             statement.setString(2, playerUUID.toString());
