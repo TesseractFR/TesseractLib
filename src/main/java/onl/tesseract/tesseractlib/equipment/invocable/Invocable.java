@@ -190,10 +190,10 @@ public abstract class Invocable implements Listener {
             if (inv.firstEmpty() == -1)
                 return false;
             // Move the item, and put the invokable
-            inv.setItem(this.slotType, this.item);
+            inv.setItem(this.slotType, this.getItem());
             inv.addItem(other);
         }else {
-            inv.setItem(this.slotType, this.item);
+            inv.setItem(this.slotType, this.getItem());
         }
         this.invoked = true;
         if (this.slotType == EquipmentSlot.HAND)
