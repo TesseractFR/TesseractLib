@@ -41,7 +41,7 @@ public class GenericLootTable<T> {
     public T peek()
     {
         if (distributionTable == null)
-            throw new IllegalStateException("Must be generated");
+            generate();
         final double random = Math.random();
 
         for (final Map.Entry<Float, Loot<T>> entry : distributionTable.entrySet())
