@@ -2,24 +2,24 @@ package onl.tesseract.tesseractlib;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class GenericLootTable<T> {
     // Map item to probability
     protected Map<Loot<T>, Float> loots;
-    protected Map<Float, Loot<T>> distributionTable;
+    protected LinkedHashMap<Float, Loot<T>> distributionTable;
 
     public GenericLootTable(final Map<Loot<T>, Float> loots)
     {
         this.loots = loots;
     }
 
-    private Map<Float, Loot<T>> generateDistributionTable()
+    private LinkedHashMap<Float, Loot<T>> generateDistributionTable()
     {
         if (loots.isEmpty())
-            return Map.of();
-        Map<Float, Loot<T>> result = new HashMap<>();
+            return new LinkedHashMap<>();
+        LinkedHashMap<Float, Loot<T>> result = new LinkedHashMap<>();
 
         final float totalProba = loots.values().stream().reduce(Float::sum).orElse(0f);
         final float probaRatio = 1 / totalProba;
