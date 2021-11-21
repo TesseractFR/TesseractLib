@@ -13,8 +13,10 @@ import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
+import java.util.function.Consumer;
+
 public abstract class AVoteRewardMenu extends InventoryMenu {
-    private final TPlayer player;
+    protected final TPlayer player;
 
     protected AVoteRewardMenu(final TPlayer player, final int size, final InventoryMenu previous)
     {
@@ -27,35 +29,44 @@ public abstract class AVoteRewardMenu extends InventoryMenu {
         addButton(index, new Button(new ItemBuilder(Material.RAW_GOLD)
                 .name("Lys d'or", NamedTextColor.GOLD)
                 .lore(new ItemLoreBuilder().newline()
-                                           .append("Échanger des clés de votes contre des lys d'or", NamedTextColor.GRAY)
+                                           .append("Échanger des points de vote contre des lys d'or", NamedTextColor.GRAY)
                                            .newline(2)
-                                           .append("1 clés", NamedTextColor.YELLOW)
+                                           .append("1 point", NamedTextColor.YELLOW)
                                            .append(" = ", NamedTextColor.GRAY)
                                            .append(" 1 Lys d'or", NamedTextColor.YELLOW)
                                            .get())
                 .build(), event -> {
-            close();
-            player.chatEntry(Component.text("Combien de clés de vote voulez-vous échanger ?"), 30, amountStr -> {
-                try
-                {
-                    int amount = Integer.parseInt(((TextComponent) amountStr).content());
-                    if (VoteRepository.getKeys(player.getUUID()) >= amount)
-                    {
-                        player.addMarketCurrency(amount);
-                        VoteRepository.removeKeys(player.getUUID(), amount);
-                        player.sendMessage(ChatFormats.VOTE, "Vous avez reçu " + amount + " Lys d'or !");
-                    }
-                    else
-                    {
-                        player.sendMessage(ChatFormats.CHAT_ERROR, "Vous n'avez pas suffisamment de lys d'or");
-                    }
-                }
-                catch (NumberFormatException e)
-                {
-                    player.sendMessage(ChatFormats.CHAT_ERROR, "Nombre invalide");
-                }
+            askAmount(amount -> {
+                player.addMarketCurrency(amount);
+                player.sendMessage(ChatFormats.VOTE, "Vous avez reçu " + amount + " Lys d'or !");
             });
         }));
+    }
+
+    protected void askAmount(final Consumer<Integer> callback)
+    {
+        close();
+        player.chatEntry(Component.text("Combien de points de vote voulez-vous échanger ?"), 30, amountStr -> {
+            try
+            {
+                int amount = Integer.parseInt(((TextComponent) amountStr).content());
+                if (amount <= 0)
+                    throw new NumberFormatException();
+                if (VoteRepository.getKeys(player.getUUID()) >= amount)
+                {
+                    callback.accept(amount);
+                    VoteRepository.removeKeys(player.getUUID(), amount);
+                }
+                else
+                {
+                    player.sendMessage(ChatFormats.CHAT_ERROR, "Vous n'avez pas suffisamment de points de vote");
+                }
+            }
+            catch (NumberFormatException e)
+            {
+                player.sendMessage(ChatFormats.CHAT_ERROR, "Nombre invalide");
+            }
+        });
     }
 }
 
