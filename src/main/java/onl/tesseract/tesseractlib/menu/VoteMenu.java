@@ -114,7 +114,7 @@ public class VoteMenu extends InventoryMenu {
         addButton(22, new Button(new ItemBuilder(Material.RAW_GOLD)
                 .name("Récompenses", NamedTextColor.GOLD)
                 .lore(new ItemLoreBuilder().newline()
-                                           .append("Mes clés", NamedTextColor.YELLOW)
+                                           .append("Mes points de vote", NamedTextColor.YELLOW)
                                            .append(" : ", NamedTextColor.GRAY)
                                            .append("" + keys, NamedTextColor.GOLD)
                                            .newline(2)
