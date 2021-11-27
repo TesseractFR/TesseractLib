@@ -69,4 +69,9 @@ public class ChatFormats {
                                                   .append(Component.text("[", RED, BOLD))
                                                   .append(Component.text("Vote", GOLD))
                                                   .append(Component.text("] ", RED, BOLD));
+
+    public static final Component EVENT = text("", AQUA)
+            .append(text("[", DARK_BLUE, BOLD))
+            .append(text("Event", BLUE))
+            .append(text("] ", DARK_BLUE, BOLD));
 }

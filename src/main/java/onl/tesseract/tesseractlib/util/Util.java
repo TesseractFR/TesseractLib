@@ -10,6 +10,7 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -399,6 +400,21 @@ public class Util {
             return ChatColor.GREEN + "" + possessed + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + total;
     }
 
+
+    static public void giveItemOrDrop(final Player player, final ItemStack itemStack)
+    {
+        if (player.getInventory().firstEmpty() == -1)
+        {
+            Item item = player.getWorld().spawn(player.getLocation(), Item.class);
+            item.setItemStack(itemStack);
+            item.setOwner(player.getUniqueId());
+            item.setCanMobPickup(false);
+        }
+        else
+        {
+            player.getInventory().addItem(itemStack);
+        }
+    }
 
 
     public static class Entity {
