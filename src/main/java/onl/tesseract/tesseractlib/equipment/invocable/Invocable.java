@@ -230,11 +230,11 @@ public abstract class Invocable implements Listener {
                 return;
             // Move the item, and put the invokable
             ItemStack other = inv.getItem(index);
-            inv.setItem(index, this.item);
+            inv.setItem(index, this.getItem());
             if (other != null)
                 inv.addItem(other);
         }else
-            inv.setItem(index, this.item);
+            inv.setItem(index, this.getItem());
 
         this.invoked = true;
         if (this.excludesOther())
