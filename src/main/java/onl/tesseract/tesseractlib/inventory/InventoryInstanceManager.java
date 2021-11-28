@@ -205,10 +205,6 @@ public class InventoryInstanceManager {
     {
         ConfigurationSection yaml = YamlConfiguration.loadConfiguration(file);
 
-        // Load items
-        var content = TPlayer.loadInventory(yaml, "items");
-        player.getBukkitPlayer().getInventory().setContents(content);
-
         // Load invocables
         ConfigurationSection invocableSection = yaml.getConfigurationSection("invocables");
         if (invocableSection == null)
@@ -226,6 +222,10 @@ public class InventoryInstanceManager {
                           invocable.invoke(slot);
                   });
         }
+
+        // Load items
+        var content = TPlayer.loadInventory(yaml, "items");
+        player.getBukkitPlayer().getInventory().setContents(content);
     }
 
     /**
