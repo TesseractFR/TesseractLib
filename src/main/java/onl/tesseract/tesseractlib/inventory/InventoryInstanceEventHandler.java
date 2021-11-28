@@ -50,9 +50,17 @@ public class InventoryInstanceEventHandler implements Listener {
         else
         {
             InventoryInstanceManager.getForWorld(from)
-                                    .ifPresent(any -> {
+                                    .ifPresentOrElse(any -> {
                                         if (from.equals(any.getWorld()))
                                             InventoryInstanceManager.selectConfig(event.getPlayer(), "default");
+                                    }, () -> {
+                                        var selectedConfig = InventoryInstanceManager.getSelectedConfig(event.getPlayer());
+                                        if (selectedConfig.getAllowedWorlds().isEmpty())
+                                            return;
+                                        if (!selectedConfig.getAllowedWorlds().contains(to))
+                                        {
+                                            InventoryInstanceManager.selectConfig(event.getPlayer(), "default");
+                                        }
                                     });
         }
     }

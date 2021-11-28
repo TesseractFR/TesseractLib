@@ -32,7 +32,7 @@ public class InventoryInstanceManager {
 
     static
     {
-        configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null));
+        configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList()));
     }
 
     /**
@@ -59,7 +59,7 @@ public class InventoryInstanceManager {
                                           .forEach(InventoryInstanceManager::addConfig);
             if (configurations.keySet().stream().noneMatch("default"::equals))
             {
-                configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null));
+                configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList()));
             }
         }
         catch (IOException e)
@@ -244,7 +244,7 @@ public class InventoryInstanceManager {
                 throw new IllegalStateException("Configuration " + configName + " is not defined.");
             return config;
         }
-        return new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null);
+        return new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList());
     }
 
     public static String getSelectedConfigName(final Player player)
@@ -290,6 +290,7 @@ public class InventoryInstanceManager {
         return configurations.values()
                              .stream()
                              .filter(config -> worldName.equalsIgnoreCase(config.getWorld()))
+                             .limit(1)
                              .findAny();
     }
 

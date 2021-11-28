@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -15,22 +16,24 @@ import java.util.Map;
 public class InventoryInstanceConfiguration {
     private String name;
     private boolean restrictInvocables;
-    private Collection<String> invocables;
-    private Map<Material, Integer> items;
+    private Collection<String> invocables = Collections.emptyList();
+    private Map<Material, Integer> items = Collections.emptyMap();
     private String world;
+    private Collection<String> allowedWorlds = Collections.emptyList();
 
     public InventoryInstanceConfiguration()
     {
     }
 
-    public InventoryInstanceConfiguration(final String name, final boolean restrictInvocables, final Collection<String> invocables,
-                                          final Map<Material, Integer> items, final String world)
+    InventoryInstanceConfiguration(final String name, final boolean restrictInvocables, final Collection<String> invocables,
+                                          final Map<Material, Integer> items, final String world, final Collection<String> allowedWorlds)
     {
         this.name = name;
         this.restrictInvocables = restrictInvocables;
         this.invocables = invocables;
         this.items = items;
         this.world = world;
+        this.allowedWorlds = allowedWorlds;
     }
 
     public static Collection<InventoryInstanceConfiguration> load(final File file) throws IOException
@@ -72,6 +75,11 @@ public class InventoryInstanceConfiguration {
     public String getWorld()
     {
         return world;
+    }
+
+    public Collection<String> getAllowedWorlds()
+    {
+        return allowedWorlds;
     }
 }
 
