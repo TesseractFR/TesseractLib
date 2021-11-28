@@ -116,14 +116,6 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     public void onDisable() {
         // Plugin shutdown logic
         bddManager.close();
-        try
-        {
-            InventoryInstanceManager.save();
-        }
-        catch (IOException e)
-        {
-            logger().log(Level.SEVERE, "Failed to save inventory configurations!", e);
-        }
     }
 
     @EventHandler (priority = EventPriority.LOW)
