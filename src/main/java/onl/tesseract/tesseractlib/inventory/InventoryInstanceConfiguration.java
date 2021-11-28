@@ -1,7 +1,10 @@
 package onl.tesseract.tesseractlib.inventory;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 
 import java.io.File;
@@ -20,13 +23,15 @@ public class InventoryInstanceConfiguration {
     private Map<Material, Integer> items = Collections.emptyMap();
     private String world;
     private Collection<String> allowedWorlds = Collections.emptyList();
+    private GameMode gameMode = GameMode.SURVIVAL;
 
     public InventoryInstanceConfiguration()
     {
     }
 
     InventoryInstanceConfiguration(final String name, final boolean restrictInvocables, final Collection<String> invocables,
-                                          final Map<Material, Integer> items, final String world, final Collection<String> allowedWorlds)
+                                   final Map<Material, Integer> items, final String world, final Collection<String> allowedWorlds,
+                                   final GameMode gameMode)
     {
         this.name = name;
         this.restrictInvocables = restrictInvocables;
@@ -34,6 +39,7 @@ public class InventoryInstanceConfiguration {
         this.items = items;
         this.world = world;
         this.allowedWorlds = allowedWorlds;
+        this.gameMode = gameMode;
     }
 
     public static Collection<InventoryInstanceConfiguration> load(final File file) throws IOException
@@ -80,6 +86,13 @@ public class InventoryInstanceConfiguration {
     public Collection<String> getAllowedWorlds()
     {
         return allowedWorlds;
+    }
+
+    @JsonProperty("gameMode")
+    @JsonAlias("gamemode")
+    public GameMode getGameMode()
+    {
+        return gameMode;
     }
 }
 

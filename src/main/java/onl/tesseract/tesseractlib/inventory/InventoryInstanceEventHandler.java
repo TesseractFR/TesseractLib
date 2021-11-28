@@ -1,7 +1,9 @@
 package onl.tesseract.tesseractlib.inventory;
 
 import onl.tesseract.tesseractlib.event.PlayerInvocableInvokeEvent;
+import onl.tesseract.tesseractlib.event.inventory.InventorySwitchEvent;
 import onl.tesseract.tesseractlib.util.ChatFormats;
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -63,5 +65,12 @@ public class InventoryInstanceEventHandler implements Listener {
                                         }
                                     });
         }
+    }
+
+    @EventHandler
+    public void onSwitch(InventorySwitchEvent event)
+    {
+        GameMode gameMode = event.getTo().getGameMode();
+        event.getPlayer().setGameMode(gameMode);
     }
 }

@@ -6,6 +6,7 @@ import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.event.inventory.InventorySwitchEvent;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -32,7 +33,7 @@ public class InventoryInstanceManager {
 
     static
     {
-        configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList()));
+        configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList(), GameMode.SURVIVAL));
     }
 
     /**
@@ -57,7 +58,7 @@ public class InventoryInstanceManager {
                                       .forEach(InventoryInstanceManager::addConfig);
         if (configurations.keySet().stream().noneMatch("default"::equals))
         {
-            configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList()));
+            configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList(), GameMode.SURVIVAL));
         }
     }
 
@@ -237,7 +238,7 @@ public class InventoryInstanceManager {
                 throw new IllegalStateException("Configuration " + configName + " is not defined.");
             return config;
         }
-        return new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList());
+        return new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList(), GameMode.SURVIVAL);
     }
 
     public static String getSelectedConfigName(final Player player)

@@ -1,5 +1,6 @@
 package onl.tesseract.tesseractlib.inventory;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 
 import java.util.Collection;
@@ -13,6 +14,7 @@ public class InventoryInstanceConfigurationBuilder {
     private Map<Material, Integer> items;
     private String world;
     private Collection<String> allowedWorlds = Collections.emptyList();
+    private GameMode gameMode = GameMode.SURVIVAL;
 
     public InventoryInstanceConfigurationBuilder setName(final String name)
     {
@@ -50,8 +52,14 @@ public class InventoryInstanceConfigurationBuilder {
         return this;
     }
 
+    public InventoryInstanceConfigurationBuilder setGameMode(final GameMode gameMode)
+    {
+        this.gameMode = gameMode;
+        return this;
+    }
+
     public InventoryInstanceConfiguration build()
     {
-        return new InventoryInstanceConfiguration(name, restrictInvocables, invocables, items, world, allowedWorlds);
+        return new InventoryInstanceConfiguration(name, restrictInvocables, invocables, items, world, allowedWorlds, gameMode);
     }
 }
