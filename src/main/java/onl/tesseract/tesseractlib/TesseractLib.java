@@ -84,7 +84,16 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         logger().info("Loading achievement...");
         Achievement.loadAll();
 
-        InventoryInstanceManager.loadConfigurations();
+        try
+        {
+            InventoryInstanceManager.loadConfigurations();
+        }
+        catch (IOException e)
+        {
+            TesseractLib.logger().log(Level.SEVERE, "Failed to load inventories configurations", e);
+            this.getPluginLoader().disablePlugin(this);
+            return;
+        }
         InventoryInstanceManager.loadPlayers();
 
         VoteManager.getInstance().init();

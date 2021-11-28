@@ -41,7 +41,7 @@ public class InventoryInstanceManager {
      * Player's selected configurations are loaded from {@value PLAYERS_PATH}
      * It is not recommended calling this function after startup as it will not update inventories of connected players.
      */
-    public static void loadConfigurations()
+    public static void loadConfigurations() throws IOException
     {
         File configFile = new File(CONFIG_PATH);
         File folder = new File(FOLDER_PATH);
@@ -52,19 +52,12 @@ public class InventoryInstanceManager {
             return;
         }
 
-        try
+        configurations.clear();
+        InventoryInstanceConfiguration.load(configFile)
+                                      .forEach(InventoryInstanceManager::addConfig);
+        if (configurations.keySet().stream().noneMatch("default"::equals))
         {
-            configurations.clear();
-            InventoryInstanceConfiguration.load(configFile)
-                                          .forEach(InventoryInstanceManager::addConfig);
-            if (configurations.keySet().stream().noneMatch("default"::equals))
-            {
-                configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList()));
-            }
-        }
-        catch (IOException e)
-        {
-            TesseractLib.logger().log(Level.SEVERE, "Failed to load inventories configurations", e);
+            configurations.put("default", new InventoryInstanceConfiguration("default", false, Collections.emptyList(), Collections.emptyMap(), null, Collections.emptyList()));
         }
     }
 
