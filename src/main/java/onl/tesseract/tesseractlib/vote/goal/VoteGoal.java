@@ -31,7 +31,7 @@ public record VoteGoal(int id, Instant start, Instant end, int requiredQuantity,
     {
         long days = duration.toDays();
         if (days > 0)
-            return String.format("%dj", days);
+            return String.format("%dj", duration.toHoursPart() < 12 ? days : days + 1);
         long hours = duration.toHours();
         long minutes = duration.toMinutesPart();
         if (minutes % 60 < 10)
