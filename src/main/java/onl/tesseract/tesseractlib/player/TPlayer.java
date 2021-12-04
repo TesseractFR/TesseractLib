@@ -15,10 +15,10 @@ import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.equipment.Equipment;
+import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -82,7 +82,6 @@ public class TPlayer implements Listener {
     protected String dateSinceLastConnection = null;
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
-    protected boolean adminMode = false;
     protected PlayerProfile playerProfile;
     protected Gender gender;
     protected PlayerFacade playerFacade;
@@ -246,8 +245,6 @@ public class TPlayer implements Listener {
             yaml.set("dateSinceLastConnection", date);
         }
 
-        yaml.set("adminmode", adminMode);
-
         try
         {
             yaml.save(file);
@@ -274,16 +271,6 @@ public class TPlayer implements Listener {
         if (getOfflinePlayer().isOnline())
         {
             this.equipment = Equipment.load(this);
-            //Tesseract.permissions.playerAddGroup(getOfflinePlayer().getPlayer(), rank.getPermGroup());
-
-            // Load secondary staff inventory
-            File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
-            if (file.exists())
-            {
-                YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-                adminMode = yaml.getBoolean("adminmode");
-                Objects.requireNonNull(player.getPlayer()).setGameMode(adminMode ? GameMode.CREATIVE : GameMode.SURVIVAL);
-            }
         }
     }
 
@@ -612,12 +599,7 @@ public class TPlayer implements Listener {
 
     public boolean isAdminMode()
     {
-        return adminMode;
-    }
-
-    public void setAdminMode(boolean adminMode)
-    {
-        this.adminMode = adminMode;
+        return InventoryInstanceManager.getSelectedConfigName(getBukkitPlayer()).equals("admin");
     }
 
     ////////////////////
