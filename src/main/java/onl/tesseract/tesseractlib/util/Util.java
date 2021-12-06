@@ -364,6 +364,20 @@ public class Util {
         return -2;
     }
 
+    static public boolean removeExact(Inventory inventory, ItemStack item)
+    {
+        ItemStack[] contents = inventory.getContents();
+        for (int i = 0; i < contents.length; i++)
+        {
+            if (contents[i] != null && contents[i].equals(item))
+            {
+                inventory.setItem(i, null);
+                return true;
+            }
+        }
+        return false;
+    }
+
     static public double random(int min, int max) {
         return (Math.random() * (max - min)) + min;
     }
