@@ -2,6 +2,7 @@ package onl.tesseract.tesseractlib.util;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
@@ -414,6 +415,18 @@ public class Util {
         {
             player.getInventory().addItem(itemStack);
         }
+    }
+
+    public static TextColor getGreenRedGradient(final int a, final int total)
+    {
+        return getGreenRedGradient(((double) a) / total);
+    }
+
+    public static TextColor getGreenRedGradient(final double percentage)
+    {
+        int green = (int) (percentage * 255);
+        int red = 255 - green;
+        return TextColor.color(red, green, 40);
     }
 
 
