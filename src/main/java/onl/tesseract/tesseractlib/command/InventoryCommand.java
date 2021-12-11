@@ -2,8 +2,10 @@ package onl.tesseract.tesseractlib.command;
 
 import onl.tesseract.commandBuilder.CommandArgument;
 import onl.tesseract.commandBuilder.CommandBuilder;
+import onl.tesseract.commandBuilder.OptionalCommandArgument;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceConfiguration;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,11 +31,22 @@ public class InventoryCommand implements CommandExecutor, TabCompleter {
                                                                                         .map(InventoryInstanceConfiguration::getName)
                                                                                         .collect(Collectors.toList()))
                                 .supplier((string, env) -> string))
+                        .withOptionalArg(new OptionalCommandArgument("player", Player.class)
+                                .tabCompletion((sender, env) -> null)
+                                .supplier((string, env) -> {
+                                    Player player = Bukkit.getPlayer(string);
+                                    if (player == null)
+                                        throw new IllegalArgumentException();
+                                    return player;
+                                })
+                                .error(IllegalArgumentException.class, "Joueur introuvable"))
                         .permission("inventory.select")
                         .description("Sélectionner un inventaire")
                         .command((sender, env) -> {
                             String invName = env.get("instance", String.class);
-                            Player player = (Player) sender;
+                            Player player = env.get("player", Player.class);
+                            if (player == null)
+                                player = (Player) sender;
                             InventoryInstanceManager.selectConfig(player, invName);
                         }))
                 .subCommand(InventoryConfigCommand.get())
