@@ -114,11 +114,6 @@ public class TPlayer implements Listener {
         checkFirstJoin(player.getUniqueId());
     }
 
-    public TPlayer(OfflinePlayer player, Inventory adminInventory, Inventory playerInventory)
-    {
-        this.player = player;
-    }
-
     static public TPlayer get(Player player)
     {
         return TPlayer.playerMap.get(player.getUniqueId());
