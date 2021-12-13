@@ -72,7 +72,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        setPlayerSupplier(TPlayer::new);
+        setPlayerSupplier(TPlayer::newSavedInstance);
         instance = this;
         loadConfig();
         bddManager = new BDDManager(host,port,username,password,database);

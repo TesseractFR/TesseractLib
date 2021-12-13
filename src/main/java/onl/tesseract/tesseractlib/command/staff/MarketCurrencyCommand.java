@@ -2,6 +2,7 @@ package onl.tesseract.tesseractlib.command.staff;
 
 import net.kyori.adventure.text.Component;
 import onl.tesseract.tesseractlib.TesseractLib;
+import onl.tesseract.tesseractlib.bddfacade.PlayerRepository;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
@@ -46,7 +47,7 @@ public class MarketCurrencyCommand implements CommandExecutor {
                     tPlayer = TPlayer.playerMap.get(player.getUniqueId());
                 else
                 {
-                    tPlayer = new TPlayer(player);
+                    tPlayer = new TPlayer(player, new PlayerRepository(player.getUniqueId()));
                     tPlayer.load();
                 }
 

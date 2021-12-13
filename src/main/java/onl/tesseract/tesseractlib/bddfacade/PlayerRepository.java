@@ -19,14 +19,14 @@ public class PlayerRepository {
 
     final static String bddtableAchivement = "t_player_achievement";
     static private final String bddtable = "t_player";
-    public final UUID uuid;
+    protected final UUID uuid;
 
     public PlayerRepository(UUID uuid)
     {
         this.uuid = uuid;
     }
 
-    public static boolean exist(UUID uniqueId)
+    private static boolean exist(UUID uniqueId)
     {
         try
         {
@@ -47,7 +47,7 @@ public class PlayerRepository {
         return false;
     }
 
-    public static void addtodatabase(UUID uniqueId)
+    private static void addtodatabase(UUID uniqueId)
     {
         try
         {
@@ -61,6 +61,12 @@ public class PlayerRepository {
         {
             TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
+    }
+
+    public void save()
+    {
+        if (!exist(uuid))
+            addtodatabase(uuid);
     }
 
     public Gender getGender()

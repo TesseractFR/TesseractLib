@@ -60,29 +60,34 @@ public class TPlayer implements Listener {
     protected Consumer<Component> chatEntryComponentCallback;
     protected BukkitRunnable chatEntryRunnable;
     protected Consumer<String[]> commandEntryCallback;
-    // Mailer mailer = new Mailer(this);
     protected BukkitRunnable commandEntryRunnable;
     protected String dateSinceLastConnection = null;
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
     protected PlayerProfile playerProfile;
     protected Gender gender;
-    protected PlayerRepository playerRepository;
+    private final PlayerRepository repository;
     protected List<Achievement> achievements = new ArrayList<>();
     protected ElytraTrails trails = ElytraTrails.NONE;
     protected int marketCurrency = 0;
     protected FlyFilter flyFilter =  FlyFilter.NONE;
-    private UUID uuid;
 
     /**
      * Loads a player
      *
      * @param player OfflinePlayer to load
      */
-    public TPlayer(OfflinePlayer player)
+    public TPlayer(OfflinePlayer player, final PlayerRepository repository)
     {
         this.player = player;
-        checkFirstJoin(player.getUniqueId());
+        this.repository = repository;
+    }
+
+    static public TPlayer newSavedInstance(final OfflinePlayer player)
+    {
+        final TPlayer tPlayer = new TPlayer(player, new PlayerRepository(player.getUniqueId()));
+        tPlayer.save();
+        return tPlayer;
     }
 
     static public TPlayer get(Player player)
@@ -120,7 +125,7 @@ public class TPlayer implements Listener {
     public void setFlyFilter(FlyFilter flyFilter)
     {
         this.flyFilter = flyFilter;
-        playerRepository.setFlyFilter(flyFilter);
+        repository.setFlyFilter(flyFilter);
     }
 
     public void buyCosmetic(String type, Cosmetic cosmetic,int price)
@@ -130,8 +135,8 @@ public class TPlayer implements Listener {
     }
 
     public void addMarketCurrency(int amount){
-        playerRepository.addMarketCurrency(amount);
-        marketCurrency = playerRepository.getMarketCurrency();
+        repository.addMarketCurrency(amount);
+        marketCurrency = repository.getMarketCurrency();
     }
 
     /**
@@ -176,7 +181,6 @@ public class TPlayer implements Listener {
     public void onJoin(OfflinePlayer player)
     {
         this.player = player;
-        checkFirstJoin(player.getUniqueId());
         this.loadOnConnection();
 
 
@@ -187,19 +191,6 @@ public class TPlayer implements Listener {
 
         }
 
-    }
-
-    protected void checkFirstJoin(UUID uniqueId)
-    {
-        if (!PlayerRepository.exist(uniqueId))
-        {
-            addtodatabase(uniqueId);
-        }
-    }
-
-    private void addtodatabase(UUID uniqueId)
-    {
-        PlayerRepository.addtodatabase(uniqueId);
     }
 
     @EventHandler
@@ -219,6 +210,7 @@ public class TPlayer implements Listener {
      */
     public void save()
     {
+        getRepository().save();
         if (equipment != null)
             this.equipment.save();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
@@ -272,13 +264,12 @@ public class TPlayer implements Listener {
      */
     public void load()
     {
-        playerRepository = new PlayerRepository(getOfflinePlayer().getUniqueId());
-        gender = playerRepository.getGender();
-        trails = playerRepository.getActiveTrails();
-        marketCurrency = playerRepository.getMarketCurrency();
-        flyFilter = playerRepository.getFlyFilter();
+        gender = repository.getGender();
+        trails = repository.getActiveTrails();
+        marketCurrency = repository.getMarketCurrency();
+        flyFilter = repository.getFlyFilter();
         achievements.clear();
-        achievements = playerRepository.getAllAchievements();
+        achievements = repository.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         if (file.exists())
         {
@@ -293,7 +284,6 @@ public class TPlayer implements Listener {
 
     public void load(ResultSet resultSet)
     {
-        playerRepository = new PlayerRepository(getOfflinePlayer().getUniqueId());
         try
         {
             gender = Gender.valueOf(resultSet.getString("genre"));
@@ -307,7 +297,7 @@ public class TPlayer implements Listener {
             marketCurrency = 0;
         }
         achievements.clear();
-        achievements = playerRepository.getAllAchievements();
+        achievements = repository.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         if (file.exists())
         {
@@ -592,7 +582,7 @@ public class TPlayer implements Listener {
     public void setGender(Gender gender)
     {
         this.gender = gender;
-        playerRepository.setGender(gender);
+        repository.setGender(gender);
     }
 
     public boolean hasAchievement(Achievement achievement)
@@ -610,7 +600,7 @@ public class TPlayer implements Listener {
         if (achievements.contains(achievement))
             return;
         achievements.add(achievement);
-        playerRepository.addAchievements(achievement);
+        repository.addAchievements(achievement);
         sendMessage(ChatFormats.HAUT_FAIT.append(Component.text("Vous avez obtenu le haut-fait ")));
         sendMessage(Component.empty()
                              .append(Component.text("      « ").color(NamedTextColor.AQUA))
@@ -648,7 +638,7 @@ public class TPlayer implements Listener {
     public void removeAchievement(Achievement achievement)
     {
         achievements.remove(achievement);
-        playerRepository.removeAchievement(achievement);
+        repository.removeAchievement(achievement);
     }
 
     public ElytraTrails getActiveTrail()
@@ -658,7 +648,7 @@ public class TPlayer implements Listener {
 
     public void setActiveTrail(ElytraTrails elytraTrails){
         trails = elytraTrails;
-        playerRepository.setActiveTrails(trails);
+        repository.setActiveTrails(trails);
     }
 
     public int getMarketCurrency()
@@ -669,6 +659,11 @@ public class TPlayer implements Listener {
     public void setMarketCurrency(int currency)
     {
         marketCurrency = currency;
-        playerRepository.setMarketCurrency(marketCurrency);
+        repository.setMarketCurrency(marketCurrency);
+    }
+
+    protected PlayerRepository getRepository()
+    {
+        return repository;
     }
 }
