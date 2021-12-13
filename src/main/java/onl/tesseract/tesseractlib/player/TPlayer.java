@@ -9,7 +9,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
-import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
+import onl.tesseract.tesseractlib.bddfacade.PlayerRepository;
 import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
@@ -67,7 +67,7 @@ public class TPlayer implements Listener {
     protected boolean playedToday = false;
     protected PlayerProfile playerProfile;
     protected Gender gender;
-    protected PlayerFacade playerFacade;
+    protected PlayerRepository playerRepository;
     protected List<Achievement> achievements = new ArrayList<>();
     protected ElytraTrails trails = ElytraTrails.NONE;
     protected int marketCurrency = 0;
@@ -120,7 +120,7 @@ public class TPlayer implements Listener {
     public void setFlyFilter(FlyFilter flyFilter)
     {
         this.flyFilter = flyFilter;
-        playerFacade.setFlyFilter(flyFilter);
+        playerRepository.setFlyFilter(flyFilter);
     }
 
     public void buyCosmetic(String type, Cosmetic cosmetic,int price)
@@ -130,8 +130,8 @@ public class TPlayer implements Listener {
     }
 
     public void addMarketCurrency(int amount){
-        playerFacade.addMarketCurrency(amount);
-        marketCurrency = playerFacade.getMarketCurrency();
+        playerRepository.addMarketCurrency(amount);
+        marketCurrency = playerRepository.getMarketCurrency();
     }
 
     /**
@@ -191,7 +191,7 @@ public class TPlayer implements Listener {
 
     protected void checkFirstJoin(UUID uniqueId)
     {
-        if (!PlayerFacade.exist(uniqueId))
+        if (!PlayerRepository.exist(uniqueId))
         {
             addtodatabase(uniqueId);
         }
@@ -199,7 +199,7 @@ public class TPlayer implements Listener {
 
     private void addtodatabase(UUID uniqueId)
     {
-        PlayerFacade.addtodatabase(uniqueId);
+        PlayerRepository.addtodatabase(uniqueId);
     }
 
     @EventHandler
@@ -272,13 +272,13 @@ public class TPlayer implements Listener {
      */
     public void load()
     {
-        playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
-        gender = playerFacade.getGender();
-        trails = playerFacade.getActiveTrails();
-        marketCurrency = playerFacade.getMarketCurrency();
-        flyFilter = playerFacade.getFlyFilter();
+        playerRepository = new PlayerRepository(getOfflinePlayer().getUniqueId());
+        gender = playerRepository.getGender();
+        trails = playerRepository.getActiveTrails();
+        marketCurrency = playerRepository.getMarketCurrency();
+        flyFilter = playerRepository.getFlyFilter();
         achievements.clear();
-        achievements = playerFacade.getAllAchievements();
+        achievements = playerRepository.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         if (file.exists())
         {
@@ -293,7 +293,7 @@ public class TPlayer implements Listener {
 
     public void load(ResultSet resultSet)
     {
-        playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
+        playerRepository = new PlayerRepository(getOfflinePlayer().getUniqueId());
         try
         {
             gender = Gender.valueOf(resultSet.getString("genre"));
@@ -307,7 +307,7 @@ public class TPlayer implements Listener {
             marketCurrency = 0;
         }
         achievements.clear();
-        achievements = playerFacade.getAllAchievements();
+        achievements = playerRepository.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         if (file.exists())
         {
@@ -592,7 +592,7 @@ public class TPlayer implements Listener {
     public void setGender(Gender gender)
     {
         this.gender = gender;
-        playerFacade.setGender(gender);
+        playerRepository.setGender(gender);
     }
 
     public boolean hasAchievement(Achievement achievement)
@@ -610,7 +610,7 @@ public class TPlayer implements Listener {
         if (achievements.contains(achievement))
             return;
         achievements.add(achievement);
-        playerFacade.addAchievements(achievement);
+        playerRepository.addAchievements(achievement);
         sendMessage(ChatFormats.HAUT_FAIT.append(Component.text("Vous avez obtenu le haut-fait ")));
         sendMessage(Component.empty()
                              .append(Component.text("      « ").color(NamedTextColor.AQUA))
@@ -648,7 +648,7 @@ public class TPlayer implements Listener {
     public void removeAchievement(Achievement achievement)
     {
         achievements.remove(achievement);
-        playerFacade.removeAchievement(achievement);
+        playerRepository.removeAchievement(achievement);
     }
 
     public ElytraTrails getActiveTrail()
@@ -658,7 +658,7 @@ public class TPlayer implements Listener {
 
     public void setActiveTrail(ElytraTrails elytraTrails){
         trails = elytraTrails;
-        playerFacade.setActiveTrails(trails);
+        playerRepository.setActiveTrails(trails);
     }
 
     public int getMarketCurrency()
@@ -669,6 +669,6 @@ public class TPlayer implements Listener {
     public void setMarketCurrency(int currency)
     {
         marketCurrency = currency;
-        playerFacade.setMarketCurrency(marketCurrency);
+        playerRepository.setMarketCurrency(marketCurrency);
     }
 }

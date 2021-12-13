@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class PlayerFacade {
+public class PlayerRepository {
 
     final static String bddtableAchivement = "t_player_achievement";
     static private final String bddtable = "t_player";
     public final UUID uuid;
 
-    public PlayerFacade(UUID uuid)
+    public PlayerRepository(UUID uuid)
     {
         this.uuid = uuid;
     }
