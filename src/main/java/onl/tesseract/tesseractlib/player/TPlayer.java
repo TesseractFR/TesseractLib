@@ -69,22 +69,10 @@ public class TPlayer implements Listener {
     protected Gender gender;
     protected PlayerFacade playerFacade;
     protected List<Achievement> achievements = new ArrayList<>();
-    private UUID uuid;
     protected ElytraTrails trails = ElytraTrails.NONE;
     protected int marketCurrency = 0;
-
-    public FlyFilter getFlyFilter()
-    {
-        return flyFilter;
-    }
-
-    public void setFlyFilter(FlyFilter flyFilter)
-    {
-        this.flyFilter = flyFilter;
-        playerFacade.setFlyFilter(flyFilter);
-    }
-
     protected FlyFilter flyFilter =  FlyFilter.NONE;
+    private UUID uuid;
 
     /**
      * Loads a player
@@ -107,16 +95,38 @@ public class TPlayer implements Listener {
         return playerMap.get(uuid);
     }
 
+    public static ItemStack[] loadInventory(ConfigurationSection yaml, String inv)
+    {
+        ItemStack[] list = new ItemStack[41];
+        if (yaml.contains(inv))
+        {
+            int i = 0;
+            for (Object item : Objects.requireNonNull(yaml.getList(inv)))
+            {
+                ItemStack itemStack = (ItemStack) item;
+                if (itemStack != null)
+                    list[i] = itemStack;
+                i++;
+            }
+        }
+        return list;
+    }
+
+    public FlyFilter getFlyFilter()
+    {
+        return flyFilter;
+    }
+
+    public void setFlyFilter(FlyFilter flyFilter)
+    {
+        this.flyFilter = flyFilter;
+        playerFacade.setFlyFilter(flyFilter);
+    }
+
     public void buyCosmetic(String type, Cosmetic cosmetic,int price)
     {
         CosmeticManager.giveCosmetic(getUUID(),type,cosmetic);
         addMarketCurrency(-price);
-    }
-
-    public void setMarketCurrency(int currency)
-    {
-        marketCurrency = currency;
-        playerFacade.setMarketCurrency(marketCurrency);
     }
 
     public void addMarketCurrency(int amount){
@@ -255,23 +265,6 @@ public class TPlayer implements Listener {
         public UUID getUUID()
     {
         return getOfflinePlayer().getUniqueId();
-    }
-
-    public static ItemStack[] loadInventory(ConfigurationSection yaml, String inv)
-    {
-        ItemStack[] list = new ItemStack[41];
-        if (yaml.contains(inv))
-        {
-            int i = 0;
-            for (Object item : Objects.requireNonNull(yaml.getList(inv)))
-            {
-                ItemStack itemStack = (ItemStack) item;
-                if (itemStack != null)
-                    list[i] = itemStack;
-                i++;
-            }
-        }
-        return list;
     }
 
     /**
@@ -580,9 +573,6 @@ public class TPlayer implements Listener {
         return InventoryInstanceManager.getSelectedConfigName(getBukkitPlayer()).equals("admin");
     }
 
-    ////////////////////
-    // Static methods //
-
     @Override
     public boolean equals(Object other)
     {
@@ -590,6 +580,9 @@ public class TPlayer implements Listener {
             return false;
         return getOfflinePlayer().getUniqueId().equals(((TPlayer) other).getOfflinePlayer().getUniqueId());
     }
+
+    ////////////////////
+    // Static methods //
 
     public Gender getGender()
     {
@@ -671,5 +664,11 @@ public class TPlayer implements Listener {
     public int getMarketCurrency()
     {
         return marketCurrency;
+    }
+
+    public void setMarketCurrency(int currency)
+    {
+        marketCurrency = currency;
+        playerFacade.setMarketCurrency(marketCurrency);
     }
 }
