@@ -29,7 +29,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
@@ -44,22 +43,6 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class TPlayer implements Listener {
-    public enum Gender {
-        MALE("Masculin"),
-        FEMALE("Féminin"),
-        OTHER("Non renseigné");
-        private final String string;
-
-        Gender(String string)
-        {
-            this.string = string;
-        }
-
-        public String getName()
-        {
-            return this.string;
-        }
-    }
 
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
     /**

@@ -4,7 +4,7 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
-import onl.tesseract.tesseractlib.player.TPlayer;
+import onl.tesseract.tesseractlib.player.Gender;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -63,7 +63,7 @@ public class PlayerFacade {
         }
     }
 
-    public TPlayer.Gender getGender()
+    public Gender getGender()
     {
         try
         {
@@ -73,16 +73,16 @@ public class PlayerFacade {
             preparedStatement.setString(1, uuid.toString());
             ResultSet result = preparedStatement.executeQuery();
             if (result.next())
-                return TPlayer.Gender.valueOf(result.getString("genre"));
+                return Gender.valueOf(result.getString("genre"));
         }
         catch (SQLException throwables)
         {
             TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
         }
-        return TPlayer.Gender.OTHER;
+        return Gender.OTHER;
     }
 
-    public void setGender(TPlayer.Gender gender)
+    public void setGender(Gender gender)
     {
         try
         {
