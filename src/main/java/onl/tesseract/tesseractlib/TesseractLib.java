@@ -20,7 +20,9 @@ import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceEventHandler;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
+import onl.tesseract.tesseractlib.player.PlayerContainer;
 import onl.tesseract.tesseractlib.player.TPlayer;
+import onl.tesseract.tesseractlib.player.def.StandalonePlayerContainer;
 import onl.tesseract.tesseractlib.util.Util;
 import onl.tesseract.tesseractlib.vote.VoteManager;
 import onl.tesseract.tesseractlib.vote.goal.VoteGoalManager;
@@ -47,19 +49,19 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class TesseractLib extends JavaPlugin implements Listener {
     public static JavaPlugin instance;
-    private static Function<Player, ? extends TPlayer> playerSupplier;
 
     static public final String configFilepath = "plugins/Tesseract/config.yml";
 
     static private String host, database, username, password;
     private static BDDManager bddManager;
     static public int port;
+
+    private static PlayerContainer<?> playerContainer;
 
     static public BDDManager getBddManager() {
         if(bddManager == null){
@@ -72,8 +74,8 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        setPlayerSupplier(TPlayer::newSavedInstance);
         instance = this;
+        setPlayerContainer(new StandalonePlayerContainer());
         loadConfig();
         bddManager = new BDDManager(host,port,username,password,database);
         registerCosmetics();
@@ -100,9 +102,9 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         VoteGoalManager.startLoops();
     }
 
-    public static void setPlayerSupplier(final Function<Player, ? extends TPlayer> supplier)
+    public static void setPlayerContainer(final PlayerContainer<?> playerContainer)
     {
-        playerSupplier = supplier;
+        TesseractLib.playerContainer = playerContainer;
     }
 
     private void registerCosmetics()
@@ -121,16 +123,15 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     @EventHandler (priority = EventPriority.LOW)
     public void onJoin(PlayerJoinEvent event){
         // If first join
-        if(!TPlayer.playerMap.containsKey(event.getPlayer().getUniqueId()))
+        if(!playerContainer.exists(event.getPlayer().getUniqueId()))
         {
-            var player = playerSupplier.apply(event.getPlayer());
-            TPlayer.playerMap.put(event.getPlayer().getUniqueId(), player);
+            final TPlayer player = playerContainer.newPlayer(event.getPlayer());
             player.load();
             player.loadOnServerStarts();
         }
         else
         {
-            var player = TPlayer.get(event.getPlayer());
+            var player = playerContainer.get(event.getPlayer());
             player.onJoin(event.getPlayer());
         }
         CosmeticManager.loadPlayer(event.getPlayer().getUniqueId());
@@ -139,7 +140,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPreJoin(AsyncPlayerPreLoginEvent event)
     {
-        if (!TPlayer.playerMap.containsKey(event.getUniqueId()))
+        if (!playerContainer.exists(event.getPlayerProfile().getId()))
             return;
         if (event.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED)
         {
@@ -152,7 +153,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
                 return;
             var dateTime = instant.atZone(ZoneId.systemDefault());
             boolean hasPlayedToday = dateTime.getDayOfYear() == Instant.now().atZone(ZoneId.systemDefault()).getDayOfYear();
-            TPlayer.get(uuid).setPlayedToday(hasPlayedToday);
+            playerContainer.get(uuid).setPlayedToday(hasPlayedToday);
         }
     }
 
@@ -204,7 +205,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     @EventHandler
     public void onGlide(EntityToggleGlideEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
-        TPlayer tplayer = TPlayer.get((Player) event.getEntity());
+        TPlayer tplayer = playerContainer.get(event.getEntity().getUniqueId());
         if(tplayer.getEquipment() == null)
         {
             Player player = (Player) event.getEntity();
@@ -241,7 +242,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     }
 
     @EventHandler void onFly(PlayerToggleFlightEvent event){
-        TPlayer tplayer = TPlayer.get(event.getPlayer());
+        TPlayer tplayer = playerContainer.get(event.getPlayer());
         if(tplayer.getEquipment() == null)
         {
             new BukkitRunnable() {
@@ -271,5 +272,25 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     public static Logger logger()
     {
         return TesseractLib.instance.getLogger();
+    }
+
+    public static TPlayer getPlayer(final OfflinePlayer player)
+    {
+        return playerContainer.get(player);
+    }
+
+    public static TPlayer getPlayer(final UUID player)
+    {
+        return playerContainer.get(player);
+    }
+
+    public static TPlayer newPlayer(final OfflinePlayer player)
+    {
+        return playerContainer.newPlayer(player);
+    }
+
+    public static PlayerContainer<?> getPlayerContainer()
+    {
+        return playerContainer;
     }
 }

@@ -47,26 +47,23 @@ public class PlayerRepository {
         return false;
     }
 
-    private static void addtodatabase(UUID uniqueId)
-    {
-        try
-        {
-            final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
-            final PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO " + bddtable + "(uuid,genre) VALUES (?,'OTHER')");
-            preparedStatement.setString(1, String.valueOf(uniqueId));
-            preparedStatement.execute();
-        }
-        catch (SQLException throwables)
-        {
-            TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
-        }
-    }
-
     public void save()
     {
         if (!exist(uuid))
-            addtodatabase(uuid);
+        {
+            try
+            {
+                final Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
+                final PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO " + bddtable + "(uuid,genre) VALUES (?,'OTHER')");
+                preparedStatement.setString(1, String.valueOf(uuid));
+                preparedStatement.execute();
+            }
+            catch (SQLException throwables)
+            {
+                TesseractLib.logger().log(Level.SEVERE, "Failed to execute sql statement", throwables);
+            }
+        }
     }
 
     public Gender getGender()

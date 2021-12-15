@@ -42,13 +42,12 @@ import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
 
-public class TPlayer implements Listener {
+public abstract class TPlayer implements Listener {
 
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
     /**
      * Maps every Player who has played before with a TPlayer instance.
      */
-    static public final HashMap<UUID, TPlayer> playerMap = new HashMap<>();
     public String skinValue;
     public String skinSignature;
     protected OfflinePlayer player;
@@ -83,21 +82,22 @@ public class TPlayer implements Listener {
         this.repository = repository;
     }
 
-    static public TPlayer newSavedInstance(final OfflinePlayer player)
+    public TPlayer(final OfflinePlayer player)
     {
-        final TPlayer tPlayer = new TPlayer(player, new PlayerRepository(player.getUniqueId()));
-        tPlayer.save();
-        return tPlayer;
+        this.player = player;
+        this.repository = newRepository(player.getUniqueId());
     }
 
-    static public TPlayer get(Player player)
+    protected abstract PlayerRepository newRepository(final UUID uuid);
+
+    public static TPlayer get(final OfflinePlayer player)
     {
-        return TPlayer.playerMap.get(player.getUniqueId());
+        return TesseractLib.getPlayer(player);
     }
 
-    static public TPlayer get(UUID uuid)
+    public static TPlayer get(final UUID uuid)
     {
-        return playerMap.get(uuid);
+        return TesseractLib.getPlayer(uuid);
     }
 
     public static ItemStack[] loadInventory(ConfigurationSection yaml, String inv)
