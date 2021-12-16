@@ -236,50 +236,19 @@ public abstract class TPlayer implements Listener {
     }
 
     /**
-     * Loading done only once when the server starts
-     */
-    public void loadOnServerStarts()
-    {
-
-    }
-
-    /**
      * Loads player's information that need the player to be online. (equipment, permissions)
      */
     public void loadOnConnection()
     {
         if (getOfflinePlayer().isOnline())
         {
-            this.equipment = Equipment.load(this);
+            this.equipment = TesseractLib.getPlayerContainer().loadEquipment(getUUID());
         }
     }
 
-        public UUID getUUID()
+    public UUID getUUID()
     {
         return getOfflinePlayer().getUniqueId();
-    }
-
-    /**
-     * Loads player's general information that does not need the player to be online
-     */
-    public void load()
-    {
-        gender = repository.getGender();
-        trails = repository.getActiveTrails();
-        marketCurrency = repository.getMarketCurrency();
-        flyFilter = repository.getFlyFilter();
-        achievements.clear();
-        achievements = repository.getAllAchievements();
-        File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
-        if (file.exists())
-        {
-            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-
-            this.dateSinceLastConnection = yaml.getString("dateSinceLastConnection");
-            dateFirstConnection = Date.from(Instant.ofEpochMilli(getOfflinePlayer().getFirstPlayed())).toString();
-            if (yaml.contains("hasPlayedToday"))
-                playedToday = yaml.getBoolean("hasPlayedToday");
-        }
     }
 
     public void load(ResultSet resultSet)

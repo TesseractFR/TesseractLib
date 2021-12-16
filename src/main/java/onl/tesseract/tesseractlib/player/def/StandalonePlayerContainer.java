@@ -1,5 +1,6 @@
 package onl.tesseract.tesseractlib.player.def;
 
+import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.player.PlayerContainer;
 import org.bukkit.OfflinePlayer;
 
@@ -8,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class StandalonePlayerContainer implements PlayerContainer<StandaloneTesseractPlayer> {
+public class StandalonePlayerContainer implements PlayerContainer<StandaloneTesseractPlayer, Equipment> {
 
     private final Map<UUID, StandaloneTesseractPlayer> playerMap = new HashMap<>();
 
@@ -48,5 +49,11 @@ public class StandalonePlayerContainer implements PlayerContainer<StandaloneTess
     public boolean register(final StandaloneTesseractPlayer player)
     {
         return playerMap.put(player.getUUID(), player) == null;
+    }
+
+    @Override
+    public Equipment loadEquipment(final UUID uuid)
+    {
+        return Equipment.load(get(uuid));
     }
 }

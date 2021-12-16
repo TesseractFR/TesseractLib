@@ -1,11 +1,12 @@
 package onl.tesseract.tesseractlib.player;
 
+import onl.tesseract.tesseractlib.equipment.Equipment;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Collection;
 import java.util.UUID;
 
-public interface PlayerContainer<E extends TPlayer> {
+public interface PlayerContainer<E extends TPlayer, T extends Equipment> {
 
     E get(final OfflinePlayer player);
 
@@ -18,4 +19,6 @@ public interface PlayerContainer<E extends TPlayer> {
     Collection<E> getPlayers();
 
     boolean register(final E player);
+
+    T loadEquipment(final UUID uuid);
 }
