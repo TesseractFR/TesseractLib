@@ -67,7 +67,7 @@ public class Animation implements CommandExecutor, TabCompleter {
                 case "cylinder":
                     radius = (args.length >= 2) ? Integer.parseInt(args[1]) : 15;
                     delay = (args.length >= 3) ? Double.parseDouble(args[2]) : 0;
-                    new Cylinder(Particle.REDSTONE, Color.FUCHSIA, player.getLocation(), radius, 10, true, delay, Animation::callbackDamage);
+//                    new Cylinder(Particle.REDSTONE, Color.FUCHSIA, player.getLocation(), radius, 10, true, delay, Animation::callbackDamage);
                     break;
 
                 case "ring":
@@ -84,7 +84,7 @@ public class Animation implements CommandExecutor, TabCompleter {
 
                 case "concentration":
                     radius = (args.length >= 2) ? Integer.parseInt(args[1]) : 15;
-                    new Concentration(Particle.VILLAGER_HAPPY, null, new AnimationTarget(player), 5, 20);
+//                    new Concentration(Particle.VILLAGER_HAPPY, null, new AnimationTarget(player), 5, 20);
                     break;
 
                 case "ray":
@@ -97,7 +97,7 @@ public class Animation implements CommandExecutor, TabCompleter {
                     break;
 
                 case "sphere":
-                    new Sphere(Particle.REDSTONE, Color.FUCHSIA, new AnimationTarget(player), 4, 0.5f, 5, null);
+//                    new Sphere(Particle.REDSTONE, Color.FUCHSIA, new AnimationTarget(player), 4, 0.5f, 5, null);
                     break;
 
                 case "rosette":

@@ -12,7 +12,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SmoothCylinder {
-    public SmoothCylinder(Particle particle, Color color, Location location, int radius, int height, boolean rev, double delay, Consumer<Player> onHit)
+    private Particle particle;
+    private Color color;
+    private Location location;
+    private int radius;
+    private int height;
+    private boolean rev;
+    private double delay;
+    private Consumer<Player> onHit;
+
+    public Animation build()
+    {
+        return this::draw;
+    }
+
+    private void draw()
     {
         Set<Player> players = new HashSet<>();
         int sign = rev ? -1 : 1;
@@ -52,5 +66,53 @@ public class SmoothCylinder {
                 }
             }
         }.runTaskTimer(TesseractLib.instance, 0, 1);
+    }
+
+    public SmoothCylinder setParticle(final Particle particle)
+    {
+        this.particle = particle;
+        return this;
+    }
+
+    public SmoothCylinder setColor(final Color color)
+    {
+        this.color = color;
+        return this;
+    }
+
+    public SmoothCylinder setLocation(final Location location)
+    {
+        this.location = location;
+        return this;
+    }
+
+    public SmoothCylinder setRadius(final int radius)
+    {
+        this.radius = radius;
+        return this;
+    }
+
+    public SmoothCylinder setHeight(final int height)
+    {
+        this.height = height;
+        return this;
+    }
+
+    public SmoothCylinder setRev(final boolean rev)
+    {
+        this.rev = rev;
+        return this;
+    }
+
+    public SmoothCylinder setDelay(final double delay)
+    {
+        this.delay = delay;
+        return this;
+    }
+
+    public SmoothCylinder setOnHit(final Consumer<Player> onHit)
+    {
+        this.onHit = onHit;
+        return this;
     }
 }

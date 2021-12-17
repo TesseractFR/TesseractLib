@@ -10,7 +10,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 
 public class Sphere {
-    public Sphere(Particle particle, Color color, AnimationTarget target, float radius, float delay, float rotationCount, Consumer<Player> onHit)
+    private Particle particle;
+    private Color color;
+    private AnimationTarget target;
+    private float radius;
+    private float delay;
+    private float rotationCount;
+    private Consumer<Player> onHit;
+
+    public Animation build()
+    {
+        return this::draw;
+    }
+
+    private void draw()
     {
         ParticleBuilder builder = Animation.buildParticle(particle, color, target.getLocation());
         // Creates a runnable that will be ran each tick
@@ -46,5 +59,47 @@ public class Sphere {
                     target.getLocation().getNearbyPlayers(radius).forEach(onHit::accept);
             }
         }.runTaskTimer(TesseractLib.instance, 0, 1);
+    }
+
+    public Sphere setParticle(final Particle particle)
+    {
+        this.particle = particle;
+        return this;
+    }
+
+    public Sphere setColor(final Color color)
+    {
+        this.color = color;
+        return this;
+    }
+
+    public Sphere setTarget(final AnimationTarget target)
+    {
+        this.target = target;
+        return this;
+    }
+
+    public Sphere setRadius(final float radius)
+    {
+        this.radius = radius;
+        return this;
+    }
+
+    public Sphere setDelay(final float delay)
+    {
+        this.delay = delay;
+        return this;
+    }
+
+    public Sphere setRotationCount(final float rotationCount)
+    {
+        this.rotationCount = rotationCount;
+        return this;
+    }
+
+    public Sphere setOnHit(final Consumer<Player> onHit)
+    {
+        this.onHit = onHit;
+        return this;
     }
 }

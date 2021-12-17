@@ -125,6 +125,11 @@ public class Circle {
         return this;
     }
 
+    public Animation build()
+    {
+        return this::draw;
+    }
+
     public Circle draw()
     {
         builder = Animation.buildParticle(particle, color, target.getLocation());

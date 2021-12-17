@@ -31,6 +31,11 @@ public class Cone3D {
         this.direction = origin.getDirection();
     }
 
+    public Animation build()
+    {
+        return this::draw;
+    }
+
     public void draw()
     {
         Vector vector = direction.multiply(0.3);
