@@ -70,7 +70,7 @@ public class Cone {
 
     public void draw()
     {
-        ParticleBuilder builder = Animation.buildParticle(particle, color, origin);
+        ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, origin);
         // Cast angles in degree to radian
         openingAngle = (float)(Math.toRadians(openingAngle) / 2);
         direction = (float)Math.toRadians(direction);

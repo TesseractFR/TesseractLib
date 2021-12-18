@@ -13,7 +13,7 @@ import org.bukkit.util.Consumer;
 public class Disc {
     public Disc(Particle particle, Color color, Location location, int radius)
     {
-        ParticleBuilder builder = Animation.buildParticle(particle, color, location);
+        ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, location);
         for (float angle = 0; angle < Math.PI * 2; angle += 0.05)
         {
             for (float dist = 0; dist < radius; dist += 0.3)
@@ -28,7 +28,7 @@ public class Disc {
     @Beta
     public Disc(Particle particle, Color color, Location location, int radius, double delay, float rotationCount, Consumer<LivingEntity> onHit)
     {
-        ParticleBuilder builder = Animation.buildParticle(particle, color, location);
+        ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, location);
         final float maxAngle = (float)(Math.PI * 2 * rotationCount);
         new BukkitRunnable() {
             float angle = 0;

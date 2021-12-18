@@ -21,7 +21,7 @@ public class Sphere extends AnimationBuilder<Sphere> {
 
     private void draw()
     {
-        ParticleBuilder builder = Animation.buildParticle(particle, color, target.getLocation());
+        ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, target.getLocation());
         // Creates a runnable that will be ran each tick
         new BukkitRunnable() {
             float rho = 0;

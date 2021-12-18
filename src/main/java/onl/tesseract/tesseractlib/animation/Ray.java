@@ -21,7 +21,7 @@ public class Ray {
 
     public Ray(Particle particle, Color color, LivingEntity sender, short range, float delay, double hitBoxRadius, Consumer<Impact> onHit)
     {
-        ParticleBuilder builder = Animation.buildParticle(particle, color, sender.getLocation());
+        ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, sender.getLocation());
         Location particleLocation = sender.getEyeLocation().add(sender.getLocation().getDirection());
         Vector vector = sender.getLocation().getDirection().multiply(0.3);
 

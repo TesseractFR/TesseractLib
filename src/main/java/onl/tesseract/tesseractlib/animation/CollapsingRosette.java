@@ -59,7 +59,7 @@ public class CollapsingRosette {
 
     public CollapsingRosette draw()
     {
-        var circle = Animation.getCircle(location, radius, count);
+        var circle = AnimationUtil.getCircle(location, radius, count);
         Vector center = location.toVector();
         var world = location.getWorld();
 

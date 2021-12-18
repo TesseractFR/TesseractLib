@@ -131,7 +131,7 @@ public class Spiral {
 
     public void draw()
     {
-        builder = Animation.buildParticle(particle, color, target.getLocation());
+        builder = AnimationUtil.buildParticle(particle, color, target.getLocation());
         // Set containing entities that have been hit
         Set<LivingEntity> hits = new HashSet<>();
         double radiusStep = spacing * (finalRadius - startRadius) / length;

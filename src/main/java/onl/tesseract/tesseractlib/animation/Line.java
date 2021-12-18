@@ -64,7 +64,7 @@ public class Line {
 
     public Line draw()
     {
-        ParticleBuilder builder = Animation.buildParticle(particle, color, dest);
+        ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, dest);
         Vector vector = dest.clone().subtract(source).toVector().normalize().multiply(spacing);
         float distance = (float)(dest.distance(source));
 

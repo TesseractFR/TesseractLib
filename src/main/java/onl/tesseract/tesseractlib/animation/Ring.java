@@ -10,7 +10,7 @@ import org.bukkit.util.Consumer;
 
 public class Ring {
     public Ring(Particle particle, Color color, Location location, int innerRadius, int outerRadius, Consumer<Player> onHit) {
-        ParticleBuilder builder = Animation.buildParticle(particle, color, location);
+        ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, location);
 
         for (float angle = 0; angle < Math.PI * 2; angle += 0.05)
         {
