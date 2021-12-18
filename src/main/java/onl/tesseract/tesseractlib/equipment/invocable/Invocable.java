@@ -530,6 +530,11 @@ public abstract class Invocable implements Listener {
         return player;
     }
 
+    public int getInvocationPower()
+    {
+        return 0;
+    }
+
     /**
      * Checks if a given item is an invocable
      *
