@@ -31,8 +31,9 @@ public abstract class AnimationBuilder<T extends AnimationBuilder<T>> {
     {
         ParticleBuilder builder = new ParticleBuilder(particle)
                 .color(color)
-                .extra(0)
-                .location(target.location);
+                .extra(0);
+        if (target.location != null)
+            builder = builder.location(target.location);
         if (receivers != null)
             builder.receivers(receivers);
         if (receiverRadius != 0)
