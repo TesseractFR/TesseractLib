@@ -2,7 +2,6 @@ package onl.tesseract.tesseractlib.animation;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import onl.tesseract.tesseractlib.TesseractLib;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -14,23 +13,13 @@ import org.bukkit.util.Vector;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Circle {
+public class Circle extends AnimationBuilder<Circle> {
     ParticleBuilder builder;
-    Particle particle;
-    Color color = null;
-    AnimationTarget target;
-    float radius = 2;
-    double delay = 1;
-    float rotationCount = 1;
-    Consumer<LivingEntity> onHit;
     Consumer<Void> onFinish;
     Consumer<Circle> onDraw;
     float spacing = 0.05f;
     int originCount = 1;
-    boolean multipleHits = false;
     BukkitTask task;
-
-    Vector direction = new Vector(1E-15, 1, 1E-15).normalize();
 
     /**
      * Creates a circle. Can be drawn with Circle#drawn
@@ -43,50 +32,14 @@ public class Circle {
         this.target = target;
     }
 
-    public Circle setParticle(Particle particle)
+    @Override
+    protected Circle self()
     {
-        this.particle = particle;
-        return this;
-    }
-
-    public Circle setColor(Color color)
-    {
-        this.color = color;
         return this;
     }
 
     public Circle setOriginCount(int originCount) {
         this.originCount = originCount;
-        return this;
-    }
-
-    public Circle setTarget(AnimationTarget target) {
-        this.target = target;
-        return this;
-    }
-
-    public Circle setRadius(float radius) {
-        this.radius = radius;
-        return this;
-    }
-
-    /**
-     * Sets the delay in tick between each particle.
-     * @param delay Delay in tick.
-     * @return the circle
-     */
-    public Circle setDelay(double delay) {
-        this.delay = delay;
-        return this;
-    }
-
-    public Circle setRotationCount(float rotationCount) {
-        this.rotationCount = rotationCount;
-        return this;
-    }
-
-    public Circle setOnHit(Consumer<LivingEntity> onHit) {
-        this.onHit = onHit;
         return this;
     }
 
@@ -119,12 +72,13 @@ public class Circle {
     public Circle setDuration(float duration, boolean increaseSpeed)
     {
         if (increaseSpeed)
-            this.setDelay((spacing * duration) / (2 * Math.PI * rotationCount));
+            this.setDelay((float) ((spacing * duration) / (2 * Math.PI * rotationCount)));
         else
             this.setRotationCount((float)(((duration / delay) * spacing) / (2* Math.PI)));
         return this;
     }
 
+    @Override
     public Animation build()
     {
         return this::draw;
@@ -209,21 +163,5 @@ public class Circle {
             task.cancel();
             task = null;
         }
-    }
-
-    public Circle setDirection(Vector direction) {
-        this.direction = direction;
-        return this;
-    }
-
-    /**
-     * Determines if an entity can be hit multiple times. If true, the entity will be hit every 10 ticks will
-     * in the radius of the circle.
-     * @param multipleHits True if an entity can be hit multiple times.
-     * @return this
-     */
-    public Circle setMultipleHits(boolean multipleHits) {
-        this.multipleHits = multipleHits;
-        return this;
     }
 }

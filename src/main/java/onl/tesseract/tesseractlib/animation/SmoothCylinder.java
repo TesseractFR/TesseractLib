@@ -1,29 +1,27 @@
 package onl.tesseract.tesseractlib.animation;
 
 import onl.tesseract.tesseractlib.TesseractLib;
-import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Consumer;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class SmoothCylinder {
-    private Particle particle;
-    private Color color;
+public class SmoothCylinder extends AnimationBuilder<SmoothCylinder> {
     private Location location;
-    private int radius;
     private int height;
     private boolean rev;
-    private double delay;
-    private Consumer<Player> onHit;
 
     public Animation build()
     {
         return this::draw;
+    }
+
+    @Override
+    protected SmoothCylinder self()
+    {
+        return this;
     }
 
     private void draw()
@@ -68,18 +66,6 @@ public class SmoothCylinder {
         }.runTaskTimer(TesseractLib.instance, 0, 1);
     }
 
-    public SmoothCylinder setParticle(final Particle particle)
-    {
-        this.particle = particle;
-        return this;
-    }
-
-    public SmoothCylinder setColor(final Color color)
-    {
-        this.color = color;
-        return this;
-    }
-
     public SmoothCylinder setLocation(final Location location)
     {
         this.location = location;
@@ -101,18 +87,6 @@ public class SmoothCylinder {
     public SmoothCylinder setRev(final boolean rev)
     {
         this.rev = rev;
-        return this;
-    }
-
-    public SmoothCylinder setDelay(final double delay)
-    {
-        this.delay = delay;
-        return this;
-    }
-
-    public SmoothCylinder setOnHit(final Consumer<Player> onHit)
-    {
-        this.onHit = onHit;
         return this;
     }
 }
