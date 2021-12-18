@@ -86,7 +86,7 @@ public class Circle extends AnimationBuilder<Circle> {
 
     public Circle draw()
     {
-        builder = Animation.buildParticle(particle, color, target.getLocation());
+        builder = getParticleBuilder();
         // Compute the maximum angle to reach
         final float maxAngle = (float)(Math.PI * 2 * rotationCount);
         // Set containing entities that have been hit
