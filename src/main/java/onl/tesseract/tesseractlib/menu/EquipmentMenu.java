@@ -5,10 +5,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.equipment.invocable.Boussole;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
-import onl.tesseract.tesseractlib.util.Util;
 import onl.tesseract.tesseractlib.util.menu.Button;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.ChatColor;
@@ -52,8 +50,6 @@ public class EquipmentMenu extends InventoryMenu {
         this.addQuitButton();
         if (previous != null)
             this.addBackButton();
-
-        this.putInvocationPower(player);
 
         addButton(49, new Button(new ItemBuilder(Material.NAME_TAG)
                                          .name("Tout désinvoquer", NamedTextColor.GOLD).build()
@@ -120,43 +116,6 @@ public class EquipmentMenu extends InventoryMenu {
         super.open(player);
     }
 
-    void putInvocationPower(Player viewer) {
-        PlayerInventory inv = player.getBukkitPlayer().getInventory();
-        int goldAvailable = Util.countNonSpecialItems(inv, Material.GOLD_INGOT);
-        final int goldCount = Math.min(goldAvailable, (100 - player.getEquipment().getInvocationPower()));
-        var lore = new ItemLoreBuilder()
-                .newline()
-                .append("Puissance disponible ", NamedTextColor.DARK_PURPLE)
-                .append(": ", NamedTextColor.DARK_GRAY)
-                .append(player.getEquipment().getInvocationPower() + " %", NamedTextColor.LIGHT_PURPLE)
-                .newline(2)
-                .append("Vous perdez 5% de votre puissance d'invocation en mourrant avec au moins un objet invocable équipé.", NamedTextColor.GRAY)
-                .newline(2)
-                .append("Cliquez ici pour recharger votre pouvoir d'invocation avec ", NamedTextColor.RED)
-                .append(goldCount + "", NamedTextColor.WHITE)
-                .append(" lingots d'or dans votre inventaire.", NamedTextColor.RED)
-                .newline(2)
-                .append("(1 lingot d'or = 1%)", NamedTextColor.GRAY)
-                .get();
-
-        addButton(4, new Button(new ItemBuilder(Material.NETHER_STAR)
-                                        .name("Puissance d'invocation", NamedTextColor.GOLD)
-                                        .lore(lore).build()
-                , event -> {
-            if (goldCount == 0) return;
-            // Remove the gold from the inventory, and get the number of gold removed
-            int removed = Util.removeNonSpecialItems(this.player.getBukkitPlayer().getInventory(), Material.GOLD_INGOT, goldCount);
-            // Update the invocation power
-            this.player.getEquipment().addInvocationPower(removed);
-            var comp = ChatFormats.EQUIPMENT.append(Component.text("Votre puissance d'invocation a été rechargée de "))
-                    .append(Component.text(removed + "%", NamedTextColor.GRAY))
-                    .append(Component.text(". Charge actuelle : "))
-                    .append(Component.text(player.getEquipment().getInvocationPower() + "%", NamedTextColor.GOLD));
-            this.player.getBukkitPlayer().sendMessage(comp);
-            this.open(viewer);
-        }));
-    }
-
     /**
      * Open a subMenu to select an equipment to invoke
      * @param items List of items that can be invoked
@@ -174,23 +133,7 @@ public class EquipmentMenu extends InventoryMenu {
             if (invocable.isInvoked())
                 invoked = invocable;
             subMenu.addButton(i, items.get(i).getItem(), event -> {
-                if (this.player.getEquipment().getInvocationPower() == 0) {
-                    if (!invocable.toString().contains("onl.tesseract.item.invocable.Elytra")) {
-                        var comp = ChatFormats.EQUIPMENT_ERROR
-                                .append(Component.text("Impossible d'invoquer l'équipement, vous n'avez plus de pouvoir d'invocation. Rechargez là dans le menu à l'aide de lingots d'or."));
-                        this.player.getBukkitPlayer().sendMessage(comp);
-                        return;
-                    }
-                }
-                if (invocable.slotType == EquipmentSlot.HAND) {
-                    this.mainHandInvocationMenu(invocable, player);
-                    return;
-                }
-                // Invoke the item
-                if (! invocable.isInvoked()) {
-                    invocable.invoke();
-                    this.open(player);
-                }
+                invokeHandler(player, invocable);
             });
         }
         for (; i < 45; i++) {
@@ -210,6 +153,19 @@ public class EquipmentMenu extends InventoryMenu {
         subMenu.addBackButton();
         subMenu.addQuitButton();
         subMenu.open(player);
+    }
+
+    protected void invokeHandler(final Player player, final Invocable invocable)
+    {
+        if (invocable.slotType == EquipmentSlot.HAND) {
+            this.mainHandInvocationMenu(invocable, player);
+            return;
+        }
+        // Invoke the item
+        if (! invocable.isInvoked()) {
+            invocable.invoke();
+            this.open(player);
+        }
     }
 
     /**

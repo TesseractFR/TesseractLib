@@ -1,13 +1,8 @@
 package onl.tesseract.tesseractlib.equipment;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.equipment.invocable.Boussole;
-import onl.tesseract.tesseractlib.equipment.invocable.Elytra;
 import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
 import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,13 +22,12 @@ import java.util.logging.Level;
  * Represents the equipment container of the player. It is created only when a player joins, and is unavailable when
  * the player is offline.
  * Addind a new invokable is done directly by creating a new Invocable, in Invocable subclasses :
- * {@link onl.tesseract.tesseractlib.equipment.invocable.Invocable#Invocable(Equipment, EquipmentSlot, String, ItemStack)}
+ * {@link onl.tesseract.tesseractlib.equipment.invocable.Invocable#Invocable(Equipment, EquipmentSlot, String)}
  * @see onl.tesseract.tesseractlib.equipment.invocable.Invocable
  */
 public class Equipment implements Listener {
     static public final String pathToFolder = "plugins/Tesseract/joueurs/equipements/";
     final TPlayer player;
-    int invocationPower = 100;
 
     public final HashSet<Invocable> invocables = new HashSet<>();
     public final List<Invocable> unblockedMainHand = new ArrayList<>();
@@ -73,38 +67,9 @@ public class Equipment implements Listener {
         return player;
     }
 
-    /**
-     * Gets the amount of invocation power.
-     * @return 0 <= power <= 100
-     */
-    public int getInvocationPower()
-    {
-        return invocationPower;
-    }
-
-    /**
-     * Adds or remove some invocation power. If it reaches 0, all invocables are removed.
-     * @param count power to add. Can be negative.
-     */
-    public void addInvocationPower(int count) {
-        invocationPower += count;
-        if (invocationPower > 100)
-            invocationPower = 100;
-        if (invocationPower < 0)
-            invocationPower = 0;
-
-        if (invocationPower == 0) {
-            this.uninvokeAll();
-            this.getPlayer().getBukkitPlayer().sendMessage(
-                    ChatFormats.EQUIPMENT.append(Component.text("Votre pouvoir d'invocation est épuisé, vos équipements ont été désinvoqués."
-                                                                        + " Rechargez votre pouvoir dans le menu d'équipement.")));
-        }
-    }
-
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         if (! event.getEntity().getUniqueId().equals(player.getOfflinePlayer().getUniqueId())) return;
-        boolean hasEquipment = false;
         Equipment eq = TPlayer.get(event.getEntity()).getEquipment();
         // When the player dies, keep all invokable objects
         for (Iterator<ItemStack> iterator = event.getDrops().iterator(); iterator.hasNext(); ) {
@@ -112,26 +77,7 @@ public class Equipment implements Listener {
             if (Invocable.isInvocable(drop)) {
                 // Remove from dropped items
                 iterator.remove();
-                Invocable invoc = Invocable.asInvocable(eq, drop);
-                if (invoc instanceof Boussole || invoc instanceof Elytra ){
-                    event.getItemsToKeep().add(drop);
-                    continue;
-                }
-                if (! hasEquipment) {
-                    this.addInvocationPower(-5);
-                    if (invocationPower > 0)
-                    {
-                        var comp = ChatFormats.EQUIPMENT
-                                .append(Component.text("Vous êtes mort avec au moins un objet invocable sur vous. Vous avez perdu 5% de"
-                                                               + " pouvoir d'invocation. Pouvoir restant: "))
-                                .append(Component.text(this.invocationPower + "%").color(NamedTextColor.GOLD));
-                        this.getPlayer().getBukkitPlayer().sendMessage(comp);
-                    }
-                }
-                // Add to kept items
-                if (invocationPower > 0)
-                    event.getItemsToKeep().add(drop);
-                hasEquipment = true;
+                event.getItemsToKeep().add(drop);
             }
         }
     }
@@ -155,7 +101,6 @@ public class Equipment implements Listener {
         File file = new File(pathToFolder + player.getBukkitPlayer().getUniqueId()
                 + "_equipement.yml");
         FileConfiguration equipementData = YamlConfiguration.loadConfiguration(file);
-        eq.invocationPower = equipementData.getInt("invocationPower");
         // Load equipments
         List<Map<?,?>> equipments = equipementData.getMapList("equipments");
         for (Map<?,?> equipment : equipments) {
@@ -171,18 +116,24 @@ public class Equipment implements Listener {
     public void save() {
         File file = new File(pathToFolder + player.getOfflinePlayer().getUniqueId()
                 + "_equipement.yml");
-        FileConfiguration equipementData = YamlConfiguration.loadConfiguration(file);
-        Collection<Map<?, ?>> yamlMap = new ArrayList<>();
-        for (Invocable invocable : this.invocables) {
-            yamlMap.add(invocable.save());
-        }
-        equipementData.set("equipments", yamlMap);
-        equipementData.set("invocationPower", this.invocationPower);
+        YamlConfiguration equipementData = this.serialize();
+
         try {
             equipementData.save(file);
         } catch (IOException e) {
             TesseractLib.logger().log(Level.SEVERE, "Failed to save equipment", e);
         }
+    }
+
+    protected YamlConfiguration serialize()
+    {
+        final YamlConfiguration section = new YamlConfiguration();
+        Collection<Map<?, ?>> yamlMap = new ArrayList<>();
+        for (Invocable invocable : this.invocables) {
+            yamlMap.add(invocable.save());
+        }
+        section.set("equipments", yamlMap);
+        return section;
     }
 
     /**
