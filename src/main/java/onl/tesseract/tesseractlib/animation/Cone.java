@@ -63,6 +63,10 @@ public class Cone {
         return this;
     }
 
+    public Animation build()
+    {
+        return this::draw;
+    }
 
     public void draw()
     {

@@ -2,7 +2,7 @@ package onl.tesseract.tesseractlib.achievement;
 
 
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.player.TPlayer;
+import onl.tesseract.tesseractlib.player.Gender;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
@@ -71,9 +71,9 @@ public class Title {
         return new Title(result.getString("name"), result.getString("text_m"), result.getString("text_f"));
     }
 
-    public String getDisplayName(TPlayer.Gender gender)
+    public String getDisplayName(Gender gender)
     {
-        if (gender.equals(TPlayer.Gender.FEMALE))
+        if (gender.equals(Gender.FEMALE))
         {
             return text_f;
         }

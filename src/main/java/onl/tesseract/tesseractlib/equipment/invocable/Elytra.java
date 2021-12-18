@@ -250,7 +250,13 @@ public class Elytra extends Invocable {
     public void synergicPropulsion()
     {
         Player player = equipment.getPlayer().getBukkitPlayer();
-        new Concentration(Particle.REDSTONE, Color.FUCHSIA, new AnimationTarget(player), 2, 20);
+        new Concentration().setParticle(Particle.REDSTONE)
+                           .setColor(Color.FUCHSIA)
+                           .setTarget(new AnimationTarget(player))
+                           .setRadius(2)
+                           .setCount(20)
+                           .build()
+                           .draw();
         equipment.getPlayer().getBukkitPlayer().playSound(equipment.getPlayer().getBukkitPlayer().getLocation(), Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 20, 1);
         new BukkitRunnable() {
             @Override

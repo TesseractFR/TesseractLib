@@ -2,15 +2,24 @@ package onl.tesseract.tesseractlib.animation;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import onl.tesseract.tesseractlib.TesseractLib;
-import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Consumer;
 
-public class Sphere {
-    public Sphere(Particle particle, Color color, AnimationTarget target, float radius, float delay, float rotationCount, Consumer<Player> onHit)
+public class Sphere extends AnimationBuilder<Sphere> {
+
+    @Override
+    public Animation build()
+    {
+        return this::draw;
+    }
+
+    @Override
+    protected Sphere self()
+    {
+        return this;
+    }
+
+    private void draw()
     {
         ParticleBuilder builder = Animation.buildParticle(particle, color, target.getLocation());
         // Creates a runnable that will be ran each tick

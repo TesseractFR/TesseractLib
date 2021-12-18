@@ -9,7 +9,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
-import onl.tesseract.tesseractlib.bddfacade.PlayerFacade;
+import onl.tesseract.tesseractlib.bddfacade.PlayerRepository;
 import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
@@ -29,7 +29,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
@@ -43,29 +42,12 @@ import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
 
-public class TPlayer implements Listener {
-    public enum Gender {
-        MALE("Masculin"),
-        FEMALE("Féminin"),
-        OTHER("Non renseigné");
-        private final String string;
-
-        Gender(String string)
-        {
-            this.string = string;
-        }
-
-        public String getName()
-        {
-            return this.string;
-        }
-    }
+public abstract class TPlayer implements Listener {
 
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
     /**
      * Maps every Player who has played before with a TPlayer instance.
      */
-    static public final HashMap<UUID, TPlayer> playerMap = new HashMap<>();
     public String skinValue;
     public String skinSignature;
     protected OfflinePlayer player;
@@ -77,18 +59,63 @@ public class TPlayer implements Listener {
     protected Consumer<Component> chatEntryComponentCallback;
     protected BukkitRunnable chatEntryRunnable;
     protected Consumer<String[]> commandEntryCallback;
-    // Mailer mailer = new Mailer(this);
     protected BukkitRunnable commandEntryRunnable;
     protected String dateSinceLastConnection = null;
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
     protected PlayerProfile playerProfile;
     protected Gender gender;
-    protected PlayerFacade playerFacade;
+    private final PlayerRepository repository;
     protected List<Achievement> achievements = new ArrayList<>();
-    private UUID uuid;
     protected ElytraTrails trails = ElytraTrails.NONE;
     protected int marketCurrency = 0;
+    protected FlyFilter flyFilter =  FlyFilter.NONE;
+
+    /**
+     * Loads a player
+     *
+     * @param player OfflinePlayer to load
+     */
+    public TPlayer(OfflinePlayer player, final PlayerRepository repository)
+    {
+        this.player = player;
+        this.repository = repository;
+    }
+
+    public TPlayer(final OfflinePlayer player)
+    {
+        this.player = player;
+        this.repository = newRepository(player.getUniqueId());
+    }
+
+    protected abstract PlayerRepository newRepository(final UUID uuid);
+
+    public static TPlayer get(final OfflinePlayer player)
+    {
+        return TesseractLib.getPlayer(player);
+    }
+
+    public static TPlayer get(final UUID uuid)
+    {
+        return TesseractLib.getPlayer(uuid);
+    }
+
+    public static ItemStack[] loadInventory(ConfigurationSection yaml, String inv)
+    {
+        ItemStack[] list = new ItemStack[41];
+        if (yaml.contains(inv))
+        {
+            int i = 0;
+            for (Object item : Objects.requireNonNull(yaml.getList(inv)))
+            {
+                ItemStack itemStack = (ItemStack) item;
+                if (itemStack != null)
+                    list[i] = itemStack;
+                i++;
+            }
+        }
+        return list;
+    }
 
     public FlyFilter getFlyFilter()
     {
@@ -98,35 +125,7 @@ public class TPlayer implements Listener {
     public void setFlyFilter(FlyFilter flyFilter)
     {
         this.flyFilter = flyFilter;
-        playerFacade.setFlyFilter(flyFilter);
-    }
-
-    protected FlyFilter flyFilter =  FlyFilter.NONE;
-
-    /**
-     * Loads a player
-     *
-     * @param player OfflinePlayer to load
-     */
-    public TPlayer(OfflinePlayer player)
-    {
-        this.player = player;
-        checkFirstJoin(player.getUniqueId());
-    }
-
-    public TPlayer(OfflinePlayer player, Inventory adminInventory, Inventory playerInventory)
-    {
-        this.player = player;
-    }
-
-    static public TPlayer get(Player player)
-    {
-        return TPlayer.playerMap.get(player.getUniqueId());
-    }
-
-    static public TPlayer get(UUID uuid)
-    {
-        return playerMap.get(uuid);
+        repository.setFlyFilter(flyFilter);
     }
 
     public void buyCosmetic(String type, Cosmetic cosmetic,int price)
@@ -135,15 +134,9 @@ public class TPlayer implements Listener {
         addMarketCurrency(-price);
     }
 
-    public void setMarketCurrency(int currency)
-    {
-        marketCurrency = currency;
-        playerFacade.setMarketCurrency(marketCurrency);
-    }
-
     public void addMarketCurrency(int amount){
-        playerFacade.addMarketCurrency(amount);
-        marketCurrency = playerFacade.getMarketCurrency();
+        repository.addMarketCurrency(amount);
+        marketCurrency = repository.getMarketCurrency();
     }
 
     /**
@@ -188,7 +181,6 @@ public class TPlayer implements Listener {
     public void onJoin(OfflinePlayer player)
     {
         this.player = player;
-        checkFirstJoin(player.getUniqueId());
         this.loadOnConnection();
 
 
@@ -199,19 +191,6 @@ public class TPlayer implements Listener {
 
         }
 
-    }
-
-    protected void checkFirstJoin(UUID uniqueId)
-    {
-        if (!PlayerFacade.exist(uniqueId))
-        {
-            addtodatabase(uniqueId);
-        }
-    }
-
-    private void addtodatabase(UUID uniqueId)
-    {
-        PlayerFacade.addtodatabase(uniqueId);
     }
 
     @EventHandler
@@ -231,6 +210,7 @@ public class TPlayer implements Listener {
      */
     public void save()
     {
+        getRepository().save();
         if (equipment != null)
             this.equipment.save();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
@@ -256,73 +236,23 @@ public class TPlayer implements Listener {
     }
 
     /**
-     * Loading done only once when the server starts
-     */
-    public void loadOnServerStarts()
-    {
-
-    }
-
-    /**
      * Loads player's information that need the player to be online. (equipment, permissions)
      */
     public void loadOnConnection()
     {
         if (getOfflinePlayer().isOnline())
         {
-            this.equipment = Equipment.load(this);
+            this.equipment = TesseractLib.getPlayerContainer().loadEquipment(getUUID());
         }
     }
 
-        public UUID getUUID()
+    public UUID getUUID()
     {
         return getOfflinePlayer().getUniqueId();
     }
 
-    public static ItemStack[] loadInventory(ConfigurationSection yaml, String inv)
-    {
-        ItemStack[] list = new ItemStack[41];
-        if (yaml.contains(inv))
-        {
-            int i = 0;
-            for (Object item : Objects.requireNonNull(yaml.getList(inv)))
-            {
-                ItemStack itemStack = (ItemStack) item;
-                if (itemStack != null)
-                    list[i] = itemStack;
-                i++;
-            }
-        }
-        return list;
-    }
-
-    /**
-     * Loads player's general information that does not need the player to be online
-     */
-    public void load()
-    {
-        playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
-        gender = playerFacade.getGender();
-        trails = playerFacade.getActiveTrails();
-        marketCurrency = playerFacade.getMarketCurrency();
-        flyFilter = playerFacade.getFlyFilter();
-        achievements.clear();
-        achievements = playerFacade.getAllAchievements();
-        File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
-        if (file.exists())
-        {
-            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-
-            this.dateSinceLastConnection = yaml.getString("dateSinceLastConnection");
-            dateFirstConnection = Date.from(Instant.ofEpochMilli(getOfflinePlayer().getFirstPlayed())).toString();
-            if (yaml.contains("hasPlayedToday"))
-                playedToday = yaml.getBoolean("hasPlayedToday");
-        }
-    }
-
     public void load(ResultSet resultSet)
     {
-        playerFacade = new PlayerFacade(getOfflinePlayer().getUniqueId());
         try
         {
             gender = Gender.valueOf(resultSet.getString("genre"));
@@ -336,7 +266,7 @@ public class TPlayer implements Listener {
             marketCurrency = 0;
         }
         achievements.clear();
-        achievements = playerFacade.getAllAchievements();
+        achievements = repository.getAllAchievements();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         if (file.exists())
         {
@@ -602,9 +532,6 @@ public class TPlayer implements Listener {
         return InventoryInstanceManager.getSelectedConfigName(getBukkitPlayer()).equals("admin");
     }
 
-    ////////////////////
-    // Static methods //
-
     @Override
     public boolean equals(Object other)
     {
@@ -612,6 +539,9 @@ public class TPlayer implements Listener {
             return false;
         return getOfflinePlayer().getUniqueId().equals(((TPlayer) other).getOfflinePlayer().getUniqueId());
     }
+
+    ////////////////////
+    // Static methods //
 
     public Gender getGender()
     {
@@ -621,7 +551,7 @@ public class TPlayer implements Listener {
     public void setGender(Gender gender)
     {
         this.gender = gender;
-        playerFacade.setGender(gender);
+        repository.setGender(gender);
     }
 
     public boolean hasAchievement(Achievement achievement)
@@ -639,7 +569,7 @@ public class TPlayer implements Listener {
         if (achievements.contains(achievement))
             return;
         achievements.add(achievement);
-        playerFacade.addAchievements(achievement);
+        repository.addAchievements(achievement);
         sendMessage(ChatFormats.HAUT_FAIT.append(Component.text("Vous avez obtenu le haut-fait ")));
         sendMessage(Component.empty()
                              .append(Component.text("      « ").color(NamedTextColor.AQUA))
@@ -677,7 +607,7 @@ public class TPlayer implements Listener {
     public void removeAchievement(Achievement achievement)
     {
         achievements.remove(achievement);
-        playerFacade.removeAchievement(achievement);
+        repository.removeAchievement(achievement);
     }
 
     public ElytraTrails getActiveTrail()
@@ -687,11 +617,22 @@ public class TPlayer implements Listener {
 
     public void setActiveTrail(ElytraTrails elytraTrails){
         trails = elytraTrails;
-        playerFacade.setActiveTrails(trails);
+        repository.setActiveTrails(trails);
     }
 
     public int getMarketCurrency()
     {
         return marketCurrency;
+    }
+
+    public void setMarketCurrency(int currency)
+    {
+        marketCurrency = currency;
+        repository.setMarketCurrency(marketCurrency);
+    }
+
+    protected PlayerRepository getRepository()
+    {
+        return repository;
     }
 }

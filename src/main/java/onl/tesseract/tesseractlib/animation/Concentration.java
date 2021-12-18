@@ -7,15 +7,13 @@ import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Concentration {
-    /**
-     * Makes a concentration animation
-     * @param particle Particle to use
-     * @param color Color of the particle in case of redstone. Or null
-     * @param target Target of the concentration
-     * @param radius Radius.
-     * @param count Number of converging lines;
-     */
-    public Concentration(Particle particle, Color color, AnimationTarget target, int radius, int count)
+    private Particle particle;
+    private Color color;
+    private AnimationTarget target;
+    private int radius;
+    private int count;
+
+    private void draw()
     {
         new BukkitRunnable() {
             int current = 0;
@@ -35,5 +33,40 @@ public class Concentration {
                     this.cancel();
             }
         }.runTaskTimer(TesseractLib.instance, 0, 5);
+    }
+
+    public Animation build()
+    {
+        return this::draw;
+    }
+
+    public Concentration setParticle(final Particle particle)
+    {
+        this.particle = particle;
+        return this;
+    }
+
+    public Concentration setColor(final Color color)
+    {
+        this.color = color;
+        return this;
+    }
+
+    public Concentration setTarget(final AnimationTarget target)
+    {
+        this.target = target;
+        return this;
+    }
+
+    public Concentration setRadius(final int radius)
+    {
+        this.radius = radius;
+        return this;
+    }
+
+    public Concentration setCount(final int count)
+    {
+        this.count = count;
+        return this;
     }
 }

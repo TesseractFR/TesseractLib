@@ -52,6 +52,11 @@ public class CollapsingRosette {
         return this;
     }
 
+    public Animation build()
+    {
+        return this::draw;
+    }
+
     public CollapsingRosette draw()
     {
         var circle = Animation.getCircle(location, radius, count);

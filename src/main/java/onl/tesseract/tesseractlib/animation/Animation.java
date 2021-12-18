@@ -8,7 +8,10 @@ import org.bukkit.Particle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Animation {
+@FunctionalInterface
+public interface Animation {
+
+    void draw();
 
     static public ParticleBuilder buildParticle(Particle particle, Color color, Location location) {
         ParticleBuilder builder = new ParticleBuilder(particle);

@@ -41,14 +41,7 @@ public class MarketCurrencyCommand implements CommandExecutor {
             public void run()
             {
                 int amount;
-                TPlayer tPlayer;
-                if (TPlayer.playerMap.containsKey(player.getUniqueId()))
-                    tPlayer = TPlayer.playerMap.get(player.getUniqueId());
-                else
-                {
-                    tPlayer = new TPlayer(player);
-                    tPlayer.load();
-                }
+                final TPlayer tPlayer = TPlayer.get(player.getUniqueId());
 
                 switch (args[0])
                 {
