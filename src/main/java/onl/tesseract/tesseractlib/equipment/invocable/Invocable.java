@@ -7,6 +7,7 @@ import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.event.PlayerInvocableInvokeEvent;
 import onl.tesseract.tesseractlib.menu.EquipmentMenu;
 import onl.tesseract.tesseractlib.util.ChatFormats;
+import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
 import onl.tesseract.tesseractlib.util.Util;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.Bukkit;
@@ -29,9 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -152,6 +151,16 @@ public abstract class Invocable implements Listener {
         meta.setUnbreakable(true);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
         item.setItemMeta(meta);
+        if (getInvocationPower() > 0)
+        {
+            final List<Component> lore = new ItemLoreBuilder()
+                    .append(Objects.requireNonNullElseGet(meta.lore(), Collections::emptyList))
+                    .newline(2)
+                    .append("Puissance d'invocation : ", NamedTextColor.GRAY)
+                    .append(getInvocationPower() + "", NamedTextColor.YELLOW)
+                    .get();
+            item.lore(lore);
+        }
         this.item = item;
         if (updateInInventory)
             updateItemInInventory();
