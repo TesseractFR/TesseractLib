@@ -11,7 +11,7 @@ public abstract class AnimationBuilder<T extends AnimationBuilder<T>> {
     protected Color color;
     protected AnimationTarget target;
     protected float radius;
-    protected float delay;
+    protected double delay;
     protected float rotationCount;
     protected Consumer<LivingEntity> onHit;
     protected Vector direction = new Vector(1E-15, 1, 1E-15).normalize();;
@@ -45,7 +45,7 @@ public abstract class AnimationBuilder<T extends AnimationBuilder<T>> {
         return self();
     }
 
-    public T setDelay(final float delay)
+    public T setDelay(final double delay)
     {
         this.delay = delay;
         return self();
