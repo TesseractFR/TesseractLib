@@ -64,7 +64,7 @@ public abstract class TPlayer implements Listener {
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
     protected PlayerProfile playerProfile;
-    protected Gender gender;
+    protected Gender gender = Gender.MALE;
     private final PlayerRepository repository;
     protected List<Achievement> achievements = new ArrayList<>();
     protected ElytraTrails trails = ElytraTrails.NONE;
@@ -242,6 +242,8 @@ public abstract class TPlayer implements Listener {
     {
         if (getOfflinePlayer().isOnline())
         {
+            if (equipment != null)
+                HandlerList.unregisterAll(this.equipment);
             this.equipment = TesseractLib.getPlayerContainer().loadEquipment(getUUID());
         }
     }

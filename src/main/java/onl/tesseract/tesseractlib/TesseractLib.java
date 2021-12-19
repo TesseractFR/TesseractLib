@@ -267,11 +267,6 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         return playerContainer.get(player);
     }
 
-    public static TPlayer newPlayer(final OfflinePlayer player)
-    {
-        return playerContainer.newPlayer(player);
-    }
-
     public static PlayerContainer<? extends TPlayer, ? extends Equipment> getPlayerContainer()
     {
         return playerContainer;
