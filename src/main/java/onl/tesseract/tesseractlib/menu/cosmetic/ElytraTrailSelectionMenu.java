@@ -18,9 +18,9 @@ public class ElytraTrailSelectionMenu extends InventoryMenu {
     final TPlayer player;
 
 
-    public ElytraTrailSelectionMenu(TPlayer player,InventoryMenu previous)
+    public ElytraTrailSelectionMenu(TPlayer player, InventoryMenu previous)
     {
-        super(27, ChatColor.BLUE + "Sillages d'ailes", previous==null ? new BoussoleMenu(player) : previous);
+        super(27, ChatColor.BLUE + "Sillages d'ailes", previous == null ? new BoussoleMenu(player) : previous);
         this.player = player;
     }
 
@@ -50,36 +50,45 @@ public class ElytraTrailSelectionMenu extends InventoryMenu {
                 }
 
                 addButton(trail.getIndex(), trail.getMaterial(), trail.getName(), lore,
-                          player.getActiveTrail() == trail, event -> {
-                            if (hasTrail)
+                        player.getActiveTrail() == trail, event -> {
+                            if (hasTrail){
                                 player.setActiveTrail(trail);
+                                this.close();
+                            }
                             else
                             {
                                 if (player.getMarketCurrency() >= trail.getPrice())
                                     openConfirmationMenu(viewer, "Être vous sur de vouloir acheter", this,
-                                                         event2 -> player.buyCosmetic(
-                                                                 ElytraTrails.getTypeName(), trail, trail.getPrice()));
+                                            event2 -> {
+                                                player.buyCosmetic(
+                                                        ElytraTrails.getTypeName(), trail, trail.getPrice());
+
+                                                this.close();
+                                            });
                                 else
+                                {
                                     player.sendMessage(ChatFormats.COSMETICS_ERROR.append(
                                             Component
                                                     .text("Vous n'avez pas assez de lys d'or, cliquez ici pour en acheter")
                                                     .hoverEvent(HoverEvent.showText(
                                                             Component
                                                                     .text("Cliquez ici pour accéder à la boutique.",
-                                                                          NamedTextColor.GOLD)))
+                                                                            NamedTextColor.GOLD)))
                                                     .clickEvent(ClickEvent.openUrl(
                                                             "https://tesseract.craftingstore.net/"))));
+
+                                    this.close();
+                                }
                             }
-                            this.close();
                         });
             }
             else
             {
                 addButton(22, trail.getMaterial(), trail.getName(), null, player.getActiveTrail() == trail,
-                                    event -> {
-                                        player.setActiveTrail(trail);
-                                        this.close();
-                                    });
+                        event -> {
+                            player.setActiveTrail(trail);
+                            this.close();
+                        });
             }
         }
 

@@ -54,20 +54,29 @@ public class PetsSelectionMenu extends InventoryMenu {
 
             addButton(i++,pet.getHead(),ChatColor.YELLOW+pet.getname(),lore,event->{
                 if(hasPet)
-                    PetManager.invokePet(viewer,pet);
+                {
+                    PetManager.invokePet(viewer, pet);
+                    this.close();
+                }
                 else
                 {
                     if (player.getMarketCurrency() >= pet.getPrice())
-                        openConfirmationMenu(viewer,"Être vous sur de vouloir acheter",this,event2 -> player.buyCosmetic(Pet.getTypeName(), pet, pet.getPrice()));
+                        openConfirmationMenu(viewer,"Être vous sur de vouloir acheter",this,event2 -> {
+                            player.buyCosmetic(Pet.getTypeName(), pet, pet.getPrice());
+
+                            this.close();
+                        });
                     else
+                    {
                         player.sendMessage(ChatFormats.PET_ERROR.append(
                                 Component.text("Vous n'avez pas assez de lys d'or, cliquez ici pour en acheter")
-                                        .hoverEvent(HoverEvent.showText(
-                                Component
-                                        .text("Cliquez ici pour accéder à la boutique.", NamedTextColor.GOLD)))
+                                         .hoverEvent(HoverEvent.showText(
+                                                 Component
+                                                         .text("Cliquez ici pour accéder à la boutique.", NamedTextColor.GOLD)))
                                          .clickEvent(ClickEvent.openUrl("https://tesseract.craftingstore.net/"))));
+                        this.close();
+                    }
                 }
-                this.close();
                     });
         }
 

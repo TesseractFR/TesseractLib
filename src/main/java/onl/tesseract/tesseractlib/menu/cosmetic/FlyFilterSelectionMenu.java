@@ -20,7 +20,7 @@ public class FlyFilterSelectionMenu extends InventoryMenu {
 
     public FlyFilterSelectionMenu(TPlayer player, InventoryMenu previous)
     {
-        super(27, ChatColor.BLUE + "Filtre de vol", previous==null ? new BoussoleMenu(player) : previous);
+        super(27, ChatColor.BLUE + "Filtre de vol", previous == null ? new BoussoleMenu(player) : previous);
         this.player = player;
     }
 
@@ -51,37 +51,45 @@ public class FlyFilterSelectionMenu extends InventoryMenu {
                 }
 
                 addButton(filter.getIndex(), filter.getMaterial(), filter.getName(), lore,
-                          player.getFlyFilter() == filter, event -> {
+                        player.getFlyFilter() == filter, event -> {
                             if (hasTrail)
+                            {
                                 player.setFlyFilter(filter);
+                                this.close();
+                            }
                             else
                             {
                                 if (player.getMarketCurrency() >= filter.getPrice())
                                     openConfirmationMenu(viewer, "Être vous sur de vouloir acheter", this,
-                                                         event2 -> player.buyCosmetic(
-                                                                 FlyFilter.getTypeName(), filter, filter.getPrice()));
+                                            event2 -> {
+                                                player.buyCosmetic(
+                                                        FlyFilter.getTypeName(), filter, filter.getPrice());
+                                                this.close();
+                                            });
                                 else
+                                {
                                     player.sendMessage(ChatFormats.COSMETICS_ERROR.append(
                                             Component
                                                     .text("Vous n'avez pas assez de lys d'or, cliquez ici pour en acheter")
                                                     .hoverEvent(HoverEvent.showText(
                                                             Component
                                                                     .text("Cliquez ici pour accéder à la boutique.",
-                                                                          NamedTextColor.GOLD)))
+                                                                            NamedTextColor.GOLD)))
                                                     .clickEvent(ClickEvent.openUrl(
                                                             "https://tesseract.craftingstore.net/"))));
+                                    this.close();
+                                }
                             }
-                            this.close();
                         });
             }
             else
             {
                 addButton(22, filter.getMaterial(), filter.getName(), "Cliquez pour utiliser le filtre par défaut",
-                          player.getFlyFilter() == filter,
-                          event -> {
-                              player.setFlyFilter(filter);
-                              this.close();
-                          });
+                        player.getFlyFilter() == filter,
+                        event -> {
+                            player.setFlyFilter(filter);
+                            this.close();
+                        });
             }
         }
 
