@@ -485,8 +485,11 @@ public abstract class Invocable implements Listener {
             String clazz = (String) yamlMap.get("className");
             // Get the parameterized constructor of the class corresponding to the name
             Class<?>[] args = new Class[] {Equipment.class, Map.class};
-            Constructor<?> constructor = Class.forName(clazz).getDeclaredConstructor(args);
+            Class<?> aClass = Class.forName(clazz);
+            Constructor<?> constructor = aClass.getDeclaredConstructor(args);
             // Make a new instance with given parameters
+            if (equipment.get(aClass) == null)
+                return null;
             Object obj = constructor.newInstance(equipment, yamlMap);
             return (Invocable) obj;
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
