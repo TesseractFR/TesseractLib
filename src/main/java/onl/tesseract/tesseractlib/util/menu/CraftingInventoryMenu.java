@@ -20,7 +20,7 @@ public class CraftingInventoryMenu extends InventoryMenu {
     protected List<Integer> ingredientSlots = Collections.emptyList();
     protected Function<ItemStack[], ItemStack> updateFunction = items -> null;
     protected int resultSlot = -1;
-    Player player;
+    protected Player player;
 
     public CraftingInventoryMenu(final int size, final String title)
     {
@@ -82,8 +82,13 @@ public class CraftingInventoryMenu extends InventoryMenu {
             else
             {
                 clearIngredientSlots(event.isRightClick() && !event.isShiftClick() ? CraftedQuantity.HALF : CraftedQuantity.ALL);
+                onCraft();
             }
         }
+    }
+
+    protected void onCraft() {
+
     }
 
     protected void clearIngredientSlots(final CraftedQuantity quantity)
