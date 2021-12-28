@@ -30,7 +30,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class InventoryMenu implements Listener {
-    final Inventory inventory;
+    final protected Inventory inventory;
     InventoryView view;
     Player viewer;
     boolean freezeBottom = true;
