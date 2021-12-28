@@ -47,7 +47,7 @@ public class CraftingInventoryMenu extends InventoryMenu {
     public void onClick(final InventoryClickEvent event)
     {
         // Chek that the click happened in this inventory
-        if (! event.getInventory().equals(this.inventory) || event.getClickedInventory() == null || (!event.getClickedInventory().equals(this.inventory) && !event.getClickedInventory().equals(view.getBottomInventory())))
+        if (!event.getInventory().equals(this.inventory) || event.getClickedInventory() == null || (!event.getClickedInventory().equals(this.inventory) && !event.getClickedInventory().equals(view.getBottomInventory())))
             return;
 
         if (!event.getClickedInventory().equals(inventory) && event.getAction() != InventoryAction.MOVE_TO_OTHER_INVENTORY)
@@ -74,19 +74,29 @@ public class CraftingInventoryMenu extends InventoryMenu {
         }
         else
         {
-            if (updateFunction.apply(getIngredients()) == null)
+            if (!canCraft())
             {
                 update();
                 event.setCancelled(true);
             }
             else
             {
-                for (final int ingredientSlot : ingredientSlots)
-                {
-                    inventory.setItem(ingredientSlot, null);
-                }
+                clearIngredientSlots();
             }
         }
+    }
+
+    protected void clearIngredientSlots()
+    {
+        for (final int ingredientSlot : ingredientSlots)
+        {
+            inventory.setItem(ingredientSlot, null);
+        }
+    }
+
+    protected boolean canCraft()
+    {
+        return updateFunction.apply(getIngredients()) != null;
     }
 
     @EventHandler
