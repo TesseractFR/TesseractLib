@@ -11,23 +11,23 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
 public class CraftingInventoryMenu extends InventoryMenu {
-    private Collection<Integer> ingredientSlots = Collections.emptyList();
-    private Function<ItemStack[], ItemStack> updateFunction = items -> null;
-    private int resultSlot = -1;
-    Player player;
+    protected List<Integer> ingredientSlots = Collections.emptyList();
+    protected Function<ItemStack[], ItemStack> updateFunction = items -> null;
+    protected int resultSlot = -1;
+    protected Player player;
 
     public CraftingInventoryMenu(final int size, final String title)
     {
         super(size, title);
     }
 
-    public void setIngredientSlots(final Collection<Integer> ingredientSlots)
+    public void setIngredientSlots(final List<Integer> ingredientSlots)
     {
         this.ingredientSlots = ingredientSlots;
     }
@@ -47,17 +47,29 @@ public class CraftingInventoryMenu extends InventoryMenu {
     public void onClick(final InventoryClickEvent event)
     {
         // Chek that the click happened in this inventory
-        if (! event.getInventory().equals(this.inventory) || event.getClickedInventory() == null || (!event.getClickedInventory().equals(this.inventory) && !event.getClickedInventory().equals(view.getBottomInventory())))
+        if (!event.getInventory().equals(this.inventory) || event.getClickedInventory() == null || (!event.getClickedInventory().equals(this.inventory) && !event.getClickedInventory().equals(view.getBottomInventory())))
             return;
 
-        if (!event.getClickedInventory().equals(inventory) && event.getAction() != InventoryAction.MOVE_TO_OTHER_INVENTORY)
+        // If simple click in bottom, do nothing
+        if (!event.getClickedInventory().equals(inventory))
+        {
+            if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY)
+                new BukkitRunnable() {
+                    @Override
+                    public void run()
+                    {
+                        update();
+                    }
+                }.runTask(TesseractLib.instance);
             return;
-        if (event.getSlot() != resultSlot && !ingredientSlots.contains(event.getSlot()) && event.getAction() != InventoryAction.MOVE_TO_OTHER_INVENTORY)
+        }
+        // If simple click in any non-craft slot, cancel
+        if (event.getSlot() != resultSlot && !ingredientSlots.contains(event.getSlot()))
         {
             event.setCancelled(true);
             return;
         }
-        if (ingredientSlots.contains(event.getSlot()) || (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && event.getSlot() != resultSlot))
+        if (ingredientSlots.contains(event.getSlot()))
         {
             new BukkitRunnable() {
                 @Override
@@ -74,19 +86,34 @@ public class CraftingInventoryMenu extends InventoryMenu {
         }
         else
         {
-            if (updateFunction.apply(getIngredients()) == null)
+            if (!canCraft())
             {
                 update();
                 event.setCancelled(true);
             }
             else
             {
-                for (final int ingredientSlot : ingredientSlots)
-                {
-                    inventory.setItem(ingredientSlot, null);
-                }
+                clearIngredientSlots(event.isRightClick() && !event.isShiftClick() ? CraftedQuantity.HALF : CraftedQuantity.ALL);
+                onCraft();
             }
         }
+    }
+
+    protected void onCraft() {
+
+    }
+
+    protected void clearIngredientSlots(final CraftedQuantity quantity)
+    {
+        for (final int ingredientSlot : ingredientSlots)
+        {
+            inventory.setItem(ingredientSlot, null);
+        }
+    }
+
+    protected boolean canCraft()
+    {
+        return updateFunction.apply(getIngredients()) != null;
     }
 
     @EventHandler
@@ -118,7 +145,7 @@ public class CraftingInventoryMenu extends InventoryMenu {
         super.open(player);
     }
 
-    private ItemStack[] getIngredients()
+    protected ItemStack[] getIngredients()
     {
         int i = 0;
         ItemStack[] items = new ItemStack[ingredientSlots.size()];
@@ -133,5 +160,10 @@ public class CraftingInventoryMenu extends InventoryMenu {
     {
         ItemStack result = updateFunction.apply(getIngredients());
         inventory.setItem(resultSlot, Objects.requireNonNullElseGet(result, () -> new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE)));
+    }
+
+    protected enum CraftedQuantity {
+        ALL,
+        HALF,
     }
 }
