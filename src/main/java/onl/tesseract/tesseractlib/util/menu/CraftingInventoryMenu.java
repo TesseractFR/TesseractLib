@@ -81,12 +81,12 @@ public class CraftingInventoryMenu extends InventoryMenu {
             }
             else
             {
-                clearIngredientSlots();
+                clearIngredientSlots(event.isRightClick() && !event.isShiftClick() ? CraftedQuantity.HALF : CraftedQuantity.ALL);
             }
         }
     }
 
-    protected void clearIngredientSlots()
+    protected void clearIngredientSlots(final CraftedQuantity quantity)
     {
         for (final int ingredientSlot : ingredientSlots)
         {
@@ -143,5 +143,10 @@ public class CraftingInventoryMenu extends InventoryMenu {
     {
         ItemStack result = updateFunction.apply(getIngredients());
         inventory.setItem(resultSlot, Objects.requireNonNullElseGet(result, () -> new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE)));
+    }
+
+    protected enum CraftedQuantity {
+        ALL,
+        HALF,
     }
 }
