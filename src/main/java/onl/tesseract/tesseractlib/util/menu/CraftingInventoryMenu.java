@@ -50,14 +50,26 @@ public class CraftingInventoryMenu extends InventoryMenu {
         if (!event.getInventory().equals(this.inventory) || event.getClickedInventory() == null || (!event.getClickedInventory().equals(this.inventory) && !event.getClickedInventory().equals(view.getBottomInventory())))
             return;
 
-        if (!event.getClickedInventory().equals(inventory) && event.getAction() != InventoryAction.MOVE_TO_OTHER_INVENTORY)
+        // If simple click in bottom, do nothing
+        if (!event.getClickedInventory().equals(inventory))
+        {
+            if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY)
+                new BukkitRunnable() {
+                    @Override
+                    public void run()
+                    {
+                        update();
+                    }
+                }.runTask(TesseractLib.instance);
             return;
-        if (event.getSlot() != resultSlot && !ingredientSlots.contains(event.getSlot()) && event.getAction() != InventoryAction.MOVE_TO_OTHER_INVENTORY)
+        }
+        // If simple click in any non-craft slot, cancel
+        if (event.getSlot() != resultSlot && !ingredientSlots.contains(event.getSlot()))
         {
             event.setCancelled(true);
             return;
         }
-        if (ingredientSlots.contains(event.getSlot()) || (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && event.getSlot() != resultSlot))
+        if (ingredientSlots.contains(event.getSlot()))
         {
             new BukkitRunnable() {
                 @Override
