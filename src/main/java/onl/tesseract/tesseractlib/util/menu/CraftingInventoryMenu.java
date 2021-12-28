@@ -11,13 +11,13 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
 public class CraftingInventoryMenu extends InventoryMenu {
-    private Collection<Integer> ingredientSlots = Collections.emptyList();
+    private List<Integer> ingredientSlots = Collections.emptyList();
     private Function<ItemStack[], ItemStack> updateFunction = items -> null;
     private int resultSlot = -1;
     Player player;
@@ -27,7 +27,7 @@ public class CraftingInventoryMenu extends InventoryMenu {
         super(size, title);
     }
 
-    public void setIngredientSlots(final Collection<Integer> ingredientSlots)
+    public void setIngredientSlots(final List<Integer> ingredientSlots)
     {
         this.ingredientSlots = ingredientSlots;
     }
