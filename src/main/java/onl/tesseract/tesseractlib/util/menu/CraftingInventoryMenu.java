@@ -17,9 +17,9 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class CraftingInventoryMenu extends InventoryMenu {
-    private List<Integer> ingredientSlots = Collections.emptyList();
-    private Function<ItemStack[], ItemStack> updateFunction = items -> null;
-    private int resultSlot = -1;
+    protected List<Integer> ingredientSlots = Collections.emptyList();
+    protected Function<ItemStack[], ItemStack> updateFunction = items -> null;
+    protected int resultSlot = -1;
     Player player;
 
     public CraftingInventoryMenu(final int size, final String title)
@@ -128,7 +128,7 @@ public class CraftingInventoryMenu extends InventoryMenu {
         super.open(player);
     }
 
-    private ItemStack[] getIngredients()
+    protected ItemStack[] getIngredients()
     {
         int i = 0;
         ItemStack[] items = new ItemStack[ingredientSlots.size()];
