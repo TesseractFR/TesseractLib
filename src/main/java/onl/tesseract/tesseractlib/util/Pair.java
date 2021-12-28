@@ -1,23 +1,23 @@
 package onl.tesseract.tesseractlib.util;
 
-public class Pair<E> {
+public class Pair<LEFT, RIGHT> {
 
-    private final E a;
-    private final E b;
+    private final LEFT left;
+    private final RIGHT right;
 
-    public Pair(final E a, final E b)
+    public Pair(final LEFT left, final RIGHT right)
     {
-        this.a = a;
-        this.b = b;
+        this.left = left;
+        this.right = right;
     }
 
-    public E getA()
+    public LEFT getLeft()
     {
-        return a;
+        return left;
     }
 
-    public E getB()
+    public RIGHT getRight()
     {
-        return b;
+        return right;
     }
 }
