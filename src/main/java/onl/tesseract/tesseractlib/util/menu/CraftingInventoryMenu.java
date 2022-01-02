@@ -71,7 +71,7 @@ public class CraftingInventoryMenu extends InventoryMenu {
         // If simple click in any non-craft slot, cancel
         if (event.getSlot() != resultSlot && !ingredientSlots.contains(event.getSlot()))
         {
-            event.setCancelled(true);
+            super.onClick(event);
             return;
         }
         if (ingredientSlots.contains(event.getSlot()))
