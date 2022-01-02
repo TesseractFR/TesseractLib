@@ -27,6 +27,11 @@ public class CraftingInventoryMenu extends InventoryMenu {
         super(size, title);
     }
 
+    public CraftingInventoryMenu(final int size, final String title, final InventoryMenu previous)
+    {
+        super(size, title, previous);
+    }
+
     public void setIngredientSlots(final List<Integer> ingredientSlots)
     {
         this.ingredientSlots = ingredientSlots;
