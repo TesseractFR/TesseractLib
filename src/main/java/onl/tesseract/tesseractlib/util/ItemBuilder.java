@@ -3,11 +3,13 @@ package onl.tesseract.tesseractlib.util;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -27,6 +29,7 @@ public class ItemBuilder {
     protected int lineWidth;
     protected ItemFlag[] flags = ItemFlag.values();
     protected int customModelData = -1;
+    protected Color potionColor;
 
     /**
      * Default constructor. Instantiate a new builder by initializing all parameters.
@@ -145,6 +148,8 @@ public class ItemBuilder {
             meta.lore(lore);
         if (customModelData != -1)
             meta.setCustomModelData(customModelData);
+        if (potionColor != null && meta instanceof PotionMeta potionMeta)
+            potionMeta.setColor(potionColor);
         item.setItemMeta(meta);
         if (enchanted)
         {
@@ -308,6 +313,12 @@ public class ItemBuilder {
     public ItemBuilder setCustomModelData(final int modelData)
     {
         this.customModelData = modelData;
+        return this;
+    }
+
+    public ItemBuilder setPotionColor(final Color potionColor)
+    {
+        this.potionColor = potionColor;
         return this;
     }
 }
