@@ -488,7 +488,7 @@ public abstract class Invocable implements Listener {
             Class<?> aClass = Class.forName(clazz);
             Constructor<?> constructor = aClass.getDeclaredConstructor(args);
             // Make a new instance with given parameters
-            if (equipment.get(aClass) == null)
+            if (equipment.get(aClass) != null)
                 return null;
             Object obj = constructor.newInstance(equipment, yamlMap);
             return (Invocable) obj;
