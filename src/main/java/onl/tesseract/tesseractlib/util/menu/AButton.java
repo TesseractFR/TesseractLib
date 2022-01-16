@@ -32,4 +32,9 @@ public abstract class AButton {
     }
 
     protected abstract void refreshItem();
+
+    public void delete()
+    {
+        this.menu = null;
+    }
 }
