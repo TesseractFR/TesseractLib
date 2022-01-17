@@ -337,7 +337,6 @@ public class InventoryMenu implements Listener {
 
     public void close() {
         this.view.close();
-        this.buttons.values().forEach(AButton::delete);
         this.buttons.clear();
         HandlerList.unregisterAll(this);
     }
@@ -346,11 +345,7 @@ public class InventoryMenu implements Listener {
     public void onClose(InventoryCloseEvent event)
     {
         if (event.getInventory().equals(this.inventory))
-        {
-            this.buttons.values().forEach(AButton::delete);
-            this.buttons.clear();
             HandlerList.unregisterAll(this);
-        }
     }
 
     /**
