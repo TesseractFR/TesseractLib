@@ -9,7 +9,7 @@ commands:
     aliases: animation
     usage: "/animation"
     description: Pour tester des animations
-    permission: tesseract.staff
+    permission: tesseract.staff.animation
   equipment:
     aliases: [eq, equipement ]
     usage: "/equipement"
