@@ -136,6 +136,7 @@ public abstract class TPlayer implements Listener {
 
     public void addMarketCurrency(int amount){
         repository.addMarketCurrency(amount);
+        TesseractLib.logger().info(String.format("[Market Currency] %s earn %d lys d'or", player.getName(), amount));
         marketCurrency = repository.getMarketCurrency();
     }
 
