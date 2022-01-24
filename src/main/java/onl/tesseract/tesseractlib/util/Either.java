@@ -24,6 +24,11 @@ public abstract class Either<LEFT, RIGHT> {
         return new Right<>(right);
     }
 
+    public static <LEFT, RIGHT> Either<LEFT, RIGHT> neither()
+    {
+        return Neither.getInstance();
+    }
+
     private static final class Left<LEFT, RIGHT> extends Either<LEFT, RIGHT> {
         private final LEFT value;
 
@@ -87,6 +92,47 @@ public abstract class Either<LEFT, RIGHT> {
         public RIGHT getRight() throws IllegalStateException
         {
             return value;
+        }
+    }
+
+    private static final class Neither<LEFT, RIGHT> extends Either<LEFT, RIGHT> {
+
+        private static final Neither<?, ?> INSTANCE = new Neither<>();
+
+        private Neither()
+        {
+            if (INSTANCE != null)
+                throw new IllegalStateException("Already instantiated");
+        }
+
+        @SuppressWarnings("unchecked")
+        private static <LEFT, RIGHT> Neither<LEFT, RIGHT> getInstance()
+        {
+            return (Neither<LEFT, RIGHT>) INSTANCE;
+        }
+
+        @Override
+        public boolean isLeft()
+        {
+            return false;
+        }
+
+        @Override
+        public boolean isRight()
+        {
+            return false;
+        }
+
+        @Override
+        public LEFT getLeft() throws IllegalStateException
+        {
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public RIGHT getRight() throws IllegalStateException
+        {
+            throw new IllegalStateException();
         }
     }
 }
