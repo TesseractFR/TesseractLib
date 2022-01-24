@@ -10,6 +10,11 @@ public abstract class Either<LEFT, RIGHT> {
 
     public abstract boolean isRight();
 
+    public boolean isEmpty()
+    {
+        return !isLeft() && !isRight();
+    }
+
     public abstract LEFT getLeft() throws IllegalStateException;
 
     public abstract RIGHT getRight() throws IllegalStateException;
