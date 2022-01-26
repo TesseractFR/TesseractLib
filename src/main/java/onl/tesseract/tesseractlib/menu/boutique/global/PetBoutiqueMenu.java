@@ -13,7 +13,7 @@ public class PetBoutiqueMenu extends InventoryMenu {
     final TPlayer player;
     public PetBoutiqueMenu(TPlayer player, InventoryMenu previous)
     {
-        super(54, "Boutique des sillages d'ailes", previous);
+        super(54, "Boutique des familiers", previous);
         this.player = player;
     }
 
