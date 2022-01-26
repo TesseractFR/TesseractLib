@@ -34,8 +34,8 @@ public class PetBoutiqueMenu extends InventoryMenu {
                                       ChatColor.GRAY + "Vous avez : "+player.getMarketCurrency()+" lys d'or",
                               event-> CosmeticManager.tryToBuyEvent(viewer, this, player, Pet.getTypeName(), pet));
                 }else {
-                    addInactiveButton(i++,Material.STRUCTURE_VOID,pet.getName(),ChatColor.GRAY+"Vous possedez "
-                            + "déjà ce famillié");
+                    addInactiveButton(i++,Material.STRUCTURE_VOID,pet.getName(),ChatColor.GRAY+"Vous possédez "
+                            + "déjà ce famillier");
                 }
             }
         }
