@@ -1,7 +1,10 @@
 package onl.tesseract.tesseractlib;
 
+import onl.tesseract.tesseractlib.util.Util;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -50,6 +53,21 @@ public class GenericLootTable<T> {
                 return entry.getValue().getLoot();
         }
         throw new AssertionError();
+    }
+
+    public Collection<T> peek(final int amount)
+    {
+        final Collection<T> loots = new ArrayList<>();
+        for (int i = 0; i < amount; i++)
+        {
+            loots.add(peek());
+        }
+        return loots;
+    }
+
+    public Collection<T> peek(final int min, final int max)
+    {
+        return peek((int) Util.random(min, max));
     }
 
     @FunctionalInterface
