@@ -67,6 +67,8 @@ public class GenericLootTable<T> {
 
     public Collection<T> peek(final int min, final int max)
     {
+        if (max < min)
+            throw new IllegalArgumentException("max < min");
         return peek((int) Util.random(min, max));
     }
 
