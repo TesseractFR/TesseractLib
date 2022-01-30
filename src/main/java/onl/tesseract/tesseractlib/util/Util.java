@@ -23,8 +23,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
@@ -441,6 +443,22 @@ public class Util {
         int green = (int) (percentage * 255);
         int red = 255 - green;
         return TextColor.color(red, green, 40);
+    }
+
+    public static Collection<File> getAllYamlFiles(final File rootFolder)
+    {
+        final Collection<File> res = new ArrayList<>();
+        File[] files = rootFolder.listFiles();
+        if (files == null)
+            return List.of();
+        for (final File file : files)
+        {
+            if (file.isDirectory())
+                res.addAll(getAllYamlFiles(file));
+            else if (file.getName().endsWith(".yml"))
+                res.add(file);
+        }
+        return res;
     }
 
 
