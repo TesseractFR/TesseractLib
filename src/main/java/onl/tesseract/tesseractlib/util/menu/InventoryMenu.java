@@ -225,6 +225,8 @@ public class InventoryMenu implements Listener {
     }
 
     public void addBackButton(int index) {
+        if (this.previous == null)
+            return;
         this.addButton(index, new ItemBuilder(buttonBack).name("Retour", NamedTextColor.RED).build()
                 , event -> this.previous.open(this.viewer));
     }
