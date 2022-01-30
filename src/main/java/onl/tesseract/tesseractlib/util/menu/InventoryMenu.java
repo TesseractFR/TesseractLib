@@ -326,8 +326,8 @@ public class InventoryMenu implements Listener {
     /**
      * Opens the menu
      */
-    public void open(Player player) {
-        PlayerMenuOpenEvent event = new PlayerMenuOpenEvent(this, player);
+    public void open(Player viewer) {
+        PlayerMenuOpenEvent event = new PlayerMenuOpenEvent(this, viewer);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (!event.isCancelled())
         {

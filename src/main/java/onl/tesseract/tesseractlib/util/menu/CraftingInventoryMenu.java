@@ -136,9 +136,9 @@ public class CraftingInventoryMenu extends InventoryMenu {
     }
 
     @Override
-    public void open(final Player player)
+    public void open(final Player viewer)
     {
-        this.player = player;
+        this.player = viewer;
         ItemStack background = new ItemBuilder(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
                 .name(" ").build();
         for (int i = 0; i < inventory.getSize(); i++)
@@ -147,7 +147,7 @@ public class CraftingInventoryMenu extends InventoryMenu {
                 continue;
             inventory.setItem(i, background);
         }
-        super.open(player);
+        super.open(viewer);
     }
 
     protected ItemStack[] getIngredients()
