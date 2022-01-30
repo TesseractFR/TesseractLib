@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -31,7 +32,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Consumer;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public abstract class TPlayer implements Listener {
@@ -60,6 +62,8 @@ public abstract class TPlayer implements Listener {
     protected BukkitRunnable chatEntryRunnable;
     protected Consumer<String[]> commandEntryCallback;
     protected BukkitRunnable commandEntryRunnable;
+    protected Map<UUID, Consumer<String[]>> commandEntryCallbacks = new HashMap<>();
+    protected Map<UUID, BukkitRunnable> commandEntryRunnables = new HashMap<>();
     protected String dateSinceLastConnection = null;
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
@@ -478,14 +482,37 @@ public abstract class TPlayer implements Listener {
         commandEntryRunnable.runTaskLater(TesseractLib.instance, 20 * 60 * 5);
     }
 
+    @Nullable
+    public ClickEvent clickCommand(final String command, Consumer<String[]> callback)
+    {
+        if (!player.isOnline())
+            return null;
+        UUID uuid = UUID.randomUUID();
+        commandEntryCallbacks.put(uuid, callback);
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run()
+            {
+                commandEntryCallbacks.remove(uuid);
+                commandEntryRunnables.remove(uuid);
+            }
+        };
+        runnable.runTaskLater(TesseractLib.instance, 20 * 60 * 3);
+        commandEntryRunnables.put(uuid, runnable);
+        return ClickEvent.runCommand("/commandCallback " + uuid + " " + command);
+    }
+
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event)
     {
         if (!event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
             return;
         String[] parts = event.getMessage().split(" ");
-        if (commandEntryCallback != null && parts[0].equals("/command") && parts.length > 1)
+        if (parts[0].equals("/command"))
         {
+            event.setCancelled(true);
+            if (commandEntryCallback == null || parts.length == 1)
+                return;
             String[] args = new String[parts.length - 1];
             System.arraycopy(parts, 1, args, 0, parts.length - 1);
             commandEntryCallback.accept(args);
@@ -496,8 +523,27 @@ public abstract class TPlayer implements Listener {
             }
             event.setCancelled(true);
         }
-        if (parts[0].equals("/command"))
+        else if (parts[0].equals("/commandCallback"))
+        {
             event.setCancelled(true);
+            if (commandEntryCallbacks.isEmpty())
+                return;
+            try
+            {
+                UUID uuid = UUID.fromString(parts[1]);
+                Consumer<String[]> consumer = commandEntryCallbacks.get(uuid);
+                if (consumer != null)
+                {
+                    String[] args = new String[parts.length - 1];
+                    System.arraycopy(parts, 1, args, 0, parts.length - 1);
+                    consumer.accept(args);
+                }
+            }
+            catch (IllegalArgumentException e)
+            {
+                return;
+            }
+        }
     }
 
     public OfflinePlayer getOfflinePlayer()
