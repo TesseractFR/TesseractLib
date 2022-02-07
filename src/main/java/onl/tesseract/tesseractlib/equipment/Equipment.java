@@ -184,10 +184,10 @@ public class Equipment implements Listener {
      * @return The invocable, or null
      */
     @Nullable
-    public Invocable get(Class<?> clazz) {
+    public <T extends Invocable> T get(Class<T> clazz) {
         for (Invocable i : invocables) {
             if (i.getClass().equals(clazz))
-                return i;
+                return clazz.cast(i);
         }
         return null;
     }
