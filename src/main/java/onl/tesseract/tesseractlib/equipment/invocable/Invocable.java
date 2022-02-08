@@ -319,10 +319,19 @@ public abstract class Invocable implements Listener {
         if (! equipment.getPlayer().getOfflinePlayer().getUniqueId().equals(event.getWhoClicked().getUniqueId())) return;
 
         // Cancel the event if the player move the item with hotbar buttons
-        if (event.getClick() == ClickType.NUMBER_KEY)
+        if (event.getClick() == ClickType.NUMBER_KEY )
         {
             if (isInvocable(event.getCursor()) ||
                     isInvocable(equipment.getPlayer().getBukkitPlayer().getInventory().getItem(event.getHotbarButton()))) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+        // Cancel the event if the player move the item with off hand swap button
+        if (event.getClick() == ClickType.SWAP_OFFHAND )
+        {
+            if (isInvocable(event.getCursor()) ||
+                    isInvocable(equipment.getPlayer().getBukkitPlayer().getInventory().getItemInOffHand())) {
                 event.setCancelled(true);
                 return;
             }
