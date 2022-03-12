@@ -2,7 +2,6 @@ package onl.tesseract.tesseractlib.command;
 
 import onl.tesseract.commandBuilder.CommandArgument;
 import onl.tesseract.commandBuilder.CommandBuilder;
-import onl.tesseract.commandBuilder.OptionalCommandArgument;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceConfiguration;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
 import org.bukkit.Bukkit;
@@ -31,7 +30,7 @@ public class InventoryCommand implements CommandExecutor, TabCompleter {
                                                                                         .map(InventoryInstanceConfiguration::getName)
                                                                                         .collect(Collectors.toList()))
                                 .supplier((string, env) -> string))
-                        .withOptionalArg(new OptionalCommandArgument("player", Player.class)
+                        .withOptionalArg(new CommandArgument("player", Player.class)
                                 .tabCompletion((sender, env) -> null)
                                 .supplier((string, env) -> {
                                     Player player = Bukkit.getPlayer(string);
