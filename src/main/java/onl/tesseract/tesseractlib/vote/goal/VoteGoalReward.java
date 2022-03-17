@@ -25,4 +25,6 @@ public interface VoteGoalReward {
      * Serializes the reward
      */
     String serialize();
+
+    String toString();
 }

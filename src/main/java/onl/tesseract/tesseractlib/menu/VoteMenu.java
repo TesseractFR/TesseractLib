@@ -137,9 +137,12 @@ public class VoteMenu extends InventoryMenu {
     private void putVoteGoalButton()
     {
         ItemLoreBuilder lore = new ItemLoreBuilder(45).newline()
-                                                      .append("Votez pendant les ", NamedTextColor.YELLOW)
+                                                      .append("Vote pendant les ", NamedTextColor.YELLOW)
                                                       .append("Vote Goals", NamedTextColor.GOLD)
-                                                      .append(" pour obtenir encore plus de récompenses !", NamedTextColor.YELLOW).newline(2);
+                                                      .append(" pour obtenir encore plus de récompenses !", NamedTextColor.YELLOW)
+                                                      .newline()
+                                                      .append("Si tu as voté pendant un vote goal, tu recevras à la fin de celui-ci une récompense différente à chaque goal.", NamedTextColor.GRAY)
+                                                      .newline(2);
 
         Collection<VoteGoal> goals = VoteGoalManager.getGoals();
         if (goals.isEmpty())
@@ -156,6 +159,9 @@ public class VoteMenu extends InventoryMenu {
                     .append(" | ", NamedTextColor.WHITE, TextDecoration.OBFUSCATED)
                     .append("Temps restant : ", NamedTextColor.GRAY)
                     .append(goal.getPrintableRemainingDuration(), NamedTextColor.YELLOW)
+                    .append(" | ", NamedTextColor.WHITE, TextDecoration.OBFUSCATED)
+                    .append(" Récompense : ", NamedTextColor.GRAY)
+                    .append(goal.reward().toString(), NamedTextColor.YELLOW)
                     .newline();
             }
         }
