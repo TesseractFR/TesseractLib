@@ -148,11 +148,17 @@ public class VoteRepository {
 
     public static LinkedHashMap<UUID, Integer> getTop()
     {
+        return getTop(0);
+    }
+
+    public static LinkedHashMap<UUID, Integer> getTop(int monthDelta)
+    {
         LinkedHashMap<UUID, Integer> map = new LinkedHashMap<>();
         try
         {
             Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT player_uuid, count(*) as amount FROM t_vote WHERE MONTH(DATE(date)) = MONTH(NOW()) AND YEAR(DATE(date)) = YEAR(NOW()) GROUP BY player_uuid ORDER BY count(*) DESC LIMIT 10");
+            String dateRef = String.format("DATE_SUB(NOW(), INTERVAL %d MONTH)", monthDelta);
+            PreparedStatement statement = connection.prepareStatement("SELECT player_uuid, count(*) as amount FROM t_vote WHERE MONTH(DATE(date)) = MONTH(" + dateRef + ") AND YEAR(DATE(date)) = YEAR(" + dateRef + ") GROUP BY player_uuid ORDER BY count(*) DESC LIMIT 10");
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next())
             {

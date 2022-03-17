@@ -15,7 +15,7 @@ public class VoteTopRewardManager {
     {
         if (rewards.length != 3)
             throw new IllegalArgumentException("Expected array of length 3");
-        LinkedHashMap<UUID, Integer> top = VoteRepository.getTop();
+        LinkedHashMap<UUID, Integer> top = VoteRepository.getTop(1);
 
         int index = 0;
         for (final UUID player : top.keySet())
