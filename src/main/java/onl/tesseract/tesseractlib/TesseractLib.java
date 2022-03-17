@@ -6,10 +6,7 @@ import onl.tesseract.tesseractlib.achievement.Title;
 import onl.tesseract.tesseractlib.bdd.BDDManager;
 import onl.tesseract.tesseractlib.chat.tag.TagEventHandler;
 import onl.tesseract.tesseractlib.command.*;
-import onl.tesseract.tesseractlib.command.staff.CosmeticCompleter;
-import onl.tesseract.tesseractlib.command.staff.MarketCurrencyCommand;
-import onl.tesseract.tesseractlib.command.staff.SocialSpy;
-import onl.tesseract.tesseractlib.command.staff.VoteGoalCommand;
+import onl.tesseract.tesseractlib.command.staff.*;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
@@ -158,6 +155,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         Objects.requireNonNull(instance.getCommand("vote")).setExecutor(new VoteCommand());
         Objects.requireNonNull(instance.getCommand("inventory")).setExecutor(new InventoryCommand());
         Objects.requireNonNull(instance.getCommand("inventory")).setTabCompleter(new InventoryCommand());
+        Objects.requireNonNull(instance.getCommand("votetopreward")).setExecutor(new VoteTopRewardCommand());
     }
 
     void registerEvents()
