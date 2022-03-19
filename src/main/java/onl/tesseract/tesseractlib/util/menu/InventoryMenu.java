@@ -338,7 +338,8 @@ public class InventoryMenu implements Listener {
     }
 
     public void close() {
-        this.view.close();
+        if (this.view != null)
+            this.view.close();
         this.buttons.clear();
         HandlerList.unregisterAll(this);
     }
