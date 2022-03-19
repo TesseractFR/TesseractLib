@@ -187,6 +187,12 @@ public class VoteMenu extends InventoryMenu {
                 .append("" + entry.getValue(), NamedTextColor.GOLD);
         }
 
+        lore.newline(2)
+            .append("Récompenses pour les top voteurs :", NamedTextColor.YELLOW, TextDecoration.BOLD)
+            .newline().append("1er : ", NamedTextColor.YELLOW).append("250 Lys d'or", NamedTextColor.GOLD)
+            .newline().append("2e : ", NamedTextColor.YELLOW).append("150 Lys d'or", NamedTextColor.GOLD)
+            .newline().append("3e : ", NamedTextColor.YELLOW).append("50 Lys d'or", NamedTextColor.GOLD);
+
         addButton(6, new Button(new ItemBuilder(Material.DIAMOND)
                 .name("Top Voteurs", NamedTextColor.GOLD)
                 .lore(lore.get())
@@ -228,7 +234,7 @@ public class VoteMenu extends InventoryMenu {
             lore.append("Va voter !", NamedTextColor.GREEN);
         else
             lore.append("Temps restant : ", NamedTextColor.GRAY)
-                    .append(Util.getPrintableDuration(remainingDuration), NamedTextColor.RED);
+                .append(Util.getPrintableDuration(remainingDuration), NamedTextColor.RED);
 
         lore.newline(2)
             .append("Mes votes ce mois-ci : ", NamedTextColor.GRAY)
