@@ -393,6 +393,11 @@ public abstract class TPlayer implements Listener {
         chatEntry(message, 30, function);
     }
 
+    public void chatEntry(Component format, String message, Consumer<Component> function)
+    {
+        chatEntry(format.append(Component.text(message)), 30, function);
+    }
+
     public void chatEntry(Component message, int seconds, Consumer<Component> function)
     {
         if (!player.isOnline())
