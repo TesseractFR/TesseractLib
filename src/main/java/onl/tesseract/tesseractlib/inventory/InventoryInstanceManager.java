@@ -141,6 +141,7 @@ public class InventoryInstanceManager {
         InventorySwitchEvent event = new InventorySwitchEvent(player, getSelectedConfigName(player), configurations.get(configName));
         if (!event.callEvent())
             return;
+        TesseractLib.logger().log(Level.INFO, "[Inventory] " + player.getName() + ": " + getSelectedConfigName(player) + " -> " + configName);
 
         save(player);
         applyConfig(player, event.getTo());
