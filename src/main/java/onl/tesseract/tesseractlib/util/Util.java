@@ -228,6 +228,16 @@ public class Util {
         return count;
     }
 
+    static public int countFreeSlots(Inventory inv) {
+        int count = 0;
+        for (ItemStack item : inv.getContents()) {
+            if (item == null || item.getType() == Material.AIR)
+                count++;
+        }
+
+        return count;
+    }
+
     static public int countItems(PlayerInventory inv, Predicate<ItemStack> predicate) {
         ItemStack item = inv.getItem(EquipmentSlot.OFF_HAND);
         if (item != null) {
