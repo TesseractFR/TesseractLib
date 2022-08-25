@@ -578,16 +578,16 @@ public class Util {
          * @return Location of the first non-solid block, starting from the bottom. Null if none is found.
          */
         @Nullable
-        static public Location onGroundEmptySpace(org.bukkit.Location origin, int upperBoundY, int belowBoundY, int spaceHeight) {
+        public static Location onGroundEmptySpace(org.bukkit.Location origin, int upperBoundY, int belowBoundY, int spaceHeight) {
             outer: for (int y = upperBoundY; y >= belowBoundY; y--)
             {
                 Block blockAt = origin.getWorld().getBlockAt(origin.getBlockX(), y, origin.getBlockZ());
-                if (blockAt.isSolid())
+                if (!blockAt.isSolid())
                 {
                     int currentSpace = 1;
                     while (currentSpace++ < spaceHeight)
                     {
-                        if (!blockAt.getRelative(BlockFace.UP, currentSpace - 1).isSolid())
+                        if (blockAt.getRelative(BlockFace.UP, currentSpace - 1).isSolid())
                             continue outer;
                     }
                     if (blockAt.getRelative(BlockFace.DOWN).isSolid())
