@@ -10,6 +10,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -22,6 +24,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.time.Duration;
@@ -562,6 +565,38 @@ public class Util {
             while (!origin.getBlock().getType().isSolid() && origin.getY() > 0)
                 origin.subtract(0, 1, 0);
             return origin;
+        }
+
+        /**
+         * Get the location of a column of non-solid blocks sitting on a solid block
+         *
+         * @param origin Location where to seek
+         * @param upperBoundY World height at which to start seeking
+         * @param belowBoundY World height at which to stop seeking
+         * @param spaceHeight Height of the column to seek
+         *
+         * @return Location of the first non-solid block, starting from the bottom. Null if none is found.
+         */
+        @Nullable
+        static public Location onGroundEmptySpace(org.bukkit.Location origin, int upperBoundY, int belowBoundY, int spaceHeight) {
+            outer: for (int y = upperBoundY; y >= belowBoundY; y--)
+            {
+                Block blockAt = origin.getWorld().getBlockAt(origin.getBlockX(), y, origin.getBlockZ());
+                if (blockAt.isSolid())
+                {
+                    int currentSpace = 1;
+                    while (currentSpace++ < spaceHeight)
+                    {
+                        if (!blockAt.getRelative(BlockFace.UP, currentSpace - 1).isSolid())
+                            continue outer;
+                    }
+                    if (blockAt.getRelative(BlockFace.DOWN).isSolid())
+                    {
+                        return blockAt.getLocation();
+                    }
+                }
+            }
+            return null;
         }
 
         static public List<org.bukkit.Location> getPointsBetween(org.bukkit.Location a, org.bukkit.Location b, double step) {
