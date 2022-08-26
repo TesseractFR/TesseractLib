@@ -634,4 +634,18 @@ public class Util {
 
         return res;
     }
+
+    public static String getChainedExceptionCauseMessages(Throwable throwable)
+    {
+        StringBuilder builder = new StringBuilder("\n\tReason: ");
+        builder.append(throwable.getMessage());
+        throwable = throwable.getCause();
+        while (throwable != null)
+        {
+            builder.append("\n\tCaused by: ")
+                   .append(throwable.getMessage());
+            throwable = throwable.getCause();
+        }
+        return builder.toString();
+    }
 }
