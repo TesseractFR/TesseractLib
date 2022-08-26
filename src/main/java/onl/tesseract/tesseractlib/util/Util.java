@@ -562,7 +562,7 @@ public class Util {
         }
 
         static public org.bukkit.Location onGround(org.bukkit.Location origin) {
-            while (!origin.getBlock().getType().isSolid() && origin.getY() > 0)
+            while (!origin.getBlock().getType().isSolid() && origin.getY() > 0 && origin.getBlock().getType() != Material.WATER)
                 origin.subtract(0, 1, 0);
             return origin;
         }
