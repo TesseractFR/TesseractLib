@@ -381,6 +381,9 @@ public class Util {
         return false;
     }
 
+    /**
+     * @param max Exclusive bound
+     */
     static public double random(int min, int max) {
         return (Math.random() * (max - min)) + min;
     }
