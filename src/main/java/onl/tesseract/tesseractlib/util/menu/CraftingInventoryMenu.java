@@ -98,7 +98,13 @@ public class CraftingInventoryMenu extends InventoryMenu {
             }
             else
             {
-                clearIngredientSlots(event.isRightClick() && !event.isShiftClick() ? CraftedQuantity.HALF : CraftedQuantity.ALL);
+                CraftedQuantity quantity = event.isRightClick() && !event.isShiftClick() ? CraftedQuantity.HALF : CraftedQuantity.ALL;
+                if (quantity == CraftedQuantity.HALF && !canCraftHalf())
+                {
+                    event.setCancelled(true);
+                    return;
+                }
+                clearIngredientSlots(quantity);
                 onCraft();
             }
         }
@@ -106,6 +112,11 @@ public class CraftingInventoryMenu extends InventoryMenu {
 
     protected void onCraft() {
 
+    }
+
+    protected boolean canCraftHalf()
+    {
+        return true;
     }
 
     protected void clearIngredientSlots(final CraftedQuantity quantity)
