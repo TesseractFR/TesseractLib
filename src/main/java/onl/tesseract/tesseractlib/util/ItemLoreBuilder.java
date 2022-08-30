@@ -350,6 +350,20 @@ public class ItemLoreBuilder {
         return this;
     }
 
+    public ItemLoreBuilder addField(String name, String value, NamedTextColor color)
+    {
+        return this.append(name + " : ", NamedTextColor.GRAY)
+                .append(value, color)
+                .newline();
+    }
+
+    public ItemLoreBuilder addField(String name, Component value)
+    {
+        return this.append(name + " : ", NamedTextColor.GRAY)
+                .append(value)
+                .newline();
+    }
+
     /**
      * Get the built lore
      *
