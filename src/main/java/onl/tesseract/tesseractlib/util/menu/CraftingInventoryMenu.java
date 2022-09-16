@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -47,9 +48,18 @@ public class CraftingInventoryMenu extends InventoryMenu {
         this.resultSlot = resultSlot;
     }
 
-    @Override
     @EventHandler
-    public void onClick(final InventoryClickEvent event)
+    public void onDrag(final InventoryDragEvent event)
+    {
+        if (event.getRawSlots().size() != 1)
+        {
+            event.setCancelled(true);
+            return;
+        }
+        onClick(InventoryClickOrDragEvent.of(event));
+    }
+
+    private void onClick(InventoryClickOrDragEvent event)
     {
         // Chek that the click happened in this inventory
         if (!event.getInventory().equals(this.inventory) || event.getClickedInventory() == null || (!event.getClickedInventory().equals(this.inventory) && !event.getClickedInventory().equals(view.getBottomInventory())))
@@ -71,7 +81,8 @@ public class CraftingInventoryMenu extends InventoryMenu {
         // If simple click in any non-craft slot, cancel
         if (event.getSlot() != resultSlot && !ingredientSlots.contains(event.getSlot()))
         {
-            super.onClick(event);
+            if (event.getEvent() instanceof InventoryClickEvent click)
+                super.onClick(click);
             return;
         }
         if (ingredientSlots.contains(event.getSlot()))
@@ -108,6 +119,13 @@ public class CraftingInventoryMenu extends InventoryMenu {
                 onCraft();
             }
         }
+    }
+
+    @Override
+    @EventHandler
+    public void onClick(final InventoryClickEvent event)
+    {
+        onClick(InventoryClickOrDragEvent.of(event));
     }
 
     protected void onCraft() {
