@@ -92,6 +92,7 @@
             <artifactId>maven-source-plugin</artifactId>
             <version>3.2.1</version>
             <type>maven-plugin</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -109,6 +110,7 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>RELEASE</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
