@@ -205,6 +205,7 @@ public abstract class TPlayer implements Listener {
         {
             HandlerList.unregisterAll(this.equipment);
             HandlerList.unregisterAll(this);
+            playedToday = true;
             this.save();
             this.equipment = null;
         }
