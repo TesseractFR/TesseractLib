@@ -488,12 +488,12 @@ public abstract class TPlayer implements Listener {
     }
 
     @Nullable
-    public ClickEvent clickCommand(final String command, Consumer<String[]> callback)
+    public ClickEvent clickCommand(Runnable callback)
     {
         if (!player.isOnline())
             return null;
         UUID uuid = UUID.randomUUID();
-        commandEntryCallbacks.put(uuid, callback);
+        commandEntryCallbacks.put(uuid, args -> callback.run());
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run()
@@ -504,7 +504,7 @@ public abstract class TPlayer implements Listener {
         };
         runnable.runTaskLater(TesseractLib.instance, 20 * 60 * 3);
         commandEntryRunnables.put(uuid, runnable);
-        return ClickEvent.runCommand("/commandCallback " + uuid + " " + command);
+        return ClickEvent.runCommand("/commandCallback " + uuid);
     }
 
     @EventHandler
