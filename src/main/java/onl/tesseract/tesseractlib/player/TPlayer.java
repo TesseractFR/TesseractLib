@@ -180,7 +180,7 @@ public abstract class TPlayer implements Listener {
 
     protected void dailyConnection()
     {
-        // ...
+        playedToday = true;
     }
 
     public void onJoin(OfflinePlayer player)

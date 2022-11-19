@@ -128,12 +128,13 @@ public final class TesseractLib extends JavaPlugin implements Listener {
             if (uuid == null)
                 return;
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-            var instant = Instant.ofEpochMilli(player.getLastLogin());
-            if (Duration.between(instant, Instant.now()).toDays() > 0)
-                return;
-            var dateTime = instant.atZone(ZoneId.systemDefault());
-            boolean hasPlayedToday = dateTime.getDayOfYear() == Instant.now().atZone(ZoneId.systemDefault()).getDayOfYear();
-            playerContainer.get(uuid).setPlayedToday(hasPlayedToday);
+            TPlayer tPlayer = TPlayer.get(player);
+            if(!tPlayer.hasPlayedToday())return;
+            ZoneId zoneId = ZoneId.systemDefault();
+            var lastJoinDate = Instant.ofEpochMilli(player.getLastSeen()).atZone(zoneId);
+            var nowDate = Instant.now().atZone(zoneId);
+
+            playerContainer.get(uuid).setPlayedToday( lastJoinDate.getDayOfYear() == nowDate.getDayOfYear() && lastJoinDate.getYear() == nowDate.getYear());
         }
     }
 
