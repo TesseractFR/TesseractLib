@@ -133,7 +133,6 @@ public final class TesseractLib extends JavaPlugin implements Listener {
             ZoneId zoneId = ZoneId.systemDefault();
             var lastJoinDate = Instant.ofEpochMilli(player.getLastSeen()).atZone(zoneId);
             var nowDate = Instant.now().atZone(zoneId);
-
             playerContainer.get(uuid).setPlayedToday( lastJoinDate.getDayOfYear() == nowDate.getDayOfYear() && lastJoinDate.getYear() == nowDate.getYear());
         }
     }
