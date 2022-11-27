@@ -9,6 +9,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +30,7 @@ public class ItemBuilder {
     protected int lineWidth;
     protected ItemFlag[] flags = ItemFlag.values();
     protected int customModelData = -1;
-    protected Color potionColor;
+    protected Color color;
 
     /**
      * Default constructor. Instantiate a new builder by initializing all parameters.
@@ -148,8 +149,10 @@ public class ItemBuilder {
             meta.lore(lore);
         if (customModelData != -1)
             meta.setCustomModelData(customModelData);
-        if (potionColor != null && meta instanceof PotionMeta potionMeta)
-            potionMeta.setColor(potionColor);
+        if (color != null && meta instanceof PotionMeta potionMeta)
+            potionMeta.setColor(color);
+        if (color != null && meta instanceof LeatherArmorMeta armorMeta)
+            armorMeta.setColor(color);
         item.setItemMeta(meta);
         if (enchanted)
         {
@@ -316,9 +319,9 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setPotionColor(final Color potionColor)
+    public ItemBuilder setColor(final Color color)
     {
-        this.potionColor = potionColor;
+        this.color = color;
         return this;
     }
 }
