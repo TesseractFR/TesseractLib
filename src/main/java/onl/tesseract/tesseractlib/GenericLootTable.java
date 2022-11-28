@@ -8,6 +8,10 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * A generic loot table is used to randomly get different loots each time it is queried.
+ * The loot table is constructed with the list of all possible loots and their probability.
+ */
 public class GenericLootTable<T> {
     // Map item to probability
     protected Map<Loot<T>, Float> loots;
@@ -36,6 +40,9 @@ public class GenericLootTable<T> {
         return result;
     }
 
+    /**
+     * Generates and cache the distribution table
+     */
     public void generate()
     {
         this.distributionTable = generateDistributionTable();
