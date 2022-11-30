@@ -67,12 +67,12 @@ public class GenericLootTable<T> {
 
     public Collection<T> peek(final int amount)
     {
-        final Collection<T> loots = new ArrayList<>();
+        final Collection<T> generatedLoots = new ArrayList<>();
         for (int i = 0; i < amount; i++)
         {
-            loots.add(peek());
+            generatedLoots.add(peek());
         }
-        return loots;
+        return generatedLoots;
     }
 
     public Collection<T> peek(final int min, final int max)
