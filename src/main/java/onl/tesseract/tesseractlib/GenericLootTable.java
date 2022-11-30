@@ -54,7 +54,7 @@ public class GenericLootTable<T> {
     {
         if (distributionTable == null)
             generate();
-        Float max = distributionTable.keySet().stream().reduce(Float::sum).orElse(0f);
+        Float max = loots.values().stream().reduce(Float::sum).orElse(0f);
         final double random = Math.random() * max;
 
         for (final Map.Entry<Float, Loot<T>> entry : distributionTable.entrySet())
