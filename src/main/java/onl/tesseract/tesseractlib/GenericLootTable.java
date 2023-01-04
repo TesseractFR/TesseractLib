@@ -31,11 +31,10 @@ public class GenericLootTable<T> {
         final float totalProba = loots.values().stream().reduce(Float::sum).orElse(0f);
         if (totalProba == 0f)
             return new LinkedHashMap<>();
-        final float probaRatio = 1 / totalProba;
         float cumulatedProba = 0f;
         for (final Map.Entry<Loot<T>, Float> entry : loots.entrySet())
         {
-            final float lootEffectiveProba = entry.getValue() * probaRatio;
+            final float lootEffectiveProba = entry.getValue();
             cumulatedProba += lootEffectiveProba;
             result.put(cumulatedProba, entry.getKey());
         }
