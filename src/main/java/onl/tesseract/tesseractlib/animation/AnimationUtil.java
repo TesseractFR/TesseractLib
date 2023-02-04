@@ -4,12 +4,14 @@ import com.destroystokyo.paper.ParticleBuilder;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AnimationUtil {
-    static public ParticleBuilder buildParticle(Particle particle, Color color, Location location) {
+    static public ParticleBuilder buildParticle(Particle particle, Color color, Location location)
+    {
         ParticleBuilder builder = new ParticleBuilder(particle);
         if (color != null)
             builder.color(color);
@@ -31,5 +33,26 @@ public class AnimationUtil {
         }
 
         return res;
+    }
+
+    public static List<Location> getLine(final Location origin, final Location dest, double step)
+    {
+        List<Location> points = new ArrayList<>();
+
+        Vector distanceVector = dest.toVector()
+                                    .subtract(origin.toVector());
+        Vector vector = distanceVector.clone()
+                .normalize()
+                .multiply(step);
+        int stepCount = (int) (distanceVector.length() / step);
+
+        Location cursor = origin.clone();
+
+        for (int i = 0; i <= stepCount; i++)
+        {
+            points.add(cursor);
+            cursor = cursor.clone().add(vector);
+        }
+        return points;
     }
 }
