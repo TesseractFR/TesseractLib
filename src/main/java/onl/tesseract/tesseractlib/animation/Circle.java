@@ -20,6 +20,10 @@ public class Circle extends AnimationBuilder<Circle> {
     float spacing = 0.05f;
     int originCount = 1;
     BukkitTask task;
+    private float radius;
+    private double delay;
+    private float rotationCount;
+    private Vector direction = new Vector(1E-15, 1, 1E-15).normalize();
 
     /**
      * Creates a circle. Can be drawn with Circle#drawn
@@ -75,6 +79,24 @@ public class Circle extends AnimationBuilder<Circle> {
             this.setDelay((float) ((spacing * duration) / (2 * Math.PI * rotationCount)));
         else
             this.setRotationCount((float)(((duration / delay) * spacing) / (2* Math.PI)));
+        return this;
+    }
+
+    public Circle setRotationCount(final float rotationCount)
+    {
+        this.rotationCount = rotationCount;
+        return this;
+    }
+
+    public Circle setDelay(final float delay)
+    {
+        this.delay = delay;
+        return this;
+    }
+
+    public Circle setRadius(final float radius)
+    {
+        this.radius = radius;
         return this;
     }
 
@@ -163,5 +185,17 @@ public class Circle extends AnimationBuilder<Circle> {
             task.cancel();
             task = null;
         }
+    }
+
+    public Circle setDelay(final double delay)
+    {
+        this.delay = delay;
+        return this;
+    }
+
+    public Circle setDirection(final Vector direction)
+    {
+        this.direction = direction;
+        return this;
     }
 }

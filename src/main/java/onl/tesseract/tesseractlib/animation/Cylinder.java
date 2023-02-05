@@ -46,8 +46,12 @@ public class Cylinder {
                 while (timer >= 1) {
                     timer--;
                     Location circleLocation = location.clone().add(0, y * sign + start, 0);
-                    new Circle(particle, new AnimationTarget(circleLocation)).setColor(color).setRadius(radius).setDelay(0).setRotationCount(1)
-                                                                             .draw();
+                    new Circle(particle, new AnimationTarget(circleLocation))
+                            .setColor(color)
+                            .setRadius(radius)
+                            .setDelay(0)
+                            .setRotationCount(1)
+                            .draw();
                     y += 0.3;
                     if (y > height)
                         this.cancel();

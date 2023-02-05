@@ -6,7 +6,6 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Consumer;
-import org.bukkit.util.Vector;
 
 import java.util.Collection;
 
@@ -14,11 +13,11 @@ public abstract class AnimationBuilder<T extends AnimationBuilder<T>> {
     protected Particle particle;
     protected Color color;
     protected AnimationTarget origin;
-    protected float radius;
-    protected double delay;
-    protected float rotationCount;
+//    protected float radius;
+//    protected double delay;
+//    protected float rotationCount;
     protected Consumer<LivingEntity> onHit;
-    protected Vector direction = new Vector(1E-15, 1, 1E-15).normalize();
+//    protected Vector direction = new Vector(1E-15, 1, 1E-15).normalize();
     protected boolean multipleHits;
     protected int receiverRadius;
     protected Collection<Player> receivers;
@@ -59,33 +58,9 @@ public abstract class AnimationBuilder<T extends AnimationBuilder<T>> {
         return self();
     }
 
-    public T setRadius(final float radius)
-    {
-        this.radius = radius;
-        return self();
-    }
-
-    public T setDelay(final double delay)
-    {
-        this.delay = delay;
-        return self();
-    }
-
-    public T setRotationCount(final float rotationCount)
-    {
-        this.rotationCount = rotationCount;
-        return self();
-    }
-
     public T setOnHit(final Consumer<LivingEntity> onHit)
     {
         this.onHit = onHit;
-        return self();
-    }
-
-    public T setDirection(final Vector direction)
-    {
-        this.direction = direction;
         return self();
     }
 

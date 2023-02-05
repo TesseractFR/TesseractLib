@@ -6,6 +6,9 @@ import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Sphere extends AnimationBuilder<Sphere> {
+    private float radius;
+    private double delay;
+    private float rotationCount;
 
     @Override
     public Animation build()
@@ -55,5 +58,23 @@ public class Sphere extends AnimationBuilder<Sphere> {
                     origin.getLocation().getNearbyPlayers(radius).forEach(onHit::accept);
             }
         }.runTaskTimer(TesseractLib.instance, 0, 1);
+    }
+
+    public Sphere setRadius(final float radius)
+    {
+        this.radius = radius;
+        return this;
+    }
+
+    public Sphere setDelay(final double delay)
+    {
+        this.delay = delay;
+        return this;
+    }
+
+    public Sphere setRotationCount(final float rotationCount)
+    {
+        this.rotationCount = rotationCount;
+        return this;
     }
 }

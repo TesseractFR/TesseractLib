@@ -12,6 +12,8 @@ public class SmoothCylinder extends AnimationBuilder<SmoothCylinder> {
     private Location location;
     private int height;
     private boolean rev;
+    private float radius;
+    private double delay;
 
     public Animation build()
     {
@@ -87,6 +89,18 @@ public class SmoothCylinder extends AnimationBuilder<SmoothCylinder> {
     public SmoothCylinder setRev(final boolean rev)
     {
         this.rev = rev;
+        return this;
+    }
+
+    public SmoothCylinder setRadius(final float radius)
+    {
+        this.radius = radius;
+        return this;
+    }
+
+    public SmoothCylinder setDelay(final double delay)
+    {
+        this.delay = delay;
         return this;
     }
 }
