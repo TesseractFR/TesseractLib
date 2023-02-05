@@ -21,7 +21,7 @@ public class Sphere extends AnimationBuilder<Sphere> {
 
     private void draw()
     {
-        ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, target.getLocation());
+        ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, origin.getLocation());
         // Creates a runnable that will be ran each tick
         new BukkitRunnable() {
             float rho = 0;
@@ -29,7 +29,7 @@ public class Sphere extends AnimationBuilder<Sphere> {
             @Override
             public void run()
             {
-                if (target.hasExpired())
+                if (origin.hasExpired())
                     this.cancel();
                 if (delay > 0)
                     timer += 1 / delay;
@@ -41,7 +41,7 @@ public class Sphere extends AnimationBuilder<Sphere> {
                         double x = Math.cos(rho) * Math.cos(theta) * radius;
                         double z = Math.sin(rho) * Math.cos(theta) * radius;
                         double y = Math.sin(theta) * radius;
-                        Location particleLocation = target.getLocation().clone().add(x, y, z);
+                        Location particleLocation = origin.getLocation().clone().add(x, y, z);
                         builder.location(particleLocation);
                         builder.spawn();
                     }
@@ -52,7 +52,7 @@ public class Sphere extends AnimationBuilder<Sphere> {
                 }
                 // Detect players
                 if (onHit != null)
-                    target.getLocation().getNearbyPlayers(radius).forEach(onHit::accept);
+                    origin.getLocation().getNearbyPlayers(radius).forEach(onHit::accept);
             }
         }.runTaskTimer(TesseractLib.instance, 0, 1);
     }

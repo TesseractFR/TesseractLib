@@ -13,7 +13,7 @@ import java.util.Collection;
 public abstract class AnimationBuilder<T extends AnimationBuilder<T>> {
     protected Particle particle;
     protected Color color;
-    protected AnimationTarget target;
+    protected AnimationTarget origin;
     protected float radius;
     protected double delay;
     protected float rotationCount;
@@ -32,8 +32,8 @@ public abstract class AnimationBuilder<T extends AnimationBuilder<T>> {
         ParticleBuilder builder = new ParticleBuilder(particle)
                 .color(color)
                 .extra(0);
-        if (target.location != null)
-            builder = builder.location(target.location);
+        if (origin.location != null)
+            builder = builder.location(origin.location);
         if (receivers != null)
             builder.receivers(receivers);
         if (receiverRadius != 0)
@@ -53,9 +53,9 @@ public abstract class AnimationBuilder<T extends AnimationBuilder<T>> {
         return self();
     }
 
-    public T setTarget(final AnimationTarget target)
+    public T setOrigin(final AnimationTarget origin)
     {
-        this.target = target;
+        this.origin = origin;
         return self();
     }
 

@@ -29,7 +29,7 @@ public class Circle extends AnimationBuilder<Circle> {
     public Circle(Particle particle, AnimationTarget target)
     {
         this.particle = particle;
-        this.target = target;
+        this.origin = target;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class Circle extends AnimationBuilder<Circle> {
                         Vector c = p.crossProduct(direction);
                         Vector v = c.rotateAroundAxis(direction, currentAngle).normalize().multiply(radius);
 
-                        Location particeLocation = target.getLocation().add(v);
+                        Location particeLocation = origin.getLocation().add(v);
                         builder.location(particeLocation);
                         builder.receivers(50);
                         builder.spawn();
@@ -137,7 +137,7 @@ public class Circle extends AnimationBuilder<Circle> {
                     onDraw.accept(that);
 
                 if (onHit != null) {
-                    target.getLocation().getNearbyLivingEntities(radius).forEach(entity -> {
+                    origin.getLocation().getNearbyLivingEntities(radius).forEach(entity -> {
                         if (hits.add(entity)) {
                             onHit.accept(entity);
                             if (multipleHits) {
