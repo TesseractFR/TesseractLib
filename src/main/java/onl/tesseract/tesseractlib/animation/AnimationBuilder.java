@@ -13,11 +13,7 @@ public abstract class AnimationBuilder<T extends AnimationBuilder<T>> {
     protected Particle particle;
     protected Color color;
     protected AnimationTarget origin;
-//    protected float radius;
-//    protected double delay;
-//    protected float rotationCount;
     protected Consumer<LivingEntity> onHit;
-//    protected Vector direction = new Vector(1E-15, 1, 1E-15).normalize();
     protected boolean multipleHits;
     protected int receiverRadius;
     protected Collection<Player> receivers;
