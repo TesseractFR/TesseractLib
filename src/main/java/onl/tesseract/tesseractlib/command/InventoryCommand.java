@@ -1,69 +1,52 @@
 package onl.tesseract.tesseractlib.command;
 
-import onl.tesseract.commandBuilder.CommandArgument;
-import onl.tesseract.commandBuilder.CommandBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import onl.tesseract.commandBuilder.CommandContext;
+import onl.tesseract.commandBuilder.annotation.Argument;
+import onl.tesseract.commandBuilder.annotation.Command;
+import onl.tesseract.commandBuilder.annotation.Perm;
+import onl.tesseract.tesseractlib.command.argument.InventoryInstanceConfigArg;
+import onl.tesseract.tesseractlib.command.argument.PlayerArg;
+import onl.tesseract.tesseractlib.command.argument.StringArg;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceConfiguration;
+import onl.tesseract.tesseractlib.inventory.InventoryInstanceConfigurationBuilder;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.stream.Collectors;
+@Command(playerOnly = true, permission = @Perm(mode = Perm.Mode.AUTO))
+public class InventoryCommand extends CommandContext {
 
-public class InventoryCommand implements CommandExecutor, TabCompleter {
-    final CommandBuilder builder;
-
-    public InventoryCommand()
+    @Command(description = "Sélectionner un inventaire")
+    public void selectCommand(@Argument("instance") InventoryInstanceConfigArg instance,
+                              @Argument(value = "player", optional = true) @Nullable PlayerArg player,
+                              Player sender)
     {
-        this.builder = new CommandBuilder("inventory")
-                .playerOnly(true)
-                .subCommand(new CommandBuilder("select")
-                        .withArg(new CommandArgument("instance", String.class)
-                                .tabCompletion((sender, env) -> InventoryInstanceManager.getAllConfigs()
-                                                                                        .stream()
-                                                                                        .map(InventoryInstanceConfiguration::getName)
-                                                                                        .collect(Collectors.toList()))
-                                .supplier((string, env) -> string))
-                        .withOptionalArg(new CommandArgument("player", Player.class)
-                                .tabCompletion((sender, env) -> null)
-                                .supplier((string, env) -> {
-                                    Player player = Bukkit.getPlayer(string);
-                                    if (player == null)
-                                        throw new IllegalArgumentException();
-                                    return player;
-                                })
-                                .error(IllegalArgumentException.class, "Joueur introuvable"))
-                        .permission("inventory.select")
-                        .description("Sélectionner un inventaire")
-                        .command((sender, env) -> {
-                            String invName = env.get("instance", String.class);
-                            Player player = env.get("player", Player.class);
-                            if (player == null)
-                                player = (Player) sender;
-                            InventoryInstanceManager.selectConfig(player, invName);
-                        }))
-                .subCommand(InventoryConfigCommand.get())
-                .command(((sender, commandEnvironment) -> {}));
+        if (player == null)
+            InventoryInstanceManager.selectConfig(sender, instance.get().getName());
+        else
+            InventoryInstanceManager.selectConfig(player.get(), instance.get().getName());
     }
 
-    @Override
-    public boolean onCommand(@NotNull final CommandSender sender, @NotNull final Command command, @NotNull final String label,
-                             final @NotNull String[] args)
-    {
-        builder.execute(sender, args);
-        return true;
-    }
+    @Command(name = "config", description = "Configurer les différents inventaires")
+    public static class Config {
 
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull final CommandSender sender, @NotNull final Command command, @NotNull final String alias,
-                                                final @NotNull String[] args)
-    {
-        return builder.tabComplete(sender, args);
+        @Command
+        public void create(@Argument("nom") StringArg name, CommandSender sender)
+        {
+            InventoryInstanceConfiguration config = new InventoryInstanceConfigurationBuilder()
+                    .setName(name.get())
+                    .build();
+            InventoryInstanceManager.addConfig(config);
+            sender.sendMessage(Component.text("Inventaire créé !", NamedTextColor.GREEN));
+        }
+
+        @Command
+        public void remove(@Argument("instance") InventoryInstanceConfigArg instance)
+        {
+            InventoryInstanceManager.removeConfig(instance.get().getName());
+        }
     }
 }
