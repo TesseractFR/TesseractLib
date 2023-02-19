@@ -14,7 +14,7 @@ public class PlayerArg extends CommandArgument<Player> {
     }
 
     @Override
-    public void define(final CommandArgumentBuilderSteps.Parser<Player> builder)
+    public void define(final CommandArgumentBuilderSteps.@NotNull Parser<Player> builder)
     {
         builder.parser((input, env) -> {
                    Player player = Bukkit.getPlayer(input);

@@ -14,7 +14,7 @@ public class InventoryInstanceConfigArg extends CommandArgument<InventoryInstanc
     }
 
     @Override
-    public void define(final CommandArgumentBuilderSteps.Parser<InventoryInstanceConfiguration> builder)
+    public void define(final CommandArgumentBuilderSteps.@NotNull Parser<InventoryInstanceConfiguration> builder)
     {
         builder.parser((input, env) -> {
                    InventoryInstanceConfiguration config = InventoryInstanceManager.get(input);

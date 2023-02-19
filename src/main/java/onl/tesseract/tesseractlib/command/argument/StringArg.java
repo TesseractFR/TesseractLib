@@ -13,7 +13,7 @@ public class StringArg extends CommandArgument<String> {
     }
 
     @Override
-    public void define(final CommandArgumentBuilderSteps.Parser<String> builder)
+    public void define(final CommandArgumentBuilderSteps.@NotNull Parser<String> builder)
     {
         builder.parser((input, env) -> input)
                .tabCompleter((input, env) -> List.of());
