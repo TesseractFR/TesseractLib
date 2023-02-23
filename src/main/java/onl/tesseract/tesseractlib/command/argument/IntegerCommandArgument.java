@@ -4,6 +4,8 @@ import onl.tesseract.commandBuilder.CommandArgument;
 import onl.tesseract.commandBuilder.CommandArgumentBuilderSteps;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class IntegerCommandArgument extends CommandArgument<Integer> {
     public IntegerCommandArgument(@NotNull final String name)
     {
@@ -16,7 +18,7 @@ public class IntegerCommandArgument extends CommandArgument<Integer> {
         builder.parser((input, env) -> {
                    return Integer.parseInt(input);
                })
-               .tabCompleter((input, env) -> null)
+               .tabCompleter((input, env) -> List.of("<" + getName() + ">"))
                .errorHandler(NumberFormatException.class, "Nombre invalide");
     }
 }
