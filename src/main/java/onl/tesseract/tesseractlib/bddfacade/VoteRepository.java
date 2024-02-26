@@ -195,7 +195,7 @@ public class VoteRepository {
         return 0;
     }
 
-    public static void removeKeys(final UUID playerUUID, final int amount)
+    public static void removePoints(final UUID playerUUID, final int amount)
     {
         try
         {

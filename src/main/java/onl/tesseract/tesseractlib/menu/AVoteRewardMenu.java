@@ -55,7 +55,7 @@ public abstract class AVoteRewardMenu extends InventoryMenu {
                 if (VoteRepository.getKeys(player.getUUID()) >= amount)
                 {
                     callback.accept(amount);
-                    VoteRepository.removeKeys(player.getUUID(), amount);
+                    VoteRepository.removePoints(player.getUUID(), amount);
                 }
                 else
                 {
@@ -67,6 +67,20 @@ public abstract class AVoteRewardMenu extends InventoryMenu {
                 player.sendMessage(ChatFormats.CHAT_ERROR, "Nombre invalide");
             }
         });
+    }
+
+    protected boolean hasAmount(final int amount){
+        return VoteRepository.getKeys(player.getUUID())>=amount;
+    }
+
+    protected void usePoints(final int amount,final Consumer<Integer> callback){
+        close();
+        if(!hasAmount(amount)){
+            player.sendMessage(ChatFormats.CHAT_ERROR, "Vous n'avez pas suffisamment de points de vote");
+            return;
+        }
+        VoteRepository.removePoints(player.getUUID(), amount);
+        callback.accept(amount);
     }
 }
 

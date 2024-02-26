@@ -1,6 +1,7 @@
 package onl.tesseract.tesseractlib.util;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -74,4 +75,8 @@ public class ChatFormats {
             .append(text("[", DARK_BLUE, BOLD))
             .append(text("Event", BLUE))
             .append(text("] ", DARK_BLUE, BOLD));
+     public static final TextComponent SHOP_ADMIN = Component.text("", GRAY)
+            .append(Component.text("[", DARK_RED, BOLD))
+            .append(Component.text("Admin-Shop", RED))
+            .append(Component.text("] ", DARK_RED, BOLD));
 }
