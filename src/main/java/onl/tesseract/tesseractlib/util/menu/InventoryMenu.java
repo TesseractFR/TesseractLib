@@ -435,5 +435,7 @@ public class InventoryMenu implements Listener {
         menu.open(player);
     }
 
-
+    public Player getViewer() {
+        return viewer;
+    }
 }
