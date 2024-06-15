@@ -5,6 +5,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
+import onl.tesseract.tesseractlib.cosmetics.TeleportationAnimation;
 import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
@@ -28,7 +29,7 @@ public class GlobalBoutiqueMenu extends InventoryMenu {
         fill(Material.GRAY_STAINED_GLASS_PANE, " ");
 
         int totalPlayerTrail = CosmeticManager.getTotalPossessed(player.getUUID(), ElytraTrails.getTypeName());
-        addButton(11, Material.ELYTRA,
+        addButton(10, Material.ELYTRA,
                   ChatColor.LIGHT_PURPLE + "Sillages des ailes",
                   NEW_LINE +
                           ChatColor.GRAY + totalPlayerTrail + "/" + ElytraTrails.values().length +
@@ -36,7 +37,7 @@ public class GlobalBoutiqueMenu extends InventoryMenu {
                           + NEW_LINE + NEW_LINE
                           + ChatColor.GRAY + "Customisez les particules de vos ailes", event -> new ElytraTrailboutiqueMenu(player, this).open(viewer));
         int totalPlayerFlyFilter = CosmeticManager.getTotalPossessed(player.getUUID(),FlyFilter.getTypeName());
-        addButton(13, Material.BLAZE_POWDER,
+        addButton(12, Material.BLAZE_POWDER,
                   ChatColor.DARK_GREEN + "Filtre de vol & jetpack",
                   NEW_LINE +
                           ChatColor.GRAY + totalPlayerFlyFilter + "/" + FlyFilter.values().length +
@@ -48,14 +49,25 @@ public class GlobalBoutiqueMenu extends InventoryMenu {
 
 
         int totalPlayerPet = CosmeticManager.getTotalPossessed(player.getUUID(), Pet.getTypeName());
-        addButton(15, Material.LEAD,
+        addButton(14, Material.LEAD,
                   ChatColor.BLUE + "Familier",
                   NEW_LINE +
                           ChatColor.GRAY + totalPlayerPet + "/" + Pet.values().length +
                           " possédé" + (totalPlayerPet > 2 ? "s" : "")
                           + NEW_LINE + NEW_LINE +
                           ChatColor.GRAY + "De petits familiers qui vous suivent partout", event -> new PetBoutiqueMenu(player,this).open(viewer));
-
+        int totalTPAnimationPossessed =
+                CosmeticManager.getTotalPossessed(player.getUUID(), TeleportationAnimation.getTypeName());
+        addButton(16, Material.ENDER_PEARL,
+                ChatColor.DARK_GREEN + "Animations de Téléportation",
+                NEW_LINE +
+                        ChatColor.GRAY + totalTPAnimationPossessed + "/" + TeleportationAnimation.values().length +
+                        " possédé" + (totalTPAnimationPossessed > 2 ? "s" : "")
+                        + NEW_LINE + NEW_LINE +
+                        ChatColor.GRAY + "Customisez vos particules de téléportation.",
+                event -> {
+                    new TPAnimationBoutiqueMenu(player, this).open(viewer);
+                });
         addButton(22, Material.RAW_GOLD, ChatColor.GOLD + "Lys d'or",
                   NEW_LINE+ ChatColor.GRAY + "Vous avez "+ChatColor.DARK_AQUA+player.getMarketCurrency()+ChatColor.GRAY+
                           " lys d'or."+
