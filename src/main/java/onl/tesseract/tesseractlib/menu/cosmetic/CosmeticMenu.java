@@ -28,7 +28,7 @@ public class CosmeticMenu extends InventoryMenu {
         fill(Material.GRAY_STAINED_GLASS_PANE, " ");
 
         int totalPlayerTrail = CosmeticManager.getTotalPossessed(player.getUUID(), ElytraTrails.getTypeName());
-        addButton(11, Material.ELYTRA,
+        addButton(10, Material.ELYTRA,
                   ChatColor.LIGHT_PURPLE + "Sillages des ailes",
                   NEW_LINE +
                           ChatColor.GRAY + totalPlayerTrail + "/" + ElytraTrails.values().length +
@@ -36,7 +36,7 @@ public class CosmeticMenu extends InventoryMenu {
                           + NEW_LINE + NEW_LINE
                           + ChatColor.GRAY + "Customisez les particules de vos ailes", event -> new ElytraTrailSelectionMenu(player, this).open(viewer));
         int totalPlayerFlyFilter = CosmeticManager.getTotalPossessed(player.getUUID(), FlyFilter.getTypeName());
-        addButton(13, Material.BLAZE_POWDER,
+        addButton(12, Material.BLAZE_POWDER,
                   ChatColor.DARK_GREEN + "Filtre de vol & jetpack",
                   NEW_LINE +
                           ChatColor.GRAY + totalPlayerFlyFilter + "/" + FlyFilter.values().length +
@@ -48,13 +48,18 @@ public class CosmeticMenu extends InventoryMenu {
 
 
         int totalPlayerPet = CosmeticManager.getTotalPossessed(player.getUUID(), Pet.getTypeName());
-        addButton(15, Material.LEAD,
+        addButton(14, Material.LEAD,
                   ChatColor.BLUE + "Familier",
                   NEW_LINE +
                           ChatColor.GRAY + totalPlayerPet + "/" + Pet.values().length +
                           " possédé" + (totalPlayerPet > 2 ? "s" : "")
                           + NEW_LINE + NEW_LINE +
                           ChatColor.GRAY + "De petits familiers qui vous suivent partout", event -> new PetTypeSelection(player, this).open(viewer));
+        addButton(16, Material.ENDER_PEARL, ChatColor.BLUE + "Téléportations",
+                NEW_LINE + ChatColor.GRAY + "Customisez les particules de téléportation",
+                event -> {
+                    new CosmeticTPMenu(player, this).open(viewer);
+                });
 
         super.addBackButton();
         super.addQuitButton();

@@ -3,6 +3,8 @@ package onl.tesseract.tesseractlib.player;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -11,10 +13,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.bddfacade.PlayerRepository;
-import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
-import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
-import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
-import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
+import onl.tesseract.tesseractlib.cosmetics.*;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
 import onl.tesseract.tesseractlib.util.ChatFormat;
@@ -74,6 +73,9 @@ public abstract class TPlayer implements Listener {
     protected ElytraTrails trails = ElytraTrails.NONE;
     protected int marketCurrency = 0;
     protected FlyFilter flyFilter =  FlyFilter.NONE;
+    @Getter
+    @Setter
+    protected TeleportationAnimation tp_animation = TeleportationAnimation.WATER;
 
     /**
      * Loads a player
@@ -187,7 +189,7 @@ public abstract class TPlayer implements Listener {
     {
         this.player = player;
         this.loadOnConnection();
-
+        CosmeticManager.loadPlayer(player.getUniqueId());
 
         // First connection of the day
         if (!hasPlayedToday())
@@ -517,7 +519,7 @@ public abstract class TPlayer implements Listener {
         if (!event.getPlayer().getUniqueId().equals(getOfflinePlayer().getUniqueId()))
             return;
         String[] parts = event.getMessage().split(" ");
-        if (parts[0].equals("/command"))
+            if (parts[0].equals("/command"))
         {
             event.setCancelled(true);
             if (commandEntryCallback == null || parts.length == 1)
@@ -693,4 +695,5 @@ public abstract class TPlayer implements Listener {
     {
         return repository;
     }
+
 }
