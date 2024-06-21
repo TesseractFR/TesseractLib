@@ -19,7 +19,7 @@ public class BDD {
 
     public String getUrl(){
         TesseractLib.logger().info("jdbc:mysql://"+host+":"+port+"/"+dbName);
-        return "jdbc:mysql://"+host+":"+port+"/"+dbName;
+        return "jdbc:mysql://"+host+":"+port+"/"+dbName+"?autoReconnect=true";
 
     }
 
