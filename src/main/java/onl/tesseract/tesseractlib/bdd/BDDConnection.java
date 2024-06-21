@@ -22,7 +22,6 @@ public class BDDConnection {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             this.connection = DriverManager.getConnection(database.getUrl(),database.getUser(), database.getPassword());
-
             TesseractLib.logger().info("[BDD] : connection done");
         } catch (SQLException | ClassNotFoundException throwables) {
             TesseractLib.logger().log(Level.SEVERE, "Could not connect to database", throwables);
