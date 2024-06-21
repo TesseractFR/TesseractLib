@@ -91,7 +91,12 @@ public class CosmeticManager {
         else
             runnable.runTaskAsynchronously(TesseractLib.instance);
     }
-
+    public static boolean hasCosmetic(UUID player, String type, Cosmetic cosmetic)
+    {
+        if (!cosmeticPlayer.containsKey(player))
+            loadPlayer(player);
+        return cosmeticPlayer.get(player).hasCosmetics(type, cosmetic);
+    }
     public static boolean hasCosmetic(Player player, String type, Cosmetic cosmetic)
     {
         if (!cosmeticPlayer.containsKey(player.getUniqueId()))
