@@ -682,6 +682,7 @@ public abstract class TPlayer implements Listener {
 
     public int getMarketCurrency()
     {
+        marketCurrency = repository.getMarketCurrency();
         return marketCurrency;
     }
 

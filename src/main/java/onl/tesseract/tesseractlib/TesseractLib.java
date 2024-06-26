@@ -10,6 +10,7 @@ import onl.tesseract.tesseractlib.command.staff.*;
 import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
+import onl.tesseract.tesseractlib.cosmetics.TeleportationAnimation;
 import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
 import onl.tesseract.tesseractlib.cosmetics.familier.PetManager;
 import onl.tesseract.tesseractlib.equipment.Equipment;
@@ -106,6 +107,8 @@ public final class TesseractLib extends JavaPlugin implements Listener {
 
     private void registerCosmetics()
     {
+        this.getServer().getPluginManager().registerEvents(new CosmeticManager(), this);
+        CosmeticManager.registerCosmetic(TeleportationAnimation.getTypeName(),new HashSet<>(Arrays.asList(TeleportationAnimation.values())));
         CosmeticManager.registerCosmetic(Pet.getTypeName(), new HashSet<>(Arrays.asList(Pet.values())));
         CosmeticManager.registerCosmetic(FlyFilter.getTypeName(), new HashSet<>(Arrays.asList(FlyFilter.values())));
         CosmeticManager.registerCosmetic(ElytraTrails.getTypeName(), new HashSet<>(Arrays.asList(ElytraTrails.values())));
