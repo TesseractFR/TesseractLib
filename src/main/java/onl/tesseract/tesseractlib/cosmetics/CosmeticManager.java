@@ -11,12 +11,15 @@ import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.function.Consumer;
 
-public class CosmeticManager {
+public class CosmeticManager implements Listener {
 
     private static final Map<UUID, CosmeticPlayer> cosmeticPlayer = new HashMap<>();
 
@@ -95,7 +98,11 @@ public class CosmeticManager {
     {
         if (!cosmeticPlayer.containsKey(player))
             loadPlayer(player);
-        return cosmeticPlayer.get(player).hasCosmetics(type, cosmetic);
+        try {
+            return cosmeticPlayer.get(player).hasCosmetics(type, cosmetic);
+        }catch (NullPointerException e) {
+            return false;
+        }
     }
     public static boolean hasCosmetic(Player player, String type, Cosmetic cosmetic)
     {
@@ -176,5 +183,11 @@ public class CosmeticManager {
         if (!cosmeticPlayer.containsKey(uuid))
             return Set.of();
         return cosmeticPlayer.get(uuid).getCosmetics(cosmeticType);
+    }
+
+
+    @EventHandler
+    public void onPreJoin(PlayerPreLoginEvent event){
+        loadPlayer(event.getUniqueId());
     }
 }
