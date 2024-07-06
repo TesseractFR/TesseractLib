@@ -11,15 +11,15 @@ public enum ElytraTrails implements Cosmetic {
     CLOUD(ChatColor.GRAY + "Nuages", Material.PHANTOM_MEMBRANE, 3, Particle.CLOUD),
     LOVE(ChatColor.GRAY + "Amour", Material.APPLE, 4, Particle.HEART),
     MUSICAL(ChatColor.DARK_AQUA + "Musical", Material.NOTE_BLOCK, 5, Particle.NOTE),
-    REDSTONE(ChatColor.DARK_RED + "Redstone", Material.REDSTONE, 6, Particle.REDSTONE),
-    SMOKE(ChatColor.DARK_GRAY + "Fumée noire", Material.CHARCOAL, 7, Particle.SMOKE_LARGE),
-    GREEN(ChatColor.GREEN + "Verdoyant", Material.LILY_PAD, 10, Particle.VILLAGER_HAPPY),
-    ANGER(ChatColor.DARK_RED + "Colère", Material.NETHER_WART, 11, Particle.VILLAGER_ANGRY),
+    REDSTONE(ChatColor.DARK_RED + "Redstone", Material.REDSTONE, 6, Particle.DUST),
+    SMOKE(ChatColor.DARK_GRAY + "Fumée noire", Material.CHARCOAL, 7, Particle.LARGE_SMOKE),
+    GREEN(ChatColor.GREEN + "Verdoyant", Material.LILY_PAD, 10, Particle.HAPPY_VILLAGER),
+    ANGER(ChatColor.DARK_RED + "Colère", Material.NETHER_WART, 11, Particle.ANGRY_VILLAGER),
     INCENDIARY(ChatColor.GOLD + "Incendiaire", Material.FIRE_CHARGE, 12, Particle.LAVA),
     NEBULOUS(ChatColor.WHITE + "Nébuleux", Material.FEATHER, 13, Particle.END_ROD),
-    TOTEM(ChatColor.DARK_GREEN + "Totem", Material.TOTEM_OF_UNDYING, 14, Particle.TOTEM),
-    POTION(ChatColor.LIGHT_PURPLE + "Potion", Material.DRAGON_BREATH, 15, Particle.SPELL_MOB),
-    SHINNING(ChatColor.WHITE + "Scintillant", Material.PRISMARINE_CRYSTALS, 16, Particle.FIREWORKS_SPARK),
+    TOTEM(ChatColor.DARK_GREEN + "Totem", Material.TOTEM_OF_UNDYING, 14, Particle.TOTEM_OF_UNDYING),
+    POTION(ChatColor.LIGHT_PURPLE + "Potion", Material.DRAGON_BREATH, 15, Particle.DRAGON_BREATH),
+    SHINNING(ChatColor.WHITE + "Scintillant", Material.PRISMARINE_CRYSTALS, 16, Particle.FIREWORK),
     NONE(ChatColor.GRAY + "Sans sillage", Material.STRUCTURE_VOID, 0, null);
 
     final String name;

@@ -178,7 +178,7 @@ public class Util {
             meta.lore(new ItemLoreBuilder(lineWidth).append(lore).get());
         item.setItemMeta(meta);
         if (enchant) {
-            item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+            item.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
             item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         item.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -213,7 +213,7 @@ public class Util {
 
             // Skip if it has a localizedName
 
-            if ((item.hasItemMeta() && item.getItemMeta().hasLocalizedName()) || !item.getEnchantments().isEmpty())
+            if ((item.hasItemMeta() && item.getItemMeta().hasDisplayName()) || !item.getEnchantments().isEmpty())
                 continue;
             count += item.getAmount();
         }
@@ -263,7 +263,7 @@ public class Util {
         if (item != null) {
             if (item.hasItemMeta() && item.getItemMeta() instanceof Damageable && ((Damageable) item.getItemMeta()).getDamage() > 0)
                 return countNonSpecialItems((Inventory) inv, material);
-            if (item.getType() == material && !(item.hasItemMeta() && item.getItemMeta().hasLocalizedName()) && item.getEnchantments().isEmpty())
+            if (item.getType() == material && !(item.hasItemMeta() && item.getItemMeta().hasDisplayName()) && item.getEnchantments().isEmpty())
                 return item.getAmount() + countNonSpecialItems((Inventory) inv, material);
         }
         return countNonSpecialItems((Inventory) inv, material);
@@ -284,7 +284,7 @@ public class Util {
             ItemStack item = items.get(index);
             if (item.hasItemMeta() && item.getItemMeta() instanceof Damageable && ((Damageable) item.getItemMeta()).getDamage() > 0)
                 continue;
-            if ((item.hasItemMeta() && item.getItemMeta().hasLocalizedName()) || !item.getEnchantments().isEmpty())
+            if ((item.hasItemMeta() && item.getItemMeta().hasDisplayName()) || !item.getEnchantments().isEmpty())
                 continue;
             if (item.getAmount() >= count) {
                 item.setAmount(item.getAmount() - count);

@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 public enum TeleportationAnimation implements Cosmetic {
     WATER("Eau", Material.WATER_BUCKET, (location, duration) -> {
         return new SmoothCylinder()
-                .setParticle(Particle.DRIP_WATER)
+                .setParticle(Particle.DRIPPING_WATER)
                 .setLocation(location)
                 .setRadius(1)
                 .setHeight(3)
@@ -23,7 +23,7 @@ public enum TeleportationAnimation implements Cosmetic {
     }),
     LAVA("Lave", Material.LAVA_BUCKET, (location, duration) -> {
         return new SmoothCylinder()
-                .setParticle(Particle.DRIP_LAVA)
+                .setParticle(Particle.DRIPPING_LAVA)
                 .setLocation(location)
                 .setRadius(1)
                 .setHeight(3)
@@ -61,7 +61,7 @@ public enum TeleportationAnimation implements Cosmetic {
     }),
     SPHERE("Sphère", Material.HEART_OF_THE_SEA, (location, duration) -> {
         return new Sphere()
-                .setParticle(Particle.REDSTONE)
+                .setParticle(Particle.DUST)
                 .setColor(Color.RED)
                 .setOrigin(new AnimationTarget(location.add(0, 1, 0)))
                 .setRadius(1.5f)
@@ -70,7 +70,7 @@ public enum TeleportationAnimation implements Cosmetic {
                 .build();
     }),
     DIVIN("Divin", Material.BEACON, (location, duration) -> {
-        return new Cylinder().setParticle(Particle.VILLAGER_HAPPY)
+        return new Cylinder().setParticle(Particle.HAPPY_VILLAGER)
                 .setLocation(location)
                 .setRadius(1)
                 .setHeight(20)
@@ -154,7 +154,7 @@ public enum TeleportationAnimation implements Cosmetic {
                 }.runTaskTimer(TesseractLib.instance, 0, 5);
             }),
     THUNDER("Éclair", Material.TRIDENT, (location, duration) -> {
-        return new Circle(Particle.SMOKE_LARGE, new AnimationTarget(location))
+        return new Circle(Particle.LARGE_SMOKE, new AnimationTarget(location))
                 .setRadius(1)
                 .setOriginCount(2)
                 .setRotationCount(3)
@@ -176,9 +176,9 @@ public enum TeleportationAnimation implements Cosmetic {
                                     2.1 * Math.sin(k * Math.PI * 0.4));
                         for (int k = 0; k < 5; k++)
                         {
-                            new Line(Particle.REDSTONE, points[k], points[(k + 2) % 5]).setColor(Color.RED).setDelay(0)
+                            new Line(Particle.DUST, points[k], points[(k + 2) % 5]).setColor(Color.RED).setDelay(0)
                                     .draw();
-                            new Line(Particle.REDSTONE, points[k], points[(k + 3) % 5]).setColor(Color.RED).setDelay(0)
+                            new Line(Particle.DUST, points[k], points[(k + 3) % 5]).setColor(Color.RED).setDelay(0)
                                     .draw();
                         }
 
@@ -200,7 +200,7 @@ public enum TeleportationAnimation implements Cosmetic {
                         .speed(0.2)
                         .count(75)
                         .radius(3.5)
-                        .particle(Particle.TOTEM)
+                        .particle(Particle.TOTEM_OF_UNDYING)
                         .time(duration + 5)
                         .draw();
             }),
