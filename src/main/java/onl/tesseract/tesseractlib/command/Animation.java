@@ -41,17 +41,17 @@ public class Animation implements CommandExecutor, TabCompleter {
                     delay = (args.length >= 3) ? Double.parseDouble(args[2]) : 0;
                     loc = new Location(((Player) sender).getWorld(), 140, 71, 155);
                     if (delay > 0)
-                        new ShockWave(Particle.DRIP_LAVA, null, loc, radius, delay, Animation::callbackDamage);
+                        new ShockWave(Particle.DRIPPING_LAVA, null, loc, radius, delay, Animation::callbackDamage);
                     else
                     {
-                        new ShockWave(Particle.REDSTONE, Color.AQUA, player.getLocation(), radius, Animation::callbackDamage);
+                        new ShockWave(Particle.DUST, Color.AQUA, player.getLocation(), radius, Animation::callbackDamage);
                     }
                     break;
 
                 case "circle":
                     radius = (args.length >= 2) ? Integer.parseInt(args[1]) : 15;
                     delay = (args.length >= 3) ? Double.parseDouble(args[2]) : 0;
-                    new Circle(Particle.REDSTONE, new AnimationTarget(player))
+                    new Circle(Particle.DUST, new AnimationTarget(player))
                             .setColor(Color.FUCHSIA)
                             .setRadius(radius)
                             .setDelay(delay)
@@ -61,7 +61,7 @@ public class Animation implements CommandExecutor, TabCompleter {
 
                 case "disc":
                     radius = (args.length >= 2) ? Integer.parseInt(args[1]) : 15;
-                    new Disc(Particle.REDSTONE, Color.FUCHSIA, player.getLocation(), radius);
+                    new Disc(Particle.DUST, Color.FUCHSIA, player.getLocation(), radius);
                     break;
 
                 case "cylinder":
@@ -73,7 +73,7 @@ public class Animation implements CommandExecutor, TabCompleter {
                 case "ring":
                     radius = (args.length >= 2) ? Integer.parseInt(args[1]) : 15;
                     loc = new Location(((Player) sender).getWorld(), 140, 71, 155);
-                    new Ring(Particle.REDSTONE, Color.FUCHSIA, loc, 3, 5, Animation::callbackDamage);
+                    new Ring(Particle.DUST, Color.FUCHSIA, loc, 3, 5, Animation::callbackDamage);
                     break;
 
                 case "line":
@@ -89,7 +89,7 @@ public class Animation implements CommandExecutor, TabCompleter {
 
                 case "ray":
                     int range = (args.length >= 2) ? Integer.parseInt(args[1]) : 15;
-                    new Ray(Particle.REDSTONE, Color.GRAY, player, (short) range, 0.3f, Animation::callbackImpact);
+                    new Ray(Particle.DUST, Color.GRAY, player, (short) range, 0.3f, Animation::callbackImpact);
                     break;
 
                 case "cone":

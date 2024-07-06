@@ -176,7 +176,7 @@ public class InventoryMenu implements Listener {
     public <T> void addButton(int index, ItemStack item, boolean enchanted, Consumer<InventoryClickEvent> function) {
         ItemStack cloned = item.clone();
         if (enchanted)
-            cloned.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+            cloned.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
         addButton(index, cloned, function);
     }
 
