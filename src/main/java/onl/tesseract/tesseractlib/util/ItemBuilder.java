@@ -156,7 +156,7 @@ public class ItemBuilder {
         item.setItemMeta(meta);
         if (enchanted)
         {
-            item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+            item.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
             item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         item.addItemFlags(flags);

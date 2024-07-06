@@ -41,7 +41,7 @@ public class Meteorite {
             public void run()
             {
                 Location middle = blocks.get(72).getLocation();
-                middle.getWorld().spawnParticle(Particle.SMOKE_LARGE, middle, 100, .6, .6, .6, 0.01);
+                middle.getWorld().spawnParticle(Particle.LARGE_SMOKE, middle, 100, .6, .6, .6, 0.01);
                 middle.getWorld().spawnParticle(Particle.FLAME, middle, 150, .6, .6, .6, 0.01);
             }
         }.runTaskTimer(TesseractLib.instance, 0, 10);
@@ -80,7 +80,7 @@ public class Meteorite {
                 if (timer > 10) {
                     Location middle = blocks.get(72).getLocation();
                     middle.getWorld().spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, middle, 40, .6, .6, .6, 0.001);
-                    middle.getWorld().spawnParticle(Particle.SMOKE_LARGE, middle, 100, .6, .6, .6, 0.001);
+                    middle.getWorld().spawnParticle(Particle.LARGE_SMOKE, middle, 100, .6, .6, .6, 0.001);
                     middle.getWorld().spawnParticle(Particle.FLAME, middle, 50, .6, .6, .6, 0.001);
                     timer = 0;
                 }
@@ -91,9 +91,9 @@ public class Meteorite {
     }
 
     public void explode(Consumer<Player> onHit) {
-        new ShockWave(Particle.DRIP_LAVA, null, this.impactLocation, 20, 0.2, onHit);
+        new ShockWave(Particle.DRIPPING_LAVA, null, this.impactLocation, 20, 0.2, onHit);
         impactLocation.getWorld().spawnParticle(Particle.FLAME, impactLocation, 500, .6, .6, .6, 0.5);
-        impactLocation.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, impactLocation, 5, .6, .6, .6, 0.001);
+        impactLocation.getWorld().spawnParticle(Particle.EXPLOSION, impactLocation, 5, .6, .6, .6, 0.001);
         impactLocation.getWorld().playSound(impactLocation, Sound.ENTITY_GENERIC_EXPLODE, 50, 1);
         this.removeBlocks();
     }
