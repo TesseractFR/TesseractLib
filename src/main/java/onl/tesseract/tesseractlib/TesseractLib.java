@@ -53,18 +53,16 @@ import java.util.logging.Logger;
 public final class TesseractLib extends JavaPlugin implements Listener {
     public static JavaPlugin instance;
 
-    static public final String configFilepath = "plugins/Tesseract/config.yml";
-
-    static private String host, database, username, password;
+    private final Config config = Config.getInstance();
     private static BDDManager bddManager;
     static public int port;
 
     private static PlayerContainer<? extends TPlayer, ? extends Equipment> playerContainer;
 
-    static public BDDManager getBddManager() {
+    public static BDDManager getBddManager() {
         if(bddManager == null){
-            loadConfig();
-            bddManager= new BDDManager(host,port,username,password,database);
+            Config config = Config.getInstance();
+            bddManager= new BDDManager(config.getDb_host(),config.getDb_port(),config.getDb_username(),config.getDb_password(),config.getDb_database());
         }
         return bddManager;
     }
@@ -74,8 +72,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         // Plugin startup logic
         instance = this;
         setPlayerContainer(new StandalonePlayerContainer());
-        loadConfig();
-        bddManager = new BDDManager(host,port,username,password,database);
+        bddManager= new BDDManager(config.getDb_host(),config.getDb_port(),config.getDb_username(),config.getDb_password(),config.getDb_database());
         registerCosmetics();
         registerEvents();
         registerCommands();
@@ -172,18 +169,6 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(new InventoryInstanceEventHandler(),this);
     }
 
-
-    public static void loadConfig()
-    {
-        File file = new File(configFilepath);
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-
-        host = yaml.getString("db_host");
-        database = yaml.getString("db_database");
-        username = yaml.getString("db_username");
-        password = yaml.getString("db_password");
-        port = yaml.getInt("db_port");
-    }
 
 
     @EventHandler
