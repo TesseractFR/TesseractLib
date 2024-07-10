@@ -1,6 +1,12 @@
 package onl.tesseract.tesseractlib.achievement;
 
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.bddfacade.AchievementFacade;
 
@@ -14,6 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+@Getter
+@Entity
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@EqualsAndHashCode
+@Table(name = "t_achievement",
+        uniqueConstraints = {@UniqueConstraint(columnNames = "id")},
+        indexes = @Index(name = "idx_id", columnList = "id"))
 public class Achievement {
 
 
@@ -36,13 +50,16 @@ public class Achievement {
                                                              Achievement.getAchievementFromName(
                                                                      "TUTO_MENU_SEARCH_PARCELLE")
     );
-    private final Title title;
-    private final String condition;
-    private final String name;
-    private final float lys;
-    private final int ptsIllumination;
-    private final int id;
-    private final String displayName;
+    @ManyToOne
+    Title title;
+    @Column(columnDefinition = "VARCHAR(255)")
+    String condition;
+    String name;
+    float lys;
+    int ptsIllumination;
+    @Id
+    int id;
+    String displayName;
 
 
     public Achievement(int id, Title title, String name,String displayName, String condition, float lys, int ptsIllumination)
@@ -91,36 +108,6 @@ public class Achievement {
             return achievementsbyId.get(id);
         }
         throw new NullPointerException("No achievement founds");
-    }
-
-    public String getDisplayName()
-    {
-        return displayName;
-    }
-
-    public String getCondition()
-    {
-        return condition;
-    }
-
-    public Title getTitle()
-    {
-        return title;
-    }
-
-    public float getLys()
-    {
-        return lys;
-    }
-
-    public int getPtsIllumination()
-    {
-        return ptsIllumination;
-    }
-
-    public int getId()
-    {
-        return id;
     }
 
     public static Map<String,Achievement> getAll(){
