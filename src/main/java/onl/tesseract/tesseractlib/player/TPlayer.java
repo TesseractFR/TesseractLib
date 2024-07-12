@@ -12,8 +12,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.achievement.Achievement;
-import onl.tesseract.tesseractlib.bddfacade.PlayerRepository;
 import onl.tesseract.tesseractlib.cosmetics.*;
+import onl.tesseract.tesseractlib.dao.TPlayerInfoDAO;
+import onl.tesseract.tesseractlib.entity.TPlayerInfo;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
 import onl.tesseract.tesseractlib.util.ChatFormat;
@@ -35,8 +36,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
@@ -67,12 +66,8 @@ public abstract class TPlayer implements Listener {
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
     protected PlayerProfile playerProfile;
-    protected Gender gender = Gender.MALE;
-    private final PlayerRepository repository;
-    protected List<Achievement> achievements = new ArrayList<>();
-    protected ElytraTrails trails = ElytraTrails.NONE;
-    protected int marketCurrency = 0;
-    protected FlyFilter flyFilter =  FlyFilter.NONE;
+    @Getter
+    protected TPlayerInfo tPlayerInfo;
     @Getter
     @Setter
     protected TeleportationAnimation tp_animation = TeleportationAnimation.WATER;
@@ -82,19 +77,11 @@ public abstract class TPlayer implements Listener {
      *
      * @param player OfflinePlayer to load
      */
-    public TPlayer(OfflinePlayer player, final PlayerRepository repository)
-    {
-        this.player = player;
-        this.repository = repository;
-    }
-
     public TPlayer(final OfflinePlayer player)
     {
         this.player = player;
-        this.repository = newRepository(player.getUniqueId());
+        this.tPlayerInfo = TPlayerInfoDAO.getInstance().get(player.getUniqueId());
     }
-
-    protected abstract PlayerRepository newRepository(final UUID uuid);
 
     public static TPlayer get(final OfflinePlayer player)
     {
@@ -125,13 +112,12 @@ public abstract class TPlayer implements Listener {
 
     public FlyFilter getFlyFilter()
     {
-        return flyFilter;
+        return this.tPlayerInfo.getActive_fly_filter();
     }
 
     public void setFlyFilter(FlyFilter flyFilter)
     {
-        this.flyFilter = flyFilter;
-        repository.setFlyFilter(flyFilter);
+        this.tPlayerInfo.setActive_fly_filter(flyFilter);
     }
 
     public void buyCosmetic(String type, Cosmetic cosmetic,int price)
@@ -141,9 +127,9 @@ public abstract class TPlayer implements Listener {
     }
 
     public void addMarketCurrency(int amount){
-        repository.addMarketCurrency(amount);
+        TPlayerInfoDAO.getInstance().addMarketCurrency(tPlayerInfo,amount);
+        TPlayerInfoDAO.getInstance().refresh(tPlayerInfo);
         TesseractLib.logger().info(String.format("[Market Currency] %s earn %d lys d'or", player.getName(), amount));
-        marketCurrency = repository.getMarketCurrency();
     }
 
     /**
@@ -189,7 +175,6 @@ public abstract class TPlayer implements Listener {
     {
         this.player = player;
         this.loadOnConnection();
-        CosmeticManager.loadPlayer(player.getUniqueId());
 
         // First connection of the day
         if (!hasPlayedToday())
@@ -217,7 +202,7 @@ public abstract class TPlayer implements Listener {
      */
     public void save()
     {
-        getRepository().save();
+        TPlayerInfoDAO.getInstance().save(this.tPlayerInfo);
         if (equipment != null)
             this.equipment.save();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
@@ -260,22 +245,9 @@ public abstract class TPlayer implements Listener {
         return getOfflinePlayer().getUniqueId();
     }
 
-    public void load(ResultSet resultSet)
+    public void load()
     {
-        try
-        {
-            gender = Gender.valueOf(resultSet.getString("genre"));
-            trails = ElytraTrails.valueOf(resultSet.getString("active_trail"));
-            marketCurrency = resultSet.getInt("market_currency");
-            flyFilter = FlyFilter.valueOf(resultSet.getString("active_fly_filter"));
-        }
-        catch (SQLException throwables)
-        {
-            gender = Gender.OTHER;
-            marketCurrency = 0;
-        }
-        achievements.clear();
-        achievements = repository.getAllAchievements();
+
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         if (file.exists())
         {
@@ -303,12 +275,13 @@ public abstract class TPlayer implements Listener {
      *
      * @param message Message to send
      */
+    @Deprecated(forRemoval = true)
     public void sendMessage(String message)
     {
         if (isOnline())
             getBukkitPlayer().sendMessage(message);
     }
-
+    @Deprecated(forRemoval = true)
     public void sendMessage(String[] message)
     {
         if (isOnline())
@@ -605,18 +578,17 @@ public abstract class TPlayer implements Listener {
 
     public Gender getGender()
     {
-        return gender;
+        return tPlayerInfo.getGenre();
     }
 
     public void setGender(Gender gender)
     {
-        this.gender = gender;
-        repository.setGender(gender);
+        tPlayerInfo.setGenre(gender);
     }
 
     public boolean hasAchievement(Achievement achievement)
     {
-        return achievements.contains(achievement);
+        return tPlayerInfo.getAchievements().contains(achievement);
     }
 
     public void addAchievements(Achievement achievement)
@@ -626,10 +598,9 @@ public abstract class TPlayer implements Listener {
 
     public void addAchievements(Achievement achievement, boolean foreveryone)
     {
-        if (achievements.contains(achievement))
+        if (tPlayerInfo.getAchievements().contains(achievement))
             return;
-        achievements.add(achievement);
-        repository.addAchievements(achievement);
+        tPlayerInfo.getAchievements().add(achievement);
         sendMessage(ChatFormats.HAUT_FAIT.append(Component.text("Vous avez obtenu le haut-fait ")));
         sendMessage(Component.empty()
                              .append(Component.text("      « ").color(NamedTextColor.AQUA))
@@ -666,35 +637,23 @@ public abstract class TPlayer implements Listener {
 
     public void removeAchievement(Achievement achievement)
     {
-        achievements.remove(achievement);
-        repository.removeAchievement(achievement);
+        tPlayerInfo.getAchievements().remove(achievement);
     }
 
     public ElytraTrails getActiveTrail()
     {
-        return trails;
+        return tPlayerInfo.getActive_trail();
     }
 
     public void setActiveTrail(ElytraTrails elytraTrails){
-        trails = elytraTrails;
-        repository.setActiveTrails(trails);
+        tPlayerInfo.setActive_trail(elytraTrails);
     }
 
     public int getMarketCurrency()
     {
-        marketCurrency = repository.getMarketCurrency();
-        return marketCurrency;
+        TPlayerInfoDAO.getInstance().refresh(tPlayerInfo);
+        return tPlayerInfo.getMarket_currency();
     }
 
-    public void setMarketCurrency(int currency)
-    {
-        marketCurrency = currency;
-        repository.setMarketCurrency(marketCurrency);
-    }
-
-    protected PlayerRepository getRepository()
-    {
-        return repository;
-    }
 
 }

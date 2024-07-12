@@ -7,6 +7,7 @@ import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.cosmetics.TeleportationAnimation;
+import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
 import onl.tesseract.tesseractlib.player.Gender;
 import org.hibernate.annotations.JdbcTypeCode;
 
@@ -18,9 +19,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Data
-@Table(name = "t_player",
-        uniqueConstraints = {@UniqueConstraint(columnNames = "uuid")},
-        indexes = @Index(name = "idx_uuid", columnList = "uuid"))
+@Table(name = "t_player", uniqueConstraints = {@UniqueConstraint(columnNames = "uuid")}, indexes = @Index(name = "idx_uuid", columnList = "uuid"))
 public class TPlayerInfo implements Serializable {
     @Id
     @Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(36)", unique = true)
@@ -42,31 +41,53 @@ public class TPlayerInfo implements Serializable {
     @Column(nullable = false)
     int market_currency;
 
-    @ElementCollection(targetClass = ElytraTrails.class)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "t_player_elytra_trails", joinColumns = @JoinColumn(name = "player_uuid"))
-    @Column(name = "trails")
-    Set<ElytraTrails> elytra_trails;
-
-    @ElementCollection(targetClass = FlyFilter.class)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "t_player_jetpack_filter", joinColumns = @JoinColumn(name = "player_uuid"))
-    @Column(name = "filter")
-    Set<FlyFilter> fly_filters;
-
-    @ElementCollection(targetClass = TeleportationAnimation.class)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "t_player_teleportation_animation", joinColumns = @JoinColumn(name = "player_uuid"))
-    @Column(name = "animation")
-    Set<TeleportationAnimation> teleportation_animations;
-
     @ManyToMany
-    @JoinTable(
-            name = "t_player_achievement",
-            joinColumns = @JoinColumn(name = "player_uuid"),
-            inverseJoinColumns = @JoinColumn(name = "achievement_id")
-    )
+    @JoinTable(name = "t_player_achievement", joinColumns = @JoinColumn(name = "player_uuid"), inverseJoinColumns = @JoinColumn(name = "achievement_id"))
     Set<Achievement> achievements = new HashSet<>();
 
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "t_player_cosmetics", joinColumns = @JoinColumn(name = "player_uuid"))
+    @AttributeOverrides({@AttributeOverride(name = "cosmetic_type", column = @Column(name = "cosmetic_type")), @AttributeOverride(name = "cosmetic", column = @Column(name = "cosmetic"))})
+    private Set<CosmeticEntity> cosmetics = new HashSet<>();
+
+    @Transient
+    private Set<ElytraTrails> elytraTrails = new HashSet<>();
+
+    @Transient
+    private Set<FlyFilter> flyFilters = new HashSet<>();
+
+    @Transient
+    private Set<Pet> pets = new HashSet<>();
+
+    @Transient
+    private Set<TeleportationAnimation> teleportationAnimations = new HashSet<>();
+
+    @PostLoad
+    private void populateCosmetics() {
+        for (CosmeticEntity cosmetic : cosmetics) {
+            if (ElytraTrails.getTypeName().equals(cosmetic.getCosmetic_type())) {
+                elytraTrails.add(ElytraTrails.valueOf(cosmetic.getCosmetic()));
+            } else if (FlyFilter.getTypeName().equals(cosmetic.getCosmetic_type())) {
+                flyFilters.add(FlyFilter.valueOf(cosmetic.getCosmetic()));
+            } else if (TeleportationAnimation.getTypeName().equals(cosmetic.getCosmetic_type())) {
+                teleportationAnimations.add(TeleportationAnimation.valueOf(cosmetic.getCosmetic()));
+            } else if (Pet.getTypeName().equals(cosmetic.getCosmetic_type())) {
+                pets.add(Pet.valueOf(cosmetic.getCosmetic()));
+            }
+        }
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void populateCosmeticEntities() {
+        cosmetics.clear();
+        for (ElytraTrails trail : elytraTrails) {
+            cosmetics.add(new CosmeticEntity(ElytraTrails.getTypeName(), trail.name()));
+        }
+        for (FlyFilter filter : flyFilters) {
+            cosmetics.add(new CosmeticEntity("FlyFilter", filter.name()));
+        }
+    }
 
 }

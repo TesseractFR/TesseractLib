@@ -44,7 +44,7 @@ public class CosmeticTPMenu extends InventoryMenu {
         {
             if (animation.equals(TeleportationAnimation.ROSETTE))
                 continue;
-            boolean hasAnimation = CosmeticManager.hasCosmetic(tPlayer.getBukkitPlayer(),
+            boolean hasAnimation = CosmeticManager.hasCosmetic(tPlayer.getUUID(),
                                                                TeleportationAnimation.getTypeName(), animation);
             if (animation == TeleportationAnimation.WATER && !hasAnimation)
             {
@@ -96,7 +96,7 @@ public class CosmeticTPMenu extends InventoryMenu {
         }
 
         // VIP
-        if (CosmeticManager.hasCosmetic(tPlayer.getBukkitPlayer(), TeleportationAnimation.getTypeName(), TeleportationAnimation.ROSETTE))
+        if (CosmeticManager.hasCosmetic(tPlayer.getBukkitPlayer().getUniqueId(), TeleportationAnimation.getTypeName(), TeleportationAnimation.ROSETTE))
         {
             addButton(22, new Button(new ItemBuilder(Material.END_ROD)
                                              .name("Rosace", NamedTextColor.LIGHT_PURPLE)
