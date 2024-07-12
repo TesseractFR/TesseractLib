@@ -63,7 +63,7 @@ public class FlyFilterSelectionMenu extends InventoryMenu {
                                     openConfirmationMenu(viewer, "Être vous sur de vouloir acheter", this,
                                             event2 -> {
                                                 player.buyCosmetic(
-                                                        FlyFilter.getTypeName(), filter, filter.getPrice());
+                                                        filter, filter.getPrice());
                                                 this.close();
                                             });
                                 else

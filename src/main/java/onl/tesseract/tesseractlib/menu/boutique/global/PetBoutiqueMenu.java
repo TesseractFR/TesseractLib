@@ -32,7 +32,7 @@ public class PetBoutiqueMenu extends InventoryMenu {
                               "Cliquez pour acheter "+pet.getName()+NEW_LINE+
                                       ChatColor.GRAY + "Coût : "+pet.getPrice()+" lys d'or"+NEW_LINE+
                                       ChatColor.GRAY + "Vous avez : "+player.getMarketCurrency()+" lys d'or",
-                              event-> CosmeticManager.tryToBuyEvent(viewer, this, player, Pet.getTypeName(), pet));
+                              event-> CosmeticManager.tryToBuyEvent(viewer, this, player, pet));
                 }else {
                     addInactiveButton(i++,Material.STRUCTURE_VOID,pet.getName(),ChatColor.GRAY+"Vous possédez "
                             + "déjà ce famillier");
