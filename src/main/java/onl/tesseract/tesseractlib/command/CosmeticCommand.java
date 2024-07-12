@@ -47,13 +47,13 @@ public class CosmeticCommand implements CommandExecutor {
         switch (args[0])
         {
             case "give" -> {
-                CosmeticManager.giveCosmetic(uuid, type, cosmetic);
+                CosmeticManager.giveCosmetic(uuid, cosmetic);
                 commandSender.sendMessage(ChatFormats.COSMETICS_SUCCESS
                                                   .append(Component.text("Tentative d'ajout effectuée.")));
                 return true;
             }
             case "remove" -> {
-                CosmeticManager.removeCosmetic(uuid, type, cosmetic);
+                CosmeticManager.removeCosmetic(uuid, cosmetic);
                 commandSender.sendMessage(ChatFormats.COSMETICS_SUCCESS
                         .append(Component.text("Tentative de retrait effectuée.")));
                 return true;

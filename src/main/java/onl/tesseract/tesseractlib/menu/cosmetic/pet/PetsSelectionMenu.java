@@ -62,7 +62,7 @@ public class PetsSelectionMenu extends InventoryMenu {
                 {
                     if (player.getMarketCurrency() >= pet.getPrice())
                         openConfirmationMenu(viewer,"Être vous sur de vouloir acheter",this,event2 -> {
-                            player.buyCosmetic(Pet.getTypeName(), pet, pet.getPrice());
+                            player.buyCosmetic(pet, pet.getPrice());
 
                             this.close();
                         });

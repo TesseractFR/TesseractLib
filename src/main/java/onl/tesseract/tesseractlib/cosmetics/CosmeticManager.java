@@ -21,7 +21,7 @@ public class CosmeticManager {
     @Getter
     private static final CosmeticManager instance = new CosmeticManager();
 
-    public static void giveCosmetic(UUID uuid, String type, Cosmetic cosmetic) {
+    public static void giveCosmetic(UUID uuid, Cosmetic cosmetic) {
 
         var runnable = new BukkitRunnable() {
             final TPlayer tPlayer = TPlayer.get(uuid);
@@ -44,7 +44,7 @@ public class CosmeticManager {
     }
 
 
-    public static void removeCosmetic(UUID uuid, String type, Cosmetic cosmetic) {
+    public static void removeCosmetic(UUID uuid, Cosmetic cosmetic) {
         final TPlayer tPlayer = TPlayer.get(uuid);
         final TPlayerInfo tPlayerInfo = tPlayer.getTPlayerInfo();
         var runnable = new BukkitRunnable() {
@@ -109,9 +109,9 @@ public class CosmeticManager {
         return 0;
     }
 
-    public static void tryToBuyEvent(Player viewer, InventoryMenu mainMenu, TPlayer player, String type, Cosmetic cosmetic) {
+    public static void tryToBuyEvent(Player viewer, InventoryMenu mainMenu, TPlayer player, Cosmetic cosmetic) {
         if (player.getMarketCurrency() >= cosmetic.getPrice())
-            InventoryMenu.openConfirmationMenu(viewer, "Êtes vous sur de vouloir acheter le cosmétique " + cosmetic.getName(), mainMenu, event2 -> player.buyCosmetic(type, cosmetic, cosmetic.getPrice()));
+            InventoryMenu.openConfirmationMenu(viewer, "Êtes vous sur de vouloir acheter le cosmétique " + cosmetic.getName(), mainMenu, event2 -> player.buyCosmetic(cosmetic, cosmetic.getPrice()));
         else {
             player.sendMessage(ChatFormats.COSMETICS_ERROR.append(Component.text("Vous n'avez pas assez de lys d'or, cliquez ici pour en acheter").hoverEvent(HoverEvent.showText(Component.text("Cliquez ici pour accéder à la boutique.", NamedTextColor.GOLD))).clickEvent(ClickEvent.openUrl("https://tesseract.craftingstore.net/"))));
             mainMenu.close();

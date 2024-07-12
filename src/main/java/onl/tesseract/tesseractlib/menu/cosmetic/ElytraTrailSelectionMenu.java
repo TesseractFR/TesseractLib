@@ -61,7 +61,7 @@ public class ElytraTrailSelectionMenu extends InventoryMenu {
                                     openConfirmationMenu(viewer, "Être vous sur de vouloir acheter", this,
                                             event2 -> {
                                                 player.buyCosmetic(
-                                                        ElytraTrails.getTypeName(), trail, trail.getPrice());
+                                                        trail, trail.getPrice());
 
                                                 this.close();
                                             });
