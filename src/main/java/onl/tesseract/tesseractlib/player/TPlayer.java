@@ -120,9 +120,9 @@ public abstract class TPlayer implements Listener {
         this.tPlayerInfo.setActive_fly_filter(flyFilter);
     }
 
-    public void buyCosmetic(String type, Cosmetic cosmetic,int price)
+    public void buyCosmetic(Cosmetic cosmetic, int price)
     {
-        CosmeticManager.giveCosmetic(getUUID(),type,cosmetic);
+        CosmeticManager.giveCosmetic(getUUID(), cosmetic);
         addMarketCurrency(-price);
     }
 
