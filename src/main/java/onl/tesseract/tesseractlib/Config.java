@@ -14,8 +14,9 @@ import java.io.File;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class Config {
     @Getter
-    static Config instance = new Config();
-    static String configFilepath = "plugins/Tesseract/config.yml";
+    static private final Config instance = new Config();
+
+    static private final String configFilepath = "plugins/Tesseract/config.yml";
 
     Location firstSpawnLocation;
     String db_host;
@@ -50,7 +51,7 @@ public class Config {
         yaml.set("db_username", "user");
         yaml.set("db_password", "password");
         yaml.set("db_port", 3306);
-        World w = Bukkit.getWorlds().get(0);
+        World w = Bukkit.getWorlds().getFirst();
         yaml.set("firstSpawnLocation", new Location( (w), 0,0,0));
     }
 
