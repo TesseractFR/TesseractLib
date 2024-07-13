@@ -1,4 +1,4 @@
-package onl.tesseract.tesseractlib.achievement;
+package onl.tesseract.tesseractlib.entity;
 
 
 import jakarta.persistence.*;
