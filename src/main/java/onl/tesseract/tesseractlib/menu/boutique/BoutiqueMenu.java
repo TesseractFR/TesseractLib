@@ -1,5 +1,6 @@
 package onl.tesseract.tesseractlib.menu.boutique;
 
+import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.tesseractlib.menu.BoussoleMenu;
 import onl.tesseract.tesseractlib.menu.boutique.global.GlobalBoutiqueMenu;
 import onl.tesseract.tesseractlib.player.TPlayer;
@@ -12,7 +13,7 @@ public class BoutiqueMenu extends InventoryMenu {
     final TPlayer player;
     public BoutiqueMenu(TPlayer player)
     {
-        super(27, ChatColor.BLUE + "Boutique de Tesseract");
+        super(27, "Boutique de Tesseract", NamedTextColor.BLUE);
         this.player = player;
         this.previous = new BoussoleMenu(player);
     }
@@ -21,11 +22,9 @@ public class BoutiqueMenu extends InventoryMenu {
     public void open(Player viewer) {
         fill(Material.GRAY_STAINED_GLASS_PANE, " ");
 
-        addButton(13,Material.AMETHYST_CLUSTER,ChatColor.LIGHT_PURPLE+"Tous les serveurs",
-                  ChatColor.GRAY+"Cliquez pour afficher les cosmetiques disponibles sur tout les serveurs.",
+        addButton(13,Material.AMETHYST_CLUSTER,"Tous les serveurs",NamedTextColor.LIGHT_PURPLE,
+                  "Cliquez pour afficher les cosmetiques disponibles sur tout les serveurs.",NamedTextColor.GRAY,
                   event-> new GlobalBoutiqueMenu(player,this).open(viewer));
-
-
 
         addBackButton();
         addQuitButton();
