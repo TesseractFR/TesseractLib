@@ -13,10 +13,10 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.entity.Achievement;
 import onl.tesseract.tesseractlib.cosmetics.*;
-import onl.tesseract.tesseractlib.dao.TPlayerInfoDAO;
 import onl.tesseract.tesseractlib.entity.TPlayerInfo;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
+import onl.tesseract.tesseractlib.service.TPlayerInfoService;
 import onl.tesseract.tesseractlib.util.ChatFormat;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;
@@ -80,7 +80,7 @@ public abstract class TPlayer implements Listener {
     public TPlayer(final OfflinePlayer player)
     {
         this.player = player;
-        this.tPlayerInfo = TPlayerInfoDAO.getInstance().get(player.getUniqueId());
+        this.tPlayerInfo = TPlayerInfoService.getInstance().get(player.getUniqueId());
     }
 
     public static TPlayer get(final OfflinePlayer player)
@@ -127,8 +127,7 @@ public abstract class TPlayer implements Listener {
     }
 
     public void addMarketCurrency(int amount){
-        TPlayerInfoDAO.getInstance().addMarketCurrency(tPlayerInfo,amount);
-        TPlayerInfoDAO.getInstance().refresh(tPlayerInfo);
+        TPlayerInfoService.getInstance().addMarketCurrency(tPlayerInfo,amount);
         TesseractLib.logger().info(String.format("[Market Currency] %s earn %d lys d'or", player.getName(), amount));
     }
 
@@ -202,7 +201,7 @@ public abstract class TPlayer implements Listener {
      */
     public void save()
     {
-        TPlayerInfoDAO.getInstance().save(this.tPlayerInfo);
+        TPlayerInfoService.getInstance().save(this.tPlayerInfo);
         if (equipment != null)
             this.equipment.save();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
@@ -651,7 +650,7 @@ public abstract class TPlayer implements Listener {
 
     public int getMarketCurrency()
     {
-        TPlayerInfoDAO.getInstance().refresh(tPlayerInfo);
+        TPlayerInfoService.getInstance().refresh(tPlayerInfo);
         return tPlayerInfo.getMarket_currency();
     }
 

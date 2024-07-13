@@ -27,18 +27,18 @@ public class TPlayerInfo implements Serializable {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    Gender genre;
+    Gender genre = Gender.OTHER;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    ElytraTrails active_trail;
+    ElytraTrails active_trail = ElytraTrails.NONE;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    FlyFilter active_fly_filter;
+    FlyFilter active_fly_filter = FlyFilter.NONE;
 
     @Column(nullable = false)
-    int market_currency;
+    int market_currency = 0;
 
     @ManyToMany
     @JoinTable(name = "t_player_achievement", joinColumns = @JoinColumn(name = "player_uuid"), inverseJoinColumns = @JoinColumn(name = "achievement_id"))
@@ -63,6 +63,7 @@ public class TPlayerInfo implements Serializable {
     private Set<TeleportationAnimation> teleportationAnimations = new HashSet<>();
 
     @PostLoad
+    @PostUpdate
     private void populateCosmetics() {
         for (CosmeticEntity cosmetic : cosmetics) {
             if (ElytraTrails.getTypeName().equals(cosmetic.getCosmetic_type())) {
@@ -85,7 +86,13 @@ public class TPlayerInfo implements Serializable {
             cosmetics.add(new CosmeticEntity(ElytraTrails.getTypeName(), trail.name()));
         }
         for (FlyFilter filter : flyFilters) {
-            cosmetics.add(new CosmeticEntity("FlyFilter", filter.name()));
+            cosmetics.add(new CosmeticEntity(FlyFilter.getTypeName(), filter.name()));
+        }
+        for (TeleportationAnimation animation : teleportationAnimations) {
+            cosmetics.add(new CosmeticEntity(TeleportationAnimation.getTypeName(), animation.name()));
+        }
+        for (Pet pet : pets) {
+            cosmetics.add(new CosmeticEntity(Pet.getTypeName(), pet.name()));
         }
     }
 

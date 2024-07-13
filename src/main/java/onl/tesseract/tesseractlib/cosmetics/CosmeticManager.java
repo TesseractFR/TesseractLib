@@ -38,6 +38,7 @@ public class CosmeticManager {
                 } else if (cosmetic instanceof TeleportationAnimation teleportationAnimation) {
                     tPlayerInfo.getTeleportationAnimations().add(teleportationAnimation);
                 }
+                tPlayer.save();
             }
         };
         runnable.runTaskAsynchronously(TesseractLib.instance);
