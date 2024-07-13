@@ -250,7 +250,7 @@ public class ItemLoreBuilder {
                 if (lastColor.get() != null)
                     component = component.color(lastColor.get());
                 if (lastDeco.get() != null)
-                    component = (TextComponent) component.decorate(lastDeco.get());
+                    component = component.decorate(lastDeco.get());
                 lastLine = lastLine.append(component);
                 lastLineLength = wordLen;
             }
@@ -260,7 +260,7 @@ public class ItemLoreBuilder {
                 if (lastColor.get() != null)
                     component = component.color(lastColor.get());
                 if (lastDeco.get() != null)
-                    component = (TextComponent) component.decorate(lastDeco.get());
+                    component = component.decorate(lastDeco.get());
                 lastLine = lastLine.append(component);
                 lastLineLength += 1 + wordLen;
             }
