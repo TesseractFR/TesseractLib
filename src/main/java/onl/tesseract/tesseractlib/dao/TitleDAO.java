@@ -1,10 +1,9 @@
 package onl.tesseract.tesseractlib.dao;
 
 import lombok.extern.slf4j.Slf4j;
-import onl.tesseract.tesseractlib.achievement.Title;
+import onl.tesseract.tesseractlib.entity.Title;
 import onl.tesseract.tesseractlib.bdd.HibernateUtil;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import java.util.List;
 

@@ -2,6 +2,7 @@ package onl.tesseract.tesseractlib.achievement;
 
 import lombok.Getter;
 import onl.tesseract.tesseractlib.dao.AchievementDAO;
+import onl.tesseract.tesseractlib.entity.Achievement;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ public class AchievementManager {
     @Getter
     private static AchievementManager instance = new AchievementManager();
     private final AchievementDAO achievementDAO = AchievementDAO.getInstance();
-    private final HashMap<String,Achievement> achievements = new HashMap<>();
+    private final HashMap<String, Achievement> achievements = new HashMap<>();
 
     private final List<Achievement> tutoriel = Arrays.asList(getByName("TUTO_CLIC_BOUSSOLE"),
             getByName("TUTO_INVOQUE_AILE_MENU"),
