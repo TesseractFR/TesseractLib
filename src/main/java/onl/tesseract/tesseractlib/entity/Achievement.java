@@ -17,14 +17,17 @@ import lombok.experimental.FieldDefaults;
 public class Achievement {
 
     @ManyToOne
+    @JoinColumn(name = "title")
     Title title;
     @Column(columnDefinition = "VARCHAR(255)")
     String condition;
     String name;
     float lys;
+    @Column(name = "illumination")
     int ptsIllumination;
     @Id
     int id;
+    @Column(name = "text")
     String displayName;
 
 

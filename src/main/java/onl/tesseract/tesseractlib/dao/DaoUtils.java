@@ -2,13 +2,14 @@ package onl.tesseract.tesseractlib.dao;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import lombok.extern.slf4j.Slf4j;
 import onl.tesseract.tesseractlib.bdd.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.List;
 import java.util.function.Consumer;
-
+@Slf4j
 public class DaoUtils {
     public static void executeInsideTransaction(Consumer<Session> action) {
 
@@ -18,10 +19,10 @@ public class DaoUtils {
             action.accept(session);
             transaction.commit();
         } catch (Exception e) {
+            log.error("Error executing inside transaction", e);
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw e;
         }
     }
     public static <T> List<T> loadAll(Class<T> type, Session session) {

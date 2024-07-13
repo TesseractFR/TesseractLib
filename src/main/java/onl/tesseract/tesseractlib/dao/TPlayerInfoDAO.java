@@ -34,10 +34,12 @@ public class TPlayerInfoDAO {
         }
     }
 
-
     public void save(TPlayerInfo tPlayerInfo) {
         try {
-            DaoUtils.executeInsideTransaction(session -> session.persist(tPlayerInfo));
+            DaoUtils.executeInsideTransaction(session -> {
+                session.update(tPlayerInfo);
+            });
+
         } catch (Exception e) {
             log.error("Erreur lors du save du TPlayerInfo {}", tPlayerInfo.getUuid(), e);
         }
@@ -67,4 +69,11 @@ public class TPlayerInfoDAO {
         }
     }
 
+    public void create(TPlayerInfo tPlayerInfo) {
+        try {
+            DaoUtils.executeInsideTransaction(session -> session.persist(tPlayerInfo));
+        } catch (Exception e) {
+            log.error("Erreur lors du save du TPlayerInfo {}", tPlayerInfo.getUuid(), e);
+        }
+    }
 }
