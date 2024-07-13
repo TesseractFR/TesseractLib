@@ -11,7 +11,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.achievement.Achievement;
+import onl.tesseract.tesseractlib.entity.Achievement;
 import onl.tesseract.tesseractlib.cosmetics.*;
 import onl.tesseract.tesseractlib.dao.TPlayerInfoDAO;
 import onl.tesseract.tesseractlib.entity.TPlayerInfo;

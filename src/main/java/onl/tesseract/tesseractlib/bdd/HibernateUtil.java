@@ -2,8 +2,8 @@ package onl.tesseract.tesseractlib.bdd;
 
 import lombok.Getter;
 import onl.tesseract.tesseractlib.Config;
-import onl.tesseract.tesseractlib.achievement.Achievement;
-import onl.tesseract.tesseractlib.achievement.Title;
+import onl.tesseract.tesseractlib.entity.Achievement;
+import onl.tesseract.tesseractlib.entity.Title;
 import onl.tesseract.tesseractlib.entity.TPlayerInfo;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;

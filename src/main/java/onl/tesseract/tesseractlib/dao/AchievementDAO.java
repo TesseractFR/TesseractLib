@@ -2,7 +2,7 @@ package onl.tesseract.tesseractlib.dao;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import onl.tesseract.tesseractlib.achievement.Achievement;
+import onl.tesseract.tesseractlib.entity.Achievement;
 import onl.tesseract.tesseractlib.bdd.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;

@@ -3,7 +3,6 @@ package onl.tesseract.tesseractlib.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import onl.tesseract.tesseractlib.achievement.Achievement;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
 import onl.tesseract.tesseractlib.cosmetics.TeleportationAnimation;
