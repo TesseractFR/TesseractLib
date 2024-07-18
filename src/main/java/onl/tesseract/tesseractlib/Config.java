@@ -15,7 +15,7 @@ import java.io.File;
 public class Config {
     @Getter
     static private final Config instance = new Config();
-
+    @Getter
     static private final String configFilepath = "plugins/Tesseract/config.yml";
 
     Location firstSpawnLocation;
