@@ -1,6 +1,7 @@
 package onl.tesseract.tesseractlib.util;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Color;
@@ -156,7 +157,7 @@ public class ItemBuilder {
         item.setItemMeta(meta);
         if (enchanted)
         {
-            item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+            item.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
             item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         item.addItemFlags(flags);
@@ -250,6 +251,16 @@ public class ItemBuilder {
         this.lore = new ItemLoreBuilder().append(lore).get();
         return this;
     }
+
+    /**
+     * @see ItemLoreBuilder
+     */
+    public ItemBuilder lore(final String lore, final NamedTextColor loreColor)
+    {
+        this.lore = new ItemLoreBuilder().append(Component.text(lore,loreColor)).get();
+        return this;
+    }
+
 
     /**
      * @see ItemLoreBuilder

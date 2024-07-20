@@ -1,17 +1,14 @@
 package onl.tesseract.tesseractlib;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import onl.tesseract.tesseractlib.achievement.Achievement;
-import onl.tesseract.tesseractlib.achievement.Title;
+import onl.tesseract.tesseractlib.achievement.AchievementManager;
+import onl.tesseract.tesseractlib.entity.Title;
 import onl.tesseract.tesseractlib.bdd.BDDManager;
 import onl.tesseract.tesseractlib.chat.tag.TagEventHandler;
 import onl.tesseract.tesseractlib.command.*;
 import onl.tesseract.tesseractlib.command.staff.*;
-import onl.tesseract.tesseractlib.cosmetics.CosmeticManager;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
 import onl.tesseract.tesseractlib.cosmetics.FlyFilter;
-import onl.tesseract.tesseractlib.cosmetics.TeleportationAnimation;
-import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
 import onl.tesseract.tesseractlib.cosmetics.familier.PetManager;
 import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.event.ColoredChat;
@@ -26,7 +23,6 @@ import onl.tesseract.tesseractlib.util.Util;
 import onl.tesseract.tesseractlib.vote.VoteManager;
 import onl.tesseract.tesseractlib.vote.goal.VoteGoalManager;
 import org.bukkit.*;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,13 +34,10 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -53,18 +46,16 @@ import java.util.logging.Logger;
 public final class TesseractLib extends JavaPlugin implements Listener {
     public static JavaPlugin instance;
 
-    static public final String configFilepath = "plugins/Tesseract/config.yml";
-
-    static private String host, database, username, password;
+    private Config config;
     private static BDDManager bddManager;
     static public int port;
 
     private static PlayerContainer<? extends TPlayer, ? extends Equipment> playerContainer;
 
-    static public BDDManager getBddManager() {
+    public static BDDManager getBddManager() {
         if(bddManager == null){
-            loadConfig();
-            bddManager= new BDDManager(host,port,username,password,database);
+            Config config = Config.getInstance();
+            bddManager= new BDDManager(config.getDb_host(),config.getDb_port(),config.getDb_username(),config.getDb_password(),config.getDb_database());
         }
         return bddManager;
     }
@@ -73,16 +64,15 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
+        config = Config.getInstance();
         setPlayerContainer(new StandalonePlayerContainer());
-        loadConfig();
-        bddManager = new BDDManager(host,port,username,password,database);
-        registerCosmetics();
+        bddManager= new BDDManager(config.getDb_host(),config.getDb_port(),config.getDb_username(),config.getDb_password(),config.getDb_database());
         registerEvents();
         registerCommands();
         logger().info("Loading title...");
         Title.loadAll();
         logger().info("Loading achievement...");
-        Achievement.loadAll();
+        AchievementManager.getInstance().loadAll();
 
         try
         {
@@ -103,15 +93,6 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     public static void setPlayerContainer(final PlayerContainer<?, ?> playerContainer)
     {
         TesseractLib.playerContainer = playerContainer;
-    }
-
-    private void registerCosmetics()
-    {
-        this.getServer().getPluginManager().registerEvents(new CosmeticManager(), this);
-        CosmeticManager.registerCosmetic(TeleportationAnimation.getTypeName(),new HashSet<>(Arrays.asList(TeleportationAnimation.values())));
-        CosmeticManager.registerCosmetic(Pet.getTypeName(), new HashSet<>(Arrays.asList(Pet.values())));
-        CosmeticManager.registerCosmetic(FlyFilter.getTypeName(), new HashSet<>(Arrays.asList(FlyFilter.values())));
-        CosmeticManager.registerCosmetic(ElytraTrails.getTypeName(), new HashSet<>(Arrays.asList(ElytraTrails.values())));
     }
 
     @Override
@@ -172,18 +153,6 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(new InventoryInstanceEventHandler(),this);
     }
 
-
-    public static void loadConfig()
-    {
-        File file = new File(configFilepath);
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-
-        host = yaml.getString("db_host");
-        database = yaml.getString("db_database");
-        username = yaml.getString("db_username");
-        password = yaml.getString("db_password");
-        port = yaml.getInt("db_port");
-    }
 
 
     @EventHandler

@@ -64,7 +64,7 @@ public class TPAnimationBoutiqueMenu extends InventoryMenu {
                     }
                     else if (event.isLeftClick())
                     {
-                        CosmeticManager.tryToBuyEvent(viewer, this, player, TeleportationAnimation.getTypeName(), animation);
+                        CosmeticManager.tryToBuyEvent(viewer, this, player, animation);
                     }
                 }));
             }

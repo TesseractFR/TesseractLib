@@ -25,6 +25,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -92,9 +93,10 @@ public class Elytra extends Invocable {
                 .enchanted(true)
                 .build();
         ItemMeta meta = item.getItemMeta();
-        meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier("generic.armor", protectionLevel, AttributeModifier.Operation.ADD_NUMBER));
+        NamespacedKey namespacedKey = new NamespacedKey(NamespacedKey.MINECRAFT,"generic.armor");
+        meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(namespacedKey, protectionLevel, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST));
 
-        meta.setLocalizedName(localizedName);
+        meta.displayName(Component.text(localizedName));
         meta.setUnbreakable(true);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
         item.setItemMeta(meta);
@@ -228,7 +230,7 @@ public class Elytra extends Invocable {
     void animate() {
         equipment.getPlayer().getBukkitPlayer().addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 40, 0));
         equipment.getPlayer().getBukkitPlayer().playSound(equipment.getPlayer().getBukkitPlayer().getLocation(), Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 20, 1);
-        new Circle(Particle.REDSTONE, new AnimationTarget(equipment.getPlayer().getBukkitPlayer()))
+        new Circle(Particle.DUST, new AnimationTarget(equipment.getPlayer().getBukkitPlayer()))
                 .setColor(Color.FUCHSIA)
                 .setDelay(0.1f)
                 .setRadius(1)
@@ -250,7 +252,7 @@ public class Elytra extends Invocable {
     public void synergicPropulsion()
     {
         Player player = equipment.getPlayer().getBukkitPlayer();
-        new Concentration().setParticle(Particle.REDSTONE)
+        new Concentration().setParticle(Particle.DUST)
                            .setColor(Color.FUCHSIA)
                            .setTarget(new AnimationTarget(player))
                            .setRadius(2)

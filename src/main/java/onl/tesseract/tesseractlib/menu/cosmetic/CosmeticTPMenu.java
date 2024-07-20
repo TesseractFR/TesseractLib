@@ -44,12 +44,12 @@ public class CosmeticTPMenu extends InventoryMenu {
         {
             if (animation.equals(TeleportationAnimation.ROSETTE))
                 continue;
-            boolean hasAnimation = CosmeticManager.hasCosmetic(tPlayer.getBukkitPlayer(),
+            boolean hasAnimation = CosmeticManager.hasCosmetic(tPlayer.getUUID(),
                                                                TeleportationAnimation.getTypeName(), animation);
             if (animation == TeleportationAnimation.WATER && !hasAnimation)
             {
                 hasAnimation = true;
-                CosmeticManager.giveCosmetic(tPlayer.getUUID(), TeleportationAnimation.getTypeName(), animation);
+                CosmeticManager.giveCosmetic(tPlayer.getUUID(), animation);
             }
 
             String lore = NEW_LINE + (hasAnimation ? ChatColor.GREEN + "Débloqué" : ChatColor.RED + "Bloqué") + NEW_LINE
@@ -76,7 +76,7 @@ public class CosmeticTPMenu extends InventoryMenu {
                             if (tPlayer.getMarketCurrency() >= animation.getPrice())
                                 openConfirmationMenu(viewer, "Être vous sur de vouloir acheter", this,
                                                      event2 -> tPlayer.buyCosmetic(
-                                                             TeleportationAnimation.getTypeName(), animation,
+                                                             animation,
                                                              animation.getPrice()));
                             else
                                 tPlayer.sendMessage(ChatFormats.COSMETICS_ERROR.append(
@@ -96,7 +96,7 @@ public class CosmeticTPMenu extends InventoryMenu {
         }
 
         // VIP
-        if (CosmeticManager.hasCosmetic(tPlayer.getBukkitPlayer(), TeleportationAnimation.getTypeName(), TeleportationAnimation.ROSETTE))
+        if (CosmeticManager.hasCosmetic(tPlayer.getBukkitPlayer().getUniqueId(), TeleportationAnimation.getTypeName(), TeleportationAnimation.ROSETTE))
         {
             addButton(22, new Button(new ItemBuilder(Material.END_ROD)
                                              .name("Rosace", NamedTextColor.LIGHT_PURPLE)

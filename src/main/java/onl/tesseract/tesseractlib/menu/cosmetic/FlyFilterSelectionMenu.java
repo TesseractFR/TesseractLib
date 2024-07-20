@@ -34,7 +34,7 @@ public class FlyFilterSelectionMenu extends InventoryMenu {
             if (filter != FlyFilter.NONE)
             {
 
-                boolean hasTrail = CosmeticManager.hasCosmetic(player.getBukkitPlayer(), FlyFilter.getTypeName(), filter);
+                boolean hasTrail = CosmeticManager.hasCosmetic(player.getUUID(), FlyFilter.getTypeName(), filter);
 
 
                 String lore = NEW_LINE + (hasTrail ? ChatColor.GREEN + "Débloqué" : ChatColor.RED + "Bloqué") + NEW_LINE
@@ -63,7 +63,7 @@ public class FlyFilterSelectionMenu extends InventoryMenu {
                                     openConfirmationMenu(viewer, "Être vous sur de vouloir acheter", this,
                                             event2 -> {
                                                 player.buyCosmetic(
-                                                        FlyFilter.getTypeName(), filter, filter.getPrice());
+                                                        filter, filter.getPrice());
                                                 this.close();
                                             });
                                 else
