@@ -655,4 +655,12 @@ public abstract class TPlayer implements Listener {
     }
 
 
+    public int getShopPoint() {
+        TPlayerInfoService.getInstance().refresh(tPlayerInfo);
+        return tPlayerInfo.getShop_point();
+    }
+
+    public void addShopPoint(int amount) {
+        tPlayerInfo.setShop_point(tPlayerInfo.getShop_point() + amount);
+    }
 }
