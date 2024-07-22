@@ -40,6 +40,9 @@ public class TPlayerInfo implements Serializable {
     @Column(nullable = false)
     int market_currency = 0;
 
+    @Column(nullable = false)
+    int shop_point = 0;
+
     @ManyToMany
     @JoinTable(name = "t_player_achievement", joinColumns = @JoinColumn(name = "player_uuid"), inverseJoinColumns = @JoinColumn(name = "achievement_id"))
     Set<Achievement> achievements = new HashSet<>();
