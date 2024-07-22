@@ -15,7 +15,7 @@ public class AutoChatMessage {
     /**
      * Période d'envoi de message 5*60*20 = 5min
      */
-    private static final int PERIOD = 5 * 60 * 20;
+    private static final int PERIOD = 8 * 60 * 20;
     /**
      * Instance
      */
