@@ -85,6 +85,16 @@ public class InventoryMenu implements Listener {
      * Creates a new menu.
      * @param size Size of the menu (multiple of 9)
      * @param title Name of the menu
+     * @param color Color of the name menu
+     * @param previous Parent menu. The "back" button will be added.
+     */
+    public InventoryMenu(int size, String title,NamedTextColor color, InventoryMenu previous) {
+        this(size, title,color, previous, true);
+    }
+    /**
+     * Creates a new menu.
+     * @param size Size of the menu (multiple of 9)
+     * @param title Name of the menu
      * @param previous Parent menu. The "back" button will be added.
      */
     public InventoryMenu(int size, String title, InventoryMenu previous) {
@@ -102,6 +112,17 @@ public class InventoryMenu implements Listener {
 
     }
 
+    /**
+     * Creates a new menu.
+     * @param size Size of the menu (multiple of 9)
+     * @param title Name of the menu
+     * @param color Color of the name menu
+     * @param previous Parent menu. The "back" button will be added.
+     * @param freezeBottom If the bottom inventory should be frozen.
+     */
+    public InventoryMenu(int size, String title,NamedTextColor color, InventoryMenu previous, boolean freezeBottom) {
+        this(size, Component.text(title,color), previous, freezeBottom);
+    }
     /**
      * Creates a new menu.
      * @param size Size of the menu (multiple of 9)
@@ -220,7 +241,13 @@ public class InventoryMenu implements Listener {
     public <T> void addButton(int index, ItemStack item, Consumer<InventoryClickEvent> function) {
         addButton(index, new Button(item, function));
     }
-
+    protected void addButton(int index, Material material, Component nameComponent, Component loreComponent, Consumer<InventoryClickEvent> function) {
+        ItemStack item = new ItemBuilder(material)
+                .name(nameComponent)
+                .lore(new ItemLoreBuilder().append(loreComponent).get())
+                .build();
+        this.addButton(index, item, function);
+    }
     public void addButton(int index, Material material, String name, TextColor nameColor, String lore, TextColor loreColor, Consumer<InventoryClickEvent> function) {
         ItemStack item = new ItemBuilder(material)
                 .name(name,nameColor)
@@ -322,6 +349,15 @@ public class InventoryMenu implements Listener {
 
     public void addQuitButton(int index) {
         this.addButton(index, buttonQuit, event -> this.close());
+    }
+
+    public void fillNoReplace(Material material, String name){
+        ItemStack item = new ItemBuilder(material, Component.text(name)).build();
+        for (int i = 0; i < this.inventory.getSize(); i++) {
+            if(this.inventory.getItem(i) == null) {
+                this.inventory.setItem(i, item);
+            }
+        }
     }
 
     public void fill(Material material, String name, String lore) {
@@ -513,5 +549,6 @@ public class InventoryMenu implements Listener {
         });
         menu.open(player);
     }
+
 
 }
