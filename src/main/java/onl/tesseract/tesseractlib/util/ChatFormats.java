@@ -34,6 +34,7 @@ public class ChatFormats {
             .color(GRAY)
             .append(text("[Chat] : ").color(DARK_AQUA));
     public static final Component CHAT_ERROR = CHAT.color(RED);
+    public static final Component CHAT_SUCCESS = CHAT.color(GREEN);
 
     public static final Component GROUP = empty()
             .color(GRAY)
@@ -67,15 +68,15 @@ public class ChatFormats {
     public static final Component COSMETICS_ERROR = COSMETICS.color(RED);
 
     public static final Component VOTE = Component.text("", YELLOW)
-                                                  .append(Component.text("[", RED, BOLD))
-                                                  .append(Component.text("Vote", GOLD))
-                                                  .append(Component.text("] ", RED, BOLD));
+            .append(Component.text("[", RED, BOLD))
+            .append(Component.text("Vote", GOLD))
+            .append(Component.text("] ", RED, BOLD));
 
     public static final Component EVENT = text("", AQUA)
             .append(text("[", DARK_BLUE, BOLD))
             .append(text("Event", BLUE))
             .append(text("] ", DARK_BLUE, BOLD));
-     public static final TextComponent SHOP_ADMIN = Component.text("", GRAY)
+    public static final TextComponent SHOP_ADMIN = Component.text("", GRAY)
             .append(Component.text("[", DARK_RED, BOLD))
             .append(Component.text("Admin-Shop", RED))
             .append(Component.text("] ", DARK_RED, BOLD));
