@@ -34,18 +34,16 @@ public class TPlayerInfoDAO {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void save(TPlayerInfo tPlayerInfo) {
         try {
-            DaoUtils.executeInsideTransaction(session -> {
-                session.update(tPlayerInfo);
-            });
-
+            DaoUtils.executeInsideTransaction(session -> session.update(tPlayerInfo));
         } catch (Exception e) {
             log.error("Erreur lors du save du TPlayerInfo {}", tPlayerInfo.getUuid(), e);
         }
     }
 
-
+    @SuppressWarnings("unused")
     public void delete(TPlayerInfo tPlayerInfo) {
         log.error("Erreur lors du delete du TPlayerInfo, la suppression n'est pas autorisée");
     }
