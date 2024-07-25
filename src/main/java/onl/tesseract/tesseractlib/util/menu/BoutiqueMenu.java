@@ -66,6 +66,7 @@ public abstract class BoutiqueMenu extends InventoryMenu {
         });
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected List<Component> getPriceLore(int price, boolean containsShopPoint) {
         ItemLoreBuilder itemLore = new ItemLoreBuilder().newline()
                 .append("Prix : ", NamedTextColor.GRAY)
@@ -94,14 +95,12 @@ public abstract class BoutiqueMenu extends InventoryMenu {
         TextComponent message = text("Confirmer votre achat de ")
                 .append(itemStack.displayName())
                 .append(text(" pour " + price + (withShopPoint ? " points boutiques ?" : " lys d'or ?")));
-        openConfirmationMenu(tPlayer.getBukkitPlayer(), message, this, event -> {
-            buyItem(itemStack, price, withShopPoint);
-        });
+        openConfirmationMenu(tPlayer.getBukkitPlayer(), message, this, event -> buyItem(itemStack, price, withShopPoint));
 
     }
 
     private void buyItem(ItemStack itemStack, int price, boolean withShopPoint) {
-        boolean hasBuyItem = false;
+        boolean hasBuyItem;
         if (withShopPoint) {
             hasBuyItem = buyItemWithShopPoint(itemStack, price);
         } else {
