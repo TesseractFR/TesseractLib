@@ -69,6 +69,24 @@ public class TPlayerInfoDAO {
         }
     }
 
+    public void addShopPoint(TPlayerInfo tPlayerInfo, int amount) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            String hql = "UPDATE TPlayerInfo SET shop_point = shop_point + :amount WHERE uuid = :uuid ";
+            MutationQuery query = session.createMutationQuery(hql);
+            query.setParameter("amount", amount);
+            query.setParameter("uuid", tPlayerInfo.getUuid());
+            query.executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            log.error("Erreur lors du add shop point {}", tPlayerInfo, e);
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
+    }
+
     public void create(TPlayerInfo tPlayerInfo) {
         try {
             DaoUtils.executeInsideTransaction(session -> session.persist(tPlayerInfo));
