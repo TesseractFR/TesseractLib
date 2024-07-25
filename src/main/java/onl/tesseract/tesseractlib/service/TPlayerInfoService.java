@@ -36,6 +36,11 @@ public class TPlayerInfoService {
         dao.refresh(tPlayerInfo);
     }
 
+    public void addShopPoint(TPlayerInfo tPlayerInfo, int amount) {
+        dao.addShopPoint(tPlayerInfo, amount);
+        dao.refresh(tPlayerInfo);
+    }
+
     public void save(TPlayerInfo tPlayerInfo) {
         dao.save(tPlayerInfo);
     }
