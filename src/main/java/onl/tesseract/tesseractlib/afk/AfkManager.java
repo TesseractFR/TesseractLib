@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -110,9 +111,16 @@ public class AfkManager implements Listener {
     @EventHandler()
     void onChat(PlayerChatEvent event) {
         lastMessage.put(event.getPlayer().getUniqueId(), Instant.now());
-        afks.remove(event.getPlayer().getUniqueId());
-        event.getPlayer().sendMessage(Component.text("Vous n'êtes plus AFK", NamedTextColor.GRAY));
+        if (afks.remove(event.getPlayer().getUniqueId()))
+            event.getPlayer().sendMessage(Component.text("Vous n'êtes plus AFK", NamedTextColor.GRAY));
 
+    }
+
+    @EventHandler
+    void onCommand(PlayerCommandSendEvent event) {
+        lastMessage.put(event.getPlayer().getUniqueId(), Instant.now());
+        if (afks.remove(event.getPlayer().getUniqueId()))
+            event.getPlayer().sendMessage(Component.text("Vous n'êtes plus AFK", NamedTextColor.GRAY));
     }
 
 }
