@@ -2,6 +2,7 @@ package onl.tesseract.tesseractlib;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import onl.tesseract.tesseractlib.achievement.AchievementManager;
+import onl.tesseract.tesseractlib.afk.AfkManager;
 import onl.tesseract.tesseractlib.entity.Title;
 import onl.tesseract.tesseractlib.bdd.BDDManager;
 import onl.tesseract.tesseractlib.chat.tag.TagEventHandler;
@@ -16,6 +17,7 @@ import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceEventHandler;
 import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
+import onl.tesseract.tesseractlib.placeholder.TesseractPlaceHolder;
 import onl.tesseract.tesseractlib.player.PlayerContainer;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.player.def.StandalonePlayerContainer;
@@ -69,6 +71,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         bddManager= new BDDManager(config.getDb_host(),config.getDb_port(),config.getDb_username(),config.getDb_password(),config.getDb_database());
         registerEvents();
         registerCommands();
+        new TesseractPlaceHolder(this).register();
         logger().info("Loading title...");
         Title.loadAll();
         logger().info("Loading achievement...");
@@ -151,6 +154,7 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(new PetManager(), this);
         this.getServer().getPluginManager().registerEvents(this,this);
         this.getServer().getPluginManager().registerEvents(new InventoryInstanceEventHandler(),this);
+        this.getServer().getPluginManager().registerEvents(AfkManager.getINSTANCE(),this);
     }
 
 
