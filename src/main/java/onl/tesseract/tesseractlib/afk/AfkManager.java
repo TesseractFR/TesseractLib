@@ -30,6 +30,7 @@ public class AfkManager implements Listener {
     static AfkManager INSTANCE = new AfkManager();
     Set<UUID> afks = new HashSet<>();
     HashMap<UUID, Instant> lastMessage = new HashMap<>();
+    HashMap<UUID, Instant> lastMove = new HashMap<>();
     HashMap<UUID, Location> lastLocations = new HashMap<>();
 
     private AfkManager() {
@@ -39,6 +40,8 @@ public class AfkManager implements Listener {
                 Bukkit.getOnlinePlayers().forEach(player -> {
                     if (lastLocations.containsKey(player.getUniqueId())) {
                         if (isAfkLocation(player) && isAfkChat(player)) {
+
+
                             if (afks.add(player.getUniqueId())) {
                                 player.sendMessage(Component.text("Vous êtes désormais AFK", NamedTextColor.GRAY));
                             }
@@ -71,7 +74,15 @@ public class AfkManager implements Listener {
         Location playerLocation = player.getLocation();
         boolean isAfkLocation = isSameLocation(lastLocation, playerLocation);
         boolean isAfkEyes = isSameEyes(lastLocation, playerLocation);
-        return isAfkEyes || isAfkLocation;
+        if (isAfkLocation || isAfkEyes) {
+            if (!lastMove.containsKey(player.getUniqueId())) {
+                lastMove.put(player.getUniqueId(), Instant.now());
+            }
+            Duration duration = Duration.between(lastMove.get(player.getUniqueId()), Instant.now());
+            return duration.toSeconds() > 45;
+        }
+        lastMove.put(player.getUniqueId(), Instant.now());
+        return false;
     }
 
     private boolean isSameLocation(Location lastLocation, Location playerLocation) {
