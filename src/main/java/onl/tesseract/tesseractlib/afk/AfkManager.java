@@ -79,7 +79,7 @@ public class AfkManager implements Listener {
                 lastMove.put(player.getUniqueId(), Instant.now());
             }
             Duration duration = Duration.between(lastMove.get(player.getUniqueId()), Instant.now());
-            return duration.toSeconds() > 45;
+            return duration.toSeconds() > 60;
         }
         lastMove.put(player.getUniqueId(), Instant.now());
         return false;
