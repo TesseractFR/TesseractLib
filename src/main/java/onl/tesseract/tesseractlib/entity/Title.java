@@ -1,80 +1,80 @@
 package onl.tesseract.tesseractlib.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.player.Gender;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.logging.Level;
-
-@Entity
-@Getter
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "t_title")
-public class Title {
+public enum Title {
+    ADMINISTRATEUR("Administrateur", "Administratrice"),
+    AGRICULTEUR("Paysan", "Paysane"),
+    ALCHIMISTE_FOU("Alchimiste fou", "Alchimiste folle"),
+    ANIMATEUR("Animateur", "Animatrice"),
+    APPRENTI_AGRICULTEUR("Apprenti paysan", "Apprentie paysane"),
+    APPRENTI_BUCHERON("Apprenti bûcheron", "Apprentie bûcheronne"),
+    APPRENTI_CHASSEUR("Apprenti trappeur", "Apprentie trappeuse"),
+    APPRENTI_GARDIEN("Apprenti sentinelle", "Apprentie sentinelle"),
+    APPRENTI_HERBORISTE("Apprenti fleuriste", "Apprentie fleuriste"),
+    APPRENTI_MINEUR("Apprenti joaillier", "Apprentie joaillière"),
+    APPRENTI_PECHEUR("Apprenti pêcheur", "Apprentie pêcheuse"),
+    APPRENTI_PILLEUR("Apprenti pilleur", "Apprentie pilleuse"),
+    APPRENTI_TERRASSIER("Apprenti paysagiste", "Apprentie paysagiste"),
+    ASSASSIN("Assassin", "Assassin"),
+    AS_DE_LAIR("As de l'air", "As de l'air"),
+    BARON("Baron", "Baronne"),
+    BERSERKER("Berserk", "Berserk"),
+    BUCHERON("Bûcheron", "Bûcheronne"),
+    CHASSEUR("Trappeur", "Trappeuse"),
+    CITOYEN("Citoyen", "Citoyenne"),
+    CLERC("Clerc", "Clerc"),
+    COMTE("Comte", "Comtesse"),
+    ELYSEEN("Élyséen", "Élyséenne"),
+    GARDIEN("Sentinelle", "Sentinelle"),
+    GEOMANCIEN("Géomancien", "Géomancienne"),
+    GUIDE("Guide", "Guide"),
+    HERAULT("Héraut de la capitale", "Héraut de la capitale"),
+    HERBORISTE("Fleuriste", "Fleuriste"),
+    ILLUSIONNISTE("Illusionniste", "Illusionniste"),
+    INITIE("Initié", "Initiée"),
+    INVESTISSEUR("Investisseur", "Investisseuse"),
+    LOCATAIRE("Locataire", "Locataire"),
+    MAITRE_AGRICULTEUR("Maître paysan", "Maître paysane"),
+    MAITRE_BUCHERON("Maître bûcheron", "Maître bûcheronne"),
+    MAITRE_CHASSEUR("Maître trappeur", "Maître trappeuse"),
+    MAITRE_GARDIEN("Maître sentinelle", "Maître sentinelle"),
+    MAITRE_HERBORISTE("Maître fleuriste", "Maître fleuriste"),
+    MAITRE_MINEUR("Maître joaillier", "Maître joaillière"),
+    MAITRE_PECHEUR("Maître pêcheur", "Maître pêcheuse"),
+    MAITRE_PILLEUR("Maître pilleur", "Maître pilleuse"),
+    MAITRE_TERRASSIER("Maître paysagiste", "Maître paysagiste"),
+    MARAUDEUR("Maraudeur", "Maraudeuse"),
+    MEDIATEUR("Médiateur", "Médiatrice"),
+    MINEUR("Joaillier", "Joaillière"),
+    MODERATEUR("Modérateur", "Modératrice"),
+    NOBLE("Noble", "Noble"),
+    NOMADE("Nomade", "Nomade"),
+    OCCULTISTE("Occultiste", "Occultiste"),
+    PALADIN("Paladin", "Paladin"),
+    PECHEUR("Pêcheur", "Pêcheuse"),
+    PILLEUR("Pilleur", "Pilleuse"),
+    PYROMANE("Pyromane", "Pyromane"),
+    TERRASSIER("Paysagiste", "Paysagiste"),
+    TRAVAILLEUR("Travailleur", "Travailleuse"),
+    VICOMTE("Vicomte", "Vicomtesse"),
+    VIP("VIP", "VIP"),
+    VIPPLUS("VIP+", "VIP+"),
+    ;
+
+    final String text_m;
+    final String text_f;
 
 
-    static private final String bddtable = "t_title";
-
-    static private final HashMap<String, Title> titles = new HashMap<>();
-    protected String text_m;
-    protected String text_f;
-    @Id
-    protected String name;
-
-    public Title(String name, String text_m, String text_f) {
+    Title(String text_m, String text_f) {
         this.text_m = text_m;
         this.text_f = text_f;
-        this.name = name;
-    }
-
-    public static Collection<Title> getTitles() {
-        return titles.values();
-    }
-
-    static public void loadAll() {
-        try {
-            Connection connection = TesseractLib.getBddManager().getBddConnection().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM " + bddtable);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                var title = Title.getTitleFromSQLResult(resultSet);
-                titles.put(title.name, title);
-            }
-        } catch (SQLException throwables) {
-            TesseractLib.logger().log(Level.SEVERE, "Failed to load all titles", throwables);
-        }
-    }
-
-    @Nullable
-    static public Title getTitleFromName(String name) {
-        if (name == null)
-            return null;
-        name = name.toUpperCase();
-        if (name.equals("NULL"))
-            return null;
-        if (titles.containsKey(name))
-            return titles.get(name);
-        throw new IllegalArgumentException("This title doesn't exsit (" + name + ")");
-    }
-
-    private static Title getTitleFromSQLResult(ResultSet result) throws SQLException {
-        return new Title(result.getString("name"), result.getString("text_m"), result.getString("text_f"));
     }
 
     public String getDisplayName(Gender gender) {
@@ -84,7 +84,13 @@ public class Title {
         return text_m;
     }
 
-    public String getName() {
-        return name;
+    @Nullable
+    static public Title getTitleFromName(String name) {
+        if (name == null)
+            return null;
+        name = name.toUpperCase();
+        if (name.equals("NULL"))
+            return null;
+        return Title.valueOf(name);
     }
 }
