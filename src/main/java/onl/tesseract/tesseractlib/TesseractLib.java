@@ -72,8 +72,6 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         registerEvents();
         registerCommands();
         new TesseractPlaceHolder(this).register();
-        logger().info("Loading title...");
-        Title.loadAll();
         logger().info("Loading achievement...");
         AchievementManager.getInstance().loadAll();
 
