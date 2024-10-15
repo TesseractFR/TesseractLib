@@ -2,7 +2,6 @@ package onl.tesseract.tesseractlib.entity;
 
 
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import onl.tesseract.tesseractlib.player.Gender;
 import org.jetbrains.annotations.Nullable;
@@ -66,7 +65,13 @@ public enum Title {
     VICOMTE("Vicomte", "Vicomtesse"),
     VIP("VIP", "VIP"),
     VIPPLUS("VIP+", "VIP+"),
-    ;
+    APPRENTI("Apprenti", "Apprentie"),
+    CONCEPTEUR("Concepteur", "Conceptrice"),
+    CREATEUR("Créateur", "Créatrice"),
+    INGENIEUR("Ingénieur", "Ingénieure"),
+    BATISSEUR("Bâtisseur", "Bâtisseuse"),
+    BUILDER("Builder", "Buildeuse"),
+    ARCHITECTE("Architecte","Architecte" );
 
     final String text_m;
     final String text_f;
