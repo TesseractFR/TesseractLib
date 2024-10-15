@@ -16,8 +16,9 @@ import lombok.experimental.FieldDefaults;
         indexes = @Index(name = "idx_id", columnList = "id"))
 public class Achievement {
 
-    @ManyToOne
-    @JoinColumn(name = "title")
+
+    @Column(name = "title")
+    @Enumerated(EnumType.STRING)
     Title title;
     @Column(columnDefinition = "VARCHAR(255)")
     String condition;
@@ -31,8 +32,7 @@ public class Achievement {
     String displayName;
 
 
-    public Achievement(int id, Title title, String name,String displayName, String condition, float lys, int ptsIllumination)
-    {
+    public Achievement(int id, Title title, String name, String displayName, String condition, float lys, int ptsIllumination) {
         this.id = id;
         this.title = title;
         this.name = name;

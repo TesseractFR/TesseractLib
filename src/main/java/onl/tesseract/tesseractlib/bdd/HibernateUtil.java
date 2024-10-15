@@ -3,7 +3,6 @@ package onl.tesseract.tesseractlib.bdd;
 import lombok.Getter;
 import onl.tesseract.tesseractlib.Config;
 import onl.tesseract.tesseractlib.entity.Achievement;
-import onl.tesseract.tesseractlib.entity.Title;
 import onl.tesseract.tesseractlib.entity.TPlayerInfo;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -27,7 +26,6 @@ public class HibernateUtil {
             // Enregistrer les classes d'entité
             configuration.addAnnotatedClass(TPlayerInfo.class);
             configuration.addAnnotatedClass(Achievement.class);
-            configuration.addAnnotatedClass(Title.class);
 
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
             return configuration.buildSessionFactory(serviceRegistry);
