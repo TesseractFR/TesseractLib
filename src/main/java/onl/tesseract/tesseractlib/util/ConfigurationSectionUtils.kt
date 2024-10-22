@@ -25,6 +25,30 @@ class ConfigurationSectionUtils {
             }
         }
 
+        fun <E> setSectionList(
+            config: ConfigurationSection,
+            path: String,
+            elements: Collection<E>,
+            serializer: (E) -> ConfigurationSection
+        ) {
+            for ((index, element) in elements.withIndex()) {
+                config.set("$path.$index", serializer(element))
+            }
+        }
+
+        fun <E> getSectionList(
+            config: ConfigurationSection,
+            path: String,
+            parser: (ConfigurationSection) -> E
+        ): List<E> {
+            val listSection = config.getConfigurationSection(path) ?: return listOf()
+
+            // Iterate through indices
+            return listSection.getKeys(false)
+                .mapNotNull { listSection.getConfigurationSection(it) }
+                .map { parser(it) }
+        }
+
         /**
          * Loads a list of complex objects that have been saved using [ConfigurationSectionUtils.setSectionList]
          */
@@ -73,4 +97,19 @@ fun <T : TYamlSerializable> ConfigurationSection.setSectionList(name: String, se
  */
 fun <T : TYamlSerializable> ConfigurationSection.getSectionList(name: String, clazz: Class<T>): List<T> {
     return ConfigurationSectionUtils.getSectionList(this, name, clazz)
+}
+
+fun <E> ConfigurationSection.setSectionList(
+    path: String,
+    elements: Collection<E>,
+    serializer: (E) -> ConfigurationSection
+) {
+    ConfigurationSectionUtils.setSectionList(this, path, elements, serializer)
+}
+
+fun <E> ConfigurationSection.getSectionList(
+    path: String,
+    parser: (ConfigurationSection) -> E
+): List<E> {
+    return ConfigurationSectionUtils.getSectionList(this, path, parser)
 }
