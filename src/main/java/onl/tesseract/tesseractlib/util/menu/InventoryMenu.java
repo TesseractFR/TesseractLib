@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -365,6 +366,22 @@ public class InventoryMenu implements Listener {
         addButton(index, cloned, function);
     }
 
+    public <T> void addButton(int index, ItemStack item, Component name, Component lore, Consumer<InventoryClickEvent> function) {
+        if (item == null) return;
+        item = new ItemBuilder(item)
+                .name(name)
+                .lore(lore)
+                .build();
+        addButton(index, item, function);
+    }
+    public <T> void addButton(int index, ItemStack item, Component name, List<Component> lore, Consumer<InventoryClickEvent> function) {
+        if (item == null) return;
+        item = new ItemBuilder(item)
+                .name(name)
+                .lore(lore)
+                .build();
+        addButton(index, item, function);
+    }
     public <T> void addButton(int index, ItemStack item, String name, String lore, Consumer<InventoryClickEvent> function) {
         if (item == null) return;
         item = new ItemBuilder(item)
