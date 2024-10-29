@@ -71,8 +71,9 @@ public enum Title {
     INGENIEUR("Ingénieur", "Ingénieure"),
     BATISSEUR("Bâtisseur", "Bâtisseuse"),
     BUILDER("Builder", "Buildeuse"),
-    ARCHITECTE("Architecte","Architecte" );
-
+    ARCHITECTE("Architecte", "Architecte"),
+    VIRTUOSE("Virtuose", "Virtuose"),
+    ;
     final String text_m;
     final String text_f;
 
@@ -80,13 +81,6 @@ public enum Title {
     Title(String text_m, String text_f) {
         this.text_m = text_m;
         this.text_f = text_f;
-    }
-
-    public String getDisplayName(Gender gender) {
-        if (gender.equals(Gender.FEMALE)) {
-            return text_f;
-        }
-        return text_m;
     }
 
     @Nullable
@@ -97,5 +91,12 @@ public enum Title {
         if (name.equals("NULL"))
             return null;
         return Title.valueOf(name);
+    }
+
+    public String getDisplayName(Gender gender) {
+        if (gender.equals(Gender.FEMALE)) {
+            return text_f;
+        }
+        return text_m;
     }
 }
