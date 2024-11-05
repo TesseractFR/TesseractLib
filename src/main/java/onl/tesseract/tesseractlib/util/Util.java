@@ -50,21 +50,6 @@ public class Util {
     }
 
     /**
-     * Gets a player head by recovering his player profile stored at server start by TPlayer#loadPlayerProfile.
-     * If the player profile is not loaded, it will make a request to Mojang to recover the profile.
-     *
-     * @param tPlayer Owner of the head.
-     * @return Head with the skin of the owner.
-     */
-    @SuppressWarnings("all")
-    static public ItemStack getPlayerHead(TPlayer tPlayer) {
-        if (tPlayer.skinSignature == null || tPlayer.skinValue == null)
-            return InventoryMenu.getHead(tPlayer.getOfflinePlayer().getUniqueId());
-        else
-            return InventoryMenu.getCustomHead(null, tPlayer.skinValue, tPlayer.skinSignature);
-    }
-
-    /**
      * Split a string into several strings of size width
      *
      * @param message Original string
@@ -487,12 +472,6 @@ public class Util {
                         this.cancel();
                 }
             }.runTaskTimer(TesseractLib.instance, 0, 1);
-        }
-
-        static public void damageByMagic(Player damager, LivingEntity damaged, double amount) {
-            damaged.damage(amount);
-            damaged.setKiller(damager);
-            new EntityDamageByEntityEvent(damager, damaged, EntityDamageEvent.DamageCause.MAGIC, amount).callEvent();
         }
 
         /**

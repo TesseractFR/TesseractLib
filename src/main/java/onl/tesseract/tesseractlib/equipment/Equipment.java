@@ -125,7 +125,7 @@ public class Equipment implements Listener {
         }
     }
 
-    protected YamlConfiguration serialize()
+    public YamlConfiguration serialize()
     {
         final YamlConfiguration section = new YamlConfiguration();
         Collection<Map<?, ?>> yamlMap = new ArrayList<>();

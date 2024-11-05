@@ -45,11 +45,6 @@ import java.util.logging.Level;
 public abstract class TPlayer implements Listener {
 
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
-    /**
-     * Maps every Player who has played before with a TPlayer instance.
-     */
-    public String skinValue;
-    public String skinSignature;
     protected OfflinePlayer player;
     protected Equipment equipment = null;
     /**
@@ -65,7 +60,6 @@ public abstract class TPlayer implements Listener {
     protected String dateSinceLastConnection = null;
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
-    protected PlayerProfile playerProfile;
     @Getter
     protected TPlayerInfo tPlayerInfo;
     @Getter
@@ -120,35 +114,6 @@ public abstract class TPlayer implements Listener {
     public void addMarketCurrency(int amount) {
         TPlayerInfoService.getInstance().addMarketCurrency(tPlayerInfo, amount);
         TesseractLib.logger().info(String.format("[Market Currency] %s earn %d lys d'or", player.getName(), amount));
-    }
-
-    /**
-     * Loads the player profile to store the skin texture.
-     */
-    public void loadPlayerProfile() {
-        // Get the PlayerProfile in order to store the skin texture to avoid lag later.
-        this.playerProfile = Bukkit.createProfile(player.getUniqueId());
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                playerProfile.complete();
-                for (ProfileProperty profileProperty : playerProfile.getProperties()) {
-                    if (profileProperty.getName().equals("textures")) {
-                        skinValue = profileProperty.getValue();
-                        skinSignature = profileProperty.getSignature();
-                    }
-                }
-            }
-        }.runTaskAsynchronously(TesseractLib.instance);
-    }
-
-    /**
-     * Gets the player profile stored at server start by TPlayer#loadPlayerProfile
-     *
-     * @return the player profile
-     */
-    public PlayerProfile getPlayerProfile() {
-        return playerProfile;
     }
 
     protected void dailyConnection() {
