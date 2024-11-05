@@ -1,5 +1,6 @@
 package onl.tesseract.lib.profile
 
+import onl.tesseract.lib.task.TaskScheduler
 import onl.tesseract.tesseractlib.TesseractLib
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
@@ -10,7 +11,7 @@ data class PlayerSkinProfile(val skinValue: String, val skinSignature: String)
 /**
  * Storage class for cached player profiles
  */
-class PlayerProfileService {
+class PlayerProfileService(private val scheduler: TaskScheduler) {
 
     private val profileMap: MutableMap<UUID, PlayerSkinProfile> = mutableMapOf()
 
@@ -36,17 +37,15 @@ class PlayerProfileService {
     fun preloadPlayerProfile(playerUUID: UUID, callback: ((PlayerSkinProfile) -> Unit)? = null) {
         // Get the PlayerProfile in order to store the skin texture to avoid lag later.
         val playerProfile = Bukkit.createProfile(playerUUID)
-        object : BukkitRunnable() { // TODO : use TaskManager
-            override fun run() {
-                playerProfile.complete()
-                playerProfile.properties
-                    .find { it.name == "textures" }
-                    ?.let {
-                        val profile = PlayerSkinProfile(it.value, it.signature!!)
-                        registerPlayerProfile(playerUUID, profile)
-                        callback?.invoke(profile)
-                    }
-            }
-        }.runTaskAsynchronously(TesseractLib.instance)
+        scheduler.runAsync {
+            playerProfile.complete()
+            playerProfile.properties
+                .find { it.name == "textures" }
+                ?.let {
+                    val profile = PlayerSkinProfile(it.value, it.signature!!)
+                    registerPlayerProfile(playerUUID, profile)
+                    callback?.invoke(profile)
+                }
+        }
     }
 }
