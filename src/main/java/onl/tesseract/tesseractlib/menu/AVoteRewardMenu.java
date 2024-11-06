@@ -3,6 +3,9 @@ package onl.tesseract.tesseractlib.menu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.tesseract.lib.chat.ChatEntryService;
+import onl.tesseract.lib.task.TaskScheduler;
+import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.bddfacade.VoteRepository;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormats;
@@ -10,6 +13,7 @@ import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
 import onl.tesseract.tesseractlib.util.menu.Button;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
@@ -46,10 +50,11 @@ public abstract class AVoteRewardMenu extends InventoryMenu {
     protected void askAmount(final Consumer<Integer> callback)
     {
         close();
-        player.chatEntry(Component.text("Combien de points de vote voulez-vous échanger ?"), 30, amountStr -> {
+        ChatEntryService chatEntryService = new ChatEntryService(new TaskScheduler(TesseractLib.instance, Bukkit.getScheduler()));
+        chatEntryService.getChatEntry(player.getBukkitPlayer(), Component.text("Combien de points de vote voulez-vous échanger ?"), (amountStr) -> {
             try
             {
-                int amount = Integer.parseInt(((TextComponent) amountStr).content());
+                int amount = Integer.parseInt(amountStr);
                 if (amount <= 0)
                     throw new NumberFormatException();
                 if (VoteRepository.getKeys(player.getUUID()) >= amount)
@@ -66,6 +71,7 @@ public abstract class AVoteRewardMenu extends InventoryMenu {
             {
                 player.sendMessage(ChatFormats.CHAT_ERROR, "Nombre invalide");
             }
+            return null;
         });
     }
 
