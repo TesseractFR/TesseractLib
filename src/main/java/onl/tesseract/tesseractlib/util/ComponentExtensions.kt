@@ -2,6 +2,7 @@ package onl.tesseract.tesseractlib.util
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.translation.Translatable
 
 operator fun Component.plus(text: String): Component {
@@ -34,4 +35,7 @@ fun Component.append(text: String): Component {
 
 fun Component.append(text: String, color: TextColor): Component {
     return this.append(Component.text(text, color))
+}
+fun Component.append(text: String, color: TextColor, decoration: TextDecoration ) : Component {
+    return this.append(Component.text(text, color,decoration))
 }
