@@ -331,7 +331,7 @@ public class InventoryMenu implements Listener {
      * @param function Function to execute
      * @param <T>      The click event
      */
-    public <T> void addButton(int index, ItemStack item, Consumer<InventoryClickEvent> function) {
+    public void addButton(int index, ItemStack item, Consumer<InventoryClickEvent> function) {
         addButton(index, new Button(item, function));
     }
 
@@ -359,14 +359,14 @@ public class InventoryMenu implements Listener {
         this.addButton(index, item, function);
     }
 
-    public <T> void addButton(int index, ItemStack item, boolean enchanted, Consumer<InventoryClickEvent> function) {
+    public void addButton(int index, ItemStack item, boolean enchanted, Consumer<InventoryClickEvent> function) {
         ItemStack cloned = item.clone();
         if (enchanted)
             cloned.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
         addButton(index, cloned, function);
     }
 
-    public <T> void addButton(int index, ItemStack item, Component name, Component lore, Consumer<InventoryClickEvent> function) {
+    public void addButton(int index, ItemStack item, Component name, Component lore, Consumer<InventoryClickEvent> function) {
         if (item == null) return;
         item = new ItemBuilder(item)
                 .name(name)
@@ -374,7 +374,7 @@ public class InventoryMenu implements Listener {
                 .build();
         addButton(index, item, function);
     }
-    public <T> void addButton(int index, ItemStack item, Component name, List<Component> lore, Consumer<InventoryClickEvent> function) {
+    public void addButton(int index, ItemStack item, Component name, List<Component> lore, Consumer<InventoryClickEvent> function) {
         if (item == null) return;
         item = new ItemBuilder(item)
                 .name(name)
@@ -382,7 +382,7 @@ public class InventoryMenu implements Listener {
                 .build();
         addButton(index, item, function);
     }
-    public <T> void addButton(int index, ItemStack item, String name, String lore, Consumer<InventoryClickEvent> function) {
+    public void addButton(int index, ItemStack item, String name, String lore, Consumer<InventoryClickEvent> function) {
         if (item == null) return;
         item = new ItemBuilder(item)
                 .name(name)
@@ -391,7 +391,7 @@ public class InventoryMenu implements Listener {
         addButton(index, item, function);
     }
 
-    public <T> void addButton(int index, Material material, String name, String lore, Consumer<InventoryClickEvent> function) {
+    public void addButton(int index, Material material, String name, String lore, Consumer<InventoryClickEvent> function) {
         ItemStack item = new ItemBuilder(material)
                 .name(name)
                 .lore(new ItemLoreBuilder().append(lore).get())
@@ -399,7 +399,7 @@ public class InventoryMenu implements Listener {
         this.addButton(index, item, function);
     }
 
-    public <T> void addButton(int index, Material material, String name, String lore, boolean enchanted, Consumer<InventoryClickEvent> function) {
+    public void addButton(int index, Material material, String name, String lore, boolean enchanted, Consumer<InventoryClickEvent> function) {
         ItemStack item = new ItemBuilder(material)
                 .name(name)
                 .lore(new ItemLoreBuilder().append(lore).get())
