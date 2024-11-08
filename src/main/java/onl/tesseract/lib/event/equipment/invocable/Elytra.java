@@ -86,13 +86,6 @@ public class Elytra extends Invocable implements Listener {
         return "ELYTRA";
     }
 
-    //    public Elytra(Equipment equipment)
-//    {
-//        super(equipment, EquipmentSlot.CHEST, "INVOCABLE_ELYTRA");
-//        setAutoGlide(true);
-//        equipment.unblockedChestplate.add(this);
-//    }
-
     @Override
     protected ItemStack createItem()
     {

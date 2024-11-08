@@ -195,6 +195,22 @@ class EquipmentService(
         }
     }
 
+    fun loadEquipment(player: Player) {
+        getEquipment(player.uniqueId).getInvoked().forEach {
+            ServiceContainer[TaskScheduler::class.java].runLater {
+                if (it.slotType == EquipmentSlot.HAND) {
+                    if (it.handSlot > -1)
+                        player.inventory.setItem(it.handSlot, it.getItem())
+                    else if (it.handSlot == -1)
+                        player.inventory.setItem(EquipmentSlot.OFF_HAND, it.getItem())
+                } else {
+                    player.inventory.setItem(it.slotType, it.getItem())
+                }
+                it.onInvoke(player, false)
+            }
+        }
+    }
+
     /**
      * Method to call at server start to register internal event handlers
      */
