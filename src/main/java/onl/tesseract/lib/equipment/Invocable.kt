@@ -17,13 +17,12 @@ import java.util.*
 
 abstract class Invocable(
     val playerUUID: UUID,
-    var invoked: Boolean,
-    var slotType: EquipmentSlot,
+    var isInvoked: Boolean,
     var handSlot: Int,
 ) {
-    var item: ItemStack? = null
-        private set
+    private var _item: ItemStack? = null
 
+    abstract val slotType: EquipmentSlot
     abstract val uniqueName: String
     /**
      * Does this invocable excludes other invocables when invoked
@@ -51,7 +50,7 @@ abstract class Invocable(
      * @see [Invocable.updateItem]
      * @see [Invocable.getItem]
      */
-    abstract fun createItem(): ItemStack
+    protected abstract fun createItem(): ItemStack
     open fun getInvocationPower(): Int = 0
     open fun subMenu(): InventoryMenu? = null
 
@@ -61,7 +60,7 @@ abstract class Invocable(
      * @return Itemstack of this invokable
      */
     fun getItem(): ItemStack {
-        item?.let { return it }
+        _item?.let { return it }
         return updateItem(false)
     }
 
@@ -87,7 +86,7 @@ abstract class Invocable(
                 .get()
             item.lore(lore)
         }
-        this.item = item
+        this._item = item
         if (updateInInventory) updateItemInInventory()
         return item
     }
@@ -96,14 +95,14 @@ abstract class Invocable(
      * Updates the item instance of this invocable in the inventory, to match the new item model.
      */
     fun updateItemInInventory() {
-        if (!invoked) return
+        if (!isInvoked) return
         val player = Bukkit.getPlayer(playerUUID) ?: return
         val inv = player.inventory
         if (this.slotType != EquipmentSlot.HAND)
-            inv.setItem(slotType, item)
+            inv.setItem(slotType, _item)
         else if (handSlot != -1)
-            inv.setItem(handSlot, item)
+            inv.setItem(handSlot, _item)
         else
-            inv.setItem(EquipmentSlot.OFF_HAND, item)
+            inv.setItem(EquipmentSlot.OFF_HAND, _item)
     }
 }

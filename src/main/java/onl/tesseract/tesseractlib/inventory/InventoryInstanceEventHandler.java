@@ -1,6 +1,6 @@
 package onl.tesseract.tesseractlib.inventory;
 
-import onl.tesseract.tesseractlib.event.PlayerInvocableInvokeEvent;
+import onl.tesseract.lib.event.equipment.PlayerInvocableInvokeEvent;
 import onl.tesseract.tesseractlib.event.inventory.InventorySwitchEvent;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.GameMode;

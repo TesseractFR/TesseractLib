@@ -38,7 +38,6 @@ public abstract class TPlayer implements Listener {
 
     static public final String folderPath = "plugins/Tesseract/joueurs/joueurs/";
     protected OfflinePlayer player;
-    protected Equipment equipment = null;
     protected String dateSinceLastConnection = null;
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
@@ -117,10 +116,8 @@ public abstract class TPlayer implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         if (event.getPlayer().equals(getOfflinePlayer())) {
-            HandlerList.unregisterAll(this.equipment);
             HandlerList.unregisterAll(this);
             this.save();
-            this.equipment = null;
         }
     }
 
@@ -129,8 +126,6 @@ public abstract class TPlayer implements Listener {
      */
     public void save() {
         TPlayerInfoService.getInstance().save(this.tPlayerInfo);
-        if (equipment != null)
-            this.equipment.save();
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         yaml.set("name", getOfflinePlayer().getName());
@@ -153,11 +148,6 @@ public abstract class TPlayer implements Listener {
      * Loads player's information that need the player to be online. (equipment, permissions)
      */
     public void loadOnConnection() {
-        if (getOfflinePlayer().isOnline()) {
-            if (equipment != null)
-                HandlerList.unregisterAll(this.equipment);
-            this.equipment = TesseractLib.getPlayerContainer().loadEquipment(getUUID());
-        }
     }
 
     public UUID getUUID() {
@@ -243,10 +233,6 @@ public abstract class TPlayer implements Listener {
 
     public Player getBukkitPlayer() {
         return player.getPlayer();
-    }
-
-    public Equipment getEquipment() {
-        return equipment;
     }
 
     public String getDateSinceLastConnection() {
