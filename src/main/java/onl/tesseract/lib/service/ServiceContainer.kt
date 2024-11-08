@@ -4,8 +4,9 @@ class ServiceContainer {
 
     private val services: MutableMap<Class<*>, Any> = mutableMapOf()
 
-    fun <S : Any, T : S> registerService(type: Class<S>, service: T) {
+    fun <S : Any, T : S> registerService(type: Class<S>, service: T): T {
         services[type] = service
+        return service
     }
 
     fun <T> getService(type: Class<T>): T {
