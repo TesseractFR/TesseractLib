@@ -70,7 +70,7 @@ class EquipmentService(
                 inv.setItem(i, null)
         }
 
-        invocable.invoked = false
+        invocable.isInvoked = false
 //        if (invocable.excludeOthers)
 //            invocable.equipment.set(invocable.slotType, null)
         invocable.handSlot = -1
@@ -90,7 +90,7 @@ class EquipmentService(
         }
     }
 
-    fun invoke(player: Player, type: Class<Invocable>, index: Int? = null, manualInvocation: Boolean = false): Boolean {
+    fun <T : Invocable> invoke(player: Player, type: Class<T>, index: Int? = null, manualInvocation: Boolean = false): Boolean {
         return editEquipment(player.uniqueId) { equipment ->
             val invocable = equipment.get(type) ?: return@editEquipment false
             return@editEquipment if (index != null)
@@ -112,7 +112,7 @@ class EquipmentService(
             return false
 
         val inv: PlayerInventory = player.inventory
-        if (invocable.invoked)
+        if (invocable.isInvoked)
             this.doUninvoke(player, invocable)
         // Remove any present invokable
         if (invocable.excludeOthers)
@@ -133,7 +133,7 @@ class EquipmentService(
             inv.setItem(index, invocable.getItem())
         }
 
-        invocable.invoked = true
+        invocable.isInvoked = true
 //        if (invocable.excludesOther()) invocable.equipment.set(EquipmentSlot.HAND, invocable)
         invocable.handSlot = index
         invocable.onInvoke(player, manualInvocation)
@@ -161,7 +161,7 @@ class EquipmentService(
         } else {
             inv.setItem(invocable.slotType, invocable.getItem())
         }
-        invocable.invoked = true
+        invocable.isInvoked = true
         invocable.onInvoke(player, manualInvocation)
         return true
     }
@@ -255,7 +255,7 @@ class EquipmentEventHandler(private val service: EquipmentService) : Listener {
             } else if (invocable.slotType == EquipmentSlot.HAND) {
                 val subMenu: InventoryMenu? = invocable.subMenu()
                 if (event.click == ClickType.RIGHT || subMenu == null) {
-                    val menu = EquipmentMenu(player)
+                    val menu = EquipmentMenu(player, service)
                     menu.mainHandInvocationMenu(invocable, player)
                 } else {
                     subMenu.open(player)

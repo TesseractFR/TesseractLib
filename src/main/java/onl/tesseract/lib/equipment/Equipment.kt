@@ -1,6 +1,5 @@
 package onl.tesseract.lib.equipment
 
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.EquipmentSlot
 import java.util.*
 
@@ -10,11 +9,15 @@ class Equipment(
 ) {
 
     fun getInvoked(): Collection<Invocable> {
-        return invocables.filter { it.invoked }
+        return invocables.filter { it.isInvoked }
     }
 
     fun get(slot: EquipmentSlot): Invocable? {
         return invocables.find { it.slotType == slot && it.excludeOthers }
+    }
+
+    fun getAll(slot: EquipmentSlot): List<Invocable> {
+        return invocables.filter { it.slotType == slot }
     }
 
     fun <T : Invocable> get(type: Class<T>): T? {
@@ -24,9 +27,5 @@ class Equipment(
 
     fun get(uniqueName: String): Invocable? {
         return invocables.find { it.uniqueName == uniqueName }
-    }
-
-    fun serialize(): YamlConfiguration {
-        TODO()
     }
 }

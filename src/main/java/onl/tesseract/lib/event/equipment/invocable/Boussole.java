@@ -1,16 +1,19 @@
-package onl.tesseract.tesseractlib.equipment.invocable;
+package onl.tesseract.lib.event.equipment.invocable;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.tesseract.lib.equipment.Equipment;
+import onl.tesseract.lib.equipment.EquipmentService;
+import onl.tesseract.lib.equipment.Invocable;
+import onl.tesseract.lib.service.ServiceContainer;
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.equipment.Equipment;
 import onl.tesseract.tesseractlib.menu.BoussoleMenu;
-import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -18,23 +21,17 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
+import java.util.UUID;
 
 public class Boussole extends Invocable {
     BukkitTask propulsionTask;
     final BoussoleMenu menu;
 
-    public Boussole(Equipment equipment)
-    {
-        super(equipment, EquipmentSlot.HAND, "INVOCABLE_BOUSSOLE");
-        menu = new BoussoleMenu(equipment.getPlayer());
-    }
-
-    public Boussole(Equipment equipment, Map<String, Object> yamlMap)
-    {
-        super(equipment, EquipmentSlot.HAND, "INVOCABLE_BOUSSOLE", yamlMap);
-        menu = new BoussoleMenu(equipment.getPlayer());
+    public Boussole(@NotNull UUID playerUUID, boolean invoked, int handSlot) {
+        super(playerUUID, invoked, handSlot);
+        menu = new BoussoleMenu(playerUUID);
     }
 
     @Override
@@ -58,57 +55,40 @@ public class Boussole extends Invocable {
     }
 
     @Override
-    protected void onUninvoke(boolean manualUninvocation)
-    {
-
-    }
-
-    @Override
-    protected void onInvoke(boolean manualInvocation)
-    {
-
-    }
-
-    @Override
     public void use(PlayerInteractEvent event)
     {
+        Player player = event.getPlayer();
         if (event.getAction() == Action.LEFT_CLICK_AIR)
         {
+            EquipmentService equipmentService = ServiceContainer.get(EquipmentService.class);
+            Equipment equipment = equipmentService.getEquipment(getPlayerUUID());
             // If the elytra are invoked
-            TPlayer player = TPlayer.get(event.getPlayer());
-            if (TPlayer.get(event.getPlayer()).getEquipment().get(EquipmentSlot.CHEST) instanceof Elytra)
+            Elytra elytra = equipment.get(Elytra.class);
+            if (elytra.isInvoked())
             {
-                if (event.getPlayer().isGliding() && event.getPlayer().getLocation().getBlock().getType() != Material.WATER
+                if (player.isGliding() && player.getLocation().getBlock().getType() != Material.WATER
                         || (propulsionTask != null && !propulsionTask.isCancelled())) return;
-                Elytra el = (Elytra) player.getEquipment().get(EquipmentSlot.CHEST);
                 player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage dans 3 secondes... Regardez en l'air !")));
                 propulsionTask = new BukkitRunnable() {
                     @Override
                     public void run()
                     {
-                        if (!player.getOfflinePlayer().isOnline())
-                        {
+                        if (!player.isOnline())
                             return;
-                        }
-                        if (!el.isInvoked())
-                        {
+                        if (!elytra.isInvoked()) {
                             player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage annulé (ailes désinvoquées).")));
                             propulsionTask = null;
-                        }
-                        else if (!player.getBukkitPlayer().getInventory().getItemInMainHand().equals(getItem()))
-                        {
+                        } else if (!player.getInventory().getItemInMainHand().equals(getItem())) {
                             player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Décollage annulé (boussole pas en main).")));
                             propulsionTask = null;
-                        }
-                        else
-                        {
-                            player.getBukkitPlayer().setVelocity(player.getBukkitPlayer().getLocation().getDirection().multiply(2));
+                        } else {
+                            player.setVelocity(player.getLocation().getDirection().multiply(2));
                             new BukkitRunnable() {
                                 @Override
                                 public void run()
                                 {
                                     if (player.isOnline())
-                                        player.getBukkitPlayer().setGliding(true);
+                                        player.setGliding(true);
                                     propulsionTask = null;
                                 }
                             }.runTaskLater(TesseractLib.instance, 5);
@@ -120,7 +100,7 @@ public class Boussole extends Invocable {
                 player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Vous devez être équipé de vos ailes pour décoller avec la boussole.")));
         }
         else
-            menu.open(equipment.getPlayer().getBukkitPlayer());
+            menu.open(player);
     }
 
     @Override
@@ -130,5 +110,27 @@ public class Boussole extends Invocable {
     }
 
     @Override
-    public boolean excludesOther() { return false; }
+    public boolean getExcludeOthers() {
+        return false;
+    }
+
+    @Override
+    public @NotNull EquipmentSlot getSlotType() {
+        return EquipmentSlot.HAND;
+    }
+
+    @Override
+    public @NotNull String getUniqueName() {
+        return "BOUSSOLE";
+    }
+
+    @Override
+    public void onUninvoke(@NotNull Player player, boolean manuelRemoval) {
+
+    }
+
+    @Override
+    public void onInvoke(@NotNull Player player, boolean manuelInvocation) {
+
+    }
 }
