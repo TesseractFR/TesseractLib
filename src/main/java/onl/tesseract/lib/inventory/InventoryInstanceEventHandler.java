@@ -1,7 +1,8 @@
-package onl.tesseract.tesseractlib.inventory;
+package onl.tesseract.lib.inventory;
 
+import net.kyori.adventure.text.Component;
 import onl.tesseract.lib.event.equipment.PlayerInvocableInvokeEvent;
-import onl.tesseract.tesseractlib.event.inventory.InventorySwitchEvent;
+import onl.tesseract.lib.event.inventory.InventorySwitchEvent;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
@@ -25,14 +26,14 @@ public class InventoryInstanceEventHandler implements Listener {
     @EventHandler
     public void onInvokeInvocable(final PlayerInvocableInvokeEvent event)
     {
-        InventoryInstanceConfiguration config = InventoryInstanceManager.getSelectedConfig(event.getPlayer().getBukkitPlayer());
+        InventoryInstanceConfiguration config = InventoryInstanceManager.getSelectedConfig(event.getPlayer());
         if (!config.isRestrictInvocables())
             return;
-        String invocableName = event.getInvocable().getLocalizedName();
+        String invocableName = event.getInvocable().getUniqueName();
         if (!config.getInvocables().contains(invocableName))
         {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatFormats.EQUIPMENT_ERROR, "Vous ne pouvez pas invoquer cet équipement pour l'instant");
+            event.getPlayer().sendMessage(ChatFormats.EQUIPMENT_ERROR.append(Component.text("Vous ne pouvez pas invoquer cet équipement pour l'instant")));
         }
     }
 

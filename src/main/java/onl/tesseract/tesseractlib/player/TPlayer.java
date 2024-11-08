@@ -10,7 +10,7 @@ import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.cosmetics.*;
 import onl.tesseract.tesseractlib.entity.Achievement;
 import onl.tesseract.tesseractlib.entity.TPlayerInfo;
-import onl.tesseract.tesseractlib.inventory.InventoryInstanceManager;
+import onl.tesseract.lib.inventory.InventoryInstanceManager;
 import onl.tesseract.tesseractlib.service.TPlayerInfoService;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import org.bukkit.Bukkit;

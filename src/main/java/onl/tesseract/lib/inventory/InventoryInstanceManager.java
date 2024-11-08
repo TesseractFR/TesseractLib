@@ -1,9 +1,11 @@
-package onl.tesseract.tesseractlib.inventory;
+package onl.tesseract.lib.inventory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import onl.tesseract.lib.equipment.EquipmentService;
+import onl.tesseract.lib.equipment.Invocable;
+import onl.tesseract.lib.service.ServiceContainer;
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
-import onl.tesseract.tesseractlib.event.inventory.InventorySwitchEvent;
+import onl.tesseract.lib.event.inventory.InventorySwitchEvent;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -108,12 +110,13 @@ public class InventoryInstanceManager {
         yaml.set("items", player.getInventory().getContents());
 
         ConfigurationSection invocableSection = yaml.createSection("invocables");
-        TPlayer tPlayer = TPlayer.get(player);
-        for (Invocable invocable : tPlayer.getEquipment().getInvocables())
+        EquipmentService equipmentService = ServiceContainer.get(EquipmentService.class);
+        Collection<Invocable> invoked = equipmentService.getEquipment(player.getUniqueId()).getInvoked();
+        for (Invocable invocable : invoked)
         {
             if (!invocable.isInvoked())
                 continue;
-            invocableSection.set(invocable.getLocalizedName(), invocable.getSlot());
+            invocableSection.set(invocable.getUniqueName(), invocable.getHandSlot());
         }
         try
         {
@@ -174,53 +177,53 @@ public class InventoryInstanceManager {
         else
             playerToConfig.put(player.getUniqueId(), configName);
         player.getInventory().clear();
-        TPlayer tPlayer = TPlayer.get(player);
-        tPlayer.getEquipment().uninvokeAll();
+        ServiceContainer.get(EquipmentService.class).uninvokeAll(player);
 
         File file = new File(FOLDER_PATH + configName + "/" + player.getUniqueId() + ".yml");
         if (file.exists())
         {
-            applyExistingConfig(tPlayer, file, config);
+            applyExistingConfig(player, file, config);
         }
         else
         {
-            applyNewConfig(tPlayer, config);
+            applyNewConfig(player, config);
         }
     }
 
-    private static void applyNewConfig(final TPlayer player, final InventoryInstanceConfiguration config)
+    private static void applyNewConfig(final Player player, final InventoryInstanceConfiguration config)
     {
         config.getItems().forEach(((material, integer) -> {
             ItemStack item = new ItemStack(material, integer);
-            player.getBukkitPlayer().getInventory().addItem(item);
+            player.getInventory().addItem(item);
         }));
     }
 
-    private static void applyExistingConfig(final TPlayer player, final File file, final InventoryInstanceConfiguration config)
+    private static void applyExistingConfig(final Player player, final File file, final InventoryInstanceConfiguration config)
     {
         ConfigurationSection yaml = YamlConfiguration.loadConfiguration(file);
+
+        // Load items
+        var content = TPlayer.loadInventory(yaml, "items");
+        player.getInventory().setContents(content);
 
         // Load invocables
         ConfigurationSection invocableSection = yaml.getConfigurationSection("invocables");
         if (invocableSection == null)
             return;
+        EquipmentService equipmentService = ServiceContainer.get(EquipmentService.class);
         for (String invocableName : invocableSection.getKeys(false))
         {
             if (config.isRestrictInvocables() && !config.getInvocables().contains(invocableName))
                 continue;
             int slot = invocableSection.getInt(invocableName);
-            player.getEquipment().get(invocableName)
-                  .ifPresent(invocable -> {
-                      if (slot == -1)
-                          invocable.invoke(false);
-                      else
-                          invocable.invoke(slot);
-                  });
+            Invocable invocable = equipmentService.getEquipment(player.getUniqueId()).get(invocableName);
+            if (invocable != null) {
+                if (slot == -1)
+                    equipmentService.invoke(player, invocable.getClass(), null, false);
+                else
+                    equipmentService.invoke(player, invocable.getClass(), slot, false);
+            }
         }
-
-        // Load items
-        var content = TPlayer.loadInventory(yaml, "items");
-        player.getBukkitPlayer().getInventory().setContents(content);
     }
 
     /**

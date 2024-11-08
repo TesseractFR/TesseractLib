@@ -1,6 +1,6 @@
-package onl.tesseract.tesseractlib.event.inventory;
+package onl.tesseract.lib.event.inventory;
 
-import onl.tesseract.tesseractlib.inventory.InventoryInstanceConfiguration;
+import onl.tesseract.lib.inventory.InventoryInstanceConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
