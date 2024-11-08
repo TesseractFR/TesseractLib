@@ -1,6 +1,7 @@
 package onl.tesseract.lib
 
 import onl.tesseract.lib.chat.ChatEntryService
+import onl.tesseract.lib.chat.tag.TagEventHandler
 import onl.tesseract.lib.equipment.EquipmentService
 import onl.tesseract.lib.event.EventService
 import onl.tesseract.lib.persistantcontainer.NamedspacedKeyProvider
@@ -28,5 +29,7 @@ object TesseractLib {
         container.registerService(PlayerProfileService::class.java, PlayerProfileService(taskScheduler))
         val chatEntryService = container.registerService(ChatEntryService::class.java, ChatEntryService(taskScheduler))
         pluginService.registerEventListener(chatEntryService)
+
+        pluginService.registerEventListener(TagEventHandler())
     }
 }

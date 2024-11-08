@@ -1,4 +1,4 @@
-package onl.tesseract.tesseractlib.chat.tag;
+package onl.tesseract.lib.chat.tag;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

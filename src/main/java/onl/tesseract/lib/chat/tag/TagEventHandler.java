@@ -1,4 +1,4 @@
-package onl.tesseract.tesseractlib.chat.tag;
+package onl.tesseract.lib.chat.tag;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.TextComponent;
