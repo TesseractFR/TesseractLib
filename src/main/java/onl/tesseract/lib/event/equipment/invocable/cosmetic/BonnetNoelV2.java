@@ -1,29 +1,23 @@
-package onl.tesseract.tesseractlib.equipment.invocable.cosmetic;
+package onl.tesseract.lib.event.equipment.invocable.cosmetic;
 
 import net.kyori.adventure.text.format.NamedTextColor;
-import onl.tesseract.tesseractlib.equipment.Equipment;
-import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
+import onl.tesseract.lib.equipment.Invocable;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
+import java.util.UUID;
 
 public class BonnetNoelV2 extends Invocable {
-    public BonnetNoelV2(Equipment equipment)
-    {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_BONNET_NOEL_V2");
-        this.equipment.unblockedHelmet.add(this);
-    }
 
-    public BonnetNoelV2(Equipment equipment, Map<String, Object> yamlMap)
-    {
-        super(equipment, EquipmentSlot.HEAD, "INVOCABLE_BONNET_NOEL_V2", yamlMap);
-        this.equipment.unblockedHelmet.add(this);
+    public BonnetNoelV2(@NotNull UUID playerUUID, boolean isInvoked, int handSlot) {
+        super(playerUUID, isInvoked, handSlot);
     }
 
     @Override
@@ -37,26 +31,32 @@ public class BonnetNoelV2 extends Invocable {
     }
 
     @Override
-    protected void onUninvoke(boolean b)
-    {
+    public @NotNull EquipmentSlot getSlotType() {
+        return EquipmentSlot.HEAD;
+    }
+
+    @Override
+    public @NotNull String getUniqueName() {
+        return "INVOCABLE_BONNET_NOEL_V2";
+    }
+
+    @Override
+    public void onUninvoke(@NotNull Player player, boolean manuelRemoval) {
 
     }
 
     @Override
-    protected void onInvoke(boolean b)
-    {
+    public void onInvoke(@NotNull Player player, boolean manuelInvocation) {
 
     }
 
     @Override
-    protected void use(PlayerInteractEvent playerInteractEvent)
-    {
+    public void useInInventory(@NotNull InventoryClickEvent event) {
 
     }
 
     @Override
-    protected void useInInventory(InventoryClickEvent inventoryClickEvent)
-    {
+    public void use(@NotNull PlayerInteractEvent event) {
 
     }
 }

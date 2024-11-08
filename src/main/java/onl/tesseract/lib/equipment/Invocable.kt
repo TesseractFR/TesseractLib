@@ -27,7 +27,7 @@ abstract class Invocable(
     /**
      * Does this invocable excludes other invocables when invoked
      */
-    abstract val excludeOthers: Boolean
+    open val excludeOthers: Boolean = true
 
     abstract fun onUninvoke(player: Player, manuelRemoval: Boolean)
     abstract fun onInvoke(player: Player, manuelInvocation: Boolean)
