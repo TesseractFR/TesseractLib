@@ -1,9 +1,9 @@
-package onl.tesseract.tesseractlib.inventory;
+package onl.tesseract.lib.inventory;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import onl.tesseract.tesseractlib.equipment.invocable.Invocable;
+import onl.tesseract.lib.equipment.Invocable;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 
@@ -61,7 +61,7 @@ public class InventoryInstanceConfiguration {
     /**
      * If {@link InventoryInstanceConfiguration#isRestrictInvocables()} is true, this returns the list of allowed invocables
      *
-     * @return list of localized names. To match to {@link Invocable#getLocalizedName()}
+     * @return list of localized names. To match to {@link Invocable#getUniqueName()}
      */
     public Collection<String> getInvocables()
     {

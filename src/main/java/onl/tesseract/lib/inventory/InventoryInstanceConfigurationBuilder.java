@@ -1,4 +1,4 @@
-package onl.tesseract.tesseractlib.inventory;
+package onl.tesseract.lib.inventory;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
