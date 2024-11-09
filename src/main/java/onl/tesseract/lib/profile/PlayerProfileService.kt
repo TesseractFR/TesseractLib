@@ -1,5 +1,6 @@
 package onl.tesseract.lib.profile
 
+import com.destroystokyo.paper.profile.PlayerProfile
 import onl.tesseract.lib.task.TaskScheduler
 import onl.tesseract.tesseractlib.TesseractLib
 import org.bukkit.Bukkit
@@ -25,6 +26,10 @@ class PlayerProfileService(private val scheduler: TaskScheduler) {
                 preloadPlayerProfile(playerUUID, callback)
             }
         }
+    }
+
+    fun createProfile(): PlayerProfile {
+        return Bukkit.createProfile(UUID.randomUUID())
     }
 
     private fun registerPlayerProfile(uuid: UUID, profile: PlayerSkinProfile) {

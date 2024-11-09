@@ -1,0 +1,96 @@
+package onl.tesseract.lib.menu
+
+import com.destroystokyo.paper.profile.ProfileProperty
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
+import onl.tesseract.lib.profile.PlayerProfileService
+import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.ItemFlag
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
+
+abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemStack? = null, builder: AItemBuilder<*>? = null) {
+
+    private var name: Component? = builder?.name
+    private var nameStr: String? = builder?.nameStr
+    private var color: TextColor? = builder?.color
+    private var material: Material = builder?.material ?: material
+    private var base: ItemStack? = builder?.base ?: base
+    private var enchanted: Boolean = builder?.enchanted == true
+
+    abstract fun self(): T
+
+    fun name(name: String): T {
+        this.nameStr = name
+        return self()
+    }
+
+    fun name(name: Component): T {
+        this.name = name
+        return self()
+    }
+
+    fun color(color: TextColor): T {
+        this.color = color
+        return self()
+    }
+
+    fun enchanted(): T {
+        this.enchanted = true
+        return self()
+    }
+
+    fun customHead(data: String, signature: String): CustomHeadItemBuilder {
+        return CustomHeadItemBuilder(data, signature, this)
+    }
+
+    protected open fun material(material: Material): T {
+        this.material = material
+        return self()
+    }
+
+    protected open fun build(): ItemStack {
+        val item = base ?: ItemStack(material)
+        item.editMeta { meta ->
+            name?.let { meta.displayName(it) }
+            if (enchanted) {
+                meta.addEnchant(Enchantment.UNBREAKING, 1, true)
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+            }
+        }
+        return item
+    }
+}
+
+open class ItemBuilder(material: Material, base: ItemStack? = null) : AItemBuilder<ItemBuilder>(material, base) {
+
+    constructor(base: ItemStack): this(base.type, base)
+
+    override fun self(): ItemBuilder = this
+
+    public override fun build(): ItemStack {
+        return super.build()
+    }
+
+    public override fun material(material: Material): ItemBuilder {
+        return super.material(material)
+    }
+}
+
+class CustomHeadItemBuilder(private val data: String, private val signature: String, builder: AItemBuilder<*>) :
+    AItemBuilder<CustomHeadItemBuilder>(Material.PLAYER_HEAD, null, builder) {
+
+    override fun self(): CustomHeadItemBuilder = this
+
+    fun build(profileService: PlayerProfileService): ItemStack {
+        val item = material(Material.PLAYER_HEAD)
+            .build()
+        item.editMeta {
+            val profile = profileService.createProfile()
+            profile.setProperty(ProfileProperty("textures", data, signature))
+            (it as SkullMeta).playerProfile = profile
+        }
+        return item
+    }
+}
