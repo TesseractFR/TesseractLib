@@ -8,7 +8,7 @@ import onl.tesseract.tesseractlib.cosmetics.TeleportationAnimation;
 import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
-import onl.tesseract.tesseractlib.util.menu.Button;
+import onl.tesseract.lib.menu.Button;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

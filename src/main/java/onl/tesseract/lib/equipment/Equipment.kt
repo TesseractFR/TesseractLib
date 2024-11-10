@@ -12,7 +12,7 @@ class Equipment(
         return invocables.filter { it.isInvoked }
     }
 
-    fun get(slot: EquipmentSlot): Invocable? {
+    operator fun get(slot: EquipmentSlot): Invocable? {
         return invocables.find { it.slotType == slot && it.excludeOthers }
     }
 

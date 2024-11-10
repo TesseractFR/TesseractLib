@@ -1,7 +1,6 @@
 package onl.tesseract.tesseractlib.menu;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.lib.chat.ChatEntryService;
 import onl.tesseract.lib.task.TaskScheduler;
@@ -11,7 +10,7 @@ import onl.tesseract.tesseractlib.player.TPlayer;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
-import onl.tesseract.tesseractlib.util.menu.Button;
+import onl.tesseract.lib.menu.Button;
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

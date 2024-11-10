@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.ProfileProperty
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import onl.tesseract.lib.profile.PlayerProfileService
+import onl.tesseract.tesseractlib.util.ItemLoreBuilder
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
@@ -18,11 +19,18 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
     private var material: Material = builder?.material ?: material
     private var base: ItemStack? = builder?.base ?: base
     private var enchanted: Boolean = builder?.enchanted == true
+    private var lore: List<Component>? = builder?.lore
 
     abstract fun self(): T
 
     fun name(name: String): T {
         this.nameStr = name
+        return self()
+    }
+
+    fun name(name: String, color: TextColor): T {
+        this.nameStr = name
+        this.color = color
         return self()
     }
 
@@ -38,6 +46,21 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
 
     fun enchanted(): T {
         this.enchanted = true
+        return self()
+    }
+
+    fun enchanted(enchanted: Boolean): T {
+        this.enchanted = enchanted
+        return self()
+    }
+
+    fun lore(lore: String): T {
+        this.lore = ItemLoreBuilder().append(lore).get()
+        return self()
+    }
+
+    fun lore(lore: List<Component>): T {
+        this.lore = lore
         return self()
     }
 
