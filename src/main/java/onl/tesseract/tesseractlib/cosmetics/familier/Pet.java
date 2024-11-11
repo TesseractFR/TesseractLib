@@ -2,8 +2,11 @@ package onl.tesseract.tesseractlib.cosmetics.familier;
 
 
 import net.kyori.adventure.text.Component;
+import onl.tesseract.lib.menu.ItemBuilder;
+import onl.tesseract.lib.profile.PlayerProfileService;
+import onl.tesseract.lib.service.ServiceContainer;
 import onl.tesseract.tesseractlib.cosmetics.Cosmetic;
-import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public enum Pet implements Cosmetic {
@@ -63,7 +66,9 @@ public enum Pet implements Cosmetic {
 
     public ItemStack getHead()
     {
-        return InventoryMenu.getCustomHead("", head.data, head.signature);
+        return new ItemBuilder(Material.PLAYER_HEAD, null)
+                .customHead(head.data, head.signature)
+                .build(ServiceContainer.get(PlayerProfileService.class));
     }
 
     @Override

@@ -3,17 +3,12 @@ package onl.tesseract.tesseractlib.player;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import onl.tesseract.lib.inventory.InventoryInstanceManager;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.cosmetics.*;
-import onl.tesseract.tesseractlib.entity.Achievement;
 import onl.tesseract.tesseractlib.entity.TPlayerInfo;
-import onl.tesseract.lib.inventory.InventoryInstanceManager;
 import onl.tesseract.tesseractlib.service.TPlayerInfoService;
-import onl.tesseract.tesseractlib.util.ChatFormats;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -266,52 +261,6 @@ public abstract class TPlayer implements Listener {
 
     public void setGender(Gender gender) {
         tPlayerInfo.setGenre(gender);
-    }
-
-    public boolean hasAchievement(Achievement achievement) {
-        return tPlayerInfo.getAchievements().contains(achievement);
-    }
-
-    public void addAchievements(Achievement achievement) {
-        addAchievements(achievement, true);
-    }
-
-    public void addAchievements(Achievement achievement, boolean foreveryone) {
-        if (tPlayerInfo.getAchievements().contains(achievement))
-            return;
-        tPlayerInfo.getAchievements().add(achievement);
-        sendMessage(ChatFormats.HAUT_FAIT.append(Component.text("Vous avez obtenu le haut-fait ")));
-        sendMessage(Component.empty()
-                .append(Component.text("      « ").color(NamedTextColor.AQUA))
-                .append(Component.text(achievement.getDisplayName()).color(NamedTextColor.AQUA))
-                .hoverEvent(HoverEvent.showText(Component.text(achievement.getCondition()).color(NamedTextColor.AQUA)))
-                .append(Component.text(" » ").color(NamedTextColor.AQUA)));
-        if (foreveryone) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (p.equals(this.getBukkitPlayer()))
-                    continue;
-                p.sendMessage(ChatFormats.HAUT_FAIT
-                        .append(Component.text(getOfflinePlayer().getName() + " a obtenu le haut-fait ")));
-                p.sendMessage(Component.empty()
-                        .append(Component.text("      « ").color(NamedTextColor.AQUA))
-                        .append(Component.text(achievement.getDisplayName()).color(NamedTextColor.AQUA))
-                        .hoverEvent(HoverEvent.showText(Component.text(achievement.getCondition()).color(NamedTextColor.AQUA)))
-                        .append(Component.text(" » ").color(NamedTextColor.AQUA)));
-            }
-        }
-
-    }
-
-    public boolean hasAllAchievement(Iterable<Achievement> list) {
-        for (Achievement a : list) {
-            if (!hasAchievement(a))
-                return false;
-        }
-        return true;
-    }
-
-    public void removeAchievement(Achievement achievement) {
-        tPlayerInfo.getAchievements().remove(achievement);
     }
 
     public ElytraTrails getActiveTrail() {
