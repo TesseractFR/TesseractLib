@@ -1,10 +1,10 @@
 package onl.tesseract.lib.equipment
 
 import net.kyori.adventure.text.format.NamedTextColor
+import onl.tesseract.lib.menu.Menu
 import onl.tesseract.lib.persistantcontainer.NamedspacedKeyProvider
 import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.tesseractlib.util.ItemLoreBuilder
-import onl.tesseract.tesseractlib.util.menu.InventoryMenu
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -52,7 +52,7 @@ abstract class Invocable(
      */
     protected abstract fun createItem(): ItemStack
     open fun getInvocationPower(): Int = 0
-    open fun subMenu(): InventoryMenu? = null
+    open fun subMenu(): Menu? = null
 
     /**
      * Returns the itemStack this invocable represents. Constructs the item if no item is in cache

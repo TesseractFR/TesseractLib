@@ -4,12 +4,11 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import onl.tesseract.lib.event.EventService
 import onl.tesseract.lib.event.equipment.PlayerInvocableInvokeEvent
+import onl.tesseract.lib.menu.Menu
 import onl.tesseract.lib.persistantcontainer.NamedspacedKeyProvider
 import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.lib.task.TaskScheduler
-import onl.tesseract.tesseractlib.menu.EquipmentMenu
 import onl.tesseract.tesseractlib.util.ChatFormats
-import onl.tesseract.tesseractlib.util.menu.InventoryMenu
 import org.bukkit.Bukkit
 import org.bukkit.entity.Hanging
 import org.bukkit.entity.Player
@@ -269,7 +268,7 @@ class EquipmentEventHandler(private val service: EquipmentService) : Listener {
                         .append(Component.text("/equipement", NamedTextColor.GOLD))
                 )
             } else if (invocable.slotType == EquipmentSlot.HAND) {
-                val subMenu: InventoryMenu? = invocable.subMenu()
+                val subMenu: Menu? = invocable.subMenu()
                 if (event.click == ClickType.RIGHT || subMenu == null) {
                     val menu = EquipmentMenu(player, service)
                     menu.mainHandInvocationMenu(invocable, player)

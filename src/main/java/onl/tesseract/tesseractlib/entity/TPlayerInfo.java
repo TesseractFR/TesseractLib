@@ -43,11 +43,6 @@ public class TPlayerInfo implements Serializable {
     @Column(nullable = false)
     int shop_point = 0;
 
-    @ManyToMany
-    @JoinTable(name = "t_player_achievement", joinColumns = @JoinColumn(name = "player_uuid"), inverseJoinColumns = @JoinColumn(name = "achievement_id"))
-    Set<Achievement> achievements = new HashSet<>();
-
-
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "t_player_cosmetics", joinColumns = @JoinColumn(name = "player_uuid"))
     @AttributeOverrides({@AttributeOverride(name = "cosmetic_type", column = @Column(name = "cosmetic_type")), @AttributeOverride(name = "cosmetic", column = @Column(name = "cosmetic"))})
