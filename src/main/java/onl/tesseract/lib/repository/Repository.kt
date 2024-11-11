@@ -2,10 +2,7 @@ package onl.tesseract.lib.repository
 
 import org.jetbrains.annotations.Contract
 
-/**
- * Abstract persistence layer to read and write entities from a data store
- */
-interface Repository<T, ID> {
+interface ReadRepository<T, ID> {
 
     /**
      * Find an entity by its id
@@ -14,14 +11,20 @@ interface Repository<T, ID> {
     fun getById(id: ID): T?
 
     /**
-     * Persist the entity
-     */
-    fun save(entity: T)
-
-    /**
      * @return The ID mapped to this entity
      */
     fun idOf(entity: T): ID
+}
+
+/**
+ * Abstract persistence layer to read and write entities from a data store
+ */
+interface Repository<T, ID> : ReadRepository<T, ID> {
+
+    /**
+     * Persist the entity
+     */
+    fun save(entity: T)
 }
 
 /**
