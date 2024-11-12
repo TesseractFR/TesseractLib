@@ -1,13 +1,19 @@
 package onl.tesseract.tesseractlib.menu;
 
+import com.fasterxml.jackson.databind.SerializationConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
-import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
+import onl.tesseract.lib.menu.ItemBuilder;
+import onl.tesseract.lib.menu.Menu;
+import onl.tesseract.lib.menu.MenuSize;
+import onl.tesseract.lib.profile.PlayerProfileService;
+import onl.tesseract.lib.service.ServiceContainer;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
-public class BoussoleMenu extends InventoryMenu {
+public class BoussoleMenu extends Menu {
     static final ItemStack linkHead = getCustomHead("Lien du site internet", NamedTextColor.GOLD, "ewogICJ0aW1lc3RhbXAiIDogMTU5Mjc0MjM2MzYyNSwKICAicHJvZmlsZUlkIiA6ICJmNjE1NzFmMjY1NzY0YWI5YmUxODcyMjZjMTEyYWEwYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJGZWxpeF9NYW5nZW5zZW4iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmVjYWY2NTNhMDlhYzRjNDVlY2Q2MmJlZDM0OWFhN2E3ZDlmYjVmZjlmNTc1MmUyZTc0MzJlMzNmYWYyNmUxMCIKICAgIH0KICB9Cn0=", "ZBKHtPt7TPnWBRjepXZ6xM+68bQGwF5Bpe1X8B077cKy60/wGNvrXgp5kM4DW3frg6QL6xFkBwkwAV1YsKgtxM2W9zRCJP2WSyySIi6f5DrtIKCevpNvlSZW7uI51ZLKZQtpLhNTgME9hK+uArqTo9kcL6FF8sukXSMKdUBF5FleTQfKRhDr0CWCUM324T5OdKM0wzX/+4T5FRpF/65ptp48bQ/SeI9EesjNG6KV2LJmmg5v5I0zkjgstv7zX67cUPjntV2MAfziC+Vv3C3XTSUoFKUQUVDt5Ydfc5Kr2fmJTY9hj16ReV654Ou47qz06zpymVSaLfnYlfCDw2rQ/CTjp251+A77ptDNIYsH5yUOzJBEdEiJX1b5rI5SChx3+FwTDeBeSp5kq5QBrvW/rITXBBdcI12w/9y8gMv3B6ozwjH3erdnorwnTWfGO8zxA7AXj/kXtunK0CIVQ+iwMZtxaocq2C3AC2AxeTflK8Duz9DnABLt01AR2flXj/M6BsBB1DVyJrn482Uc8K1+30S7reXM53Ze4EfoAb5IKloS1KEGH3NjRMhhQ9rAxVukCE2znxaYHhStQZuO/Ztr8jz3EdXNuHYc9oo2s41foMfBNCnzS/W+0TPM9KQ+UrRrJiwwvJ+zXwHWAJFB5cHARexOctWpDC3zTObnISHf9T0=");
     static final ItemStack twitterHead = getCustomHead("Lien du twitter", NamedTextColor.GOLD, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2M3NDVhMDZmNTM3YWVhODA1MDU1NTkxNDllYTE2YmQ0YTg0ZDQ0OTFmMTIyMjY4MThjMzg4MWMwOGU4NjBmYyJ9fX0=", "cc745a06f537aea80505559149ea16bd4a84d4491f12226818c3881c08e860fc");
     static final ItemStack queteHead = getCustomHead("Les quêtes", NamedTextColor.GOLD, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2RjOTg1YTdhNjhjNTc0ZjY4M2MwYjg1OTUyMWZlYjNmYzNkMmZmYTA1ZmEwOWRiMGJhZTQ0YjhhYzI5YjM4NSJ9fX0=", "7dc985a7a68c574f683c0b859521feb3fc3d2ffa05fa09db0bae44b8ac29b385");
@@ -18,12 +24,15 @@ public class BoussoleMenu extends InventoryMenu {
 
     public BoussoleMenu(UUID playerUUID)
     {
-        super(54, "Boussole des voeux",NamedTextColor.BLUE);
+        super(MenuSize.Six, "Boussole des voeux",NamedTextColor.BLUE, null, true);
         this.playerUUID = playerUUID;
     }
 
-    @Override
-    public void open(Player viewer) {
 
+    private static ItemStack getCustomHead(String name, NamedTextColor color, String data, String signature) {
+        return new ItemBuilder(Material.PLAYER_HEAD, null)
+                .name(name, color)
+                .customHead(data, signature)
+                .build(ServiceContainer.get(PlayerProfileService.class));
     }
 }

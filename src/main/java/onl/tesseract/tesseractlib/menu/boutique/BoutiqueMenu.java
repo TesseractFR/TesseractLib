@@ -11,7 +11,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
 public class BoutiqueMenu extends onl.tesseract.tesseractlib.util.menu.BoutiqueMenu {
     public BoutiqueMenu(TPlayer player) {
-        super(player, 27, "Boutique de Tesseract", NamedTextColor.BLUE, new BoussoleMenu(player));
+        super(player, 27, "Boutique de Tesseract", NamedTextColor.BLUE, new BoussoleMenu(player.getUUID()));
     }
 
     @Override

@@ -1,5 +1,8 @@
 package onl.tesseract.tesseractlib.util.menu;
 
+import net.kyori.adventure.text.Component;
+import onl.tesseract.lib.menu.Menu;
+import onl.tesseract.lib.menu.MenuSize;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import org.bukkit.Material;
@@ -9,28 +12,25 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class CraftingInventoryMenu extends InventoryMenu {
+public class CraftingInventoryMenu extends Menu {
     protected List<Integer> ingredientSlots = Collections.emptyList();
     protected Function<ItemStack[], ItemStack> updateFunction = items -> null;
     protected int resultSlot = -1;
     protected Player player;
 
-    public CraftingInventoryMenu(final int size, final String title)
+    public CraftingInventoryMenu(final MenuSize size, final String title, final Menu previous)
     {
-        super(size, title);
-    }
-
-    public CraftingInventoryMenu(final int size, final String title, final InventoryMenu previous)
-    {
-        super(size, title, previous);
+        super(size, Component.text(title), previous, true);
     }
 
     public void setIngredientSlots(final List<Integer> ingredientSlots)
@@ -61,12 +61,16 @@ public class CraftingInventoryMenu extends InventoryMenu {
 
     private void onClick(InventoryClickOrDragEvent event)
     {
+        if (this.getView() == null)
+            return;
+        Inventory topInventory = this.getView().getTopInventory();
+        Inventory bottomInventory = this.getView().getBottomInventory();
         // Chek that the click happened in this inventory
-        if (!event.getInventory().equals(this.inventory) || event.getClickedInventory() == null || (!event.getClickedInventory().equals(this.inventory) && !event.getClickedInventory().equals(view.getBottomInventory())))
+        if (!event.getInventory().equals(topInventory) || event.getClickedInventory() == null || (!event.getClickedInventory().equals(topInventory) && !event.getClickedInventory().equals(bottomInventory)))
             return;
 
         // If simple click in bottom, do nothing
-        if (!event.getClickedInventory().equals(inventory))
+        if (!event.getClickedInventory().equals(topInventory))
         {
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY)
                 new BukkitRunnable() {
@@ -141,7 +145,7 @@ public class CraftingInventoryMenu extends InventoryMenu {
     {
         for (final int ingredientSlot : ingredientSlots)
         {
-            inventory.setItem(ingredientSlot, null);
+            getView().getTopInventory().setItem(ingredientSlot, null);
         }
     }
 
@@ -153,30 +157,29 @@ public class CraftingInventoryMenu extends InventoryMenu {
     @EventHandler
     public void onClose(final InventoryCloseEvent event)
     {
-        if (event.getInventory() == inventory)
+        if (event.getInventory() == getView().getTopInventory())
         {
             for (final Integer ingredientSlot : ingredientSlots)
             {
-                ItemStack item = inventory.getItem(ingredientSlot);
+                ItemStack item = getView().getTopInventory().getItem(ingredientSlot);
                 if (item != null && item.getType() != Material.AIR)
                     player.getInventory().addItem(item);
             }
         }
+        super.close();
     }
 
     @Override
-    public void open(final Player viewer)
-    {
+    public void placeButtons(@NotNull Player viewer) {
         this.player = viewer;
         ItemStack background = new ItemBuilder(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
                 .name(" ").build();
-        for (int i = 0; i < inventory.getSize(); i++)
+        for (int i = 0; i < getView().getTopInventory().getSize(); i++)
         {
             if (ingredientSlots.contains(i))
                 continue;
-            inventory.setItem(i, background);
+            getView().getTopInventory().setItem(i, background);
         }
-        super.open(viewer);
     }
 
     protected ItemStack[] getIngredients()
@@ -185,7 +188,7 @@ public class CraftingInventoryMenu extends InventoryMenu {
         ItemStack[] items = new ItemStack[ingredientSlots.size()];
         for (final Integer ingredientSlot : ingredientSlots)
         {
-            items[i++] = inventory.getItem(ingredientSlot);
+            items[i++] = getView().getTopInventory().getItem(ingredientSlot);
         }
         return items;
     }
@@ -193,7 +196,7 @@ public class CraftingInventoryMenu extends InventoryMenu {
     private void update()
     {
         ItemStack result = updateFunction.apply(getIngredients());
-        inventory.setItem(resultSlot, Objects.requireNonNullElseGet(result, () -> new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE)));
+        getView().getTopInventory().setItem(resultSlot, Objects.requireNonNullElseGet(result, () -> new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE)));
     }
 
     protected enum CraftedQuantity {
