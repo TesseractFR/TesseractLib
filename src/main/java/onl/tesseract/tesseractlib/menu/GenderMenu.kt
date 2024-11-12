@@ -2,7 +2,6 @@ package onl.tesseract.tesseractlib.menu
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 import onl.tesseract.tesseractlib.player.Gender
 import onl.tesseract.tesseractlib.player.TPlayer
@@ -29,7 +28,7 @@ class GenderMenu(private val player: TPlayer, previous: InventoryMenu) :
 
         addButton(4, female, Component.text(Gender.FEMALE.getName(), NamedTextColor.GOLD, TextDecoration.BOLD),
             Component.text("Cliquez ici pour définir votre genre en Féminin.", NamedTextColor.GRAY)) {
-            player.sendMessage(Component.text("Vous avez bien changé votre genre en ${Gender.FEMALE.getName()}", NamedTextColor.GREEN))
+            player.sendMessage(Component.text("Vous avez bien changé votre genre en ${Gender.FEMALE.getName()} !", NamedTextColor.GREEN))
             player.gender = Gender.FEMALE
             this.close()
         }
