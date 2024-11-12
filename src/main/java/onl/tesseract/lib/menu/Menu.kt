@@ -118,7 +118,7 @@ open class Menu(
     }
 
     @EventHandler
-    fun onClick(event: InventoryClickEvent) {
+    open fun onClick(event: InventoryClickEvent) {
         // Check that the click happened in this inventory
         if (event.inventory != this.view?.topInventory)
             return
@@ -141,7 +141,7 @@ open class Menu(
     }
 
     @EventHandler
-    fun onClose(event: InventoryCloseEvent) {
+    open fun onClose(event: InventoryCloseEvent) {
         if (event.inventory == this.view?.topInventory) {
             close()
         }
