@@ -16,4 +16,13 @@ class TaskScheduler(private val plugin: Plugin) {
     fun runAsync(function: () -> Unit) {
         plugin.server.scheduler.runTaskAsynchronously(plugin, function)
     }
+
+    fun runAsyncTimer(plugin: Plugin, delay: Long = 0, period: Long = 0, function: (BukkitTask) -> Unit) {
+        if (delay == 0L && period == 0L)
+            plugin.server.scheduler.runTaskAsynchronously(plugin, function)
+        else if (period == 0L)
+            plugin.server.scheduler.runTaskLaterAsynchronously(plugin, function, delay)
+        else
+            plugin.server.scheduler.runTaskTimerAsynchronously(plugin, function, delay, period)
+    }
 }
