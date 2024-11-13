@@ -4,6 +4,9 @@ import com.destroystokyo.paper.profile.PlayerProfile
 import onl.tesseract.lib.task.TaskScheduler
 import onl.tesseract.tesseractlib.TesseractLib
 import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
@@ -30,6 +33,17 @@ class PlayerProfileService(private val scheduler: TaskScheduler) {
 
     fun createProfile(): PlayerProfile {
         return Bukkit.createProfile(UUID.randomUUID())
+    }
+
+    fun getPlayerHead(uuid: UUID): ItemStack {
+        val playerProfile = Bukkit.createProfile(uuid)
+        playerProfile.complete()
+        val item = ItemStack(Material.PLAYER_HEAD)
+        item.editMeta { meta ->
+            meta as SkullMeta
+            meta.playerProfile = playerProfile
+        }
+        return item
     }
 
     private fun registerPlayerProfile(uuid: UUID, profile: PlayerSkinProfile) {

@@ -5,10 +5,7 @@ import onl.tesseract.tesseractlib.player.TPlayer;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class VoteManager {
     private static VoteManager INSTANCE;
@@ -48,16 +45,24 @@ public class VoteManager {
         throw new IllegalArgumentException("Unknown vote site");
     }
 
-    public Map<VoteSite, Duration> getRemainingTimeUntilVote(final TPlayer player)
+    public Map<VoteSite, Duration> getRemainingTimeUntilVote(final TPlayer player) {
+        return getRemainingTimeUntilVote(player.getUUID());
+    }
+
+    public Map<VoteSite, Duration> getRemainingTimeUntilVote(final UUID player)
     {
         Map<VoteSite, Duration> map = new HashMap<>();
         voteSites.forEach(voteSite -> map.put(voteSite, getRemainingTimeUntilVote(player, voteSite)));
         return map;
     }
 
-    public Duration getRemainingTimeUntilVote(final TPlayer player, final VoteSite voteSite)
+    public Duration getRemainingTimeUntilVote(final TPlayer player, final VoteSite voteSite) {
+        return getRemainingTimeUntilVote(player.getUUID(), voteSite);
+    }
+
+    public Duration getRemainingTimeUntilVote(final UUID player, final VoteSite voteSite)
     {
-        return VoteRepository.getLastVote(player.getUUID(), voteSite.serviceName())
+        return VoteRepository.getLastVote(player, voteSite.serviceName())
                              .map(vote -> {
                                  Instant unlockInstant = vote.date().plus(voteSite.delay());
                                  return Duration.between(Instant.now(), unlockInstant);
