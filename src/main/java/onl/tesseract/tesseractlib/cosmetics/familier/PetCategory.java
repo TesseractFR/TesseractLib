@@ -1,6 +1,9 @@
 package onl.tesseract.tesseractlib.cosmetics.familier;
 
-import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
+import onl.tesseract.lib.menu.ItemBuilder;
+import onl.tesseract.lib.profile.PlayerProfileService;
+import onl.tesseract.lib.service.ServiceContainer;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -34,7 +37,9 @@ public enum PetCategory {
 
     public ItemStack getHead()
     {
-        return InventoryMenu.getCustomHead("", head.data, head.signature);
+        return new ItemBuilder(Material.PLAYER_HEAD, null ,null)
+                .customHead(head.data, head.signature)
+                .build(ServiceContainer.get(PlayerProfileService.class));
     }
 
 
