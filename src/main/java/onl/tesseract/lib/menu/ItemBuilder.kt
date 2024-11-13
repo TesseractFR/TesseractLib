@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.ProfileProperty
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import onl.tesseract.lib.profile.PlayerProfileService
+import onl.tesseract.tesseractlib.util.AItemLoreBuilder
 import onl.tesseract.tesseractlib.util.ItemLoreBuilder
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -68,6 +69,8 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
         return CustomHeadItemBuilder(data, signature, this)
     }
 
+    fun lore(): ItemBuilderLoreBuilder<T> = ItemBuilderLoreBuilder<T>()
+
     protected open fun material(material: Material): T {
         this.material = material
         return self()
@@ -84,11 +87,27 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
         }
         return item
     }
+
+    inner class ItemBuilderLoreBuilder<T : AItemBuilder<T>> : AItemLoreBuilder<ItemBuilderLoreBuilder<T>>() {
+
+        fun buildLore(): T {
+            this@AItemBuilder.lore(this.get())
+            return this@AItemBuilder.self() as T
+        }
+
+        override fun self(): ItemBuilderLoreBuilder<T> {
+            return this
+        }
+    }
 }
 
-open class ItemBuilder(material: Material, base: ItemStack? = null) : AItemBuilder<ItemBuilder>(material, base) {
+open class ItemBuilder(material: Material, name: String? = null, base: ItemStack? = null) : AItemBuilder<ItemBuilder>(material, base) {
 
-    constructor(base: ItemStack): this(base.type, base)
+    constructor(base: ItemStack): this(base.type, base = base)
+
+    init {
+        name?.let { name(it) }
+    }
 
     override fun self(): ItemBuilder = this
 

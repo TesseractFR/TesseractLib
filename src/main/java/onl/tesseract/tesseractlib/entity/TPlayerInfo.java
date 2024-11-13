@@ -1,6 +1,7 @@
 package onl.tesseract.tesseractlib.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Table(name = "t_player", uniqueConstraints = {@UniqueConstraint(columnNames = "uuid")}, indexes = @Index(name = "idx_uuid", columnList = "uuid"))
 public class TPlayerInfo implements Serializable {
@@ -59,6 +61,10 @@ public class TPlayerInfo implements Serializable {
 
     @Transient
     private Set<TeleportationAnimation> teleportationAnimations = new HashSet<>();
+
+    public TPlayerInfo(UUID uuid) {
+        this.uuid = uuid;
+    }
 
     @PostLoad
     @PostUpdate

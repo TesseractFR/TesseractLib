@@ -1,16 +1,20 @@
 package onl.tesseract.tesseractlib.cosmetics;
 
+import kotlin.Unit;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.tesseract.lib.menu.Menu;
+import onl.tesseract.lib.menu.MenuService;
+import onl.tesseract.lib.service.ServiceContainer;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.tesseractlib.cosmetics.familier.Pet;
 import onl.tesseract.tesseractlib.entity.TPlayerInfo;
 import onl.tesseract.tesseractlib.player.TPlayer;
+import onl.tesseract.tesseractlib.service.TPlayerInfoService;
 import onl.tesseract.tesseractlib.util.ChatFormats;
-import onl.tesseract.tesseractlib.util.menu.InventoryMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -24,8 +28,7 @@ public class CosmeticManager {
     public static void giveCosmetic(UUID uuid, Cosmetic cosmetic) {
 
         var runnable = new BukkitRunnable() {
-            final TPlayer tPlayer = TPlayer.get(uuid);
-            final TPlayerInfo tPlayerInfo = tPlayer.getTPlayerInfo();
+            final TPlayerInfo tPlayerInfo = TPlayerInfoService.getInstance().get(uuid);
 
             @Override
             public void run() {
@@ -38,7 +41,7 @@ public class CosmeticManager {
                 } else if (cosmetic instanceof TeleportationAnimation teleportationAnimation) {
                     tPlayerInfo.getTeleportationAnimations().add(teleportationAnimation);
                 }
-                tPlayer.save();
+                TPlayerInfoService.getInstance().save(tPlayerInfo);
             }
         };
         runnable.runTaskAsynchronously(TesseractLib.instance);
@@ -46,8 +49,7 @@ public class CosmeticManager {
 
 
     public static void removeCosmetic(UUID uuid, Cosmetic cosmetic) {
-        final TPlayer tPlayer = TPlayer.get(uuid);
-        final TPlayerInfo tPlayerInfo = tPlayer.getTPlayerInfo();
+        final TPlayerInfo tPlayerInfo = TPlayerInfoService.getInstance().get(uuid);
         var runnable = new BukkitRunnable() {
             @Override
             public void run() {
@@ -68,8 +70,7 @@ public class CosmeticManager {
         return hasCosmetic(player.getUniqueId(), type, cosmetic);
     }
     public static boolean hasCosmetic(UUID uuid, String type, Cosmetic cosmetic) {
-        final TPlayer tPlayer = TPlayer.get(uuid);
-        final TPlayerInfo tPlayerInfo = tPlayer.getTPlayerInfo();
+        final TPlayerInfo tPlayerInfo = TPlayerInfoService.getInstance().get(uuid);
         if (cosmetic instanceof FlyFilter flyFilter) {
             return tPlayerInfo.getFlyFilters().contains(flyFilter);
         } else if (cosmetic instanceof Pet pet) {
@@ -96,8 +97,7 @@ public class CosmeticManager {
     }
 
     public static int getTotalPossessed(UUID uuid, String type) {
-        final TPlayer tPlayer = TPlayer.get(uuid);
-        final TPlayerInfo tPlayerInfo = tPlayer.getTPlayerInfo();
+        final TPlayerInfo tPlayerInfo = TPlayerInfoService.getInstance().get(uuid);
         if (ElytraTrails.getTypeName().equals(type)) {
             return tPlayerInfo.getElytraTrails().size();
         } else if (FlyFilter.getTypeName().equals(type)) {
@@ -110,10 +110,14 @@ public class CosmeticManager {
         return 0;
     }
 
-    public static void tryToBuyEvent(Player viewer, InventoryMenu mainMenu, TPlayer player, Cosmetic cosmetic) {
-        if (player.getMarketCurrency() >= cosmetic.getPrice())
-            InventoryMenu.openConfirmationMenu(viewer, "Êtes vous sur de vouloir acheter le cosmétique " + cosmetic.getName(), mainMenu, event2 -> player.buyCosmetic(cosmetic, cosmetic.getPrice()));
-        else {
+    public static void tryToBuyEvent(Player viewer, Menu mainMenu, TPlayer player, Cosmetic cosmetic) {
+        if (player.getMarketCurrency() >= cosmetic.getPrice()) {
+            MenuService menuService = ServiceContainer.get(MenuService.class);
+            menuService.openConfirmationMenu(viewer, Component.text("Êtes vous sur de vouloir acheter le cosmétique " + cosmetic.getName()), mainMenu, () -> {
+                player.buyCosmetic(cosmetic, cosmetic.getPrice());
+                return Unit.INSTANCE;
+            });
+        } else {
             player.sendMessage(ChatFormats.COSMETICS_ERROR.append(Component.text("Vous n'avez pas assez de lys d'or, cliquez ici pour en acheter").hoverEvent(HoverEvent.showText(Component.text("Cliquez ici pour accéder à la boutique.", NamedTextColor.GOLD))).clickEvent(ClickEvent.openUrl("https://tesseract.craftingstore.net/"))));
             mainMenu.close();
         }
