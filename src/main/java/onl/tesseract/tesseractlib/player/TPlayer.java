@@ -51,14 +51,6 @@ public abstract class TPlayer implements Listener {
         this.tPlayerInfo = TPlayerInfoService.getInstance().get(player.getUniqueId());
     }
 
-    public static TPlayer get(final OfflinePlayer player) {
-        return TesseractLib.getPlayer(player);
-    }
-
-    public static TPlayer get(final UUID uuid) {
-        return TesseractLib.getPlayer(uuid);
-    }
-
     public static ItemStack[] loadInventory(ConfigurationSection yaml, String inv) {
         ItemStack[] list = new ItemStack[41];
         if (yaml.contains(inv)) {

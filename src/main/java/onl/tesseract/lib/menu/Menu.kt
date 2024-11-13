@@ -30,7 +30,7 @@ open class Menu(
     constructor(
         size: MenuSize,
         title: String,
-        color: NamedTextColor,
+        color: NamedTextColor? = null,
         previous: Menu? = null,
         freezeBottom: Boolean = true
     ) : this(size, Component.text(title, color), previous, freezeBottom)
