@@ -1,4 +1,4 @@
-package onl.tesseract.tesseractlib.command;
+package onl.tesseract.lib.command;
 
 import onl.tesseract.tesseractlib.animation.*;
 import org.bukkit.ChatColor;

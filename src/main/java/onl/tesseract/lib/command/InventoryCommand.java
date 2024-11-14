@@ -1,4 +1,4 @@
-package onl.tesseract.tesseractlib.command;
+package onl.tesseract.lib.command;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

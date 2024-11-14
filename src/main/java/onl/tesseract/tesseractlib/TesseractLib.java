@@ -1,6 +1,9 @@
 package onl.tesseract.tesseractlib;
 
 import onl.tesseract.lib.chat.tag.TagEventHandler;
+import onl.tesseract.lib.command.Animation;
+import onl.tesseract.lib.command.EquipmentCommand;
+import onl.tesseract.lib.command.InventoryCommand;
 import onl.tesseract.lib.inventory.InventoryInstanceEventHandler;
 import onl.tesseract.lib.inventory.InventoryInstanceManager;
 import onl.tesseract.tesseractlib.bdd.BDDManager;
@@ -10,7 +13,6 @@ import onl.tesseract.tesseractlib.cosmetics.familier.PetManager;
 import onl.tesseract.tesseractlib.event.ColoredChat;
 import onl.tesseract.tesseractlib.event.EntityBossBar;
 import onl.tesseract.tesseractlib.event.PlayerSit;
-import onl.tesseract.tesseractlib.placeholder.TesseractPlaceHolder;
 import onl.tesseract.tesseractlib.vote.VoteManager;
 import onl.tesseract.tesseractlib.vote.goal.VoteGoalManager;
 import org.bukkit.Bukkit;
@@ -53,7 +55,6 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         bddManager= new BDDManager(config.getDb_host(),config.getDb_port(),config.getDb_username(),config.getDb_password(),config.getDb_database());
         registerEvents();
         registerCommands();
-        new TesseractPlaceHolder(this).register();
 
         try
         {
@@ -102,14 +103,10 @@ public final class TesseractLib extends JavaPlugin implements Listener {
         Objects.requireNonNull(instance.getCommand("socialspy")).setExecutor(new SocialSpy());
         Objects.requireNonNull(instance.getCommand("msg")).setExecutor(new MsgCommand());
         Objects.requireNonNull(instance.getCommand("reply")).setExecutor(new ReplyToMsg());
-        Objects.requireNonNull(instance.getCommand("familier")).setExecutor(new FamilierCommand());
-        Objects.requireNonNull(instance.getCommand("cosmetic")).setExecutor(new CosmeticCommand());
         Objects.requireNonNull(instance.getCommand("cosmetic")).setTabCompleter(new CosmeticCompleter());
-        Objects.requireNonNull(instance.getCommand("boutique")).setExecutor(new BoutiqueCommand());
         Objects.requireNonNull(instance.getCommand("marketCurrency")).setExecutor(new MarketCurrencyCommand());
         Objects.requireNonNull(instance.getCommand("votegoal")).setExecutor(new VoteGoalCommand());
         Objects.requireNonNull(instance.getCommand("votegoal")).setTabCompleter(new VoteGoalCommand());
-        Objects.requireNonNull(instance.getCommand("vote")).setExecutor(new VoteCommand());
         Objects.requireNonNull(instance.getCommand("inventory")).setExecutor(new InventoryCommand());
         Objects.requireNonNull(instance.getCommand("inventory")).setTabCompleter(new InventoryCommand());
         Objects.requireNonNull(instance.getCommand("votetopreward")).setExecutor(new VoteTopRewardCommand());
