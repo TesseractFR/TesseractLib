@@ -3,7 +3,7 @@ package onl.tesseract.lib.inventory;
 import net.kyori.adventure.text.Component;
 import onl.tesseract.lib.event.equipment.PlayerInvocableInvokeEvent;
 import onl.tesseract.lib.event.inventory.InventorySwitchEvent;
-import onl.tesseract.tesseractlib.util.ChatFormats;
+import onl.tesseract.lib.util.ChatFormats;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

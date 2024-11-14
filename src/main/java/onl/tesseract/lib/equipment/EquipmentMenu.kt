@@ -7,7 +7,7 @@ import onl.tesseract.lib.menu.Button
 import onl.tesseract.lib.menu.ItemBuilder
 import onl.tesseract.lib.menu.Menu
 import onl.tesseract.lib.menu.MenuSize
-import onl.tesseract.tesseractlib.util.ItemLoreBuilder
+import onl.tesseract.lib.util.ItemLoreBuilder
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot

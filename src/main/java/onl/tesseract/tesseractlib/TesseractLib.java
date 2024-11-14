@@ -6,9 +6,6 @@ import onl.tesseract.lib.command.EquipmentCommand;
 import onl.tesseract.lib.command.InventoryCommand;
 import onl.tesseract.lib.inventory.InventoryInstanceEventHandler;
 import onl.tesseract.lib.inventory.InventoryInstanceManager;
-import onl.tesseract.tesseractlib.event.ColoredChat;
-import onl.tesseract.tesseractlib.event.EntityBossBar;
-import onl.tesseract.tesseractlib.event.PlayerSit;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
@@ -29,14 +26,12 @@ import java.util.logging.Logger;
 public final class TesseractLib extends JavaPlugin implements Listener {
     public static JavaPlugin instance;
 
-    private Config config;
     static public int port;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         instance = this;
-        config = Config.getInstance();
         registerEvents();
         registerCommands();
 
@@ -90,9 +85,6 @@ public final class TesseractLib extends JavaPlugin implements Listener {
     void registerEvents()
     {
         this.getServer().getPluginManager().registerEvents(new TagEventHandler(), this);
-        this.getServer().getPluginManager().registerEvents(new EntityBossBar(), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerSit(), this);
-        this.getServer().getPluginManager().registerEvents(new ColoredChat(), this);
 
         this.getServer().getPluginManager().registerEvents(this,this);
         this.getServer().getPluginManager().registerEvents(new InventoryInstanceEventHandler(),this);
