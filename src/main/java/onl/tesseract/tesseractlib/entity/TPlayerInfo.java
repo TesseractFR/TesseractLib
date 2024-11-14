@@ -40,6 +40,10 @@ public class TPlayerInfo implements Serializable {
     FlyFilter active_fly_filter = FlyFilter.NONE;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    TeleportationAnimation active_tp_animation = TeleportationAnimation.WATER;
+
+    @Column(nullable = false)
     int market_currency = 0;
 
     @Column(nullable = false)
