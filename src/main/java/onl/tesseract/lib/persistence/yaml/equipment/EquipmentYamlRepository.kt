@@ -5,8 +5,8 @@ import onl.tesseract.lib.equipment.EquipmentRepository
 import onl.tesseract.lib.equipment.Invocable
 import onl.tesseract.lib.persistence.yaml.YamlSerializer
 import onl.tesseract.lib.repository.RepositoryWithCache
-import onl.tesseract.tesseractlib.util.getSectionList
-import onl.tesseract.tesseractlib.util.setSectionList
+import onl.tesseract.lib.util.getSectionList
+import onl.tesseract.lib.util.setSectionList
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File

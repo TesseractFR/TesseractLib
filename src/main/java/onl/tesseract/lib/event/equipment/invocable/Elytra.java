@@ -1,6 +1,5 @@
 package onl.tesseract.lib.event.equipment.invocable;
 
-import com.destroystokyo.paper.ParticleBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -9,13 +8,11 @@ import onl.tesseract.lib.equipment.Invocable;
 import onl.tesseract.lib.service.PluginService;
 import onl.tesseract.lib.service.ServiceContainer;
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.animation.AnimationTarget;
-import onl.tesseract.tesseractlib.animation.Circle;
-import onl.tesseract.tesseractlib.animation.Concentration;
-import onl.tesseract.tesseractlib.cosmetics.ElytraTrails;
-import onl.tesseract.tesseractlib.player.TPlayer;
-import onl.tesseract.tesseractlib.util.ItemBuilder;
-import onl.tesseract.tesseractlib.util.Util;
+import onl.tesseract.lib.animation.AnimationTarget;
+import onl.tesseract.lib.animation.Circle;
+import onl.tesseract.lib.animation.Concentration;
+import onl.tesseract.lib.util.ItemBuilder;
+import onl.tesseract.lib.util.Util;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;

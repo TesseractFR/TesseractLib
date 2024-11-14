@@ -2,8 +2,8 @@ package onl.tesseract.lib.event.equipment.invocable.cosmetic;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.lib.equipment.Invocable;
-import onl.tesseract.tesseractlib.util.ItemBuilder;
-import onl.tesseract.tesseractlib.util.ItemLoreBuilder;
+import onl.tesseract.lib.util.ItemBuilder;
+import onl.tesseract.lib.util.ItemLoreBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

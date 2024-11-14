@@ -4,9 +4,8 @@ import com.destroystokyo.paper.profile.ProfileProperty
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import onl.tesseract.lib.profile.PlayerProfileService
-import onl.tesseract.lib.service.ServiceContainer
-import onl.tesseract.tesseractlib.util.AItemLoreBuilder
-import onl.tesseract.tesseractlib.util.ItemLoreBuilder
+import onl.tesseract.lib.util.AItemLoreBuilder
+import onl.tesseract.lib.util.ItemLoreBuilder
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag

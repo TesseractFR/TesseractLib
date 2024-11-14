@@ -7,7 +7,7 @@ import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import onl.tesseract.lib.Ticks
 import onl.tesseract.lib.task.TaskScheduler
-import onl.tesseract.tesseractlib.util.ChatFormats
+import onl.tesseract.lib.util.ChatFormats
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
