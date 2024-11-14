@@ -8,11 +8,16 @@ import onl.tesseract.tesseractlib.player.TPlayer
 import onl.tesseract.tesseractlib.util.ItemBuilder
 import onl.tesseract.tesseractlib.util.ItemLoreBuilder
 import onl.tesseract.tesseractlib.util.menu.InventoryMenu
+import onl.tesseract.tesseractlib.util.menu.InventoryMenu.getCustomHead
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
+
+private val teteHomme: ItemStack = getCustomHead("", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2EwOGQwZGFiYzQzNGEwOTNmMDk4YmFmNTA1YjE2NWMxNGNiZTk2NDU3M2VkOGU5ZTYxODUxNTg5MTc5NTcwIn19fQ==", "")
+private val teteFemme: ItemStack = getCustomHead("", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWEyMjA2ODJhYjdmMjBmYmNlOTEzMDY2MGVjOTgyMjliMzMyMGEyMzlhNDc4MmViMTUzMzg1ZWRhOWJmYmZkOCJ9fX0=", "")
+private val teteAutre: ItemStack = getCustomHead("", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkYzA0OGE3Y2U3OGY3ZGFkNzJhMDdkYTI3ZDg1YzA5MTY4ODFlNTUyMmVlZWQxZTNkYWYyMTdhMzhjMWEifX19", "")
 
 class GenderMenu(private val player: TPlayer, previous: InventoryMenu) :
 
@@ -48,7 +53,6 @@ class GenderMenu(private val player: TPlayer, previous: InventoryMenu) :
     }
 
     private fun createMaleItem(): ItemStack {
-        val teteHomme = getCustomHead("", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2EwOGQwZGFiYzQzNGEwOTNmMDk4YmFmNTA1YjE2NWMxNGNiZTk2NDU3M2VkOGU5ZTYxODUxNTg5MTc5NTcwIn19fQ==", "")
         val ilb = ItemLoreBuilder()
             .newline()
             .append("Cliquez ici pour définir votre genre en ${Gender.MALE.getName()}.", NamedTextColor.GRAY)
@@ -59,7 +63,6 @@ class GenderMenu(private val player: TPlayer, previous: InventoryMenu) :
     }
 
     private fun createFemaleItem(): ItemStack {
-        val teteFemme = getCustomHead("", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWEyMjA2ODJhYjdmMjBmYmNlOTEzMDY2MGVjOTgyMjliMzMyMGEyMzlhNDc4MmViMTUzMzg1ZWRhOWJmYmZkOCJ9fX0=", "")
         val ilb = ItemLoreBuilder()
             .newline()
             .append("Cliquez ici pour définir votre genre en ${Gender.FEMALE.getName()}.", NamedTextColor.GRAY)
@@ -70,7 +73,6 @@ class GenderMenu(private val player: TPlayer, previous: InventoryMenu) :
     }
 
     private fun createOtherItem(): ItemStack {
-        val teteAutre = getCustomHead("", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkYzA0OGE3Y2U3OGY3ZGFkNzJhMDdkYTI3ZDg1YzA5MTY4ODFlNTUyMmVlZWQxZTNkYWYyMTdhMzhjMWEifX19", "")
         val ilb = ItemLoreBuilder()
             .newline()
             .append("Cliquez ici pour définir votre genre en ${Gender.OTHER.getName()}.", NamedTextColor.GRAY)
