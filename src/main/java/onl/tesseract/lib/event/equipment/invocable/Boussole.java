@@ -2,12 +2,12 @@ package onl.tesseract.lib.event.equipment.invocable;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.tesseract.lib.equipment.BoussoleMenu;
 import onl.tesseract.lib.equipment.Equipment;
 import onl.tesseract.lib.equipment.EquipmentService;
 import onl.tesseract.lib.equipment.Invocable;
 import onl.tesseract.lib.service.ServiceContainer;
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.menu.BoussoleMenu;
 import onl.tesseract.tesseractlib.util.ChatFormats;
 import onl.tesseract.tesseractlib.util.ItemBuilder;
 import onl.tesseract.tesseractlib.util.Util;
@@ -31,7 +31,7 @@ public class Boussole extends Invocable {
 
     public Boussole(@NotNull UUID playerUUID, boolean invoked, int handSlot) {
         super(playerUUID, invoked, handSlot);
-        menu = new BoussoleMenu(playerUUID);
+        menu = new BoussoleMenu();
     }
 
     @Override

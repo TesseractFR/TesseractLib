@@ -1,9 +1,8 @@
-package onl.tesseract.tesseractlib.command;
+package onl.tesseract.lib.command;
 
+import onl.tesseract.lib.equipment.EquipmentMenu;
 import onl.tesseract.lib.equipment.EquipmentService;
 import onl.tesseract.lib.service.ServiceContainer;
-import onl.tesseract.tesseractlib.menu.EquipmentMenu;
-import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +14,7 @@ public class EquipmentCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args)
     {
         if (sender instanceof Player player) {
-            EquipmentMenu menu = new EquipmentMenu(player, ServiceContainer.get(EquipmentService.class));
+            EquipmentMenu menu = new EquipmentMenu(player, ServiceContainer.get(EquipmentService.class), null);
             menu.open(player);
         }
 
