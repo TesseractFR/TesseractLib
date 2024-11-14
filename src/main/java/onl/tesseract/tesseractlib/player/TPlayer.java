@@ -1,14 +1,9 @@
 package onl.tesseract.tesseractlib.player;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import onl.tesseract.lib.inventory.InventoryInstanceManager;
 import onl.tesseract.tesseractlib.TesseractLib;
-import onl.tesseract.tesseractlib.cosmetics.*;
-import onl.tesseract.tesseractlib.entity.TPlayerInfo;
-import onl.tesseract.tesseractlib.service.TPlayerInfoService;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,11 +30,6 @@ public abstract class TPlayer implements Listener {
     protected String dateSinceLastConnection = null;
     protected String dateFirstConnection = new Date().toString();
     protected boolean playedToday = false;
-    @Getter
-    protected TPlayerInfo tPlayerInfo;
-    @Getter
-    @Setter
-    protected TeleportationAnimation tp_animation = TeleportationAnimation.WATER;
 
     /**
      * Loads a player
@@ -48,7 +38,6 @@ public abstract class TPlayer implements Listener {
      */
     public TPlayer(final OfflinePlayer player) {
         this.player = player;
-        this.tPlayerInfo = TPlayerInfoService.getInstance().get(player.getUniqueId());
     }
 
     public static ItemStack[] loadInventory(ConfigurationSection yaml, String inv) {
@@ -63,24 +52,6 @@ public abstract class TPlayer implements Listener {
             }
         }
         return list;
-    }
-
-    public FlyFilter getFlyFilter() {
-        return this.tPlayerInfo.getActive_fly_filter();
-    }
-
-    public void setFlyFilter(FlyFilter flyFilter) {
-        this.tPlayerInfo.setActive_fly_filter(flyFilter);
-    }
-
-    public void buyCosmetic(Cosmetic cosmetic, int price) {
-        CosmeticManager.giveCosmetic(getUUID(), cosmetic);
-        addMarketCurrency(-price);
-    }
-
-    public void addMarketCurrency(int amount) {
-        TPlayerInfoService.getInstance().addMarketCurrency(tPlayerInfo, amount);
-        TesseractLib.logger().info(String.format("[Market Currency] %s earn %d lys d'or", player.getName(), amount));
     }
 
     protected void dailyConnection() {
@@ -111,7 +82,6 @@ public abstract class TPlayer implements Listener {
      * Saves the player
      */
     public void save() {
-        TPlayerInfoService.getInstance().save(this.tPlayerInfo);
         File file = new File(folderPath + getOfflinePlayer().getUniqueId() + ".yml");
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         yaml.set("name", getOfflinePlayer().getName());
@@ -242,40 +212,5 @@ public abstract class TPlayer implements Listener {
         if (!(other instanceof TPlayer))
             return false;
         return getOfflinePlayer().getUniqueId().equals(((TPlayer) other).getOfflinePlayer().getUniqueId());
-    }
-
-    ////////////////////
-    // Static methods //
-
-    public Gender getGender() {
-        return tPlayerInfo.getGenre();
-    }
-
-    public void setGender(Gender gender) {
-        tPlayerInfo.setGenre(gender);
-    }
-
-    public ElytraTrails getActiveTrail() {
-        return tPlayerInfo.getActive_trail();
-    }
-
-    public void setActiveTrail(ElytraTrails elytraTrails) {
-        tPlayerInfo.setActive_trail(elytraTrails);
-    }
-
-    public int getMarketCurrency() {
-        TPlayerInfoService.getInstance().refresh(tPlayerInfo);
-        return tPlayerInfo.getMarket_currency();
-    }
-
-
-    public int getShopPoint() {
-        TPlayerInfoService.getInstance().refresh(tPlayerInfo);
-        return tPlayerInfo.getShop_point();
-    }
-
-    public void addShopPoint(int amount) {
-        TPlayerInfoService.getInstance().addShopPoint(tPlayerInfo, amount);
-        TesseractLib.logger().info(String.format("[Market Currency] %s earn %d shop point", player.getName(), amount));
     }
 }

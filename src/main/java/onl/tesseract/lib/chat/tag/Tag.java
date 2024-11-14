@@ -2,7 +2,7 @@ package onl.tesseract.lib.chat.tag;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import onl.tesseract.tesseractlib.player.TPlayer;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,11 +17,11 @@ public interface Tag<T> {
 
     TextComponent getComponent(T obj);
 
-    TextComponent apply(TextComponent component, TPlayer sender);
+    TextComponent apply(TextComponent component, Player sender);
 
     TextComponent hover(T obj);
 
-    static Component applyAll(Component component, TPlayer sender)
+    static Component applyAll(Component component, Player sender)
     {
         if (component instanceof TextComponent)
         {

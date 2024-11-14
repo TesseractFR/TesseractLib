@@ -2,7 +2,6 @@ package onl.tesseract.lib.chat.tag;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.TextComponent;
-import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,8 +17,7 @@ public class TagEventHandler implements Listener {
         if (event.message() instanceof TextComponent text)
         {
             text = insertPlayerTags(text);
-            var player = TPlayer.get(event.getPlayer());
-            event.message(Tag.applyAll(text, player));
+            event.message(Tag.applyAll(text, event.getPlayer()));
         }
     }
 

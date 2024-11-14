@@ -172,24 +172,6 @@ public class Elytra extends Invocable implements Listener {
                             .append(Component.text("Distance: "))
                             .append(Component.text((int) (player.getLocation().distance(player.getCompassTarget())), NamedTextColor.YELLOW));
                     player.sendActionBar(comp);
-                    ElytraTrails trail = TPlayer.get(player).getActiveTrail();
-                    if (trail != ElytraTrails.NONE) {
-                        ParticleBuilder builder = new ParticleBuilder(trail.getParticle());
-                        if (trail == ElytraTrails.SHINNING)
-                            builder.count(1);
-                        else
-                            builder.count(2);
-                        builder.offset(.5, .5, .5);
-                        if (trail == ElytraTrails.POTION || trail == ElytraTrails.MUSICAL)
-                            builder.extra(0.2);
-                        else
-                            builder.extra(0);
-                        builder.location(Util.Locations.backward(player.getLocation(), 2));
-                        builder.receivers(100);
-                        if (trail == ElytraTrails.REDSTONE)
-                            builder.color(Color.RED);
-                        builder.spawn();
-                    }
                 }
             }
         }.runTaskTimer(TesseractLib.instance, 0, 2);
