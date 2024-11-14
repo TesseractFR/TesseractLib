@@ -24,18 +24,21 @@ class GenderMenu(private val player: TPlayer, previous: InventoryMenu) :
         addButton(2, createMaleItem()){
             player.sendMessage(Component.text("Vous avez bien changé votre genre en ${Gender.MALE.getName()} !", NamedTextColor.GREEN))
             player.gender = Gender.MALE
+            player.save()
             this.close()
         }
 
         addButton(4, createFemaleItem()) {
             player.sendMessage(Component.text("Vous avez bien changé votre genre en ${Gender.FEMALE.getName()} !", NamedTextColor.GREEN))
             player.gender = Gender.FEMALE
+            player.save()
             this.close()
         }
 
         addButton(6, createOtherItem()) {
             player.sendMessage(Component.text("Vous avez bien changé votre genre en ${Gender.OTHER.getName()} !", NamedTextColor.GREEN))
             player.gender = Gender.OTHER
+            player.save()
             this.close()
         }
 
