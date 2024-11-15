@@ -1,9 +1,9 @@
 package onl.tesseract.lib.animation;
 
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.logging.Level;
@@ -11,10 +11,15 @@ import java.util.logging.Level;
 public class Star {
     AnimationTarget target;
     private Particle particle = Particle.FLAME;
+    private final Plugin plugin;
     private double radius = 2.1;
     private int angleCount = 5;
     private double time = 300;
     private Color color;
+
+    public Star(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     public Star target(final AnimationTarget target)
     {
@@ -75,17 +80,17 @@ public class Star {
                 {
                     try
                     {
-                        new Line(particle, points[k], points[(k + 2) % angleCount])
+                        new Line(particle, points[k], points[(k + 2) % angleCount], plugin)
                                 .setColor(color)
                                 .setDelay(0)
                                 .draw();
-                        new Line(particle, points[k], points[(k + 3) % angleCount])
+                        new Line(particle, points[k], points[(k + 3) % angleCount], plugin)
                                 .setColor(color)
                                 .setDelay(0)
                                 .draw();
                     }catch (Exception e)
                     {
-                        TesseractLib.logger().log(Level.SEVERE, "Exception during line drawing", e);
+                        plugin.getLogger().log(Level.SEVERE, "Exception during line drawing", e);
                         cancel();
                     }
                 }
@@ -93,7 +98,7 @@ public class Star {
                 if (++timer >= time)
                     this.cancel();
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
         return this;
     }
 }

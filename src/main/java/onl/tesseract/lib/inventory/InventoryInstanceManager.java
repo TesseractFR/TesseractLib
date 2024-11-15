@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import onl.tesseract.lib.equipment.EquipmentService;
 import onl.tesseract.lib.equipment.Invocable;
 import onl.tesseract.lib.service.ServiceContainer;
-import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.lib.event.inventory.InventorySwitchEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -13,6 +12,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.logging.Level;
  * the name of his selected inventory configuration.
  */
 public class InventoryInstanceManager {
+    private static final Logger logger = LoggerFactory.getLogger(InventoryInstanceManager.class);
     private static final String FOLDER_PATH = "plugins/Tesseract/inventories/";
     private static final String CONFIG_PATH = FOLDER_PATH + "config.json";
     private static final String PLAYERS_PATH = FOLDER_PATH + "players.yml";
@@ -76,7 +78,7 @@ public class InventoryInstanceManager {
             }
             catch (IllegalArgumentException e)
             {
-                TesseractLib.logger().log(Level.SEVERE, "Failed to load player's inventory configuration for uuid " + key, e);
+                logger.error("Failed to load player's inventory configuration for uuid " + key, e);
             }
         }
     }
@@ -123,7 +125,7 @@ public class InventoryInstanceManager {
         }
         catch (IOException e)
         {
-            TesseractLib.logger().log(Level.SEVERE, "Failed to save player's inventory", e);
+            logger.error("Failed to save player's inventory", e);
         }
     }
 
@@ -143,7 +145,7 @@ public class InventoryInstanceManager {
         InventorySwitchEvent event = new InventorySwitchEvent(player, getSelectedConfigName(player), configurations.get(configName));
         if (!event.callEvent())
             return;
-        TesseractLib.logger().log(Level.INFO, "[Inventory] " + player.getName() + ": " + getSelectedConfigName(player) + " -> " + configName);
+        logger.info("[Inventory] " + player.getName() + ": " + getSelectedConfigName(player) + " -> " + configName);
 
         save(player);
         applyConfig(player, event.getTo());
@@ -154,7 +156,7 @@ public class InventoryInstanceManager {
         }
         catch (IOException e)
         {
-            TesseractLib.logger().log(Level.SEVERE, "failed to save inventories", e);
+            logger.error("failed to save inventories", e);
         }
     }
 
@@ -272,7 +274,7 @@ public class InventoryInstanceManager {
     {
         if (config.getWorld() != null && configurations.values().stream().anyMatch(existing -> config.getWorld().equals(existing.getWorld())))
         {
-            TesseractLib.logger().log(Level.WARNING, "Cannot register two inventories for the same world " + config.getWorld() + ", tried to register config " + config.getName());
+            logger.warn("Cannot register two inventories for the same world " + config.getWorld() + ", tried to register config " + config.getName());
             return;
         }
         configurations.put(config.getName(), config);

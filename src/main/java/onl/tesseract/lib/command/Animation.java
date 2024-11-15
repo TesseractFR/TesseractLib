@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +21,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Animation implements CommandExecutor, TabCompleter {
+
+    private final Plugin plugin;
+
+    public Animation(Plugin plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
     {
@@ -41,7 +49,7 @@ public class Animation implements CommandExecutor, TabCompleter {
                     delay = (args.length >= 3) ? Double.parseDouble(args[2]) : 0;
                     loc = new Location(((Player) sender).getWorld(), 140, 71, 155);
                     if (delay > 0)
-                        new ShockWave(Particle.DRIPPING_LAVA, null, loc, radius, delay, Animation::callbackDamage);
+                        new ShockWave(Particle.DRIPPING_LAVA, null, loc, radius, delay, Animation::callbackDamage, plugin);
                     else
                     {
                         new ShockWave(Particle.DUST, Color.AQUA, player.getLocation(), radius, Animation::callbackDamage);
@@ -51,7 +59,7 @@ public class Animation implements CommandExecutor, TabCompleter {
                 case "circle":
                     radius = (args.length >= 2) ? Integer.parseInt(args[1]) : 15;
                     delay = (args.length >= 3) ? Double.parseDouble(args[2]) : 0;
-                    new Circle(Particle.DUST, new AnimationTarget(player))
+                    new Circle(Particle.DUST, new AnimationTarget(player), plugin)
                             .setColor(Color.FUCHSIA)
                             .setRadius(radius)
                             .setDelay(delay)
@@ -89,7 +97,7 @@ public class Animation implements CommandExecutor, TabCompleter {
 
                 case "ray":
                     int range = (args.length >= 2) ? Integer.parseInt(args[1]) : 15;
-                    new Ray(Particle.DUST, Color.GRAY, player, (short) range, 0.3f, Animation::callbackImpact);
+                    new Ray(Particle.DUST, Color.GRAY, player, (short) range, 0.3f, Animation::callbackImpact, plugin);
                     break;
 
                 case "cone":
@@ -102,7 +110,7 @@ public class Animation implements CommandExecutor, TabCompleter {
 
                 case "rosette":
                     particle = Particle.valueOf(args[1]);
-                    new CollapsingRosette().location(player.getLocation())
+                    new CollapsingRosette(plugin).location(player.getLocation())
                                            .particle(particle)
                                            .speed(Double.parseDouble(args[2]))
                                            .radius(Double.parseDouble(args[3]))
@@ -114,7 +122,7 @@ public class Animation implements CommandExecutor, TabCompleter {
 
                 case "star":
                     particle = Particle.valueOf(args[1]);
-                    new Star().target(args[6].equals("follow") ? new AnimationTarget(player) : new AnimationTarget(player.getLocation()))
+                    new Star(plugin).target(args[6].equals("follow") ? new AnimationTarget(player) : new AnimationTarget(player.getLocation()))
                               .particle(particle)
                               .color(args[2].equals("null") ? null : Color.fromRGB(Integer.parseInt(args[2], 16)))
                               .radius(Double.parseDouble(args[3]))

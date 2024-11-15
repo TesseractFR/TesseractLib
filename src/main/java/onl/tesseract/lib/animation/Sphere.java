@@ -1,14 +1,19 @@
 package onl.tesseract.lib.animation;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Location;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Sphere extends AnimationBuilder<Sphere> {
+    private final Plugin plugin;
     private float radius;
     private double delay;
     private float rotationCount;
+
+    public Sphere(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public Animation build()
@@ -57,7 +62,7 @@ public class Sphere extends AnimationBuilder<Sphere> {
                 if (onHit != null)
                     origin.getLocation().getNearbyPlayers(radius).forEach(onHit::accept);
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     public Sphere setRadius(final float radius)

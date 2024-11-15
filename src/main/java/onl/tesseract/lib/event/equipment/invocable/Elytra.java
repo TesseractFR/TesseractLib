@@ -1,16 +1,17 @@
 package onl.tesseract.lib.event.equipment.invocable;
 
+import kotlin.Unit;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import onl.tesseract.lib.equipment.Invocable;
-import onl.tesseract.lib.service.PluginService;
-import onl.tesseract.lib.service.ServiceContainer;
-import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.lib.animation.AnimationTarget;
 import onl.tesseract.lib.animation.Circle;
 import onl.tesseract.lib.animation.Concentration;
+import onl.tesseract.lib.equipment.Invocable;
+import onl.tesseract.lib.service.PluginService;
+import onl.tesseract.lib.service.ServiceContainer;
+import onl.tesseract.lib.task.TaskScheduler;
 import onl.tesseract.lib.util.ItemBuilder;
 import onl.tesseract.lib.util.Util;
 import org.bukkit.*;
@@ -109,28 +110,25 @@ public class Elytra extends Invocable implements Listener {
                 && accelerateTask == null)
         {
             // Start a timer to accelerate every 0.5 seconds while sneaking.
-            accelerateTask = new BukkitRunnable() {
-                final Player player = event.getPlayer();
-                @Override
-                public void run()
-                {
-                    // Cancel speed level if in event world
-                    final int finalSpeedLevel = event.getPlayer().getLocation().getWorld().getName().equals("Event") ?
-                            0 : getEffectiveSpeedLevel();
-                    // Cancel if not sneaking or flying
-                    if (!player.isOnline() || !player.isSneaking() || !player.isGliding()) {
-                        this.cancel();
-                        accelerateTask = null;
-                    }
-                    else if (player.getVelocity().length() < (1.20 + (0.10 * (finalSpeedLevel + 1)))) {
-                        Vector vector = player.getVelocity();
-                        vector.add(player.getLocation().getDirection().multiply(0.7));
-
-                        player.setVelocity(vector);
-                        player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1, 1);
-                    }
+            final Player player = event.getPlayer();
+            accelerateTask = ServiceContainer.get(TaskScheduler.class).runTimer(0, 10, task -> {
+                // Cancel speed level if in event world
+                final int finalSpeedLevel = event.getPlayer().getLocation().getWorld().getName().equals("Event") ?
+                        0 : getEffectiveSpeedLevel();
+                // Cancel if not sneaking or flying
+                if (!player.isOnline() || !player.isSneaking() || !player.isGliding()) {
+                    task.cancel();
+                    accelerateTask = null;
                 }
-            }.runTaskTimer(TesseractLib.instance, 0, 10);
+                else if (player.getVelocity().length() < (1.20 + (0.10 * (finalSpeedLevel + 1)))) {
+                    Vector vector = player.getVelocity();
+                    vector.add(player.getLocation().getDirection().multiply(0.7));
+
+                    player.setVelocity(vector);
+                    player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1, 1);
+                }
+                return Unit.INSTANCE;
+            });
         }
     }
 
@@ -149,29 +147,26 @@ public class Elytra extends Invocable implements Listener {
     void displayActionBar(Player player) {
         if (actionBarTask != null && !actionBarTask.isCancelled())
             actionBarTask.cancel();
-        actionBarTask = new BukkitRunnable() {
-            @Override
-            public void run()
+        actionBarTask = ServiceContainer.get(TaskScheduler.class).runTimer(0, 2, task -> {
+            if (!player.isOnline() || !player.isGliding())
             {
-                if (!player.isOnline() || !player.isGliding())
-                {
-                    this.cancel();
-                    accelerateTask = null;
-                }
-                // Show action bar
-                else {
-                    var comp = Component.text("Vitesse: ", NamedTextColor.GRAY)
-                            .append(Component.text((int) (player.getVelocity().length() * 20), NamedTextColor.AQUA))
-                            .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
-                            .append(Component.text("Alt: "))
-                            .append(Component.text(player.getLocation().getBlockY(), NamedTextColor.GREEN))
-                            .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
-                            .append(Component.text("Distance: "))
-                            .append(Component.text((int) (player.getLocation().distance(player.getCompassTarget())), NamedTextColor.YELLOW));
-                    player.sendActionBar(comp);
-                }
+                task.cancel();
+                accelerateTask = null;
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 2);
+            // Show action bar
+            else {
+                var comp = Component.text("Vitesse: ", NamedTextColor.GRAY)
+                        .append(Component.text((int) (player.getVelocity().length() * 20), NamedTextColor.AQUA))
+                        .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                        .append(Component.text("Alt: "))
+                        .append(Component.text(player.getLocation().getBlockY(), NamedTextColor.GREEN))
+                        .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                        .append(Component.text("Distance: "))
+                        .append(Component.text((int) (player.getLocation().distance(player.getCompassTarget())), NamedTextColor.YELLOW));
+                player.sendActionBar(comp);
+            }
+            return Unit.INSTANCE;
+        });
     }
 
     @Override
@@ -199,19 +194,17 @@ public class Elytra extends Invocable implements Listener {
     void animate(Player player) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 40, 0));
         player.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 20, 1);
-        new Circle(Particle.DUST, new AnimationTarget(player))
+        TaskScheduler taskScheduler = ServiceContainer.get(TaskScheduler.class);
+        new Circle(Particle.DUST, new AnimationTarget(player), taskScheduler.getPlugin())
                 .setColor(Color.FUCHSIA)
                 .setDelay(0.1f)
                 .setRadius(1)
                 .setRotationCount(3).draw();
-        new BukkitRunnable() {
-            @Override
-            public void run()
-            {
-                player.playSound(player.getLocation(),
-                        Sound.BLOCK_END_PORTAL_SPAWN, 20, 1);
-            }
-        }.runTaskLater(TesseractLib.instance, 40);
+        taskScheduler.runTimer(40,0, task -> {
+            player.playSound(player.getLocation(),
+                    Sound.BLOCK_END_PORTAL_SPAWN, 20, 1);
+            return Unit.INSTANCE;
+        });
     }
 
 
@@ -220,7 +213,8 @@ public class Elytra extends Invocable implements Listener {
      */
     public void synergicPropulsion(Player player)
     {
-        new Concentration().setParticle(Particle.DUST)
+        TaskScheduler scheduler = ServiceContainer.get(TaskScheduler.class);
+        new Concentration(scheduler.getPlugin()).setParticle(Particle.DUST)
                            .setColor(Color.FUCHSIA)
                            .setTarget(new AnimationTarget(player))
                            .setRadius(2)
@@ -228,26 +222,20 @@ public class Elytra extends Invocable implements Listener {
                            .build()
                            .draw();
         player.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 20, 1);
-        new BukkitRunnable() {
-            @Override
-            public void run()
-            {
-                if (! player.isOnline() || !isInvoked()) return;
-                player.setVelocity(new Vector(0, 2, 0));
-                player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 150, 1);
-                new BukkitRunnable() {
-                    @Override
-                    public void run()
-                    {
-                        if (player.isOnline() && isInvoked()) {
-                            player.setVelocity(player.getLocation().getDirection());
-                            player.setGliding(true);
-                            player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 150, 1);
-                        }
-                    }
-                }.runTaskLater(TesseractLib.instance, 20);
-            }
-        }.runTaskLater(TesseractLib.instance, 30);
+        scheduler.runTimer(30, 0, task -> {
+            if (! player.isOnline() || !isInvoked()) return Unit.INSTANCE;
+            player.setVelocity(new Vector(0, 2, 0));
+            player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 150, 1);
+            scheduler.runTimer(20, 0, subTask -> {
+                if (player.isOnline() && isInvoked()) {
+                    player.setVelocity(player.getLocation().getDirection());
+                    player.setGliding(true);
+                    player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 150, 1);
+                }
+                return Unit.INSTANCE;
+            });
+            return Unit.INSTANCE;
+        });
     }
 
     public int getEffectiveSpeedLevel()
@@ -328,33 +316,31 @@ public class Elytra extends Invocable implements Listener {
         }
         Player player = Bukkit.getPlayer(getPlayerUUID());
         if (player == null) return;
-        autoGlideTask = new BukkitRunnable() {
-            @Override
-            public void run()
+        TaskScheduler taskScheduler = ServiceContainer.get(TaskScheduler.class);
+        autoGlideTask = taskScheduler.runTimer(0, 10, task -> {
+            if (! player.isOnline() || !isInvoked()) {
+                task.cancel();
+                autoGlideTask = null;
+            }
+            else
             {
-                if (! player.isOnline() || !isInvoked()) {
-                    this.cancel();
-                    autoGlideTask = null;
-                }
-                else
+                // Don't glide if the player is levitating
+                if (player.hasPotionEffect(PotionEffectType.LEVITATION))
+                    return Unit.INSTANCE;
+                Block b = player.getLocation().getBlock();
+                if (!player.isOnGround() && b.getRelative(BlockFace.DOWN).getType() == Material.AIR
+                        && b.getRelative(BlockFace.DOWN, 2).getType() == Material.AIR
+                        && b.getRelative(BlockFace.DOWN, 3).getType() == Material.AIR
+                        && b.getRelative(BlockFace.DOWN, 4).getType() == Material.AIR)
                 {
-                    // Don't glide if the player is levitating
-                    if (player.hasPotionEffect(PotionEffectType.LEVITATION))
-                        return;
-                    Block b = player.getLocation().getBlock();
-                    if (!player.isOnGround() && b.getRelative(BlockFace.DOWN).getType() == Material.AIR
-                            && b.getRelative(BlockFace.DOWN, 2).getType() == Material.AIR
-                            && b.getRelative(BlockFace.DOWN, 3).getType() == Material.AIR
-                            && b.getRelative(BlockFace.DOWN, 4).getType() == Material.AIR)
-                    {
-                        this.cancel();
-                        autoGlideTask = null;
-                        player.setGliding(true);
-                        displayActionBar(player);
-                    }
+                    task.cancel();
+                    autoGlideTask = null;
+                    player.setGliding(true);
+                    displayActionBar(player);
                 }
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 10);
+           return Unit.INSTANCE;
+        });
     }
 
     public boolean isIgnoreSpeedLevel()

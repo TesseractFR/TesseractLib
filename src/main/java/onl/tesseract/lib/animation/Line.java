@@ -1,10 +1,10 @@
 package onl.tesseract.lib.animation;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
@@ -18,6 +18,7 @@ public class Line {
     double spacing = 0.3f;
     Consumer<Void> onFinish;
     double offset = 0;
+    private final Plugin plugin;
 
     public Line setParticle(Particle particle) {
         this.particle = particle;
@@ -55,11 +56,12 @@ public class Line {
         return this;
     }
 
-    public Line(Particle particle, Location source, Location dest)
+    public Line(Particle particle, Location source, Location dest, Plugin plugin)
     {
         this.particle = particle;
         this.source = source;
         this.dest = dest;
+        this.plugin = plugin;
     }
 
     public Line draw()
@@ -92,7 +94,7 @@ public class Line {
                     }
                 }
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
         return this;
     }
 }

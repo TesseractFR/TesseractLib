@@ -1,11 +1,11 @@
 package onl.tesseract.lib.animation;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
@@ -28,6 +28,7 @@ public class Spiral {
     float spacing = 0.02f;
     int originCount = 1;
     boolean multipleHits = false;
+    private final Plugin plugin;
 
     Vector direction = new Vector(1E-15, 1, 1E-15).normalize();
 
@@ -36,10 +37,11 @@ public class Spiral {
      * @param particle PArticle to show
      * @param target Target of the animation
      */
-    public Spiral(Particle particle, AnimationTarget target)
+    public Spiral(Particle particle, AnimationTarget target, Plugin plugin)
     {
         this.particle = particle;
         this.target = target;
+        this.plugin = plugin;
     }
 
     public Spiral setParticle(Particle particle)
@@ -190,13 +192,13 @@ public class Spiral {
                                     public void run() {
                                         hits.remove(entity);
                                     }
-                                }.runTaskLater(TesseractLib.instance, 10);
+                                }.runTaskLater(plugin, 10);
                             }
                         }
                     });
                 }
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     public Spiral setDirection(Vector direction) {

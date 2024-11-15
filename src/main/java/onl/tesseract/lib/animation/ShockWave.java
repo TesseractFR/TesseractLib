@@ -1,10 +1,10 @@
 package onl.tesseract.lib.animation;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 import org.bukkit.util.RayTraceResult;
@@ -26,7 +26,7 @@ public class ShockWave {
      * @param radius Radius of thee shockwave
      * @param delay Delay in ticks between each wave
      */
-    public ShockWave(Particle particle, Color color, Location location, int radius, double delay, Consumer<Player> onHit) {
+    public ShockWave(Particle particle, Color color, Location location, int radius, double delay, Consumer<Player> onHit, Plugin plugin) {
         init(particle, color, location);
 
         new BukkitRunnable() {
@@ -44,7 +44,7 @@ public class ShockWave {
                     timer--;
                 }
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
 
         if (onHit != null)
             this.detectPlayer(location, radius, onHit);

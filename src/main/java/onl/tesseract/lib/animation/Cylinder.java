@@ -1,10 +1,10 @@
 package onl.tesseract.lib.animation;
 
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 
@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Cylinder {
+    private final Plugin plugin;
     private Particle particle = Particle.FLAME;
     private Color color;
     private Location location;
@@ -20,6 +21,10 @@ public class Cylinder {
     private boolean rev;
     private double delay = 0.1f;
     private Consumer<Player> onHit;
+
+    public Cylinder(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     public Animation build()
     {
@@ -46,7 +51,7 @@ public class Cylinder {
                 while (timer >= 1) {
                     timer--;
                     Location circleLocation = location.clone().add(0, y * sign + start, 0);
-                    new Circle(particle, new AnimationTarget(circleLocation))
+                    new Circle(particle, new AnimationTarget(circleLocation), plugin)
                             .setColor(color)
                             .setRadius(radius)
                             .setDelay(0)
@@ -68,7 +73,7 @@ public class Cylinder {
                     }
                 }
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     public Cylinder setParticle(final Particle particle)
