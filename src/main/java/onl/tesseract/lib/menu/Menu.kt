@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.Plugin
 import java.util.function.Consumer
 
 open class Menu(
@@ -47,8 +48,8 @@ open class Menu(
         addButton(index, Button(item = item, function = function))
     }
 
-    fun addButton(index: Int, async: () -> ItemStack, function: Consumer<InventoryClickEvent>? = null) {
-        addButton(index, AsyncButton(itemSupplier = async, function = function))
+    fun addButton(index: Int, plugin: Plugin, async: () -> ItemStack, function: Consumer<InventoryClickEvent>? = null) {
+        addButton(index, AsyncButton(itemSupplier = async, function = function, plugin = plugin))
     }
 
     fun addButton(index: Int, button: AButton) {

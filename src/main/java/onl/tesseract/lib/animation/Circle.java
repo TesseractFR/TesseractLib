@@ -1,10 +1,10 @@
 package onl.tesseract.lib.animation;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Consumer;
@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Circle extends AnimationBuilder<Circle> {
+    private final Plugin plugin;
     ParticleBuilder builder;
     Consumer<Void> onFinish;
     Consumer<Circle> onDraw;
@@ -30,8 +31,9 @@ public class Circle extends AnimationBuilder<Circle> {
      * @param particle PArticle to show
      * @param target Target of the animation
      */
-    public Circle(Particle particle, AnimationTarget target)
+    public Circle(Particle particle, AnimationTarget target, Plugin plugin)
     {
+        this.plugin = plugin;
         this.particle = particle;
         this.origin = target;
     }
@@ -168,13 +170,13 @@ public class Circle extends AnimationBuilder<Circle> {
                                     public void run() {
                                         hits.remove(entity);
                                     }
-                                }.runTaskLater(TesseractLib.instance, 10);
+                                }.runTaskLater(plugin, 10);
                             }
                         }
                     });
                 }
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
         return this;
     }
 

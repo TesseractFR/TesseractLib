@@ -1,12 +1,12 @@
 package onl.tesseract.lib.animation;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.lib.util.Util;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 
@@ -15,6 +15,7 @@ import java.util.*;
 public class Cone {
     Particle particle;
     final Location origin;
+    private final Plugin plugin;
     Color color;
     int radius;
     double openingAngle;
@@ -22,10 +23,11 @@ public class Cone {
     float delay;
     Consumer<Player> onHit;
 
-    public Cone(Particle particle, Location origin)
+    public Cone(Particle particle, Location origin, Plugin plugin)
     {
         this.particle = particle;
         this.origin = origin;
+        this.plugin = plugin;
     }
 
     public Cone setParticle(Particle particle) {
@@ -117,6 +119,6 @@ public class Cone {
                         this.cancel();
                 }
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
     }
 }

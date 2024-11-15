@@ -1,9 +1,9 @@
 package onl.tesseract.lib.animation;
 
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Concentration {
@@ -12,6 +12,11 @@ public class Concentration {
     private AnimationTarget target;
     private int radius;
     private int count;
+    private final Plugin plugin;
+
+    public Concentration(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     private void draw()
     {
@@ -26,13 +31,13 @@ public class Concentration {
                 double z = Math.sin(rho) * Math.cos(theta) * radius;
                 double y = Math.sin(theta) * radius;
                 Location source = target.getLocation().add(x, y, z);
-                new Line(particle, source, target.getLocation()).setColor(color).setDelay(1);
+                new Line(particle, source, target.getLocation(), plugin).setColor(color).setDelay(1);
 
                 current++;
                 if (this.current == count)
                     this.cancel();
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 5);
+        }.runTaskTimer(plugin, 0, 5);
     }
 
     public Animation build()

@@ -2,11 +2,11 @@ package onl.tesseract.lib.animation;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import com.google.common.annotations.Beta;
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 
@@ -26,7 +26,7 @@ public class Disc {
     }
 
     @Beta
-    public Disc(Particle particle, Color color, Location location, int radius, double delay, float rotationCount, Consumer<LivingEntity> onHit)
+    public Disc(Particle particle, Color color, Location location, int radius, double delay, float rotationCount, Consumer<LivingEntity> onHit, Plugin plugin)
     {
         ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, location);
         final float maxAngle = (float)(Math.PI * 2 * rotationCount);
@@ -52,6 +52,6 @@ public class Disc {
                 if (onHit != null)
                     location.getNearbyLivingEntities(radius).forEach(onHit::accept);
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
     }
 }

@@ -7,7 +7,7 @@ import onl.tesseract.lib.equipment.Equipment;
 import onl.tesseract.lib.equipment.EquipmentService;
 import onl.tesseract.lib.equipment.Invocable;
 import onl.tesseract.lib.service.ServiceContainer;
-import onl.tesseract.tesseractlib.TesseractLib;
+import onl.tesseract.lib.task.TaskScheduler;
 import onl.tesseract.lib.util.ChatFormats;
 import onl.tesseract.lib.util.ItemBuilder;
 import onl.tesseract.lib.util.Util;
@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -57,6 +58,7 @@ public class Boussole extends Invocable {
     @Override
     public void use(PlayerInteractEvent event)
     {
+        Plugin plugin = ServiceContainer.get(TaskScheduler.class).getPlugin();
         Player player = event.getPlayer();
         if (event.getAction() == Action.LEFT_CLICK_AIR)
         {
@@ -91,10 +93,10 @@ public class Boussole extends Invocable {
                                         player.setGliding(true);
                                     propulsionTask = null;
                                 }
-                            }.runTaskLater(TesseractLib.instance, 5);
+                            }.runTaskLater(plugin, 5);
                         }
                     }
-                }.runTaskLater(TesseractLib.instance, 20*3);
+                }.runTaskLater(plugin, 20*3);
             }
             else
                 player.sendMessage(ChatFormats.EQUIPMENT.append(Component.text("Vous devez être équipé de vos ailes pour décoller avec la boussole.")));

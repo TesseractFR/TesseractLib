@@ -3,7 +3,6 @@ package onl.tesseract.lib.util.menu;
 import net.kyori.adventure.text.Component;
 import onl.tesseract.lib.menu.Menu;
 import onl.tesseract.lib.menu.MenuSize;
-import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.lib.util.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,6 +13,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,10 +27,12 @@ public class CraftingInventoryMenu extends Menu {
     protected Function<ItemStack[], ItemStack> updateFunction = items -> null;
     protected int resultSlot = -1;
     protected Player player;
+    protected Plugin plugin;
 
-    public CraftingInventoryMenu(final MenuSize size, final String title, final Menu previous)
+    public CraftingInventoryMenu(final MenuSize size, final String title, final Menu previous, Plugin plugin)
     {
         super(size, Component.text(title), previous, true);
+        this.plugin = plugin;
     }
 
     public void setIngredientSlots(final List<Integer> ingredientSlots)
@@ -79,7 +81,7 @@ public class CraftingInventoryMenu extends Menu {
                     {
                         update();
                     }
-                }.runTask(TesseractLib.instance);
+                }.runTask(plugin);
             return;
         }
         // If simple click in any non-craft slot, cancel
@@ -97,7 +99,7 @@ public class CraftingInventoryMenu extends Menu {
                 {
                     update();
                 }
-            }.runTask(TesseractLib.instance);
+            }.runTask(plugin);
             return;
         }
         if (event.getCursor() != null && event.getCursor().getType() != Material.AIR)

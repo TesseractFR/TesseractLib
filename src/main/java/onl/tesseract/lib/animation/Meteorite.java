@@ -1,6 +1,5 @@
 package onl.tesseract.lib.animation;
 
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -9,6 +8,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Consumer;
@@ -22,9 +22,11 @@ public class Meteorite {
     final List<ArmorStand> blocks = new ArrayList<>();
     final Location impactLocation;
     final Location spawnLocation;
+    private final Plugin plugin;
 
-    public Meteorite(Location impactLocation, int spawnOffset) {
+    public Meteorite(Location impactLocation, int spawnOffset, Plugin plugin) {
         this.impactLocation = impactLocation;
+        this.plugin = plugin;
         this.spawnLocation = impactLocation.clone().add(0, spawnOffset, 0);
         this.spawnMeteorite();
     }
@@ -44,7 +46,7 @@ public class Meteorite {
                 middle.getWorld().spawnParticle(Particle.LARGE_SMOKE, middle, 100, .6, .6, .6, 0.01);
                 middle.getWorld().spawnParticle(Particle.FLAME, middle, 150, .6, .6, .6, 0.01);
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 10);
+        }.runTaskTimer(plugin, 0, 10);
         new BukkitRunnable() {
             @Override
             public void run()
@@ -52,7 +54,7 @@ public class Meteorite {
                 charging.cancel();
                 callback.accept(null);
             }
-        }.runTaskLater(TesseractLib.instance, 20L * duration);
+        }.runTaskLater(plugin, 20L * duration);
     }
 
     public void move(float speed, Consumer<Void> callback) {
@@ -86,12 +88,12 @@ public class Meteorite {
                 }
                 timer++;
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
 
     }
 
     public void explode(Consumer<Player> onHit) {
-        new ShockWave(Particle.DRIPPING_LAVA, null, this.impactLocation, 20, 0.2, onHit);
+        new ShockWave(Particle.DRIPPING_LAVA, null, this.impactLocation, 20, 0.2, onHit, plugin);
         impactLocation.getWorld().spawnParticle(Particle.FLAME, impactLocation, 500, .6, .6, .6, 0.5);
         impactLocation.getWorld().spawnParticle(Particle.EXPLOSION, impactLocation, 5, .6, .6, .6, 0.001);
         impactLocation.getWorld().playSound(impactLocation, Sound.ENTITY_GENERIC_EXPLODE, 50, 1);

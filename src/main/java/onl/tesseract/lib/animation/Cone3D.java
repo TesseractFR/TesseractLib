@@ -1,10 +1,10 @@
 package onl.tesseract.lib.animation;
 
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
@@ -23,12 +23,14 @@ public class Cone3D {
     float baseRadius = 0;
     Consumer<LivingEntity> onHit;
     Consumer<Void> onFinish;
+    private final Plugin plugin;
 
-    public Cone3D(Particle particle, Location origin)
+    public Cone3D(Particle particle, Location origin, Plugin plugin)
     {
         this.particle = particle;
         this.origin = origin;
         this.direction = origin.getDirection();
+        this.plugin = plugin;
     }
 
     public Animation build()
@@ -53,7 +55,7 @@ public class Cone3D {
                 while (timer >= 1) {
                     timer--;
                     particleLocation.add(vector);
-                    Circle circle = new Circle(particle, new AnimationTarget(particleLocation))
+                    Circle circle = new Circle(particle, new AnimationTarget(particleLocation), plugin)
                             .setDirection(direction)
                             .setDelay(0)
                             .setRadius(baseRadius + i * (float)Math.sin(openingAngle))
@@ -74,7 +76,7 @@ public class Cone3D {
                     }
                 }
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     public Cone3D setOnHit(Consumer<LivingEntity> onHit) {

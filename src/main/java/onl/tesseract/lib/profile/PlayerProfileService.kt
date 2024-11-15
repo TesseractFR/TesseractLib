@@ -2,12 +2,10 @@ package onl.tesseract.lib.profile
 
 import com.destroystokyo.paper.profile.PlayerProfile
 import onl.tesseract.lib.task.TaskScheduler
-import onl.tesseract.tesseractlib.TesseractLib
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
-import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
 data class PlayerSkinProfile(val skinValue: String, val skinSignature: String)

@@ -25,8 +25,8 @@ object TesseractLib {
     }
 
     fun registerCommands(plugin: JavaPlugin) {
-        plugin.getCommand("animation")!!.setExecutor(Animation())
-        plugin.getCommand("animation")!!.setTabCompleter(Animation())
+        plugin.getCommand("animation")!!.setExecutor(Animation(plugin))
+        plugin.getCommand("animation")!!.setTabCompleter(Animation(plugin))
         plugin.getCommand("equipment")!!.setExecutor(EquipmentCommand())
         plugin.getCommand("inventory")!!.setExecutor(InventoryCommand())
         plugin.getCommand("inventory")!!.setTabCompleter(InventoryCommand())

@@ -1,19 +1,24 @@
 package onl.tesseract.lib.animation;
 
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class SmoothCylinder extends AnimationBuilder<SmoothCylinder> {
+    private final Plugin plugin;
     private Location location;
     private int height;
     private boolean rev;
     private float radius;
     private double delay;
+
+    public SmoothCylinder(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     public Animation build()
     {
@@ -46,7 +51,7 @@ public class SmoothCylinder extends AnimationBuilder<SmoothCylinder> {
                 while (timer >= 1) {
                     timer--;
                     Location circleLocation = location.clone().add(0, y * sign + start, 0);
-                    new Circle(particle, new AnimationTarget(circleLocation)).setColor(color).setRadius(radius).setDelay(0).setRotationCount(1)
+                    new Circle(particle, new AnimationTarget(circleLocation), plugin).setColor(color).setRadius(radius).setDelay(0).setRotationCount(1)
                         .setSpacing(0.4f)
                         .draw();
                     y += 0.1;
@@ -65,7 +70,7 @@ public class SmoothCylinder extends AnimationBuilder<SmoothCylinder> {
                     }
                 }
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     public SmoothCylinder setLocation(final Location location)

@@ -3,7 +3,6 @@ package onl.tesseract.lib.util;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -17,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -455,7 +455,7 @@ public class Util {
 
 
     public static class Entity {
-        static public void push(org.bukkit.entity.Entity entity, Location destination, int duration) {
+        static public void push(org.bukkit.entity.Entity entity, Location destination, int duration, Plugin plugin) {
             Vector v = destination.subtract(entity.getLocation()).toVector().multiply(1.0 / duration);
             new BukkitRunnable() {
                 int i = 0;
@@ -467,7 +467,7 @@ public class Util {
                     if (++i >= duration)
                         this.cancel();
                 }
-            }.runTaskTimer(TesseractLib.instance, 0, 1);
+            }.runTaskTimer(plugin, 0, 1);
         }
 
         /**

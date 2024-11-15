@@ -1,8 +1,8 @@
 package onl.tesseract.lib.animation;
 
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -15,6 +15,11 @@ public class CollapsingRosette {
     private double radius = 3.5;
     private int count = 75;
     private double time = 300;
+    private final Plugin plugin;
+
+    public CollapsingRosette(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     public CollapsingRosette location(final Location location)
     {
@@ -101,7 +106,7 @@ public class CollapsingRosette {
                     }
                 }catch (IllegalArgumentException e)
                 {
-                    TesseractLib.logger().log(Level.SEVERE, "Failed to draw animation", e);
+                    plugin.getLogger().log(Level.SEVERE, "Failed to draw animation", e);
                     this.cancel();
                 }
 
@@ -111,7 +116,7 @@ public class CollapsingRosette {
                 if (++timer > time)
                     this.cancel();
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
 
         return this;
     }

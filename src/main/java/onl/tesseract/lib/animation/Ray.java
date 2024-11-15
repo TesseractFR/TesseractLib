@@ -1,11 +1,11 @@
 package onl.tesseract.lib.animation;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import onl.tesseract.tesseractlib.TesseractLib;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Consumer;
@@ -14,12 +14,12 @@ import org.bukkit.util.Vector;
 public class Ray {
     final BukkitTask task;
 
-    public Ray(Particle particle, Color color, LivingEntity sender, short range, float delay, Consumer<Impact> onHit)
+    public Ray(Particle particle, Color color, LivingEntity sender, short range, float delay, Consumer<Impact> onHit, Plugin plugin)
     {
-        this(particle, color, sender, range, delay, 0.2, onHit);
+        this(particle, color, sender, range, delay, 0.2, onHit, plugin);
     }
 
-    public Ray(Particle particle, Color color, LivingEntity sender, short range, float delay, double hitBoxRadius, Consumer<Impact> onHit)
+    public Ray(Particle particle, Color color, LivingEntity sender, short range, float delay, double hitBoxRadius, Consumer<Impact> onHit, Plugin plugin)
     {
         ParticleBuilder builder = AnimationUtil.buildParticle(particle, color, sender.getLocation());
         Location particleLocation = sender.getEyeLocation().add(sender.getLocation().getDirection());
@@ -56,7 +56,7 @@ public class Ray {
                     }
                 }
             }
-        }.runTaskTimer(TesseractLib.instance, 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     public void stop()
