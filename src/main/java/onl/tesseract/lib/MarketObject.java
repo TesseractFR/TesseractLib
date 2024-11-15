@@ -9,5 +9,5 @@ public interface MarketObject {
         return 200;
     }
 
-    String getName();
+    Component getName();
 }
