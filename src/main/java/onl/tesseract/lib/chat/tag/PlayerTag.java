@@ -1,6 +1,6 @@
 package onl.tesseract.lib.chat.tag;
 
-import onl.tesseract.tesseractlib.player.TPlayer;
+import java.util.UUID;
 
-public interface PlayerTag extends Tag<TPlayer> {
+public interface PlayerTag extends Tag<UUID> {
 }

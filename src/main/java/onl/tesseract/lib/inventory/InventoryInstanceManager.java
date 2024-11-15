@@ -6,7 +6,6 @@ import onl.tesseract.lib.equipment.Invocable;
 import onl.tesseract.lib.service.ServiceContainer;
 import onl.tesseract.tesseractlib.TesseractLib;
 import onl.tesseract.lib.event.inventory.InventorySwitchEvent;
-import onl.tesseract.tesseractlib.player.TPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
@@ -203,7 +202,7 @@ public class InventoryInstanceManager {
         ConfigurationSection yaml = YamlConfiguration.loadConfiguration(file);
 
         // Load items
-        var content = TPlayer.loadInventory(yaml, "items");
+        var content = loadInventory(yaml, "items");
         player.getInventory().setContents(content);
 
         // Load invocables
@@ -224,6 +223,20 @@ public class InventoryInstanceManager {
                     equipmentService.invoke(player, invocable.getClass(), slot, false);
             }
         }
+    }
+
+    private static ItemStack[] loadInventory(ConfigurationSection yaml, String inv) {
+        ItemStack[] list = new ItemStack[41];
+        if (yaml.contains(inv)) {
+            int i = 0;
+            for (Object item : Objects.requireNonNull(yaml.getList(inv))) {
+                ItemStack itemStack = (ItemStack) item;
+                if (itemStack != null)
+                    list[i] = itemStack;
+                i++;
+            }
+        }
+        return list;
     }
 
     /**
