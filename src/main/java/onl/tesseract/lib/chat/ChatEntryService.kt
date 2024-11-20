@@ -16,12 +16,21 @@ import org.bukkit.scheduler.BukkitTask
 import java.util.*
 import kotlin.random.Random
 
+/**
+ * Service used to retrieve a player's next chat or command input
+ */
 class ChatEntryService(private val scheduler: TaskScheduler) : Listener {
 
     private val random = Random(123456789)
     private val chatCallbacks: MutableMap<UUID, ChatMessageCallback> = mutableMapOf()
     private val commandCallbacks: MutableMap<UUID, MutableMap<UUID, CommandCallback>> = mutableMapOf()
 
+    /**
+     * Get the next chat message of the player.
+     * @param player Player to watch.
+     * @param message Prompt to show to the player, asking him an input.
+     * @param callback Callback taking the player's chat input as argument.
+     */
     fun getChatEntry(player: Player, message: Component, callback: (String) -> Unit) {
         if (!player.isOnline) return
         player.sendMessage(ChatFormats.CHAT.append(message).append(Component.text(" : ", NamedTextColor.GRAY)))
@@ -47,6 +56,9 @@ class ChatEntryService(private val scheduler: TaskScheduler) : Listener {
     }
 
     /**
+     * Generate a [ClickEvent] and capture the corresponding command call. Used to insert a click event in a message,
+     * and execute a callback when the message is clicked.
+     * @param player
      * @throws IllegalArgumentException If the player is offline
      */
     fun clickCommand(player: Player, callback: () -> Unit): ClickEvent {
