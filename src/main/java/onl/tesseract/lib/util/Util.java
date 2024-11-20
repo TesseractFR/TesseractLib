@@ -9,13 +9,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
@@ -43,127 +44,6 @@ public class Util {
      */
     static public boolean isNear(double a, double b, double precision) {
         return (a - b) >= -precision && (a - b) <= precision;
-    }
-
-    /**
-     * Split a string into several strings of size width
-     *
-     * @param message Original string
-     * @param width   Size of substrings
-     * @return List of substrings
-     * @deprecated In favor of {@link ItemLoreBuilder}
-     */
-    @Deprecated
-    static public List<String> splitByLines(String message, short width) {
-        List<String> lines = new ArrayList<>();
-        String[] words = message.split(" ");
-        StringBuilder currentLine = new StringBuilder();
-        char lastColor = 0;
-        for (String word : words) {
-            // Get real length
-            int len = word.replaceAll("§.", "").length();
-            // Get the last used color.
-            int colorIndex = word.lastIndexOf('§');
-            if (colorIndex != -1 && colorIndex + 1 < word.length())
-                lastColor = word.charAt(colorIndex + 1);
-            // Check if new line
-            boolean isNewLine = word.strip().equals(NEW_LINE.strip());
-            if (isNewLine) {
-                // Split the line
-                lines.add(currentLine.toString());
-                currentLine = new StringBuilder();
-                if (lastColor != 0)
-                    currentLine.append("§").append(lastColor);
-                // Split the line if there is no place to add the word
-            } else if (currentLine.length() + len > width) {
-                lines.add(currentLine.toString());
-                currentLine = new StringBuilder();
-                // Add the word to the next line, with the last used color
-                if (lastColor != 0)
-                    currentLine.append("§").append(lastColor).append(word).append(" ");
-                else
-                    currentLine.append(word).append(" ");
-            } else
-                currentLine.append(word).append(" ");
-
-        }
-        if (currentLine.length() > 0)
-            lines.add(currentLine.toString());
-        return lines;
-    }
-
-    /**
-     * Returns an item stack built with given parameters
-     *
-     * @param material Material of the item
-     * @param name     display name to apply to the item
-     * @param lore     Lore to apply to the item. It will be trimmed by 30
-     * @return an itemstack
-     * @deprecated In favor of {@link ItemBuilder}
-     */
-    @Deprecated
-    static public ItemStack buildItem(Material material, String name, String lore) {
-        ItemStack item = new ItemStack(material);
-        return buildItem(item, name, lore);
-    }
-
-    /**
-     * @deprecated In favor of {@link ItemBuilder}
-     */
-    @Deprecated
-    static public ItemStack buildItem(Material material, String name, String lore, int lineWidth, boolean enchant) {
-        ItemStack item = new ItemStack(material);
-        return buildItem(item, name, lore, lineWidth, enchant);
-    }
-
-    /**
-     * @deprecated In favor of {@link ItemBuilder}
-     */
-    @Deprecated
-    static public ItemStack buildItem(Material material, String name, String lore, boolean enchant) {
-        ItemStack item = new ItemStack(material);
-        return buildItem(item, name, lore, enchant);
-    }
-
-    /**
-     * Modifies the name and lore of an ItemStack.
-     *
-     * @param item ItemStack to modify
-     * @param name display name to apply to the item
-     * @param lore Lore to apply to the item. It will be trimmed by 30
-     * @return returns the same itemstack.
-     * @deprecated In favor of {@link ItemBuilder}
-     */
-    @Deprecated
-    static public ItemStack buildItem(ItemStack item, String name, String lore) {
-        return buildItem(item, name, lore, false);
-    }
-
-    /**
-     * @deprecated In favor of {@link ItemBuilder}
-     */
-    @Deprecated
-    static public ItemStack buildItem(ItemStack item, String name, String lore, boolean enchant) {
-        return buildItem(item, name, lore, 35, enchant);
-    }
-
-    /**
-     * @deprecated In favor of {@link ItemBuilder}
-     */
-    @Deprecated
-    static public ItemStack buildItem(ItemStack item, String name, String lore, int lineWidth, boolean enchant) {
-        ItemMeta meta = item.getItemMeta();
-        if (name != null)
-            meta.displayName(Component.text(name));
-        if (lore != null)
-            meta.lore(new ItemLoreBuilder(lineWidth).append(lore).get());
-        item.setItemMeta(meta);
-        if (enchant) {
-            item.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
-            item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        }
-        item.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        return item;
     }
 
     @Deprecated
