@@ -3,13 +3,18 @@ package onl.tesseract.lib.menu
 import com.destroystokyo.paper.profile.ProfileProperty
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
 import onl.tesseract.lib.profile.PlayerProfileService
+import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.lib.util.AItemLoreBuilder
 import onl.tesseract.lib.util.ItemLoreBuilder
+import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.LeatherArmorMeta
+import org.bukkit.inventory.meta.PotionMeta
 import org.bukkit.inventory.meta.SkullMeta
 
 abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemStack? = null, builder: AItemBuilder<*>? = null) {
@@ -17,10 +22,12 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
     private var name: Component? = builder?.name
     private var nameStr: String? = builder?.nameStr
     private var color: TextColor? = builder?.color
+    private var decoration: TextDecoration? = builder?.decoration
     private var material: Material = builder?.material ?: material
     private var base: ItemStack? = builder?.base ?: base
     private var enchanted: Boolean = builder?.enchanted == true
     private var lore: List<Component>? = builder?.lore
+    private var metaColor: Color? = builder?.metaColor
 
     abstract fun self(): T
 
@@ -35,6 +42,13 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
         return self()
     }
 
+    fun name(name: String, color: TextColor, decoration: TextDecoration): T {
+        this.nameStr = name
+        this.color = color
+        this.decoration = decoration
+        return self()
+    }
+
     fun name(name: Component): T {
         this.name = name
         return self()
@@ -42,6 +56,11 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
 
     fun color(color: TextColor): T {
         this.color = color
+        return self()
+    }
+
+    fun metaColor(color: Color): T {
+        this.metaColor = color
         return self()
     }
 
@@ -79,13 +98,27 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
     protected open fun build(): ItemStack {
         val item = base ?: ItemStack(material)
         item.editMeta { meta ->
-            name?.let { meta.displayName(it) }
+            computeName()?.let { meta.displayName(it) }
             if (enchanted) {
                 meta.addEnchant(Enchantment.UNBREAKING, 1, true)
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
             }
+            metaColor?.let { color ->
+                if (meta is PotionMeta)
+                    meta.color = color
+                if (meta is LeatherArmorMeta)
+                    meta.setColor(color)
+            }
+
         }
         return item
+    }
+
+    private fun computeName(): Component? {
+        var nameComponent = nameStr?.let { Component.text(it) } ?: name ?: return null
+        color?.let { nameComponent = nameComponent.color(it) }
+        decoration?.let { nameComponent = nameComponent.decorate(it) }
+        return nameComponent
     }
 
     inner class ItemBuilderLoreBuilder<T : AItemBuilder<T>> : AItemLoreBuilder<ItemBuilderLoreBuilder<T>>() {
@@ -102,6 +135,8 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
 }
 
 open class ItemBuilder(material: Material, name: String? = null, base: ItemStack? = null) : AItemBuilder<ItemBuilder>(material, base) {
+
+    constructor(material: Material) : this(material, null, null)
 
     constructor(base: ItemStack): this(base.type, base = base)
 
@@ -125,7 +160,7 @@ class CustomHeadItemBuilder(private val data: String, private val signature: Str
 
     override fun self(): CustomHeadItemBuilder = this
 
-    fun build(profileService: PlayerProfileService): ItemStack {
+    fun build(profileService: PlayerProfileService = ServiceContainer[PlayerProfileService::class.java]): ItemStack {
         val item = material(Material.PLAYER_HEAD)
             .build()
         item.editMeta {
