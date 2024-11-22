@@ -5,7 +5,6 @@ import onl.tesseract.commandBuilder.CommandArgumentBuilderSteps;
 import onl.tesseract.commandBuilder.CommandArgumentException;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class OfflinePlayerArg extends CommandArgument<OfflinePlayer> {
