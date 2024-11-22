@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.util.function.Consumer
 
-open class Menu(
+open class Menu @JvmOverloads constructor(
     val size: MenuSize,
     val title: Component,
     val previous: Menu? = null,
@@ -28,6 +28,7 @@ open class Menu(
     var viewer: Player? = null
     var view: InventoryView? = null
 
+    @JvmOverloads
     constructor(
         size: MenuSize,
         title: String,
@@ -44,6 +45,7 @@ open class Menu(
         placeButtons(viewer)
     }
 
+    @JvmOverloads
     fun addButton(index: Int, item: ItemStack, function: Consumer<InventoryClickEvent>? = null) {
         addButton(index, Button(item = item, function = function))
     }
@@ -57,7 +59,9 @@ open class Menu(
         button.draw(this, index)
     }
 
+    @JvmOverloads
     fun addBackButton(index: Int = size.size - 9) {
+        if (previous == null) return
         addButton(
             index,
             ItemBuilder(getBackButton())
@@ -65,10 +69,11 @@ open class Menu(
                 .color(NamedTextColor.RED)
                 .build()
         ) {
-            this.viewer?.let { this.previous?.open(it) }
+            this.viewer?.let { this.previous.open(it) }
         }
     }
 
+    @JvmOverloads
     fun addCloseButton(index: Int = size.size - 1) {
         addButton(
             index,
