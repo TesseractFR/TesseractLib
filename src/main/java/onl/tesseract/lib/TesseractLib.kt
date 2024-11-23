@@ -25,6 +25,11 @@ object TesseractLib {
         InventoryInstanceManager.loadConfigurations()
     }
 
+    fun registerOnEnable(plugin: JavaPlugin) {
+        registerDefaultServices(plugin)
+        registerEventHandlers(plugin)
+    }
+
     fun registerCommands(plugin: JavaPlugin) {
         plugin.getCommand("animation")!!.setExecutor(Animation(plugin))
         plugin.getCommand("animation")!!.setTabCompleter(Animation(plugin))
