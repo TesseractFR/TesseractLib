@@ -5,7 +5,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 import java.util.function.Consumer
 
-class Button(
+class Button @JvmOverloads constructor(
     var item: ItemStack,
     function: Consumer<InventoryClickEvent>? = null,
     replace: Boolean = false,

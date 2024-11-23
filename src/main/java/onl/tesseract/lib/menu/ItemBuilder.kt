@@ -8,6 +8,7 @@ import onl.tesseract.lib.profile.PlayerProfileService
 import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.lib.util.AItemLoreBuilder
 import onl.tesseract.lib.util.ItemLoreBuilder
+import onl.tesseract.lib.util.menu.InventoryHeadIcons
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -28,6 +29,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
     private var enchanted: Boolean = builder?.enchanted == true
     private var lore: List<Component>? = builder?.lore
     private var metaColor: Color? = builder?.metaColor
+    private var flags: MutableList<ItemFlag> = builder?.flags ?: mutableListOf()
 
     abstract fun self(): T
 
@@ -90,6 +92,11 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
 
     fun lore(): ItemBuilderLoreBuilder<T> = ItemBuilderLoreBuilder<T>()
 
+    fun flags(vararg flags: ItemFlag): T {
+        this.flags.addAll(flags)
+        return self()
+    }
+
     protected open fun material(material: Material): T {
         this.material = material
         return self()
@@ -109,7 +116,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
                 if (meta is LeatherArmorMeta)
                     meta.setColor(color)
             }
-
+            meta.addItemFlags(*this.flags.toTypedArray())
         }
         return item
     }
@@ -155,8 +162,10 @@ open class ItemBuilder(material: Material, name: String? = null, base: ItemStack
     }
 }
 
-class CustomHeadItemBuilder(private val data: String, private val signature: String, builder: AItemBuilder<*>) :
+class CustomHeadItemBuilder(private val data: String, private val signature: String, builder: AItemBuilder<*>?) :
     AItemBuilder<CustomHeadItemBuilder>(Material.PLAYER_HEAD, null, builder) {
+
+    constructor(icon: InventoryHeadIcons) : this(icon.data, icon.signature, null)
 
     override fun self(): CustomHeadItemBuilder = this
 

@@ -20,6 +20,11 @@ enum class MenuItems(private val supplier: () -> ItemStack) {
                 .name("Suivant")
                 .build()
     }),
+    Background({
+        ItemBuilder(Material.CYAN_STAINED_GLASS_PANE)
+                .name(" ")
+                .build()
+    })
     ;
 
     fun get(): ItemStack = supplier()

@@ -89,6 +89,7 @@ class EquipmentService(
         }
     }
 
+    @JvmOverloads
     fun <T : Invocable> invoke(player: Player, type: Class<T>, index: Int? = null, manualInvocation: Boolean = false): Boolean {
         return editEquipment(player.uniqueId) { equipment ->
             val invocable = equipment.get(type) ?: return@editEquipment false

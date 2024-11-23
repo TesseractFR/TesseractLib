@@ -15,10 +15,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
-abstract class Invocable(
+abstract class Invocable @JvmOverloads constructor(
     val playerUUID: UUID,
-    var isInvoked: Boolean,
-    var handSlot: Int,
+    var isInvoked: Boolean = false,
+    var handSlot: Int = -1,
 ) {
     private var _item: ItemStack? = null
 
