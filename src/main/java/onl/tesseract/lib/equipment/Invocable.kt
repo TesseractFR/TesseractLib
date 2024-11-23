@@ -23,7 +23,7 @@ abstract class Invocable @JvmOverloads constructor(
     private var _item: ItemStack? = null
 
     abstract val slotType: EquipmentSlot
-    abstract val uniqueName: String
+    open val uniqueName: String = this.javaClass.simpleName
     /**
      * Does this invocable excludes other invocables when invoked
      */
