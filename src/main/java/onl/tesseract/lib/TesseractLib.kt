@@ -9,6 +9,7 @@ import onl.tesseract.lib.equipment.EquipmentService
 import onl.tesseract.lib.event.EventService
 import onl.tesseract.lib.inventory.InventoryInstanceEventHandler
 import onl.tesseract.lib.inventory.InventoryInstanceManager
+import onl.tesseract.lib.menu.MenuService
 import onl.tesseract.lib.persistantcontainer.NamedspacedKeyProvider
 import onl.tesseract.lib.persistence.yaml.equipment.EquipmentYamlRepository
 import onl.tesseract.lib.profile.PlayerProfileService
@@ -48,6 +49,7 @@ object TesseractLib {
             EquipmentService::class.java,
             EquipmentService(EquipmentYamlRepository, namedspacedKeyProvider, eventService)
         )
+        container.registerService(MenuService::class.java, MenuService(pluginService,eventService));
         equipmentService.registerEventHandler(plugin)
         container.registerService(PlayerProfileService::class.java, PlayerProfileService(taskScheduler))
         val chatEntryService = container.registerService(ChatEntryService::class.java, ChatEntryService(taskScheduler))
