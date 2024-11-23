@@ -106,11 +106,7 @@ open class Menu @JvmOverloads constructor(
     }
 
     fun close() {
-        buttons.clear()
         view?.close()
-        viewer = null
-        view = null
-        ServiceContainer[PluginService::class.java].unregisterEventListener(this)
     }
 
     fun clear() {
@@ -149,7 +145,10 @@ open class Menu @JvmOverloads constructor(
     @EventHandler
     open fun onClose(event: InventoryCloseEvent) {
         if (event.inventory == this.view?.topInventory) {
-            close()
+            buttons.clear()
+            viewer = null
+            view = null
+            ServiceContainer[PluginService::class.java].unregisterEventListener(this)
         }
     }
 
