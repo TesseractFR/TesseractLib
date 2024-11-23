@@ -117,6 +117,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
                     meta.setColor(color)
             }
             meta.addItemFlags(*this.flags.toTypedArray())
+            lore?.let { meta.lore(it) }
         }
         return item
     }
