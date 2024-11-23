@@ -7,7 +7,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.util.function.Consumer
 import java.util.function.Supplier
 
-class AsyncButton(
+class AsyncButton @JvmOverloads constructor(
     val itemSupplier: Supplier<ItemStack>,
     val plugin: Plugin,
     function: Consumer<InventoryClickEvent>? = null,

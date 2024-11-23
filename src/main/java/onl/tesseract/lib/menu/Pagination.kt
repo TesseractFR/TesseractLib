@@ -21,7 +21,10 @@ class Pagination<T>(
         val end = getCountPerPage() * (page + 1) - 1
         val indexIterator = getAreaIndices().iterator()
         for (i in start..end) {
-            menu.addButton(indexIterator.next(), buttonSupplier(elements[i]))
+            if (i < elements.size)
+                menu.addButton(indexIterator.next(), buttonSupplier(elements[i]))
+            else
+                menu.addButton(indexIterator.next(), MenuItems.Barrier.get())
         }
 
         menu.addButton(
