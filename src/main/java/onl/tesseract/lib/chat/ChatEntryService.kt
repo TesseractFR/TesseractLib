@@ -69,7 +69,7 @@ class ChatEntryService(private val scheduler: TaskScheduler) : Listener {
      * @throws IllegalArgumentException If the player is offline
      */
     private fun clickCommand(player: Player, group: Int = 0, callback: () -> Unit): ClickEvent {
-        require(!player.isOnline)
+        require(player.isOnline)
         val uuid = UUID.randomUUID()
         val commandCallback = CommandCallback(callback, group)
         commandCallbacks.computeIfAbsent(player.uniqueId) { mutableMapOf() }[uuid] = commandCallback
