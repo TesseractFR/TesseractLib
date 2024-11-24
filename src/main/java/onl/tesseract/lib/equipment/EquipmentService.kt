@@ -185,7 +185,7 @@ class EquipmentService(
     }
 
     fun getInvocableName(item: ItemStack?): String? {
-        if (item == null) return null
+        if (item == null || item.itemMeta == null) return null
         return namespacedKeyProvider.getString(item.itemMeta, "invocable_name")
     }
 
