@@ -17,15 +17,35 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.util.function.Consumer
 
+/**
+ * Create in-game menus using immutable inventories. Buttons are symbolized by items in the top inventory, and trigger
+ * a callback when clicked.
+ */
 open class Menu @JvmOverloads constructor(
+    /**
+     * Size of the menu, between 1 and 6 rows
+     */
     val size: MenuSize,
+    /**
+     * Menu title
+     */
     val title: Component,
+    /**
+     * Menu to open when clicking on the 'back' button. The back button will not show if there is no previous menu.
+     */
     val previous: Menu? = null,
+    /**
+     * If true, the bottom inventory will be frozen. If false, the player can interact with its inventory. The top
+     * inventory (being the menu itself) will be frozen in any case.
+     */
     val freezeBottom: Boolean = true,
 ) : Listener {
     private val buttons: MutableMap<Int, AButton> = mutableMapOf()
 
     var viewer: Player? = null
+    /**
+     * Current view of the inventory, if the menu is currently open
+     */
     var view: InventoryView? = null
 
     @JvmOverloads
@@ -46,11 +66,23 @@ open class Menu @JvmOverloads constructor(
         placeButtons(viewer)
     }
 
+    /**
+     * Add a normal button to the menu.
+     * @param index Index of the button in the inventory.
+     * @param item Icon of the button. Will be placed at the given index.
+     * @param function Optional callback to trigger when the button is clicked
+     */
     @JvmOverloads
     fun addButton(index: Int, item: ItemStack, function: Consumer<InventoryClickEvent>? = null) {
         addButton(index, Button(item = item, function = function))
     }
 
+    /**
+     * Add an asynchronous button to the menu. The rendering of the item is deferred.
+     * @param index Index of the button in the inventory.
+     * @param async Asynchronous supplier for the button icon. Will be placed at the given index.
+     * @param function Optional callback to trigger when the button is clicked
+     */
     fun addButton(index: Int, plugin: Plugin, async: () -> ItemStack, function: Consumer<InventoryClickEvent>? = null) {
         addButton(index, AsyncButton(itemSupplier = async, function = function, plugin = plugin))
     }
@@ -60,6 +92,10 @@ open class Menu @JvmOverloads constructor(
         button.draw(this, index)
     }
 
+    /**
+     * Add a 'back' button to return to the previous menu. Will not be displayed if the previous menu is null.
+     * @see [Menu.previous]
+     */
     @JvmOverloads
     fun addBackButton(index: Int = size.size - 9) {
         if (previous == null) return
@@ -74,6 +110,9 @@ open class Menu @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Add a close button that will close the menu when clicked.
+     */
     @JvmOverloads
     fun addCloseButton(index: Int = size.size - 1) {
         addButton(
@@ -87,16 +126,25 @@ open class Menu @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Fill the entire inventory with the given item
+     */
     fun fill(item: ItemStack) {
         for (i in 0 until size.size - 1) {
             addButton(i, item)
         }
     }
 
+    /**
+     * Fill the given indices with the given item
+     */
     fun fill(indices: Array<Int>, item: ItemStack) {
         indices.forEach { addButton(it, item) }
     }
 
+    /**
+     * Fill the given indices with the given item without replacing existing buttons
+     */
     fun softFill(indices: Array<Int>, item: ItemStack) {
         indices.filter { !buttons.containsKey(it) }
             .forEach { addButton(it, item) }
@@ -106,15 +154,24 @@ open class Menu @JvmOverloads constructor(
 
     }
 
+    /**
+     * Close the inventory view.
+     */
     fun close() {
         view?.close()
     }
 
+    /**
+     * Clear all buttons, without closing the view.
+     */
     fun clear() {
         buttons.clear()
         view?.topInventory?.clear()
     }
 
+    /**
+     * Replace all buttons
+     */
     fun refresh(viewer: Player) {
         clear()
         placeButtons(viewer)
@@ -195,6 +252,9 @@ open class Menu @JvmOverloads constructor(
     }
 }
 
+/**
+ * Size of a menu in number of rows
+ */
 enum class MenuSize(val size: Int) {
     One(9),
     Two(18),

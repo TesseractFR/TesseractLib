@@ -33,7 +33,7 @@ class MenuService(private val pluginService: PluginService, private val eventSer
 
         menu.addButton(
             4,
-            ItemBuilder(Material.LIME_CONCRETE).name("Confirmer").color(NamedTextColor.GREEN).build()
+            ItemBuilder(Material.LIME_CONCRETE).name(message).color(NamedTextColor.GREEN).build()
         ) {
             menu.close()
             onAccept()
