@@ -42,6 +42,7 @@ open class Menu @JvmOverloads constructor(
         this.view = viewer.openInventory(inventory)
         this.viewer = viewer
         ServiceContainer[PluginService::class.java].registerEventListener(this)
+        buttons.forEach { index, button -> button.draw(this, index) }
         placeButtons(viewer)
     }
 
@@ -146,7 +147,6 @@ open class Menu @JvmOverloads constructor(
     @EventHandler
     open fun onClose(event: InventoryCloseEvent) {
         if (event.inventory == this.view?.topInventory) {
-            buttons.clear()
             viewer = null
             view = null
             ServiceContainer[PluginService::class.java].unregisterEventListener(this)

@@ -66,7 +66,7 @@ public class Boussole extends Invocable {
             Equipment equipment = equipmentService.getEquipment(getPlayerUUID());
             // If the elytra are invoked
             Elytra elytra = equipment.get(Elytra.class);
-            if (elytra.isInvoked())
+            if (elytra != null && elytra.isInvoked())
             {
                 if (player.isGliding() && player.getLocation().getBlock().getType() != Material.WATER
                         || (propulsionTask != null && !propulsionTask.isCancelled())) return;
@@ -119,11 +119,6 @@ public class Boussole extends Invocable {
     @Override
     public @NotNull EquipmentSlot getSlotType() {
         return EquipmentSlot.HAND;
-    }
-
-    @Override
-    public @NotNull String getUniqueName() {
-        return "BOUSSOLE";
     }
 
     @Override

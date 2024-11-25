@@ -168,7 +168,6 @@ public class CraftingInventoryMenu extends Menu {
                     player.getInventory().addItem(item);
             }
         }
-        super.close();
     }
 
     @Override
