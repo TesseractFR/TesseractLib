@@ -28,4 +28,8 @@ class Equipment(
     fun get(uniqueName: String): Invocable? {
         return invocables.find { it.uniqueName == uniqueName }
     }
+
+    fun <T : Invocable> has(type: Class<T>): Boolean {
+        return invocables.any { type.isInstance(it) }
+    }
 }
