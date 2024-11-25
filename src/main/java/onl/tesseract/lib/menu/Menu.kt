@@ -139,6 +139,7 @@ open class Menu @JvmOverloads constructor(
             ServiceContainer[TaskScheduler::class.java].runLater(1) {
                 it.onClick(event)
             }
+            event.isCancelled = true
         }
     }
 
