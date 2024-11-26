@@ -27,6 +27,15 @@ interface Repository<T, ID> : ReadRepository<T, ID> {
     fun save(entity: T)
 }
 
+interface RepositoryCK<T, IDA, IDB> : Repository<T, RepositoryCK.CompositeKey<IDA, IDB>> {
+
+    fun getById(ida: IDA, idb: IDB): T?
+
+    override fun getById(id: CompositeKey<IDA, IDB>): T? = getById(id.keyA, id.keyB)
+
+    data class CompositeKey<IDA, IDB>(val keyA: IDA, val keyB: IDB)
+}
+
 /**
  * Repository with cache on read and writes
  */
