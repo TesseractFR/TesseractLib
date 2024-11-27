@@ -5,6 +5,7 @@ import onl.tesseract.lib.chat.tag.TagEventHandler
 import onl.tesseract.lib.command.Animation
 import onl.tesseract.lib.command.EquipmentCommand
 import onl.tesseract.lib.command.InventoryCommand
+import onl.tesseract.lib.command.LogLevelCommand
 import onl.tesseract.lib.equipment.EquipmentService
 import onl.tesseract.lib.event.EventService
 import onl.tesseract.lib.inventory.InventoryInstanceEventHandler
@@ -28,14 +29,16 @@ object TesseractLib {
     fun registerOnEnable(plugin: JavaPlugin) {
         registerDefaultServices(plugin)
         registerEventHandlers(plugin)
+        registerCommands(plugin)
     }
 
     fun registerCommands(plugin: JavaPlugin) {
-        plugin.getCommand("animation")!!.setExecutor(Animation(plugin))
-        plugin.getCommand("animation")!!.setTabCompleter(Animation(plugin))
+//        plugin.getCommand("animation")!!.setExecutor(Animation(plugin))
+//        plugin.getCommand("animation")!!.setTabCompleter(Animation(plugin))
         plugin.getCommand("equipment")!!.setExecutor(EquipmentCommand())
         plugin.getCommand("inventory")!!.setExecutor(InventoryCommand())
         plugin.getCommand("inventory")!!.setTabCompleter(InventoryCommand())
+        LogLevelCommand().register(plugin, "log")
     }
 
     fun registerEventHandlers(plugin: JavaPlugin) {
