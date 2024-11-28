@@ -31,6 +31,9 @@ class LoggerFactory {
         fun setLogLevel(name: String, level: Level) {
             (getLogger(name) as LoggerWrapper).setLevel(level)
         }
+
+        @JvmStatic
+        fun getKnownLoggers(): Collection<String> = loggers.keys
     }
 }
 
