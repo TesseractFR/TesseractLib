@@ -290,31 +290,31 @@ class LoggerWrapper implements Logger {
 
     @Override
     public void error(String msg) {
-        if (isDebugEnabled())
+        if (isErrorEnabled())
             base.info("[ERROR] " + msg);
     }
 
     @Override
     public void error(String format, Object arg) {
-        if (isDebugEnabled())
+        if (isErrorEnabled())
             base.info("[ERROR] " + format, arg);
     }
 
     @Override
     public void error(String format, Object arg1, Object arg2) {
-        if (isDebugEnabled())
+        if (isErrorEnabled())
             base.info("[ERROR] " + format, arg1, arg2);
     }
 
     @Override
     public void error(String format, Object... arguments) {
-        if (isDebugEnabled())
+        if (isErrorEnabled())
             base.info("[ERROR] " + format, arguments);
     }
 
     @Override
     public void error(String msg, Throwable t) {
-        if (isDebugEnabled())
+        if (isErrorEnabled())
             base.info("[ERROR] " + msg, t);
     }
 
