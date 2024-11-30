@@ -44,7 +44,7 @@ abstract class RepositoryWithCache<T, ID> : Repository<T, ID> {
     private val cache: MutableMap<ID, T> = mutableMapOf()
 
     final override fun getById(id: ID): T? {
-        return cache[id] ?: read(id)
+        return cache[id] ?: cache(id, read(id))
     }
 
     override fun save(entity: T) {
