@@ -64,6 +64,14 @@ abstract class Invocable @JvmOverloads constructor(
         return updateItem(false)
     }
 
+    open fun onItemHeld() {
+
+    }
+
+    open fun onItemUnHeld() {
+
+    }
+
     /**
      * Update the item in cache by calling {@link Invocable#createItem()}
      *

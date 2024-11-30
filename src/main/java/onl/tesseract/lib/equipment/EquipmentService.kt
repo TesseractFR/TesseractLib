@@ -348,4 +348,16 @@ class EquipmentEventHandler(private val service: EquipmentService) : Listener {
             invocable.onUninvoke(event.player, false)
         }
     }
+
+    @EventHandler
+    fun onSelectInvocable(event: PlayerItemHeldEvent) {
+        event.player.inventory.getItem(event.previousSlot)?.let { item ->
+            val invocable = ServiceContainer[EquipmentService::class.java].asInvocable(event.player, item)
+            invocable?.onItemUnHeld()
+        }
+        event.player.inventory.getItem(event.newSlot)?.let { item ->
+            val invocable = ServiceContainer[EquipmentService::class.java].asInvocable(event.player, item)
+            invocable?.onItemHeld()
+        }
+    }
 }
