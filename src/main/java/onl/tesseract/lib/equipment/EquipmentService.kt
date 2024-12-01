@@ -360,4 +360,9 @@ class EquipmentEventHandler(private val service: EquipmentService) : Listener {
             invocable?.onItemHeld()
         }
     }
+
+    @EventHandler
+    fun onJoin(event: PlayerJoinEvent) {
+        service.loadEquipment(event.player)
+    }
 }
