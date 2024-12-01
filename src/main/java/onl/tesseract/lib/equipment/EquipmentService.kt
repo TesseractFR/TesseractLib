@@ -85,7 +85,7 @@ class EquipmentService(
 
     fun uninvoke(player: Player, slot: EquipmentSlot) {
         editEquipment(player.uniqueId) { equipment ->
-            equipment.get(slot)?.let { doUninvoke(player, it) }
+            equipment[slot]?.let { doUninvoke(player, it) }
         }
     }
 
@@ -239,19 +239,10 @@ class EquipmentEventHandler(private val service: EquipmentService) : Listener {
     fun onInventoryClick(event: InventoryClickEvent) {
         if (event.whoClicked !is Player) return
         val player = event.whoClicked as Player
-        // Cancel the event if the player move the item with hotbar buttons
-        if (event.click == ClickType.NUMBER_KEY) {
-            if (service.isInvocable(event.cursor) || service.isInvocable(player.inventory.getItem(event.hotbarButton))) {
-                event.isCancelled = true
-                return
-            }
-        }
-        // Cancel the event if the player move the item with off hand swap button
-        if (event.click == ClickType.SWAP_OFFHAND) {
-            if (service.isInvocable(event.cursor) || service.isInvocable(player.inventory.itemInOffHand)) {
-                event.isCancelled = true
-                return
-            }
+
+        if (movedInvocableWithHotbarKey(event, player) || movedInvocableWithOffHandSwap(event, player)) {
+            event.isCancelled = true
+            return
         }
 
         val item = event.currentItem ?: return
@@ -282,6 +273,22 @@ class EquipmentEventHandler(private val service: EquipmentService) : Listener {
         }
     }
 
+    private fun movedInvocableWithOffHandSwap(
+        event: InventoryClickEvent,
+        player: Player,
+    ): Boolean {
+        return event.click == ClickType.SWAP_OFFHAND
+                && (service.isInvocable(event.cursor) || service.isInvocable(player.inventory.itemInOffHand))
+    }
+
+    private fun movedInvocableWithHotbarKey(
+        event: InventoryClickEvent,
+        player: Player,
+    ): Boolean {
+        return event.click == ClickType.NUMBER_KEY
+                && (service.isInvocable(event.cursor) || service.isInvocable(player.inventory.getItem(event.hotbarButton)))
+    }
+
     @EventHandler
     fun onUse(event: PlayerInteractEvent) {
         if (!event.hasItem()) return
@@ -292,10 +299,8 @@ class EquipmentEventHandler(private val service: EquipmentService) : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun hanging(event: PlayerInteractEntityEvent) {
-        if (event.rightClicked is Hanging) {
-            if (service.isInvocable(event.player.inventory.getItem(event.hand)))
-                event.isCancelled = true
-        }
+        if (event.rightClicked is Hanging && service.isInvocable(event.player.inventory.getItem(event.hand)))
+            event.isCancelled = true
     }
 
     @EventHandler
