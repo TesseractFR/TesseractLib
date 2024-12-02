@@ -63,7 +63,7 @@
                 <executions>
                     <execution>
                         <id>compile</id>
-                        <phase>compile</phase>
+                        <phase>process-sources</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -117,8 +117,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <release>21</release>
                 </configuration>
             </plugin>
         </plugins>
