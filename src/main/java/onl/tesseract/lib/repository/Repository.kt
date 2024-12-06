@@ -1,6 +1,8 @@
 package onl.tesseract.lib.repository
 
+import org.bukkit.configuration.file.YamlConfiguration
 import org.jetbrains.annotations.Contract
+import java.io.File
 
 interface ReadRepository<T, ID> {
 
@@ -41,7 +43,7 @@ interface RepositoryCK<T, IDA, IDB> : Repository<T, RepositoryCK.CompositeKey<ID
  */
 abstract class RepositoryWithCache<T, ID> : Repository<T, ID> {
 
-    private val cache: MutableMap<ID, T> = mutableMapOf()
+    protected val cache: MutableMap<ID, T> = mutableMapOf()
 
     final override fun getById(id: ID): T? {
         return cache[id] ?: cache(id, read(id))
@@ -72,4 +74,43 @@ abstract class RepositoryWithCache<T, ID> : Repository<T, ID> {
     fun evictAll() {
         cache.clear()
     }
+}
+
+abstract class YamlFolderRepository<T, ID>(val folderPath: String) : RepositoryWithCache<T, ID>() {
+
+    private var allFetched: Boolean = false
+
+    private fun readAll(): Collection<T> {
+        val folder = File(folderPath)
+        if (!folder.exists()) return listOf()
+        val entities = folder.listFiles { file -> file.extension == "yml" }
+                ?.mapNotNull { YamlConfiguration.loadConfiguration(it) }
+                ?.map { this.parse(it) }
+                ?: listOf()
+        entities.forEach { cache(idOf(it), it) }
+        allFetched = true
+        return entities
+    }
+
+    fun getAll(): Collection<T> {
+        return if (allFetched) cache.values else readAll()
+    }
+
+    override fun read(id: ID): T? {
+        val file = File("$folderPath/$id.yml")
+        return if (file.exists()) parse(YamlConfiguration.loadConfiguration(file)) else null
+    }
+
+    override fun write(entity: T) {
+        val file = File("$folderPath/${idOf(entity)}.yml")
+        serialize(entity).save(file)
+    }
+
+    protected open fun fileFor(id: ID): File {
+        return File("$folderPath/$id.yml")
+    }
+
+    abstract fun parse(yaml: YamlConfiguration): T
+
+    abstract fun serialize(entity: T): YamlConfiguration
 }
