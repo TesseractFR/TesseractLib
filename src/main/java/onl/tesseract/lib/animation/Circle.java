@@ -145,6 +145,7 @@ public class Circle extends AnimationBuilder<Circle> {
                         Location particeLocation = origin.getLocation().add(v);
                         builder.location(particeLocation);
                         builder.receivers(50);
+                        builder.color(color);
                         builder.spawn();
                     }
 
