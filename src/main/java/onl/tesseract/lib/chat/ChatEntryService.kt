@@ -82,6 +82,11 @@ class ChatEntryService(private val scheduler: TaskScheduler) : Listener {
         group.apply(builder)
     }
 
+    fun clickCommandGroup(player: Player): CommandCallbackGroup {
+        val groupID = random.nextInt(1, 99999)
+        return CommandCallbackGroup(this, player, groupID)
+    }
+
     @EventHandler
     fun onCommand(event: PlayerCommandPreprocessEvent) {
         if (!event.message.startsWith("/commandCallback"))
