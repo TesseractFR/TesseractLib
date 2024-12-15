@@ -30,8 +30,9 @@ class TaskScheduler(val plugin: Plugin) {
         return plugin.server.scheduler.runTaskTimer(plugin, function, delay, period)
     }
 
-    fun runTimer(delay: Long = 0, period: Long = 0, function: (BukkitTask) -> Unit): BukkitTask {
+    fun runTimer(delay: Long = 0, period: Long = 0, duration: Long = 0, function: (BukkitTask) -> Unit): BukkitTask {
         var task: BukkitTask? = null
+        var counter = 0
         task = if (delay == 0L && period == 0L)
             plugin.server.scheduler.runTask(plugin, { ->
                 function(task!!)
@@ -42,7 +43,10 @@ class TaskScheduler(val plugin: Plugin) {
             }, delay)
         else
             plugin.server.scheduler.runTaskTimer(plugin, { ->
-                function(task!!)
+                if (duration > 0 && counter++ > duration)
+                    task?.cancel()
+                else
+                    function(task!!)
             }, delay, period)
         return task
     }

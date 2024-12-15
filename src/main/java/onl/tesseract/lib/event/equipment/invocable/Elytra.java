@@ -33,7 +33,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -111,7 +110,7 @@ public class Elytra extends Invocable implements Listener {
         {
             // Start a timer to accelerate every 0.5 seconds while sneaking.
             final Player player = event.getPlayer();
-            accelerateTask = ServiceContainer.get(TaskScheduler.class).runTimer(0, 10, task -> {
+            accelerateTask = ServiceContainer.get(TaskScheduler.class).runTimer(0, 10, 0, task -> {
                 // Cancel speed level if in event world
                 final int finalSpeedLevel = event.getPlayer().getLocation().getWorld().getName().equals("Event") ?
                         0 : getEffectiveSpeedLevel();
@@ -147,7 +146,7 @@ public class Elytra extends Invocable implements Listener {
     void displayActionBar(Player player) {
         if (actionBarTask != null && !actionBarTask.isCancelled())
             actionBarTask.cancel();
-        actionBarTask = ServiceContainer.get(TaskScheduler.class).runTimer(0, 2, task -> {
+        actionBarTask = ServiceContainer.get(TaskScheduler.class).runTimer(0, 2, 0, task -> {
             if (!player.isOnline() || !player.isGliding())
             {
                 task.cancel();
@@ -200,7 +199,7 @@ public class Elytra extends Invocable implements Listener {
                 .setDelay(0.1f)
                 .setRadius(1)
                 .setRotationCount(3).draw();
-        taskScheduler.runTimer(40,0, task -> {
+        taskScheduler.runTimer(40,0, 0, task -> {
             player.playSound(player.getLocation(),
                     Sound.BLOCK_END_PORTAL_SPAWN, 20, 1);
             return Unit.INSTANCE;
@@ -222,11 +221,11 @@ public class Elytra extends Invocable implements Listener {
                            .build()
                            .draw();
         player.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 20, 1);
-        scheduler.runTimer(30, 0, task -> {
+        scheduler.runTimer(30, 0, 0, task -> {
             if (! player.isOnline() || !isInvoked()) return Unit.INSTANCE;
             player.setVelocity(new Vector(0, 2, 0));
             player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 150, 1);
-            scheduler.runTimer(20, 0, subTask -> {
+            scheduler.runTimer(20, 0, 0, subTask -> {
                 if (player.isOnline() && isInvoked()) {
                     player.setVelocity(player.getLocation().getDirection());
                     player.setGliding(true);
@@ -317,7 +316,7 @@ public class Elytra extends Invocable implements Listener {
         Player player = Bukkit.getPlayer(getPlayerUUID());
         if (player == null) return;
         TaskScheduler taskScheduler = ServiceContainer.get(TaskScheduler.class);
-        autoGlideTask = taskScheduler.runTimer(0, 10, task -> {
+        autoGlideTask = taskScheduler.runTimer(0, 10, 0, task -> {
             if (! player.isOnline() || !isInvoked()) {
                 task.cancel();
                 autoGlideTask = null;
