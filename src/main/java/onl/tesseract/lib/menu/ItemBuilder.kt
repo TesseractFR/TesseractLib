@@ -30,6 +30,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
     private var lore: List<Component>? = builder?.lore
     private var metaColor: Color? = builder?.metaColor
     private var flags: MutableList<ItemFlag> = builder?.flags ?: mutableListOf()
+    private var amount: Int = builder?.amount ?: 1
 
     abstract fun self(): T
 
@@ -97,6 +98,11 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
         return self()
     }
 
+    fun amount(amount: Int): T {
+        this.amount = amount
+        return self()
+    }
+
     protected open fun material(material: Material): T {
         this.material = material
         return self()
@@ -119,6 +125,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
             meta.addItemFlags(*this.flags.toTypedArray())
             lore?.let { meta.lore(it) }
         }
+        item.amount = amount
         return item
     }
 
