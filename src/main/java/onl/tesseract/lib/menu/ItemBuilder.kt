@@ -88,7 +88,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
         return self()
     }
 
-    fun customHead(data: String, signature: String): CustomHeadItemBuilder {
+    fun customHead(data: String, signature: String?): CustomHeadItemBuilder {
         return CustomHeadItemBuilder(data, signature, this)
     }
 
@@ -177,7 +177,7 @@ open class ItemBuilder(material: Material, name: String? = null, base: ItemStack
     }
 }
 
-class CustomHeadItemBuilder(private val data: String, private val signature: String, builder: AItemBuilder<*>?) :
+class CustomHeadItemBuilder(private val data: String, private val signature: String?, builder: AItemBuilder<*>?) :
     AItemBuilder<CustomHeadItemBuilder>(Material.PLAYER_HEAD, null, builder) {
 
     constructor(icon: InventoryHeadIcons) : this(icon.data, icon.signature, null)
