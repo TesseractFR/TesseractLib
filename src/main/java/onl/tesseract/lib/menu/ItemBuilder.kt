@@ -31,6 +31,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
     private var metaColor: Color? = builder?.metaColor
     private var flags: MutableList<ItemFlag> = builder?.flags ?: mutableListOf()
     private var amount: Int = builder?.amount ?: 1
+    private var customModelData: Int? = builder?.customModelData
 
     abstract fun self(): T
 
@@ -103,6 +104,11 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
         return self()
     }
 
+    fun customModelData(customModelData: Int): T {
+        this.customModelData = customModelData
+        return self()
+    }
+
     protected open fun material(material: Material): T {
         this.material = material
         return self()
@@ -124,6 +130,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
             }
             meta.addItemFlags(*this.flags.toTypedArray())
             lore?.let { meta.lore(it) }
+            customModelData?.let { meta.setCustomModelData(it) }
         }
         item.amount = amount
         return item
