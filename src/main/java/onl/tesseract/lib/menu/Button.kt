@@ -24,7 +24,12 @@ class Button @JvmOverloads constructor(
     }
 
     override fun refreshItem() {
-        menu.view?.topInventory?.setItem(index, item)
+        menu.view?.let {
+            if (side == Side.Top)
+                it.topInventory.setItem(index, item)
+            else
+                it.bottomInventory.setItem(index, item)
+        }
     }
 }
 

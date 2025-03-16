@@ -57,7 +57,7 @@ open class Menu @JvmOverloads constructor(
         freezeBottom: Boolean = true
     ) : this(size, Component.text(title, color), previous, freezeBottom)
 
-    fun open(viewer: Player) {
+    open fun open(viewer: Player) {
         val inventory = ServiceContainer[PluginService::class.java].createInventory(size.size, title)
         this.view = viewer.openInventory(inventory)
         this.viewer = viewer
@@ -211,6 +211,8 @@ open class Menu @JvmOverloads constructor(
     }
 
     fun hasViewer(): Boolean = viewer != null
+
+    fun getButtons(): Map<Int, AButton> = buttons
 
     companion object {
         private lateinit var backButton: ItemStack

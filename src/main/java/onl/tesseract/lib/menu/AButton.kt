@@ -9,15 +9,19 @@ abstract class AButton(
 ) {
 
     protected lateinit var menu: Menu
+    protected lateinit var side: Side
     protected var index: Int = 0
 
     abstract fun onClick(event: InventoryClickEvent)
 
-    fun draw(menu: Menu, index: Int) {
+    fun draw(menu: Menu, index: Int, side: Side = Side.Top) {
         this.menu = menu
         this.index = index
+        this.side = side
         refreshItem()
     }
 
     protected abstract fun refreshItem()
+
+    enum class Side { Top, Bottom }
 }
