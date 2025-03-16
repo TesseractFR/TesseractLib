@@ -164,7 +164,7 @@ open class Menu @JvmOverloads constructor(
     /**
      * Clear all buttons, without closing the view.
      */
-    fun clear() {
+    open fun clear() {
         buttons.clear()
         view?.topInventory?.clear()
     }
