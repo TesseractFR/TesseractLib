@@ -22,7 +22,11 @@ class AsyncButton @JvmOverloads constructor(
         object : BukkitRunnable() {
             override fun run() {
                 val item = itemSupplier.get()
-                menu.view?.topInventory?.setItem(index, item)
+                val view = menu.view ?: return
+                if (side == Side.Top)
+                    view.topInventory.setItem(index, item)
+                else
+                    view.bottomInventory.setItem(index, item)
             }
         }.runTaskAsynchronously(plugin)
     }
