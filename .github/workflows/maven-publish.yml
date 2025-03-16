@@ -40,9 +40,11 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: tesseractLib
+          retention-days: 14
+          overwrite: 'true'
           path: |
             /home/runner/work/TesseractLib/TesseractLib/target/*.jar
             !/home/runner/work/TesseractLib/TesseractLib/target/*sources.jar
