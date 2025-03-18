@@ -160,31 +160,31 @@ class LoggerWrapper implements Logger {
 
     @Override
     public void info(String msg) {
-        if (isDebugEnabled())
+        if (isInfoEnabled())
             base.info("[INFO] " + msg);
     }
 
     @Override
     public void info(String format, Object arg) {
-        if (isDebugEnabled())
+        if (isInfoEnabled())
             base.info("[INFO] " + format, arg);
     }
 
     @Override
     public void info(String format, Object arg1, Object arg2) {
-        if (isDebugEnabled())
+        if (isInfoEnabled())
             base.info("[INFO] " + format, arg1, arg2);
     }
 
     @Override
     public void info(String format, Object... arguments) {
-        if (isDebugEnabled())
+        if (isInfoEnabled())
             base.info("[INFO] " + format, arguments);
     }
 
     @Override
     public void info(String msg, Throwable t) {
-        if (isDebugEnabled())
+        if (isInfoEnabled())
             base.info("[INFO] " + msg, t);
     }
 
@@ -225,31 +225,31 @@ class LoggerWrapper implements Logger {
 
     @Override
     public void warn(String msg) {
-        if (isDebugEnabled())
+        if (isWarnEnabled())
             base.info("[WARN] " + msg);
     }
 
     @Override
     public void warn(String format, Object arg) {
-        if (isDebugEnabled())
+        if (isWarnEnabled())
             base.info("[WARN] " + format, arg);
     }
 
     @Override
     public void warn(String format, Object... arguments) {
-        if (isDebugEnabled())
+        if (isWarnEnabled())
             base.info("[WARN] " + format, arguments);
     }
 
     @Override
     public void warn(String format, Object arg1, Object arg2) {
-        if (isDebugEnabled())
+        if (isWarnEnabled())
             base.info("[WARN] " + format, arg1, arg2);
     }
 
     @Override
     public void warn(String msg, Throwable t) {
-        if (isDebugEnabled())
+        if (isWarnEnabled())
             base.info("[WARN] " + msg, t);
     }
 
