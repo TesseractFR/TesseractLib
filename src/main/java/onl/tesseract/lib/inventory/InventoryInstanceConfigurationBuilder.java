@@ -11,7 +11,7 @@ public class InventoryInstanceConfigurationBuilder {
     private String name;
     private boolean restrictInvocables;
     private Collection<String> invocables = Collections.emptyList();
-    private Map<Material, Integer> items;
+    private Map<Material, Integer> items = Collections.emptyMap();
     private String world;
     private Collection<String> allowedWorlds = Collections.emptyList();
     private GameMode gameMode = GameMode.SURVIVAL;
