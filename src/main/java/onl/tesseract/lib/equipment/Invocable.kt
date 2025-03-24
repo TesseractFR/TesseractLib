@@ -17,8 +17,8 @@ import java.util.*
 
 abstract class Invocable @JvmOverloads constructor(
     val playerUUID: UUID,
-    var isInvoked: Boolean = false,
-    var handSlot: Int = -1,
+    open var isInvoked: Boolean = false,
+    open var handSlot: Int = -1,
 ) {
     private var _item: ItemStack? = null
 

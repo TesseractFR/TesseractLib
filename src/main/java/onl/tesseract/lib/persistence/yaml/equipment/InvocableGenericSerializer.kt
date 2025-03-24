@@ -12,7 +12,7 @@ abstract class InvocableGenericSerializer<T : Invocable> : YamlSerializer<T> {
     fun parseHandSlot(config: ConfigurationSection): Int = config.getInt("handSlot")
 
     fun writeGenericProps(config: ConfigurationSection, invocable: T) {
-        config["playerUUID"] = invocable.playerUUID
+        config["playerUUID"] = invocable.playerUUID.toString()
         config["invoked"] = invocable.isInvoked
         config["handSlot"] = invocable.handSlot
     }
