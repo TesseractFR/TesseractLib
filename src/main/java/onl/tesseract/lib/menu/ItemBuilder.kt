@@ -32,6 +32,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
     private var flags: MutableList<ItemFlag> = builder?.flags ?: mutableListOf()
     private var amount: Int = builder?.amount ?: 1
     private var customModelData: Int? = builder?.customModelData
+    private var enchantments: MutableMap<Enchantment, Int> = builder?.enchantments ?: mutableMapOf()
 
     abstract fun self(): T
 
@@ -109,6 +110,11 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
         return self()
     }
 
+    fun addEnchantment(enchantment: Enchantment, level: Int): T {
+        this.enchantments.put(enchantment, level)
+        return self()
+    }
+
     protected open fun material(material: Material): T {
         this.material = material
         return self()
@@ -118,10 +124,11 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
         val item = base ?: ItemStack(material)
         item.editMeta { meta ->
             computeName()?.let { meta.displayName(it) }
-            if (enchanted) {
+            if (enchanted && enchantments.isEmpty()) {
                 meta.addEnchant(Enchantment.UNBREAKING, 1, true)
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
             }
+            enchantments.forEach(item::addUnsafeEnchantment)
             metaColor?.let { color ->
                 if (meta is PotionMeta)
                     meta.color = color

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@Deprecated
 /**
  * Builder class to build item, specifying its name, material, lore, ...
  *
