@@ -111,7 +111,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
     }
 
     fun addEnchantment(enchantment: Enchantment, level: Int): T {
-        this.enchantments.put(enchantment, level)
+        this.enchantments[enchantment] = level
         return self()
     }
 
@@ -128,7 +128,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
                 meta.addEnchant(Enchantment.UNBREAKING, 1, true)
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
             }
-            enchantments.forEach(item::addUnsafeEnchantment)
+            enchantments.forEach { (enchantment, level) -> meta.addEnchant(enchantment, level, true) }
             metaColor?.let { color ->
                 if (meta is PotionMeta)
                     meta.color = color
