@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
@@ -39,6 +40,7 @@ open class Menu @JvmOverloads constructor(
      * inventory (being the menu itself) will be frozen in any case.
      */
     val freezeBottom: Boolean = true,
+    val type: InventoryType? = null,
 ) : Listener {
     private val buttons: MutableMap<Int, AButton> = mutableMapOf()
 
@@ -58,7 +60,11 @@ open class Menu @JvmOverloads constructor(
     ) : this(size, Component.text(title, color), previous, freezeBottom)
 
     open fun open(viewer: Player) {
-        val inventory = ServiceContainer[PluginService::class.java].createInventory(size.size, title)
+        val inventory = if (type != null)
+            ServiceContainer[PluginService::class.java].createInventory(type, title)
+        else
+            ServiceContainer[PluginService::class.java].createInventory(size.size, title)
+
         this.view = viewer.openInventory(inventory)
         this.viewer = viewer
         ServiceContainer[PluginService::class.java].registerEventListener(this)
@@ -264,4 +270,5 @@ enum class MenuSize(val size: Int) {
     Four(36),
     Five(45),
     Six(54),
+    Hopper(5);
 }
