@@ -39,14 +39,14 @@ class ConfigurationSectionUtils {
         fun <E> getSectionList(
             config: ConfigurationSection,
             path: String,
-            parser: (ConfigurationSection) -> E
+            parser: (ConfigurationSection) -> E?
         ): List<E> {
             val listSection = config.getConfigurationSection(path) ?: return listOf()
 
             // Iterate through indices
             return listSection.getKeys(false)
                 .mapNotNull { listSection.getConfigurationSection(it) }
-                .map { parser(it) }
+                .mapNotNull { parser(it) }
         }
 
         /**
@@ -109,7 +109,7 @@ fun <E> ConfigurationSection.setSectionList(
 
 fun <E> ConfigurationSection.getSectionList(
     path: String,
-    parser: (ConfigurationSection) -> E
+    parser: (ConfigurationSection) -> E?
 ): List<E> {
     return ConfigurationSectionUtils.getSectionList(this, path, parser)
 }
