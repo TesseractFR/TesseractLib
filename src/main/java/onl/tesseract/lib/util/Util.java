@@ -302,7 +302,8 @@ public class Util {
     }
 
     public static TextColor getGreenRedGradient(final int a, final int total) {
-        return getGreenRedGradient(((double) a) / total);
+        double ratio = Math.min(1.0, ((double) a) / total);
+        return getGreenRedGradient(ratio);
     }
 
     public static TextColor getGreenRedGradient(final double percentage) {
