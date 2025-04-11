@@ -20,8 +20,9 @@ object EquipmentYamlRepository : EquipmentRepository, RepositoryWithCache<Equipm
         return EquipmentYamlSerializer.loadFromFile(File("plugins/Tesseract/players/$id/equipment.yml"))
     }
 
-    override fun write(entity: Equipment) {
+    override fun write(entity: Equipment): Equipment {
         EquipmentYamlSerializer.saveToFile(entity, File("plugins/Tesseract/players/${entity.playerUUID}/equipment.yml"))
+        return entity
     }
 
     fun <T : Invocable> registerTypeSerializer(type: String, serializer: YamlSerializer<T>) {
