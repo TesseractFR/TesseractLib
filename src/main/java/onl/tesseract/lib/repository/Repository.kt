@@ -26,7 +26,7 @@ interface Repository<T, ID> : ReadRepository<T, ID> {
     /**
      * Persist the entity
      */
-    fun save(entity: T)
+    fun save(entity: T): T
 }
 
 interface RepositoryCK<T, IDA, IDB> : Repository<T, RepositoryCK.CompositeKey<IDA, IDB>> {
@@ -49,14 +49,15 @@ abstract class RepositoryWithCache<T, ID> : Repository<T, ID> {
         return cache[id] ?: cache(id, read(id))
     }
 
-    override fun save(entity: T) {
-        write(entity)
+    override fun save(entity: T): T {
+        val saved = write(entity)
         cache(idOf(entity), entity)
+        return saved
     }
 
     abstract fun read(id: ID): T?
 
-    abstract fun write(entity: T)
+    abstract fun write(entity: T): T
 
     @Contract(pure = true, value = "(_, null) -> null, (_, !null) -> !null")
     protected fun cache(id: ID, t: T?): T? {
@@ -101,9 +102,10 @@ abstract class YamlFolderRepository<T, ID>(val folderPath: String) : RepositoryW
         return if (file.exists()) parse(YamlConfiguration.loadConfiguration(file)) else null
     }
 
-    override fun write(entity: T) {
+    override fun write(entity: T): T {
         val file = File("$folderPath/${idOf(entity)}.yml")
         serialize(entity).save(file)
+        return entity
     }
 
     protected open fun fileFor(id: ID): File {
