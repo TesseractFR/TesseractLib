@@ -29,7 +29,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
     private var enchanted: Boolean = builder?.enchanted == true
     private var lore: List<Component>? = builder?.lore
     private var metaColor: Color? = builder?.metaColor
-    private var flags: MutableList<ItemFlag> = builder?.flags ?: mutableListOf()
+    private var flags: MutableList<ItemFlag> = builder?.flags ?: ItemFlag.entries.toMutableList()
     private var amount: Int = builder?.amount ?: 1
     private var customModelData: Int? = builder?.customModelData
     private var enchantments: MutableMap<Enchantment, Int> = builder?.enchantments ?: mutableMapOf()
@@ -145,6 +145,7 @@ abstract class AItemBuilder<T : AItemBuilder<T>>(material: Material, base: ItemS
 
     private fun computeName(): Component? {
         var nameComponent = nameStr?.let { Component.text(it) } ?: name ?: return null
+        nameComponent = nameComponent.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
         color?.let { nameComponent = nameComponent.color(it) }
         decoration?.let { nameComponent = nameComponent.decorate(it) }
         return nameComponent
