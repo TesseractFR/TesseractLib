@@ -2,10 +2,12 @@ package onl.tesseract.lib.menu
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import onl.tesseract.lib.logger.LoggerFactory
 import onl.tesseract.lib.profile.PlayerProfileService
 import onl.tesseract.lib.service.PluginService
 import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.lib.task.TaskScheduler
+import onl.tesseract.lib.util.plus
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -16,7 +18,10 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import org.slf4j.Logger
 import java.util.function.Consumer
+
+private val logger: Logger = LoggerFactory.getLogger(Menu::class.java)
 
 /**
  * Create in-game menus using immutable inventories. Buttons are symbolized by items in the top inventory, and trigger
@@ -201,7 +206,13 @@ open class Menu @JvmOverloads constructor(
         buttons[event.slot]?.let {
             // Accept the consumer, with a delay of one tick
             ServiceContainer[TaskScheduler::class.java].runLater(1) {
-                it.onClick(event)
+                try {
+                    it.onClick(event)
+                } catch (e: Exception) {
+                    logger.error("Error while clicking a menu button", e)
+                    event.whoClicked.sendMessage(NamedTextColor.RED + "Une erreur interne est survenue.")
+                    close()
+                }
             }
             event.isCancelled = true
         }
