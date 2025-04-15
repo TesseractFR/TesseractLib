@@ -5,7 +5,7 @@ name: Publish maven package to GitHub Packages
 
 on:
   push:
-    branches: [master, sql, dev]
+    branches: [master]
   release:
     types: [created]
 
@@ -18,13 +18,13 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           cache: 'maven'
-          distribution: 'adopt'
+          distribution: 'temurin'
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
 
       - name: Build with Maven
