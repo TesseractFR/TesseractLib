@@ -2,10 +2,10 @@ package onl.tesseract.lib
 
 import onl.tesseract.lib.chat.ChatEntryService
 import onl.tesseract.lib.chat.tag.TagEventHandler
-import onl.tesseract.lib.command.Animation
 import onl.tesseract.lib.command.EquipmentCommand
 import onl.tesseract.lib.command.InventoryCommand
 import onl.tesseract.lib.command.LogLevelCommand
+import onl.tesseract.lib.command.TranslationCommand
 import onl.tesseract.lib.equipment.EquipmentService
 import onl.tesseract.lib.event.EventService
 import onl.tesseract.lib.inventory.InventoryInstanceEventHandler
@@ -38,6 +38,8 @@ object TesseractLib {
         plugin.getCommand("equipment")!!.setExecutor(EquipmentCommand())
         plugin.getCommand("inventory")!!.setExecutor(InventoryCommand())
         plugin.getCommand("inventory")!!.setTabCompleter(InventoryCommand())
+        plugin.getCommand("translation")!!
+                .setExecutor(TranslationCommand())
         LogLevelCommand().register(plugin, "log")
     }
 
