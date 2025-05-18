@@ -11,7 +11,7 @@ class ElytraSerializer : InvocableGenericSerializer<Elytra>() {
             parseInvoked(yaml),
             parseHandSlot(yaml),
         )
-        elytra.setAutoGlide(yaml.getBoolean("autoGlide"))
+        elytra.autoGlide = yaml.getBoolean("autoGlide")
         elytra.protectionLevel = yaml.getInt("protectionLvl")
         elytra.speedLevel = yaml.getInt("speedLvl")
         elytra.topprotectionLevel = yaml.getInt("topprotectionLvl", 0)
@@ -26,7 +26,7 @@ class ElytraSerializer : InvocableGenericSerializer<Elytra>() {
     override fun serialize(value: Elytra): YamlConfiguration {
         val yaml = YamlConfiguration()
         super.writeGenericProps(yaml, value)
-        yaml["autoGlide"] = value.hasAutoGlide()
+        yaml["autoGlide"] = value.autoGlide
         yaml["protectionLvl"] = value.protectionLevel
         yaml["speedLvl"] = value.speedLevel
         yaml["topprotectionLvl"] = value.topprotectionLevel
