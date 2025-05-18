@@ -37,6 +37,7 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
     private var actionBarTask: BukkitTask? = null
 
     var autoGlide: Boolean = true
+    var ignoreSpeedLevel: Boolean = false
 
     var protectionLevel: Int = 0
     var speedLevel: Int = 0
@@ -78,13 +79,14 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
     @EventHandler
     fun onAccelerate(event: PlayerToggleSneakEvent) {
         if (event.player.uniqueId != playerUUID) return
-        if (event.isSneaking && isInvoked && event.player.isGliding && accelerateTask == null) {
+        if (event.isSneaking && isInvoked && event.player.isGliding && event.player.velocity.length() < (1.20 + (0.10 * (effectiveSpeedLevel + 1))) && accelerateTask == null) {
             val player = event.player
-            accelerateTask = ServiceContainer[TaskScheduler::class.java].runTimer(0, 10, 0) { task ->
+            accelerateTask = ServiceContainer.get(TaskScheduler::class.java).runTimer(0, 10, 0) { task ->
+                val speed = if (player.location.world.name == "Event") 0 else effectiveSpeedLevel
                 if (!player.isOnline || !player.isSneaking || !player.isGliding) {
                     task.cancel()
                     accelerateTask = null
-                } else {
+                } else if (player.velocity.length() < (1.20 + (0.10 * (speed + 1)))) {
                     player.velocity = player.velocity.add(player.location.direction.multiply(0.7))
                     player.world.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1f, 1f)
                 }
@@ -178,11 +180,12 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
         }
     }
 
+    val effectiveSpeedLevel: Int get() = if (ignoreSpeedLevel) 1 else speedLevel
+
     override fun use(event: PlayerInteractEvent) {}
     override fun useInInventory(event: InventoryClickEvent) {}
 
     fun refreshItemInInventory() {
         updateItem(true)
     }
-
 }
