@@ -37,12 +37,9 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
     private var actionBarTask: BukkitTask? = null
 
     var autoGlide: Boolean = true
-    var ignoreSpeedLevel: Boolean = false
 
     var protectionLevel: Int = 0
     var speedLevel: Int = 0
-    var topprotectionLevel: Int = 0
-    var topspeedLevel: Int = 0
 
     override val excludeOthers: Boolean = true
     override val slotType: EquipmentSlot = EquipmentSlot.CHEST
@@ -81,14 +78,13 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
     @EventHandler
     fun onAccelerate(event: PlayerToggleSneakEvent) {
         if (event.player.uniqueId != playerUUID) return
-        if (event.isSneaking && isInvoked && event.player.isGliding && event.player.velocity.length() < (1.20 + (0.10 * (effectiveSpeedLevel + 1))) && accelerateTask == null) {
+        if (event.isSneaking && isInvoked && event.player.isGliding && accelerateTask == null) {
             val player = event.player
-            accelerateTask = ServiceContainer.get(TaskScheduler::class.java).runTimer(0, 10, 0) { task ->
-                val speed = if (player.location.world.name == "Event") 0 else effectiveSpeedLevel
+            accelerateTask = ServiceContainer[TaskScheduler::class.java].runTimer(0, 10, 0) { task ->
                 if (!player.isOnline || !player.isSneaking || !player.isGliding) {
                     task.cancel()
                     accelerateTask = null
-                } else if (player.velocity.length() < (1.20 + (0.10 * (speed + 1)))) {
+                } else {
                     player.velocity = player.velocity.add(player.location.direction.multiply(0.7))
                     player.world.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1f, 1f)
                 }
@@ -182,30 +178,11 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
         }
     }
 
-    val effectiveSpeedLevel: Int get() = if (ignoreSpeedLevel) 1 else speedLevel
-
-    fun getLevel(type: EnumElytraUpgrade): Int = if (type == EnumElytraUpgrade.PROTECTION) protectionLevel else effectiveSpeedLevel
-
-    fun setLevel(type: EnumElytraUpgrade, level: Int) {
-        if (type == EnumElytraUpgrade.PROTECTION) protectionLevel = level else speedLevel = level
-        updateItem(true)
-    }
-
-    fun upgradeLevel(type: EnumElytraUpgrade) {
-        if (type == EnumElytraUpgrade.PROTECTION) {
-            topprotectionLevel++
-            protectionLevel = topprotectionLevel
-        } else {
-            topspeedLevel++
-            speedLevel = topspeedLevel
-        }
-        updateItem(true)
-    }
-
     override fun use(event: PlayerInteractEvent) {}
     override fun useInInventory(event: InventoryClickEvent) {}
 
-    companion object {
-        val prices: IntArray = intArrayOf(100, 200, 300, 400, 500, 600, 700, 800, 900)
+    fun refreshItemInInventory() {
+        updateItem(true)
     }
+
 }
