@@ -14,12 +14,6 @@ class ElytraSerializer : InvocableGenericSerializer<Elytra>() {
         elytra.autoGlide = yaml.getBoolean("autoGlide")
         elytra.protectionLevel = yaml.getInt("protectionLvl")
         elytra.speedLevel = yaml.getInt("speedLvl")
-        elytra.topprotectionLevel = yaml.getInt("topprotectionLvl", 0)
-        elytra.topspeedLevel = yaml.getInt("topspeedLvl", 0)
-        if (elytra.topprotectionLevel == 0)
-            elytra.topprotectionLevel = elytra.protectionLevel
-        if (elytra.topspeedLevel == 0)
-            elytra.topspeedLevel = elytra.speedLevel
         return elytra
     }
 
@@ -29,8 +23,6 @@ class ElytraSerializer : InvocableGenericSerializer<Elytra>() {
         yaml["autoGlide"] = value.autoGlide
         yaml["protectionLvl"] = value.protectionLevel
         yaml["speedLvl"] = value.speedLevel
-        yaml["topprotectionLvl"] = value.topprotectionLevel
-        yaml["topspeedLvl"] = value.topspeedLevel
         return yaml
     }
 }
