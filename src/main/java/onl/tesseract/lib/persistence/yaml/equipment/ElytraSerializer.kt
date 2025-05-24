@@ -14,6 +14,11 @@ class ElytraSerializer : InvocableGenericSerializer<Elytra>() {
         elytra.autoGlide = yaml.getBoolean("autoGlide")
         elytra.protectionLevel = yaml.getInt("protectionLvl")
         elytra.speedLevel = yaml.getInt("speedLvl")
+        elytra.boostChargeLevel = yaml.getInt("boostChargeLvl")
+        elytra.recoveryLevel = yaml.getInt("recoveryLvl")
+
+        elytra.currentCharges = yaml.getInt("currentCharges", Elytra.getBoostCount(elytra.boostChargeLevel))
+        elytra.rechargeProgress = yaml.getDouble("rechargeProgress", 0.0)
         return elytra
     }
 
@@ -23,6 +28,11 @@ class ElytraSerializer : InvocableGenericSerializer<Elytra>() {
         yaml["autoGlide"] = value.autoGlide
         yaml["protectionLvl"] = value.protectionLevel
         yaml["speedLvl"] = value.speedLevel
+        yaml["boostChargeLvl"] = value.boostChargeLevel
+        yaml["recoveryLvl"] = value.recoveryLevel
+
+        yaml["currentCharges"] = value.currentCharges
+        yaml["rechargeProgress"] = value.rechargeProgress
         return yaml
     }
 }
