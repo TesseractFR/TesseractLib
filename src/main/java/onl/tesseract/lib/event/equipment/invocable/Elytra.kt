@@ -259,8 +259,8 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
 
     companion object {
         private val boostCounts = listOf(5, 10, 25, 50, 75, 100, 150, 250, 500, 1000)
-        private val recoveryTimes = listOf(60000L, 50000L, 40000L, 30000L, 25000L, 20000L, 15000L, 12000L,
-            10000L, 8000L)
+        private val recoveryTimes = listOf(60000L, 50000L, 40000L, 30000L, 25000L, 20000L, 15000L, 10000L,
+            5000L, 1000L)
 
         fun getBoostCount(level: Int): Int = boostCounts.getOrNull(level) ?: 5
         fun getRecoveryTime(level: Int): Long = recoveryTimes.getOrNull(level) ?: 60000L
