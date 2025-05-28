@@ -2,6 +2,8 @@ package onl.tesseract.lib.translation
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import onl.tesseract.lib.player.GenderedEnum
+import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import java.io.File
@@ -42,13 +44,16 @@ object LanguageManager {
     operator fun get(key: String, playerUUID: UUID): Component =
         get(key, locale = playerLanguageProvider.getLocale(playerUUID))
 
+    operator fun get(key: String, player: Player): Component =
+        get(key, player.uniqueId)
+
     operator fun get(
         key: String,
         placeholders: Map<String, Any> = emptyMap(),
         locale: Locale = Locale.FRANCE,
     ): Component {
         val config = languages[locale] ?: languages[defaultLocale]
-        val raw = config?.getString(key) ?: languages[defaultLocale]?.getString(key) ?: error("Missing key: $key")
+        val raw = config?.getString(key) ?: languages[defaultLocale]?.getString(key) ?: notifError(key)
 
         // Préremplace les %key% pour les Strings, marque les Components comme <key>
         var resolved = raw
@@ -62,7 +67,24 @@ object LanguageManager {
                     resolved = resolved.replace(tag, "<$k>")
                     componentPlaceholders[k] = v
                 }
+                is GenderedEnum<*> -> {
+                    val enumVal = v.value
+                    val category = enumVal::class.simpleName?.lowercase(Locale.ROOT) ?: "enum"
+                    val enumKey = "$category.${enumVal.name}.${v.gender.name.lowercase(Locale.ROOT)}"
+                    val translated = config?.getString(enumKey)
+                            ?: languages[defaultLocale]?.getString(enumKey)
+                            ?: enumVal.name
+                    resolved = resolved.replace(tag, translated)
+                }
 
+                is Enum<*> -> {
+                    val category = v::class.simpleName?.lowercase(Locale.ROOT) ?: "enum"
+                    val enumKey = "$category.${v.name}"
+                    val translated = config?.getString(enumKey)
+                            ?: languages[defaultLocale]?.getString(enumKey)
+                            ?: v.name
+                    resolved = resolved.replace(tag, translated)
+                }
                 else -> resolved = resolved.replace(tag, v.toString())
             }
         }
@@ -87,5 +109,12 @@ object LanguageManager {
     fun getAvailableLocales(): Set<Locale> = languages.keys
     fun setLocale(locale: Locale, sender: Player) {
         playerLanguageProvider.setLocale(sender, locale)
+    }
+
+    private fun notifError(key: String): Nothing {
+        Bukkit.getOperators()
+                .filter { it.isOnline }
+                .forEach { it.player?.sendMessage("Missing key: $key") }
+        error("Missing key: $key")
     }
 }
