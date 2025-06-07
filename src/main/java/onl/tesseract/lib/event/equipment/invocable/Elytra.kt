@@ -2,6 +2,8 @@ package onl.tesseract.lib.event.equipment.invocable
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
 import onl.tesseract.lib.animation.AnimationTarget
 import onl.tesseract.lib.animation.Circle
 import onl.tesseract.lib.animation.Concentration
@@ -11,7 +13,13 @@ import onl.tesseract.lib.service.PluginService
 import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.lib.task.TaskScheduler
 import onl.tesseract.lib.menu.ItemBuilder
-import org.bukkit.*
+import onl.tesseract.lib.util.Util
+import org.bukkit.Material
+import org.bukkit.NamespacedKey
+import org.bukkit.Sound
+import org.bukkit.SoundCategory
+import org.bukkit.Color
+import org.bukkit.Particle
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.entity.EntityType
@@ -30,6 +38,42 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 import java.util.*
+
+private const val MS_TO_SECONDS = 1000
+private const val SPEED_MULTIPLIER = 0.10
+private const val PROTECTION_MULTIPLIER = 0.5
+private const val PERCENT_CONVERSION = 100
+
+private const val BOOST_BASE = 5
+private const val BOOST_LEVEL_MULTIPLIER = 5
+private const val MAX_BOOST_LEVEL = 9
+
+private const val MAX_RECOVERY_TIME = 50000L
+private const val RECOVERY_DECREASE_PER_LEVEL = 5000L
+
+private const val BOOST_CONSUMPTION_MULTIPLIER = 0.7
+private const val ACCELERATION_TICK_INTERVAL = 10L
+private const val LOW_PITCH = 0.5f
+private const val SPEED_THRESHOLD_BASE = 1.20
+private const val SPEED_THRESHOLD_STEP = 0.10
+
+private const val ACTIONBAR_INTERVAL_TICKS = 2L
+private const val ACTIONBAR_RECHARGE_TICK_MS = 50.0
+private const val RECHARGE_FULL_THRESHOLD = 1.0
+private const val SPEED_DISPLAY_MULTIPLIER = 20
+
+private const val PARTICLE_DELAY = 0.1f
+private const val PARTICLE_RADIUS = 1f
+private const val PARTICLE_ROTATION = 3f
+private const val LEVITATION_DURATION = 40
+private const val SOUND_VOLUME = 20f
+private const val ALTITUDE_SOUND_DELAY = 40L
+
+private const val PROPULSION_RADIUS = 2
+private const val PROPULSION_COUNT = 20
+private const val FIRST_TIMER_DELAY = 30L
+private const val SECOND_TIMER_DELAY = 20L
+private const val FIREWORK_SOUND_VOLUME = 150f
 
 class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(playerUUID, invoked, handSlot), Listener {
     private var accelerateTask: BukkitTask? = null
@@ -52,7 +96,9 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
 
     override fun createItem(): ItemStack {
         val boostCount = getBoostCount(boostChargeLevel)
-        val recoveryTimeSeconds = getRecoveryTime(recoveryLevel) / 1000
+        val recoveryTimeSeconds = getBaseRecoveryTime(recoveryLevel) / MS_TO_SECONDS
+        val speedBonus = (SPEED_MULTIPLIER * (speedLevel + 1) * PERCENT_CONVERSION).toInt()
+        val protectionBonus = PROTECTION_MULTIPLIER * protectionLevel
         return ItemBuilder(Material.ELYTRA)
             .name(Component.text("Flanc éthéré", NamedTextColor.GOLD))
             .lore()
@@ -60,10 +106,10 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
             .newline()
             .newline()
             .append(Component.text("Vitesse : ", NamedTextColor.DARK_AQUA))
-            .append(Component.text(speedLevel.toString(), NamedTextColor.GOLD))
+            .append(Component.text("+$speedBonus%", NamedTextColor.GOLD))
             .newline()
             .append(Component.text("Protection : ", NamedTextColor.DARK_AQUA))
-            .append(Component.text(protectionLevel.toString(), NamedTextColor.GOLD))
+            .append(Component.text("$protectionBonus points", NamedTextColor.GOLD))
             .newline()
             .append(Component.text("Boosts max : ", NamedTextColor.DARK_AQUA))
             .append(Component.text(boostCount.toString(), NamedTextColor.GOLD))
@@ -90,32 +136,40 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
 
     @EventHandler
     fun onAccelerate(event: PlayerToggleSneakEvent) {
-        if (event.player.uniqueId != playerUUID) return
-
         val player = event.player
+        val canAccelerate = event.isSneaking && isInvoked && player.isGliding && accelerateTask == null
 
-        if (event.isSneaking && isInvoked && player.isGliding && accelerateTask == null) {
+        if (canAccelerate) {
             if (currentCharges <= 0) {
-                player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 0.5f)
+                player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, LOW_PITCH)
                 return
             }
 
-            accelerateTask = ServiceContainer.get(TaskScheduler::class.java).runTimer(0, 10, 0) { task ->
-                val speed = if (player.location.world.name == "Event") 0 else effectiveSpeedLevel
-                if (!player.isOnline || !player.isSneaking || !player.isGliding) {
-                    task.cancel()
-                    accelerateTask = null
-                } else if (player.velocity.length() < (1.20 + (0.10 * (speed + 1)))) {
-                    currentCharges--
-                    player.velocity = player.velocity.add(player.location.direction.multiply(0.7))
-                    player.world.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1f, 1f)
+            accelerateTask = ServiceContainer[TaskScheduler::class.java]
+                .runTimer(0, ACCELERATION_TICK_INTERVAL, 0) { task ->
+                    isManuallyAccelerating = true
+                    val speed = if (player.location.world.name == "Event") 0 else effectiveSpeedLevel
+                    if (!player.isOnline || !player.isSneaking || !player.isGliding) {
+                        task.cancel()
+                        accelerateTask = null
+                        isManuallyAccelerating = false
+                    } else if (player.velocity.length() < (SPEED_THRESHOLD_BASE
+                                + (SPEED_THRESHOLD_STEP * (speed + 1)))
+                    ) {
+                        currentCharges--
+                        player.velocity = player.velocity
+                            .add(player.location.direction.multiply(BOOST_CONSUMPTION_MULTIPLIER))
+                        player.world.playSound(
+                            player.location,
+                            Sound.ENTITY_ENDER_DRAGON_FLAP,
+                            SoundCategory.PLAYERS, 1f, 1f
+                        )
+                    }
+                    Unit
                 }
-                Unit
-            }
             saveYaml()
         }
     }
-
 
     @EventHandler
     fun onFly(event: EntityToggleGlideEvent) {
@@ -135,62 +189,78 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
                 accelerateTask = null
                 return@runTimer
             }
+            val rechargeTime = getRecoveryTime(recoveryLevel, player)
+            val isFastRecharge = rechargeTime < getBaseRecoveryTime(recoveryLevel)
+
             if (currentCharges < getBoostCount(boostChargeLevel)) {
-                val rechargeTime = getRecoveryTime(recoveryLevel)
-                rechargeProgress += (2.0 * 50 / rechargeTime)
+                rechargeProgress += (ACTIONBAR_INTERVAL_TICKS * ACTIONBAR_RECHARGE_TICK_MS / rechargeTime)
                 saveYaml()
-                if (rechargeProgress >= 1.0) {
+                if (rechargeProgress >= RECHARGE_FULL_THRESHOLD) {
                     currentCharges++
                     rechargeProgress = 0.0
                 }
             }
             val comp = Component.text()
             if (player.isGliding) {
-                comp.append(Component.text("Vitesse: ", NamedTextColor.GRAY))
-                    .append(Component.text((player.velocity.length() * 20).toInt(), NamedTextColor.AQUA))
+                comp.append(Component.text("Vitesse: "))
+                    .append(
+                        Component.text(
+                            (player.velocity.length() * SPEED_DISPLAY_MULTIPLIER).toInt(),
+                            NamedTextColor.AQUA
+                        )
+                    )
                     .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
                     .append(Component.text("Alt: "))
                     .append(Component.text(player.location.blockY, NamedTextColor.GREEN))
                     .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
                     .append(Component.text("Distance: "))
-                    .append(Component.text(player.location.distance(player.compassTarget).toInt(), NamedTextColor.YELLOW))
+                    .append(
+                        Component.text(
+                            player.location.distance(player.compassTarget).toInt(),
+                            NamedTextColor.YELLOW
+                        )
+                    )
                     .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
             }
-            comp.append(Component.text("Charges de Boost: "))
-                .append(Component.text("[$currentCharges/${getBoostCount(boostChargeLevel)}]", NamedTextColor.GOLD))
-            if (currentCharges < getBoostCount(boostChargeLevel)) {
-                comp.append(Component.text(" "))
-                    .append(progressBarColored(rechargeProgress))
+            comp.append(Component.text("Boosts : "))
+            comp.append(boostBar())
+            if (currentCharges < getBoostCount(boostChargeLevel) && isFastRecharge) {
+                comp.append(Component.text(" ⏻", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
             }
 
             player.sendActionBar(comp)
         }
     }
 
-    private fun progressBarColored(value: Double): Component {
-        val bars = 10
-        val filled = (value * bars).coerceAtMost(bars.toDouble()).toInt()
+    private fun boostBar(): Component {
         val builder = Component.text()
+        val maxCharges = getBoostCount(boostChargeLevel)
+        val filled = currentCharges
+        val recharging = (currentCharges < maxCharges)
         repeat(filled) {
-            builder.append(Component.text("|", NamedTextColor.GREEN))
+            builder.append(Component.text("⚡", NamedTextColor.GREEN, TextDecoration.BOLD))
         }
-        repeat(bars - filled) {
-            builder.append(Component.text(".", NamedTextColor.RED))
+        if (recharging) {
+            val color = Util.getGreenRedGradient((rechargeProgress.coerceIn(0.0, 1.0) * 100).toInt(), 100)
+            builder.append(Component.text("⚡", color, TextDecoration.BOLD))
+        }
+        val remaining = maxCharges - filled - if (recharging) 1 else 0
+        repeat(remaining) {
+            builder.append(Component.text("⚡", TextColor.color(255, 0, 40), TextDecoration.BOLD))
         }
         return builder.build()
     }
 
-    override fun onUninvoke(player: Player, manualUninvocation: Boolean) {
+    override fun onUninvoke(player: Player, manuelRemoval: Boolean) {
         ServiceContainer[PluginService::class.java].unregisterEventListener(this)
         actionBarTask?.cancel()
         actionBarTask = null
-        if (manualUninvocation) animate(player)
+        if (manuelRemoval) animate(player)
     }
 
     override fun onInvoke(player: Player, manuelInvocation: Boolean) {
         ServiceContainer[PluginService::class.java].registerEventListener(this)
-        val isAirBelow = player.location.clone().subtract(0.0, 0.1, 0.0).block.type.isAir
-        if (isAirBelow && !player.isGliding) {
+        if (!player.isGliding) {
             player.isGliding = true
         }
         if (autoGlide) autoGlide = true
@@ -219,6 +289,7 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
                     currentCharges = maxCharges
                 }
             }
+
             EnumElytraUpgrade.RECOVERY -> recoveryLevel = level
         }
         refreshItemInInventory()
@@ -238,44 +309,43 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
         ignoreSpeedLevel = false
     }
 
-    private val prices = listOf(100, 200, 300, 400, 500, 600, 700, 800, 900, 1000)
-    fun getPriceForLevel(level: Int): Int? = prices.getOrNull(level)
-    fun getMaxLevel(): Int = prices.size
-
     private fun animate(player: Player) {
-        player.addPotionEffect(PotionEffect(PotionEffectType.LEVITATION, 40, 0))
-        player.playSound(player.location, Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 20f, 1f)
+        player.addPotionEffect(PotionEffect(PotionEffectType.LEVITATION, LEVITATION_DURATION, 0))
+        player.playSound(player.location, Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, SOUND_VOLUME, 1f)
         val scheduler = ServiceContainer[TaskScheduler::class.java]
         Circle(Particle.DUST, AnimationTarget(player), scheduler.plugin)
             .setColor(Color.FUCHSIA)
-            .setDelay(0.1f)
-            .setRadius(1f)
-            .setRotationCount(3f)
+            .setDelay(PARTICLE_DELAY)
+            .setRadius(PARTICLE_RADIUS)
+            .setRotationCount(PARTICLE_ROTATION)
             .draw()
-        scheduler.runTimer(40, 0, 0) {
-            player.playSound(player.location, Sound.BLOCK_END_PORTAL_SPAWN, 20f, 1f)
+        scheduler.runTimer(ALTITUDE_SOUND_DELAY, 0, 0) {
+            player.playSound(player.location, Sound.BLOCK_END_PORTAL_SPAWN, SOUND_VOLUME, 1f)
         }
     }
 
     fun synergicPropulsion(player: Player) {
-        val scheduler = ServiceContainer.get(TaskScheduler::class.java)
+        val scheduler = ServiceContainer[TaskScheduler::class.java]
         Concentration(scheduler.plugin).setParticle(Particle.DUST)
             .setColor(Color.FUCHSIA)
             .setTarget(AnimationTarget(player))
-            .setRadius(2)
-            .setCount(20)
+            .setRadius(PROPULSION_RADIUS)
+            .setCount(PROPULSION_COUNT)
             .build()
             .draw()
-        player.playSound(player.location, Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 20f, 1f)
-        scheduler.runTimer(30, 0, 0) {
-            if (!player.isOnline || !isInvoked) return@runTimer Unit
+        player.playSound(player.location, Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, SOUND_VOLUME, 1f)
+        scheduler.runTimer(FIRST_TIMER_DELAY, 0, 0) {
+            if (!player.isOnline || !isInvoked) return@runTimer
             player.velocity = Vector(0, 2, 0)
-            player.playSound(player.location, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 150f, 1f)
-            scheduler.runTimer(20, 0, 0) {
+            player.playSound(player.location, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, FIREWORK_SOUND_VOLUME, 1f)
+            scheduler.runTimer(SECOND_TIMER_DELAY, 0, 0) {
                 if (player.isOnline && isInvoked) {
                     player.velocity = player.location.direction
                     player.isGliding = true
-                    player.playSound(player.location, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 150f, 1f)
+                    player.playSound(
+                        player.location,
+                        Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, FIREWORK_SOUND_VOLUME, 1f
+                    )
                 }
                 Unit
             }
@@ -288,6 +358,7 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
     override fun use(event: PlayerInteractEvent) {
         // Nothing
     }
+
     override fun useInInventory(event: InventoryClickEvent) {
         // Nothing
     }
@@ -302,11 +373,31 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
     }
 
     companion object {
-        private val boostCounts = listOf(5, 10, 25, 50, 75, 100, 150, 250, 500, 1000)
-        private val recoveryTimes = listOf(60000L, 50000L, 40000L, 30000L, 25000L, 20000L, 15000L, 10000L,
-            5000L, 1000L)
+        private var lastVelocity: Double = 0.0
+        private var isManuallyAccelerating = false
 
-        fun getBoostCount(level: Int): Int = boostCounts.getOrNull(level) ?: 5
-        fun getRecoveryTime(level: Int): Long = recoveryTimes.getOrNull(level) ?: 60000L
+        fun getBoostCount(level: Int): Int {
+            return if (level in 0..MAX_BOOST_LEVEL) {
+                BOOST_BASE + level * BOOST_LEVEL_MULTIPLIER
+            } else BOOST_BASE
+        }
+
+        fun getBaseRecoveryTime(level: Int): Long {
+            return MAX_RECOVERY_TIME - (RECOVERY_DECREASE_PER_LEVEL * level)
+        }
+
+        fun getRecoveryTime(level: Int, player: Player): Long {
+            val baseTime = getBaseRecoveryTime(level)
+            val currentVelocity = player.velocity.length()
+            val acceleratingPassively = player.isGliding && currentVelocity > lastVelocity && !isManuallyAccelerating
+            lastVelocity = currentVelocity
+            return if (!player.isGliding || acceleratingPassively) {
+                (baseTime / 2)
+            } else {
+                baseTime
+            }
+        }
+
     }
+
 }
