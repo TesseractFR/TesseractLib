@@ -11,11 +11,9 @@ import onl.tesseract.lib.service.PluginService
 import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.lib.task.TaskScheduler
 import onl.tesseract.lib.menu.ItemBuilder
-import onl.tesseract.lib.util.Util
 import org.bukkit.*
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
-import org.bukkit.block.BlockFace
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -38,7 +36,7 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
     private var actionBarTask: BukkitTask? = null
 
     var autoGlide: Boolean = true
-    var ignoreSpeedLevel: Boolean = false
+    private var ignoreSpeedLevel: Boolean = false
 
     var protectionLevel: Int = 0
     var speedLevel: Int = 0
@@ -169,7 +167,6 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
         }
     }
 
-
     private fun progressBarColored(value: Double): Component {
         val bars = 10
         val filled = (value * bars).coerceAtMost(bars.toDouble()).toInt()
@@ -192,18 +189,63 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
 
     override fun onInvoke(player: Player, manuelInvocation: Boolean) {
         ServiceContainer[PluginService::class.java].registerEventListener(this)
-        if (!player.isOnGround && !player.isGliding) player.isGliding = true
+        val isAirBelow = player.location.clone().subtract(0.0, 0.1, 0.0).block.type.isAir
+        if (isAirBelow && !player.isGliding) {
+            player.isGliding = true
+        }
         if (autoGlide) autoGlide = true
         if (currentCharges == 0) currentCharges = getBoostCount(boostChargeLevel)
         displayActionBar(player)
         if (manuelInvocation) animate(player)
     }
 
+    fun getLevel(upgrade: EnumElytraUpgrade): Int {
+        return when (upgrade) {
+            EnumElytraUpgrade.PROTECTION -> protectionLevel
+            EnumElytraUpgrade.SPEED -> speedLevel
+            EnumElytraUpgrade.BOOST_NUMBER -> boostChargeLevel
+            EnumElytraUpgrade.RECOVERY -> recoveryLevel
+        }
+    }
+
+    fun setLevel(upgrade: EnumElytraUpgrade, level: Int) {
+        when (upgrade) {
+            EnumElytraUpgrade.PROTECTION -> protectionLevel = level
+            EnumElytraUpgrade.SPEED -> speedLevel = level
+            EnumElytraUpgrade.BOOST_NUMBER -> {
+                boostChargeLevel = level
+                val maxCharges = getBoostCount(level)
+                if (currentCharges > maxCharges) {
+                    currentCharges = maxCharges
+                }
+            }
+            EnumElytraUpgrade.RECOVERY -> recoveryLevel = level
+        }
+        refreshItemInInventory()
+    }
+
+    fun upgradeLevel(upgrade: EnumElytraUpgrade) {
+        when (upgrade) {
+            EnumElytraUpgrade.PROTECTION -> protectionLevel++
+            EnumElytraUpgrade.SPEED -> speedLevel++
+            EnumElytraUpgrade.BOOST_NUMBER -> boostChargeLevel++
+            EnumElytraUpgrade.RECOVERY -> recoveryLevel++
+        }
+        refreshItemInInventory()
+    }
+
+    fun enableSpeedUpgrade() {
+        ignoreSpeedLevel = false
+    }
+
+    private val prices = listOf(100, 200, 300, 400, 500, 600, 700, 800, 900, 1000)
+    fun getPriceForLevel(level: Int): Int? = prices.getOrNull(level)
+    fun getMaxLevel(): Int = prices.size
 
     private fun animate(player: Player) {
         player.addPotionEffect(PotionEffect(PotionEffectType.LEVITATION, 40, 0))
         player.playSound(player.location, Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 20f, 1f)
-        val scheduler = ServiceContainer.get(TaskScheduler::class.java)
+        val scheduler = ServiceContainer[TaskScheduler::class.java]
         Circle(Particle.DUST, AnimationTarget(player), scheduler.plugin)
             .setColor(Color.FUCHSIA)
             .setDelay(0.1f)
@@ -212,7 +254,6 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
             .draw()
         scheduler.runTimer(40, 0, 0) {
             player.playSound(player.location, Sound.BLOCK_END_PORTAL_SPAWN, 20f, 1f)
-            Unit
         }
     }
 
@@ -244,10 +285,14 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
 
     private val effectiveSpeedLevel: Int get() = if (ignoreSpeedLevel) 1 else speedLevel
 
-    override fun use(event: PlayerInteractEvent) {}
-    override fun useInInventory(event: InventoryClickEvent) {}
+    override fun use(event: PlayerInteractEvent) {
+        // Nothing
+    }
+    override fun useInInventory(event: InventoryClickEvent) {
+        // Nothing
+    }
 
-    fun refreshItemInInventory() {
+    private fun refreshItemInInventory() {
         updateItem(true)
     }
 
@@ -255,7 +300,6 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
         ServiceContainer[EquipmentService::class.java]
             .saveEquipment(ServiceContainer[EquipmentService::class.java].getEquipment(playerUUID))
     }
-
 
     companion object {
         private val boostCounts = listOf(5, 10, 25, 50, 75, 100, 150, 250, 500, 1000)
