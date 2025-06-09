@@ -6,21 +6,20 @@ import org.bukkit.configuration.file.YamlConfiguration
 
 class ElytraSerializer : InvocableGenericSerializer<Elytra>() {
     override fun deserialize(yaml: ConfigurationSection): Elytra {
-        val elytra = Elytra(
-            parsePlayerID(yaml),
-            parseInvoked(yaml),
-            parseHandSlot(yaml),
+        return Elytra(
+            playerUUID = parsePlayerID(yaml),
+            invoked = parseInvoked(yaml),
+            handSlot = parseHandSlot(yaml),
+            autoGlide = yaml.getBoolean("autoGlide"),
+            protectionLevel = yaml.getInt("protectionLvl"),
+            speedLevel = yaml.getInt("speedLvl"),
+            boostChargeLevel = yaml.getInt("boostChargeLvl"),
+            recoveryLevel = yaml.getInt("recoveryLvl"),
+            currentCharges = yaml.getInt("currentCharges", Elytra.getBoostCount(yaml.getInt("boostChargeLvl"))),
+            rechargeProgress = yaml.getDouble("rechargeProgress", 0.0)
         )
-        elytra.autoGlide = yaml.getBoolean("autoGlide")
-        elytra.protectionLevel = yaml.getInt("protectionLvl")
-        elytra.speedLevel = yaml.getInt("speedLvl")
-        elytra.boostChargeLevel = yaml.getInt("boostChargeLvl")
-        elytra.recoveryLevel = yaml.getInt("recoveryLvl")
-
-        elytra.currentCharges = yaml.getInt("currentCharges", Elytra.getBoostCount(elytra.boostChargeLevel))
-        elytra.rechargeProgress = yaml.getDouble("rechargeProgress", 0.0)
-        return elytra
     }
+
 
     override fun serialize(value: Elytra): YamlConfiguration {
         val yaml = YamlConfiguration()
