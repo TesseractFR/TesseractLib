@@ -14,14 +14,10 @@ import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.lib.task.TaskScheduler
 import onl.tesseract.lib.menu.ItemBuilder
 import onl.tesseract.lib.util.Util
-import org.bukkit.Material
-import org.bukkit.NamespacedKey
-import org.bukkit.Sound
-import org.bukkit.SoundCategory
-import org.bukkit.Color
-import org.bukkit.Particle
+import org.bukkit.*
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
+import org.bukkit.block.BlockFace
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -29,10 +25,12 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityToggleGlideEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitTask
@@ -46,13 +44,13 @@ private const val PERCENT_CONVERSION = 100
 
 private const val BOOST_BASE = 5
 private const val BOOST_LEVEL_MULTIPLIER = 5
-private const val MAX_BOOST_LEVEL = 9
+private const val MAX_DISPLAYED_BOOSTS = 10
+private const val MAX_BOOST_LEVEL = 10
 
 private const val MAX_RECOVERY_TIME = 50000L
 private const val RECOVERY_DECREASE_PER_LEVEL = 5000L
 
 private const val BOOST_CONSUMPTION_MULTIPLIER = 0.7
-private const val ACCELERATION_TICK_INTERVAL = 10L
 private const val LOW_PITCH = 0.5f
 private const val SPEED_THRESHOLD_BASE = 1.20
 private const val SPEED_THRESHOLD_STEP = 0.10
@@ -75,20 +73,22 @@ private const val FIRST_TIMER_DELAY = 30L
 private const val SECOND_TIMER_DELAY = 20L
 private const val FIREWORK_SOUND_VOLUME = 150f
 
-class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(playerUUID, invoked, handSlot), Listener {
+class Elytra(
+    playerUUID: UUID,
+    invoked: Boolean,
+    handSlot: Int,
+    var autoGlide: Boolean = true,
+    var protectionLevel: Int = 0,
+    var speedLevel: Int = 0,
+    var boostChargeLevel: Int = 0,
+    var recoveryLevel: Int = 0,
+    var currentCharges: Int = 0,
+    var rechargeProgress: Double = 0.0
+) : Invocable(playerUUID, invoked, handSlot), Listener {
     private var accelerateTask: BukkitTask? = null
     private var actionBarTask: BukkitTask? = null
-
-    var autoGlide: Boolean = true
+    private var autoGlideTask: BukkitTask? = null
     private var ignoreSpeedLevel: Boolean = false
-
-    var protectionLevel: Int = 0
-    var speedLevel: Int = 0
-    var boostChargeLevel: Int = 0
-    var recoveryLevel: Int = 0
-
-    var currentCharges: Int = 0
-    var rechargeProgress: Double = 0.0
 
     override val excludeOthers: Boolean = true
     override val slotType: EquipmentSlot = EquipmentSlot.CHEST
@@ -130,8 +130,42 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
                         EquipmentSlotGroup.CHEST
                     )
                 )
+                meta.isUnbreakable = true
+                meta.addItemFlags(
+                    org.bukkit.inventory.ItemFlag.HIDE_UNBREAKABLE
+                )
                 this.itemMeta = meta
             }
+    }
+
+    override fun onUninvoke(player: Player, manuelRemoval: Boolean) {
+        isInvoked = false
+        ServiceContainer[PluginService::class.java].unregisterEventListener(this)
+        if (player.inventory.chestplate?.type == Material.ELYTRA) {
+            player.inventory.chestplate = null
+        }
+        actionBarTask?.cancel()
+        actionBarTask = null
+        if (manuelRemoval) animate(player)
+    }
+
+    override fun onInvoke(player: Player, manuelInvocation: Boolean) {
+        isInvoked = true
+        ServiceContainer[PluginService::class.java].registerEventListener(this)
+        player.inventory.chestplate = createItem()
+        if (!player.isGliding) {
+            player.isGliding = true
+        }
+        if (currentCharges == 0) currentCharges = getBoostCount(boostChargeLevel)
+        displayActionBar(player)
+        if (autoGlide) {
+            toggleAutoGlideEnabled(true)
+        }
+        if (manuelInvocation) animate(player)
+    }
+
+    fun canInvoke(player: Player): Boolean {
+        return player.inventory.chestplate == null
     }
 
     @EventHandler
@@ -139,36 +173,40 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
         val player = event.player
         val canAccelerate = event.isSneaking && isInvoked && player.isGliding && accelerateTask == null
 
-        if (canAccelerate) {
-            if (currentCharges <= 0) {
-                player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, LOW_PITCH)
-                return
-            }
-
-            accelerateTask = ServiceContainer[TaskScheduler::class.java]
-                .runTimer(0, ACCELERATION_TICK_INTERVAL, 0) { task ->
-                    isManuallyAccelerating = true
-                    val speed = if (player.location.world.name == "Event") 0 else effectiveSpeedLevel
-                    if (!player.isOnline || !player.isSneaking || !player.isGliding) {
-                        task.cancel()
-                        accelerateTask = null
-                        isManuallyAccelerating = false
-                    } else if (player.velocity.length() < (SPEED_THRESHOLD_BASE
-                                + (SPEED_THRESHOLD_STEP * (speed + 1)))
-                    ) {
-                        currentCharges--
-                        player.velocity = player.velocity
-                            .add(player.location.direction.multiply(BOOST_CONSUMPTION_MULTIPLIER))
-                        player.world.playSound(
-                            player.location,
-                            Sound.ENTITY_ENDER_DRAGON_FLAP,
-                            SoundCategory.PLAYERS, 1f, 1f
-                        )
-                    }
-                    Unit
-                }
-            saveYaml()
+        if (!canAccelerate) return
+        if (currentCharges <= 0) {
+            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, LOW_PITCH)
+            return
         }
+
+        accelerateTask = ServiceContainer[TaskScheduler::class.java]
+            .runTimer(delay = 0, period = 10L, duration = 0) { task ->
+                isManuallyAccelerating = true
+                val speed = if (player.location.world.name == "Event") 0 else effectiveSpeedLevel
+
+                if (!player.isOnline || !player.isSneaking || !player.isGliding) {
+                    task.cancel()
+                    accelerateTask = null
+                    isManuallyAccelerating = false
+                    return@runTimer
+                }
+
+                if (player.velocity.length() < getMaxSpeed(speed)) {
+                    currentCharges--
+                    player.velocity = player.velocity
+                        .add(player.location.direction.multiply(BOOST_CONSUMPTION_MULTIPLIER))
+                    player.world.playSound(
+                        player.location,
+                        Sound.ENTITY_ENDER_DRAGON_FLAP,
+                        SoundCategory.PLAYERS, 1f, 1f
+                    )
+                }
+            }
+        saveYaml()
+    }
+
+    private fun getMaxSpeed(speedLevel: Int): Double {
+        return SPEED_THRESHOLD_BASE + SPEED_THRESHOLD_STEP * (speedLevel + 1)
     }
 
     @EventHandler
@@ -177,7 +215,47 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
         if (event.entity.uniqueId == playerUUID && isInvoked) {
             val player = event.entity as Player
             if (event.isGliding) displayActionBar(player)
-            else if (autoGlide) autoGlide = true
+        }
+    }
+
+    fun toggleAutoGlideEnabled(autoGlide: Boolean) {
+        this.autoGlide = autoGlide
+        autoGlideTask?.cancel()
+        autoGlideTask = null
+        if (!autoGlide) return
+
+        val player = Bukkit.getPlayer(playerUUID) ?: return
+        val taskScheduler = ServiceContainer[TaskScheduler::class.java]
+
+        autoGlideTask = taskScheduler.runTimer(delay = 0, period = 10L, duration = 0) { _ ->
+            if (!player.isOnline || !isInvoked) return@runTimer
+
+            if (player.hasPotionEffect(PotionEffectType.LEVITATION)) return@runTimer
+            val airBelow = (1..4).all {
+                player.location.block.getRelative(BlockFace.DOWN, it).isPassable
+            }
+
+            if (airBelow && !player.isGliding) {
+                player.isGliding = true
+                displayActionBar(player)
+            }
+        }
+    }
+
+    @EventHandler
+    fun onRespawn(event: PlayerRespawnEvent) {
+        if (event.player.uniqueId != playerUUID) return
+        if (isInvoked) {
+            Bukkit.getScheduler().runTaskLater(
+                JavaPlugin.getProvidingPlugin(Elytra::class.java),
+                Runnable {
+                    val player = event.player
+                    if (player.inventory.chestplate == null) {
+                        player.inventory.chestplate = createItem()
+                    }
+                },
+                1L
+            )
         }
     }
 
@@ -237,36 +315,27 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
         val maxCharges = getBoostCount(boostChargeLevel)
         val filled = currentCharges
         val recharging = (currentCharges < maxCharges)
-        repeat(filled) {
+
+        val visibleFilled = minOf(MAX_DISPLAYED_BOOSTS, filled)
+        val overflow = filled - visibleFilled
+        if (overflow > 0) {
+            builder.append(Component.text("(+$overflow) ", NamedTextColor.GREEN, TextDecoration.BOLD))
+        }
+
+        repeat(visibleFilled) {
             builder.append(Component.text("⚡", NamedTextColor.GREEN, TextDecoration.BOLD))
         }
         if (recharging) {
-            val color = Util.getGreenRedGradient((rechargeProgress.coerceIn(0.0, 1.0) * 100).toInt(), 100)
+            val color = Util
+                .getGreenRedGradient((rechargeProgress.coerceIn(0.0, 1.0) * PERCENT_CONVERSION).toInt(), 100)
             builder.append(Component.text("⚡", color, TextDecoration.BOLD))
         }
-        val remaining = maxCharges - filled - if (recharging) 1 else 0
+        val shownCount = visibleFilled + if (recharging) 1 else 0
+        val remaining = minOf(maxCharges, MAX_DISPLAYED_BOOSTS) - shownCount
         repeat(remaining) {
             builder.append(Component.text("⚡", TextColor.color(255, 0, 40), TextDecoration.BOLD))
         }
         return builder.build()
-    }
-
-    override fun onUninvoke(player: Player, manuelRemoval: Boolean) {
-        ServiceContainer[PluginService::class.java].unregisterEventListener(this)
-        actionBarTask?.cancel()
-        actionBarTask = null
-        if (manuelRemoval) animate(player)
-    }
-
-    override fun onInvoke(player: Player, manuelInvocation: Boolean) {
-        ServiceContainer[PluginService::class.java].registerEventListener(this)
-        if (!player.isGliding) {
-            player.isGliding = true
-        }
-        if (autoGlide) autoGlide = true
-        if (currentCharges == 0) currentCharges = getBoostCount(boostChargeLevel)
-        displayActionBar(player)
-        if (manuelInvocation) animate(player)
     }
 
     fun getLevel(upgrade: EnumElytraUpgrade): Int {
@@ -325,6 +394,12 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
     }
 
     fun synergicPropulsion(player: Player) {
+        if (currentCharges <= 0) {
+            player.sendMessage(Component.text(
+                "Vous n'avez plus de boost disponible, patientez quelques instants.", NamedTextColor.RED))
+            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, LOW_PITCH)
+            return
+        }
         val scheduler = ServiceContainer[TaskScheduler::class.java]
         Concentration(scheduler.plugin).setParticle(Particle.DUST)
             .setColor(Color.FUCHSIA)
@@ -347,9 +422,9 @@ class Elytra(playerUUID: UUID, invoked: Boolean, handSlot: Int) : Invocable(play
                         Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, FIREWORK_SOUND_VOLUME, 1f
                     )
                 }
-                Unit
             }
-            Unit
+            currentCharges--
+            saveYaml()
         }
     }
 
