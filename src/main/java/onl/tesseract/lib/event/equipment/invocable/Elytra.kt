@@ -92,7 +92,7 @@ class Elytra(
 
     override val excludeOthers: Boolean = true
     override val slotType: EquipmentSlot = EquipmentSlot.CHEST
-    override val uniqueName: String = "ELYTRA"
+    override val uniqueName: String = this::class.simpleName!!
 
     override fun createItem(): ItemStack {
         val boostCount = getBoostCount(boostChargeLevel)
@@ -139,20 +139,21 @@ class Elytra(
     }
 
     override fun onUninvoke(player: Player, manuelRemoval: Boolean) {
-        isInvoked = false
-        ServiceContainer[PluginService::class.java].unregisterEventListener(this)
-        if (player.inventory.chestplate?.type == Material.ELYTRA) {
-            player.inventory.chestplate = null
+        if (manuelRemoval) {
+            isInvoked = false
         }
+        ServiceContainer[PluginService::class.java].unregisterEventListener(this)
         actionBarTask?.cancel()
         actionBarTask = null
+        autoGlideTask?.cancel()
+        autoGlideTask = null
+        accelerateTask?.cancel()
+        accelerateTask = null
         if (manuelRemoval) animate(player)
     }
 
     override fun onInvoke(player: Player, manuelInvocation: Boolean) {
-        isInvoked = true
         ServiceContainer[PluginService::class.java].registerEventListener(this)
-        player.inventory.chestplate = createItem()
         if (!player.isGliding) {
             player.isGliding = true
         }
@@ -251,7 +252,7 @@ class Elytra(
                 Runnable {
                     val player = event.player
                     if (player.inventory.chestplate == null) {
-                        player.inventory.chestplate = createItem()
+                        player.inventory.chestplate = getItem()
                     }
                 },
                 1L
