@@ -13,7 +13,10 @@ import onl.tesseract.lib.service.PluginService
 import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.lib.task.TaskScheduler
 import onl.tesseract.lib.menu.ItemBuilder
+import onl.tesseract.lib.util.ChatFormats.ELYTRA_ERROR
+import onl.tesseract.lib.util.ChatFormats.ELYTRA_SUCCESS
 import onl.tesseract.lib.util.Util
+import onl.tesseract.lib.util.plus
 import org.bukkit.*
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -396,11 +399,11 @@ class Elytra(
 
     fun synergicPropulsion(player: Player) {
         if (currentCharges <= 0) {
-            player.sendMessage(Component.text(
-                "Vous n'avez plus de boost disponible, patientez quelques instants.", NamedTextColor.RED))
+            player.sendMessage(ELYTRA_ERROR + "Vous n'avez plus de boost disponible, patientez quelques instants.")
             player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, LOW_PITCH)
             return
         }
+        player.sendMessage(ELYTRA_SUCCESS + "Décollage dans 3 secondes !")
         val scheduler = ServiceContainer[TaskScheduler::class.java]
         Concentration(scheduler.plugin).setParticle(Particle.DUST)
             .setColor(Color.FUCHSIA)

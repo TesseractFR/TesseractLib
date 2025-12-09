@@ -17,6 +17,14 @@ public class ChatFormats {
     public static final Component EQUIPMENT_ERROR = EQUIPMENT.color(RED);
     public static final Component EQUIPMENT_SUCCESS = EQUIPMENT.color(GREEN);
 
+    public static final Component ELYTRA = empty()
+            .color(GRAY)
+            .append(text("[").color(DARK_PURPLE))
+            .append(text("Élytra").color(LIGHT_PURPLE))
+            .append(text("] ").color(DARK_PURPLE));
+    public static final Component ELYTRA_ERROR = ELYTRA.color(RED);
+    public static final Component ELYTRA_SUCCESS = ELYTRA.color(GREEN);
+
     public static final Component JETPACK = empty()
             .color(GRAY)
             .append(text("[").color(GOLD))
