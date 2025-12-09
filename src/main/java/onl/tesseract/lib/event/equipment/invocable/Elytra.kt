@@ -1,364 +1,479 @@
-package onl.tesseract.lib.event.equipment.invocable;
+package onl.tesseract.lib.event.equipment.invocable
 
-import kotlin.Unit;
-import lombok.Getter;
-import lombok.Setter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import onl.tesseract.lib.animation.AnimationTarget;
-import onl.tesseract.lib.animation.Circle;
-import onl.tesseract.lib.animation.Concentration;
-import onl.tesseract.lib.equipment.Invocable;
-import onl.tesseract.lib.service.PluginService;
-import onl.tesseract.lib.service.ServiceContainer;
-import onl.tesseract.lib.task.TaskScheduler;
-import onl.tesseract.lib.util.ItemBuilder;
-import onl.tesseract.lib.util.Util;
-import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.EquipmentSlotGroup;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
+import onl.tesseract.lib.animation.AnimationTarget
+import onl.tesseract.lib.animation.Circle
+import onl.tesseract.lib.animation.Concentration
+import onl.tesseract.lib.equipment.EquipmentService
+import onl.tesseract.lib.equipment.Invocable
+import onl.tesseract.lib.service.PluginService
+import onl.tesseract.lib.service.ServiceContainer
+import onl.tesseract.lib.task.TaskScheduler
+import onl.tesseract.lib.menu.ItemBuilder
+import onl.tesseract.lib.util.Util
+import org.bukkit.*
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
+import org.bukkit.block.BlockFace
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityToggleGlideEvent
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerRespawnEvent
+import org.bukkit.event.player.PlayerToggleSneakEvent
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.EquipmentSlotGroup
+import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
+import org.bukkit.scheduler.BukkitTask
+import org.bukkit.util.Vector
+import java.util.*
 
-import java.util.UUID;
+private const val MS_TO_SECONDS = 1000
+private const val SPEED_MULTIPLIER = 0.10
+private const val PROTECTION_MULTIPLIER = 0.5
+private const val PERCENT_CONVERSION = 100
 
-public class Elytra extends Invocable implements Listener {
-    BukkitTask accelerateTask;
-    BukkitTask actionBarTask;
-    BukkitTask autoGlideTask;
+private const val BOOST_BASE = 5
+private const val BOOST_LEVEL_MULTIPLIER = 5
+private const val MAX_DISPLAYED_BOOSTS = 10
+private const val MAX_BOOST_LEVEL = 10
 
-    boolean autoGlide = true;
+private const val MAX_RECOVERY_TIME = 50000L
+private const val RECOVERY_DECREASE_PER_LEVEL = 5000L
 
-    boolean ignoreSpeedLevel = false;
+private const val BOOST_CONSUMPTION_MULTIPLIER = 0.7
+private const val LOW_PITCH = 0.5f
+private const val SPEED_THRESHOLD_BASE = 1.20
+private const val SPEED_THRESHOLD_STEP = 0.10
 
-    @Getter @Setter
-    int protectionLevel = 0;
-    @Getter @Setter
-    int speedLevel = 0;
-    @Getter @Setter
-    int topprotectionLevel = 0;
-    @Getter @Setter
-    int topspeedLevel = 0;
+private const val ACTIONBAR_INTERVAL_TICKS = 2L
+private const val ACTIONBAR_RECHARGE_TICK_MS = 50.0
+private const val RECHARGE_FULL_THRESHOLD = 1.0
+private const val SPEED_DISPLAY_MULTIPLIER = 20
 
-    // static int[] prices = new int[] {2000,4000,8000,14000,19000,25000,30000,35000,40000};
-    static final int[] prices = new int[] {100, 200, 300, 400, 500, 600, 700, 800, 900};
+private const val PARTICLE_DELAY = 0.1f
+private const val PARTICLE_RADIUS = 1f
+private const val PARTICLE_ROTATION = 3f
+private const val LEVITATION_DURATION = 40
+private const val SOUND_VOLUME = 20f
+private const val ALTITUDE_SOUND_DELAY = 40L
 
-    public enum Upgrade {
-        PROTECTION, VITESSE
+private const val PROPULSION_RADIUS = 2
+private const val PROPULSION_COUNT = 20
+private const val FIRST_TIMER_DELAY = 30L
+private const val SECOND_TIMER_DELAY = 20L
+private const val FIREWORK_SOUND_VOLUME = 150f
+
+class Elytra(
+    playerUUID: UUID,
+    invoked: Boolean,
+    handSlot: Int,
+    var autoGlide: Boolean = true,
+    var protectionLevel: Int = 0,
+    var speedLevel: Int = 0,
+    var boostChargeLevel: Int = 0,
+    var recoveryLevel: Int = 0,
+    var currentCharges: Int = 0,
+    var rechargeProgress: Double = 0.0
+) : Invocable(playerUUID, invoked, handSlot), Listener {
+    private var accelerateTask: BukkitTask? = null
+    private var actionBarTask: BukkitTask? = null
+    private var autoGlideTask: BukkitTask? = null
+    private var ignoreSpeedLevel: Boolean = false
+
+    override val excludeOthers: Boolean = true
+    override val slotType: EquipmentSlot = EquipmentSlot.CHEST
+    override val uniqueName: String = this::class.simpleName!!
+
+    override fun createItem(): ItemStack {
+        val boostCount = getBoostCount(boostChargeLevel)
+        val recoveryTimeSeconds = getBaseRecoveryTime(recoveryLevel) / MS_TO_SECONDS
+        val speedBonus = (SPEED_MULTIPLIER * (speedLevel + 1) * PERCENT_CONVERSION).toInt()
+        val protectionBonus = PROTECTION_MULTIPLIER * protectionLevel
+        return ItemBuilder(Material.ELYTRA)
+            .name(Component.text("Flanc éthéré", NamedTextColor.GOLD))
+            .lore()
+            .append(Component.text("« Des ailes divines imprégnées de clairvoyance. »", NamedTextColor.DARK_PURPLE))
+            .newline()
+            .newline()
+            .append(Component.text("Vitesse : ", NamedTextColor.DARK_AQUA))
+            .append(Component.text("+$speedBonus%", NamedTextColor.GOLD))
+            .newline()
+            .append(Component.text("Protection : ", NamedTextColor.DARK_AQUA))
+            .append(Component.text("$protectionBonus points", NamedTextColor.GOLD))
+            .newline()
+            .append(Component.text("Boosts max : ", NamedTextColor.DARK_AQUA))
+            .append(Component.text(boostCount.toString(), NamedTextColor.GOLD))
+            .newline()
+            .append(Component.text("Temps recharge : ", NamedTextColor.DARK_AQUA))
+            .append(Component.text("1 boost / ${recoveryTimeSeconds}s", NamedTextColor.GOLD))
+            .buildLore()
+            .enchanted(true)
+            .build().apply {
+                val meta = this.itemMeta
+                val key = NamespacedKey(NamespacedKey.MINECRAFT, "generic.armor")
+                meta.addAttributeModifier(
+                    Attribute.GENERIC_ARMOR,
+                    AttributeModifier(
+                        key,
+                        protectionLevel.toDouble(),
+                        AttributeModifier.Operation.ADD_NUMBER,
+                        EquipmentSlotGroup.CHEST
+                    )
+                )
+                meta.isUnbreakable = true
+                meta.addItemFlags(
+                    org.bukkit.inventory.ItemFlag.HIDE_UNBREAKABLE
+                )
+                this.itemMeta = meta
+            }
     }
 
-    public Elytra(@NotNull UUID playerUUID, boolean invoked, int handSlot) {
-        super(playerUUID, invoked, handSlot);
+    override fun onUninvoke(player: Player, manuelRemoval: Boolean) {
+        if (manuelRemoval) {
+            isInvoked = false
+        }
+        ServiceContainer[PluginService::class.java].unregisterEventListener(this)
+        actionBarTask?.cancel()
+        actionBarTask = null
+        autoGlideTask?.cancel()
+        autoGlideTask = null
+        accelerateTask?.cancel()
+        accelerateTask = null
+        if (manuelRemoval) animate(player)
     }
 
-    @Override
-    public boolean getExcludeOthers() {
-        return true;
+    override fun onInvoke(player: Player, manuelInvocation: Boolean) {
+        ServiceContainer[PluginService::class.java].registerEventListener(this)
+        if (!player.isGliding) {
+            player.isGliding = true
+        }
+        if (currentCharges == 0) currentCharges = getBoostCount(boostChargeLevel)
+        displayActionBar(player)
+        if (autoGlide) {
+            toggleAutoGlideEnabled(true)
+        }
+        if (manuelInvocation) animate(player)
     }
 
-    @Override
-    public @NotNull EquipmentSlot getSlotType() {
-        return EquipmentSlot.CHEST;
-    }
-
-    @Override
-    public @NotNull String getUniqueName() {
-        return "ELYTRA";
-    }
-
-    @Override
-    protected ItemStack createItem()
-    {
-        final ItemStack item = new ItemBuilder(Material.ELYTRA)
-                .name("Flanc éthéré", NamedTextColor.GOLD)
-                .lore(ChatColor.DARK_PURPLE + "« Des ailes divines imprégnées de clairvoyance. »" + Util.NEW_LINE + Util.NEW_LINE +
-                        ChatColor.DARK_AQUA + "Vitesse : " + ChatColor.GOLD + speedLevel + Util.NEW_LINE +
-                        ChatColor.DARK_AQUA + "Protection : " + ChatColor.GOLD + protectionLevel)
-                .enchanted(true)
-                .build();
-        ItemMeta meta = item.getItemMeta();
-        NamespacedKey namespacedKey = new NamespacedKey(NamespacedKey.MINECRAFT,"generic.armor");
-        meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(namespacedKey, protectionLevel, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST));
-
-        return item;
+    fun canInvoke(player: Player): Boolean {
+        return player.inventory.chestplate == null
     }
 
     @EventHandler
-    public void onAccelerate(PlayerToggleSneakEvent event)
-    {
-        if (! event.getPlayer().getUniqueId().equals(getPlayerUUID())) return;
-        // If the player is sneaking in flight
-        if (event.isSneaking() && isInvoked() && event.getPlayer().isGliding() && event.getPlayer().getVelocity().length() < (1.20 + (0.10 * (getEffectiveSpeedLevel() + 1)))
-                && accelerateTask == null)
-        {
-            // Start a timer to accelerate every 0.5 seconds while sneaking.
-            final Player player = event.getPlayer();
-            accelerateTask = ServiceContainer.get(TaskScheduler.class).runTimer(0, 10, 0, task -> {
-                // Cancel speed level if in event world
-                final int finalSpeedLevel = event.getPlayer().getLocation().getWorld().getName().equals("Event") ?
-                        0 : getEffectiveSpeedLevel();
-                // Cancel if not sneaking or flying
-                if (!player.isOnline() || !player.isSneaking() || !player.isGliding()) {
-                    task.cancel();
-                    accelerateTask = null;
-                }
-                else if (player.getVelocity().length() < (1.20 + (0.10 * (finalSpeedLevel + 1)))) {
-                    Vector vector = player.getVelocity();
-                    vector.add(player.getLocation().getDirection().multiply(0.7));
+    fun onAccelerate(event: PlayerToggleSneakEvent) {
+        val player = event.player
+        val canAccelerate = event.isSneaking && isInvoked && player.isGliding && accelerateTask == null
 
-                    player.setVelocity(vector);
-                    player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1, 1);
+        if (!canAccelerate) return
+        if (currentCharges <= 0) {
+            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, LOW_PITCH)
+            return
+        }
+
+        accelerateTask = ServiceContainer[TaskScheduler::class.java]
+            .runTimer(delay = 0, period = 10L, duration = 0) { task ->
+                isManuallyAccelerating = true
+                val speed = if (player.location.world.name == "Event") 0 else effectiveSpeedLevel
+
+                if (!player.isOnline || !player.isSneaking || !player.isGliding) {
+                    task.cancel()
+                    accelerateTask = null
+                    isManuallyAccelerating = false
+                    return@runTimer
                 }
-                return Unit.INSTANCE;
-            });
+
+                if (player.velocity.length() < getMaxSpeed(speed)) {
+                    currentCharges--
+                    player.velocity = player.velocity
+                        .add(player.location.direction.multiply(BOOST_CONSUMPTION_MULTIPLIER))
+                    player.world.playSound(
+                        player.location,
+                        Sound.ENTITY_ENDER_DRAGON_FLAP,
+                        SoundCategory.PLAYERS, 1f, 1f
+                    )
+                }
+            }
+        saveYaml()
+    }
+
+    private fun getMaxSpeed(speedLevel: Int): Double {
+        return SPEED_THRESHOLD_BASE + SPEED_THRESHOLD_STEP * (speedLevel + 1)
+    }
+
+    @EventHandler
+    fun onFly(event: EntityToggleGlideEvent) {
+        if (event.entityType != EntityType.PLAYER) return
+        if (event.entity.uniqueId == playerUUID && isInvoked) {
+            val player = event.entity as Player
+            if (event.isGliding) displayActionBar(player)
+        }
+    }
+
+    fun toggleAutoGlideEnabled(autoGlide: Boolean) {
+        this.autoGlide = autoGlide
+        autoGlideTask?.cancel()
+        autoGlideTask = null
+        if (!autoGlide) return
+
+        val player = Bukkit.getPlayer(playerUUID) ?: return
+        val taskScheduler = ServiceContainer[TaskScheduler::class.java]
+
+        autoGlideTask = taskScheduler.runTimer(delay = 0, period = 10L, duration = 0) { _ ->
+            if (!player.isOnline || !isInvoked) return@runTimer
+
+            if (player.hasPotionEffect(PotionEffectType.LEVITATION)) return@runTimer
+            val airBelow = (1..4).all {
+                player.location.block.getRelative(BlockFace.DOWN, it).isPassable
+            }
+
+            if (airBelow && !player.isGliding) {
+                player.isGliding = true
+                displayActionBar(player)
+            }
         }
     }
 
     @EventHandler
-    public void onFly(EntityToggleGlideEvent event) {
-        if (event.getEntityType() != EntityType.PLAYER) return;
-        if (event.getEntity().getUniqueId().equals(getPlayerUUID()) && isInvoked())
-        {
-            if (event.isGliding())
-                displayActionBar((Player) event.getEntity());
-            else if (autoGlide)
-                setAutoGlide(true);
+    fun onRespawn(event: PlayerRespawnEvent) {
+        if (event.player.uniqueId != playerUUID) return
+        if (isInvoked) {
+            Bukkit.getScheduler().runTaskLater(
+                JavaPlugin.getProvidingPlugin(Elytra::class.java),
+                Runnable {
+                    val player = event.player
+                    if (player.inventory.chestplate == null) {
+                        player.inventory.chestplate = getItem()
+                    }
+                },
+                1L
+            )
         }
     }
 
-    void displayActionBar(Player player) {
-        if (actionBarTask != null && !actionBarTask.isCancelled())
-            actionBarTask.cancel();
-        actionBarTask = ServiceContainer.get(TaskScheduler.class).runTimer(0, 2, 0, task -> {
-            if (!player.isOnline() || !player.isGliding())
-            {
-                task.cancel();
-                accelerateTask = null;
+    private fun displayActionBar(player: Player) {
+        if (actionBarTask?.isCancelled == false) actionBarTask?.cancel()
+        actionBarTask = ServiceContainer[TaskScheduler::class.java].runTimer(0, 2, 0) { task ->
+            if (!player.isOnline) {
+                task.cancel()
+                accelerateTask = null
+                return@runTimer
             }
-            // Show action bar
-            else {
-                var comp = Component.text("Vitesse: ", NamedTextColor.GRAY)
-                        .append(Component.text((int) (player.getVelocity().length() * 20), NamedTextColor.AQUA))
-                        .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
-                        .append(Component.text("Alt: "))
-                        .append(Component.text(player.getLocation().getBlockY(), NamedTextColor.GREEN))
-                        .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
-                        .append(Component.text("Distance: "))
-                        .append(Component.text((int) (player.getLocation().distance(player.getCompassTarget())), NamedTextColor.YELLOW));
-                player.sendActionBar(comp);
-            }
-            return Unit.INSTANCE;
-        });
-    }
+            val rechargeTime = getRecoveryTime(recoveryLevel, player)
+            val isFastRecharge = rechargeTime < getBaseRecoveryTime(recoveryLevel)
 
-    @Override
-    public void onUninvoke(@NotNull Player player, boolean manualUninvocation)
-    {
-        ServiceContainer.get(PluginService.class).unregisterEventListener(this);
-        if (manualUninvocation)
-            animate(player);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onInvoke(@NotNull Player player, boolean manuelInvocation)
-    {
-        ServiceContainer.get(PluginService.class).registerEventListener(this);
-        if (!player.isOnGround() && !player.isGliding())
-            player.setGliding(true);
-        if (autoGlide)
-            setAutoGlide(true);
-
-        if (manuelInvocation)
-            animate(player);
-    }
-
-    void animate(Player player) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 40, 0));
-        player.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 20, 1);
-        TaskScheduler taskScheduler = ServiceContainer.get(TaskScheduler.class);
-        new Circle(Particle.DUST, new AnimationTarget(player), taskScheduler.getPlugin())
-                .setColor(Color.FUCHSIA)
-                .setDelay(0.1f)
-                .setRadius(1)
-                .setRotationCount(3).draw();
-        taskScheduler.runTimer(40,0, 0, task -> {
-            player.playSound(player.getLocation(),
-                    Sound.BLOCK_END_PORTAL_SPAWN, 20, 1);
-            return Unit.INSTANCE;
-        });
-    }
-
-
-    /**
-     * Propells the player upward then forward.
-     */
-    public void synergicPropulsion(Player player)
-    {
-        TaskScheduler scheduler = ServiceContainer.get(TaskScheduler.class);
-        new Concentration(scheduler.getPlugin()).setParticle(Particle.DUST)
-                           .setColor(Color.FUCHSIA)
-                           .setTarget(new AnimationTarget(player))
-                           .setRadius(2)
-                           .setCount(20)
-                           .build()
-                           .draw();
-        player.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, 20, 1);
-        scheduler.runTimer(30, 0, 0, task -> {
-            if (! player.isOnline() || !isInvoked()) return Unit.INSTANCE;
-            player.setVelocity(new Vector(0, 2, 0));
-            player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 150, 1);
-            scheduler.runTimer(20, 0, 0, subTask -> {
-                if (player.isOnline() && isInvoked()) {
-                    player.setVelocity(player.getLocation().getDirection());
-                    player.setGliding(true);
-                    player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 150, 1);
-                }
-                return Unit.INSTANCE;
-            });
-            return Unit.INSTANCE;
-        });
-    }
-
-    public int getEffectiveSpeedLevel()
-    {
-        return ignoreSpeedLevel ? 1 : speedLevel;
-    }
-    public int getEffectiveTopSpeedLevel()
-    {
-        return ignoreSpeedLevel ? 1 : topspeedLevel;
-    }
-    public void topLevel(Upgrade type) {
-        if (type == Upgrade.PROTECTION)
-            topprotectionLevel++;
-        else
-            topspeedLevel++;
-        updateItem(true);
-    }
-    public int getTopLevel(Upgrade type) {
-        return type == Upgrade.PROTECTION ? topprotectionLevel : getEffectiveTopSpeedLevel();
-    }
-    public void setTopLevel(Upgrade type , int level)
-    {
-        if (type == Upgrade.PROTECTION)
-            this.topprotectionLevel = level;
-        else
-            this.topspeedLevel = level;
-        updateItem(true);
-    }
-    public int getLevel(Upgrade type) {
-        return type == Upgrade.PROTECTION ? protectionLevel : getEffectiveSpeedLevel();
-    }
-    public void setLevel(Upgrade type , int level)
-    {
-        if (type == Upgrade.PROTECTION)
-            this.protectionLevel = level;
-        else
-            this.speedLevel = level;
-        updateItem(true);
-    }
-
-    public void upgradeLevel(Upgrade type) {
-        if (type == Upgrade.PROTECTION)
-        {
-            this.topprotectionLevel ++;
-            protectionLevel = this.topprotectionLevel;
-        }
-        else
-        {
-            this.topspeedLevel ++;
-            speedLevel = this.topspeedLevel;
-        }
-        updateItem(true);
-    }
-
-    @Override
-    public void use(PlayerInteractEvent event)
-    {
-
-    }
-
-    @Override
-    public void useInInventory(InventoryClickEvent event)
-    {
-
-    }
-
-    public boolean hasAutoGlide()
-    {
-        return autoGlide;
-    }
-
-    @SuppressWarnings("deprecation")
-    public void setAutoGlide(boolean autoGlide)
-    {
-        this.autoGlide = autoGlide;
-        if (!autoGlide) {
-            return;
-        }
-        Player player = Bukkit.getPlayer(getPlayerUUID());
-        if (player == null) return;
-        TaskScheduler taskScheduler = ServiceContainer.get(TaskScheduler.class);
-        autoGlideTask = taskScheduler.runTimer(0, 10, 0, task -> {
-            if (! player.isOnline() || !isInvoked()) {
-                task.cancel();
-                autoGlideTask = null;
-            }
-            else
-            {
-                // Don't glide if the player is levitating
-                if (player.hasPotionEffect(PotionEffectType.LEVITATION))
-                    return Unit.INSTANCE;
-                Block b = player.getLocation().getBlock();
-                if (!player.isOnGround() && b.getRelative(BlockFace.DOWN).getType() == Material.AIR
-                        && b.getRelative(BlockFace.DOWN, 2).getType() == Material.AIR
-                        && b.getRelative(BlockFace.DOWN, 3).getType() == Material.AIR
-                        && b.getRelative(BlockFace.DOWN, 4).getType() == Material.AIR)
-                {
-                    task.cancel();
-                    autoGlideTask = null;
-                    player.setGliding(true);
-                    displayActionBar(player);
+            if (currentCharges < getBoostCount(boostChargeLevel)) {
+                rechargeProgress += (ACTIONBAR_INTERVAL_TICKS * ACTIONBAR_RECHARGE_TICK_MS / rechargeTime)
+                saveYaml()
+                if (rechargeProgress >= RECHARGE_FULL_THRESHOLD) {
+                    currentCharges++
+                    rechargeProgress = 0.0
                 }
             }
-           return Unit.INSTANCE;
-        });
+            val comp = Component.text()
+            if (player.isGliding) {
+                comp.append(Component.text("Vitesse: "))
+                    .append(
+                        Component.text(
+                            (player.velocity.length() * SPEED_DISPLAY_MULTIPLIER).toInt(),
+                            NamedTextColor.AQUA
+                        )
+                    )
+                    .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                    .append(Component.text("Alt: "))
+                    .append(Component.text(player.location.blockY, NamedTextColor.GREEN))
+                    .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                    .append(Component.text("Distance: "))
+                    .append(
+                        Component.text(
+                            player.location.distance(player.compassTarget).toInt(),
+                            NamedTextColor.YELLOW
+                        )
+                    )
+                    .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+            }
+            comp.append(Component.text("Boosts : "))
+            comp.append(boostBar())
+            if (currentCharges < getBoostCount(boostChargeLevel) && isFastRecharge) {
+                comp.append(Component.text(" ⏻", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            }
+
+            player.sendActionBar(comp)
+        }
     }
 
-    public boolean isIgnoreSpeedLevel()
-    {
-        return ignoreSpeedLevel;
+    private fun boostBar(): Component {
+        val builder = Component.text()
+        val maxCharges = getBoostCount(boostChargeLevel)
+        val filled = currentCharges
+        val recharging = (currentCharges < maxCharges)
+
+        val visibleFilled = minOf(MAX_DISPLAYED_BOOSTS, filled)
+        val overflow = filled - visibleFilled
+        if (overflow > 0) {
+            builder.append(Component.text("(+$overflow) ", NamedTextColor.GREEN, TextDecoration.BOLD))
+        }
+
+        repeat(visibleFilled) {
+            builder.append(Component.text("⚡", NamedTextColor.GREEN, TextDecoration.BOLD))
+        }
+        if (recharging) {
+            val color = Util
+                .getGreenRedGradient((rechargeProgress.coerceIn(0.0, 1.0) * PERCENT_CONVERSION).toInt(), 100)
+            builder.append(Component.text("⚡", color, TextDecoration.BOLD))
+        }
+        val shownCount = visibleFilled + if (recharging) 1 else 0
+        val remaining = minOf(maxCharges, MAX_DISPLAYED_BOOSTS) - shownCount
+        repeat(remaining) {
+            builder.append(Component.text("⚡", TextColor.color(255, 0, 40), TextDecoration.BOLD))
+        }
+        return builder.build()
     }
 
-    public void setIgnoreSpeedLevel(boolean ignoreSpeedLevel)
-    {
-        this.ignoreSpeedLevel = ignoreSpeedLevel;
+    fun getLevel(upgrade: ElytraUpgrade): Int {
+        return when (upgrade) {
+            ElytraUpgrade.PROTECTION -> protectionLevel
+            ElytraUpgrade.SPEED -> speedLevel
+            ElytraUpgrade.BOOST_NUMBER -> boostChargeLevel
+            ElytraUpgrade.RECOVERY -> recoveryLevel
+        }
     }
 
-    /////////// STATIC ////////////
+    fun setLevel(upgrade: ElytraUpgrade, level: Int) {
+        when (upgrade) {
+            ElytraUpgrade.PROTECTION -> protectionLevel = level
+            ElytraUpgrade.SPEED -> speedLevel = level
+            ElytraUpgrade.BOOST_NUMBER -> {
+                boostChargeLevel = level
+                val maxCharges = getBoostCount(level)
+                if (currentCharges > maxCharges) {
+                    currentCharges = maxCharges
+                }
+            }
 
-    public static int[] getPrices()
-    {
-        return prices;
+            ElytraUpgrade.RECOVERY -> recoveryLevel = level
+        }
+        refreshItemInInventory()
     }
 
+    fun upgradeLevel(upgrade: ElytraUpgrade) {
+        when (upgrade) {
+            ElytraUpgrade.PROTECTION -> protectionLevel++
+            ElytraUpgrade.SPEED -> speedLevel++
+            ElytraUpgrade.BOOST_NUMBER -> boostChargeLevel++
+            ElytraUpgrade.RECOVERY -> recoveryLevel++
+        }
+        refreshItemInInventory()
+    }
 
+    fun enableSpeedUpgrade() {
+        ignoreSpeedLevel = false
+    }
+
+    private fun animate(player: Player) {
+        player.addPotionEffect(PotionEffect(PotionEffectType.LEVITATION, LEVITATION_DURATION, 0))
+        player.playSound(player.location, Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, SOUND_VOLUME, 1f)
+        val scheduler = ServiceContainer[TaskScheduler::class.java]
+        Circle(Particle.DUST, AnimationTarget(player), scheduler.plugin)
+            .setColor(Color.FUCHSIA)
+            .setDelay(PARTICLE_DELAY)
+            .setRadius(PARTICLE_RADIUS)
+            .setRotationCount(PARTICLE_ROTATION)
+            .draw()
+        scheduler.runTimer(ALTITUDE_SOUND_DELAY, 0, 0) {
+            player.playSound(player.location, Sound.BLOCK_END_PORTAL_SPAWN, SOUND_VOLUME, 1f)
+        }
+    }
+
+    fun synergicPropulsion(player: Player) {
+        if (currentCharges <= 0) {
+            player.sendMessage(Component.text(
+                "Vous n'avez plus de boost disponible, patientez quelques instants.", NamedTextColor.RED))
+            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, LOW_PITCH)
+            return
+        }
+        val scheduler = ServiceContainer[TaskScheduler::class.java]
+        Concentration(scheduler.plugin).setParticle(Particle.DUST)
+            .setColor(Color.FUCHSIA)
+            .setTarget(AnimationTarget(player))
+            .setRadius(PROPULSION_RADIUS)
+            .setCount(PROPULSION_COUNT)
+            .build()
+            .draw()
+        player.playSound(player.location, Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, SOUND_VOLUME, 1f)
+        scheduler.runTimer(FIRST_TIMER_DELAY, 0, 0) {
+            if (!player.isOnline || !isInvoked) return@runTimer
+            player.velocity = Vector(0, 2, 0)
+            player.playSound(player.location, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, FIREWORK_SOUND_VOLUME, 1f)
+            scheduler.runTimer(SECOND_TIMER_DELAY, 0, 0) {
+                if (player.isOnline && isInvoked) {
+                    player.velocity = player.location.direction
+                    player.isGliding = true
+                    player.playSound(
+                        player.location,
+                        Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, FIREWORK_SOUND_VOLUME, 1f
+                    )
+                }
+            }
+            currentCharges--
+            saveYaml()
+        }
+    }
+
+    private val effectiveSpeedLevel: Int get() = if (ignoreSpeedLevel) 1 else speedLevel
+
+    override fun use(event: PlayerInteractEvent) {
+        // Nothing
+    }
+
+    override fun useInInventory(event: InventoryClickEvent) {
+        // Nothing
+    }
+
+    private fun refreshItemInInventory() {
+        updateItem(true)
+    }
+
+    private fun saveYaml() {
+        ServiceContainer[EquipmentService::class.java]
+            .saveEquipment(ServiceContainer[EquipmentService::class.java].getEquipment(playerUUID))
+    }
+
+    companion object {
+        private var lastVelocity: Double = 0.0
+        private var isManuallyAccelerating = false
+
+        fun getBoostCount(level: Int): Int {
+            return if (level in 0..MAX_BOOST_LEVEL) {
+                BOOST_BASE + level * BOOST_LEVEL_MULTIPLIER
+            } else BOOST_BASE
+        }
+
+        fun getBaseRecoveryTime(level: Int): Long {
+            return MAX_RECOVERY_TIME - (RECOVERY_DECREASE_PER_LEVEL * level)
+        }
+
+        fun getRecoveryTime(level: Int, player: Player): Long {
+            val baseTime = getBaseRecoveryTime(level)
+            val currentVelocity = player.velocity.length()
+            val acceleratingPassively = player.isGliding && currentVelocity > lastVelocity && !isManuallyAccelerating
+            lastVelocity = currentVelocity
+            return if (!player.isGliding || acceleratingPassively) {
+                (baseTime / 2)
+            } else {
+                baseTime
+            }
+        }
+
+    }
 
 }
