@@ -168,10 +168,6 @@ class Elytra(
         if (manuelInvocation) animate(player)
     }
 
-    fun canInvoke(player: Player): Boolean {
-        return player.inventory.chestplate == null
-    }
-
     @EventHandler
     fun onAccelerate(event: PlayerToggleSneakEvent) {
         val player = event.player
@@ -276,11 +272,11 @@ class Elytra(
 
             if (currentCharges < getBoostCount(boostChargeLevel)) {
                 rechargeProgress += (ACTIONBAR_INTERVAL_TICKS * ACTIONBAR_RECHARGE_TICK_MS / rechargeTime)
-                saveYaml()
                 if (rechargeProgress >= RECHARGE_FULL_THRESHOLD) {
                     currentCharges++
                     rechargeProgress = 0.0
                 }
+                saveYaml()
             }
             val comp = Component.text()
             if (player.isGliding) {
@@ -403,7 +399,7 @@ class Elytra(
             player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, LOW_PITCH)
             return
         }
-        player.sendMessage(ELYTRA_SUCCESS + "Décollage dans 3 secondes !")
+        player.sendMessage(ELYTRA_SUCCESS + "Décollage imminent !")
         val scheduler = ServiceContainer[TaskScheduler::class.java]
         Concentration(scheduler.plugin).setParticle(Particle.DUST)
             .setColor(Color.FUCHSIA)
