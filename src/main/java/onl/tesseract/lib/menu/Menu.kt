@@ -98,7 +98,7 @@ open class Menu @JvmOverloads constructor(
         addButton(index, AsyncButton(itemSupplier = async, function = function, plugin = plugin))
     }
 
-    fun addButton(index: Int, button: AButton) {
+    open fun addButton(index: Int, button: AButton) {
         buttons[index] = button
         button.draw(this, index)
     }
