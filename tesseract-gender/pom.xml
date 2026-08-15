@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>onl.tesseract</groupId>
-        <artifactId>tesseractlib</artifactId>
+        <artifactId>tesseractlib-pom</artifactId>
         <version>5.0.0-SNAPSHOT</version>
     </parent>
 

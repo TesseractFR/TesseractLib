@@ -1,4 +1,4 @@
-package onl.tesseract.lib.util;
+package onl.tesseract.lib.chat;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

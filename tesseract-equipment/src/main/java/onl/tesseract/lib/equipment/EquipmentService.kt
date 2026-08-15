@@ -8,7 +8,7 @@ import onl.tesseract.lib.menu.Menu
 import onl.tesseract.lib.persistantcontainer.NamedspacedKeyProvider
 import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.lib.task.TaskScheduler
-import onl.tesseract.lib.util.ChatFormats
+import onl.tesseract.lib.chat.ChatFormats
 import org.bukkit.Bukkit
 import org.bukkit.entity.Hanging
 import org.bukkit.entity.Player

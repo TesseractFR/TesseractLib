@@ -8,7 +8,7 @@ import onl.tesseract.lib.equipment.EquipmentService;
 import onl.tesseract.lib.equipment.Invocable;
 import onl.tesseract.lib.service.ServiceContainer;
 import onl.tesseract.lib.task.TaskScheduler;
-import onl.tesseract.lib.util.ChatFormats;
+import onl.tesseract.lib.chat.ChatFormats;
 import onl.tesseract.lib.util.ItemBuilder;
 import onl.tesseract.lib.util.Util;
 import org.bukkit.ChatColor;

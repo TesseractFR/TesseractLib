@@ -13,8 +13,8 @@ import onl.tesseract.lib.service.PluginService
 import onl.tesseract.lib.service.ServiceContainer
 import onl.tesseract.lib.task.TaskScheduler
 import onl.tesseract.lib.menu.ItemBuilder
-import onl.tesseract.lib.util.ChatFormats.ELYTRA_ERROR
-import onl.tesseract.lib.util.ChatFormats.ELYTRA_SUCCESS
+import onl.tesseract.lib.chat.ChatFormats.ELYTRA_ERROR
+import onl.tesseract.lib.chat.ChatFormats.ELYTRA_SUCCESS
 import onl.tesseract.lib.util.Util
 import onl.tesseract.lib.util.plus
 import org.bukkit.*

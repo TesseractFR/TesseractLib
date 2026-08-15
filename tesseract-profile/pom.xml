@@ -10,7 +10,7 @@
         <version>5.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>tesseract-translation</artifactId>
+    <artifactId>tesseract-profile</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -20,13 +20,19 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>onl.tesseract</groupId>
-            <artifactId>commandbuilder</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -37,6 +43,10 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

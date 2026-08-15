@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>onl.tesseract</groupId>
-    <artifactId>tesseractlib</artifactId>
+    <artifactId>tesseractlib-pom</artifactId>
     <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>tesseract-core</module>
+        <module>tesseract-profile</module>
         <module>tesseract-translation</module>
         <module>tesseract-chat</module>
         <module>tesseract-animation</module>
