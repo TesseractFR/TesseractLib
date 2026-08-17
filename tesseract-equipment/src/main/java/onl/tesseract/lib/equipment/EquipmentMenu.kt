@@ -85,7 +85,7 @@ class EquipmentMenu(val player: Player, val service: EquipmentService, previous:
             index++
         }
         subMenu.fill(
-            arrayOf(46, 47, 48, 50, 51, 52), ItemBuilder(Material.RED_STAINED_GLASS_PANE).name(
+            intArrayOf(46, 47, 48, 50, 51, 52), ItemBuilder(Material.RED_STAINED_GLASS_PANE).name(
                 "*",
                 NamedTextColor.DARK_GRAY
             ).build()
@@ -151,7 +151,7 @@ class EquipmentMenu(val player: Player, val service: EquipmentService, previous:
                 .build()
         )
         menu.fill(
-            arrayOf(10, 11, 12, 14, 15, 16),
+            intArrayOf(10, 11, 12, 14, 15, 16),
             ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name(Component.text(" ")).build()
         )
         menu.addBackButton()

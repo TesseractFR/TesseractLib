@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
-import onl.tesseract.lib.Ticks
+import onl.tesseract.lib.Tick
 import onl.tesseract.lib.task.TaskScheduler
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -34,7 +34,7 @@ class ChatEntryService(private val scheduler: TaskScheduler) : Listener {
         if (!player.isOnline) return
         player.sendMessage(ChatFormats.CHAT.append(message).append(Component.text(" : ", NamedTextColor.GRAY)))
 
-        chatCallbacks[player.uniqueId] = ChatMessageCallback(callback, scheduler.runLater(Ticks.ofSeconds(60)) {
+        chatCallbacks[player.uniqueId] = ChatMessageCallback(callback, scheduler.runLater(Tick.ofSeconds(60)) {
             chatCallbacks.remove(player.uniqueId)
         })
     }

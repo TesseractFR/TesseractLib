@@ -2,6 +2,7 @@ package onl.tesseract.lib.equipment
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import onl.tesseract.lib.Tick
 import onl.tesseract.lib.event.EventService
 import onl.tesseract.lib.event.equipment.PlayerInvocableInvokeEvent
 import onl.tesseract.lib.menu.Menu
@@ -197,7 +198,7 @@ class EquipmentService(
 
     fun loadEquipment(player: Player) {
         getEquipment(player.uniqueId).getInvoked().forEach {
-            ServiceContainer[TaskScheduler::class.java].runLater {
+            ServiceContainer.get(TaskScheduler::class.java).runLater {
                 if (it.slotType == EquipmentSlot.HAND) {
                     if (it.handSlot > -1)
                         player.inventory.setItem(it.handSlot, it.getItem())
@@ -250,7 +251,7 @@ class EquipmentEventHandler(private val service: EquipmentService) : Listener {
         if (!service.isInvocable(item)) return
         event.isCancelled = true
 
-        ServiceContainer[TaskScheduler::class.java].runLater(1) {
+        ServiceContainer.get(TaskScheduler::class.java).runLater(Tick(1)) {
             val invocable = service.asInvocable(player, item) ?: return@runLater
             // If shift click, uninvoke it
             if (event.isShiftClick) {
@@ -357,11 +358,11 @@ class EquipmentEventHandler(private val service: EquipmentService) : Listener {
     @EventHandler
     fun onSelectInvocable(event: PlayerItemHeldEvent) {
         event.player.inventory.getItem(event.previousSlot)?.let { item ->
-            val invocable = ServiceContainer[EquipmentService::class.java].asInvocable(event.player, item)
+            val invocable = ServiceContainer.get(EquipmentService::class.java).asInvocable(event.player, item)
             invocable?.onItemUnHeld()
         }
         event.player.inventory.getItem(event.newSlot)?.let { item ->
-            val invocable = ServiceContainer[EquipmentService::class.java].asInvocable(event.player, item)
+            val invocable = ServiceContainer.get(EquipmentService::class.java).asInvocable(event.player, item)
             invocable?.onItemHeld()
         }
     }

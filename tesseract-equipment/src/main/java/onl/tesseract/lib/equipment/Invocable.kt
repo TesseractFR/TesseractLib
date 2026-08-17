@@ -82,7 +82,7 @@ abstract class Invocable @JvmOverloads constructor(
         val meta = item.itemMeta
         meta.isUnbreakable = true
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE)
-        val key = ServiceContainer[NamedspacedKeyProvider::class.java].get("invocable_name")
+        val key = ServiceContainer.get(NamedspacedKeyProvider::class.java).get("invocable_name")
         meta.persistentDataContainer.set(key, PersistentDataType.STRING, uniqueName)
         item.setItemMeta(meta)
         if (getInvocationPower() > 0) {

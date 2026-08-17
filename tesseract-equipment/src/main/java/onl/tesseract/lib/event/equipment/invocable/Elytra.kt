@@ -145,7 +145,7 @@ class Elytra(
         if (manuelRemoval) {
             isInvoked = false
         }
-        ServiceContainer[PluginService::class.java].unregisterEventListener(this)
+        ServiceContainer.get(PluginService::class.java).unregisterEventListener(this)
         actionBarTask?.cancel()
         actionBarTask = null
         autoGlideTask?.cancel()
@@ -156,7 +156,7 @@ class Elytra(
     }
 
     override fun onInvoke(player: Player, manuelInvocation: Boolean) {
-        ServiceContainer[PluginService::class.java].registerEventListener(this)
+        ServiceContainer.get(PluginService::class.java).registerEventListener(this)
         if (!player.isGliding) {
             player.isGliding = true
         }
@@ -179,8 +179,8 @@ class Elytra(
             return
         }
 
-        accelerateTask = ServiceContainer[TaskScheduler::class.java]
-            .runTimer(delay = 0, period = 10L, duration = 0) { task ->
+        accelerateTask = ServiceContainer.get(TaskScheduler::class.java)
+            .runTimer(0,10L,0) { task ->
                 isManuallyAccelerating = true
                 val speed = if (player.location.world.name == "Event") 0 else effectiveSpeedLevel
 
@@ -225,9 +225,9 @@ class Elytra(
         if (!autoGlide) return
 
         val player = Bukkit.getPlayer(playerUUID) ?: return
-        val taskScheduler = ServiceContainer[TaskScheduler::class.java]
+        val taskScheduler = ServiceContainer.get(TaskScheduler::class.java)
 
-        autoGlideTask = taskScheduler.runTimer(delay = 0, period = 10L, duration = 0) { _ ->
+        autoGlideTask = taskScheduler.runTimer(0, 10L, 0) { _ ->
             if (!player.isOnline || !isInvoked) return@runTimer
 
             if (player.hasPotionEffect(PotionEffectType.LEVITATION)) return@runTimer
@@ -261,7 +261,7 @@ class Elytra(
 
     private fun displayActionBar(player: Player) {
         if (actionBarTask?.isCancelled == false) actionBarTask?.cancel()
-        actionBarTask = ServiceContainer[TaskScheduler::class.java].runTimer(0, 2, 0) { task ->
+        actionBarTask = ServiceContainer.get(TaskScheduler::class.java).runTimer(0, 2, 0) { task ->
             if (!player.isOnline) {
                 task.cancel()
                 accelerateTask = null
@@ -381,7 +381,7 @@ class Elytra(
     private fun animate(player: Player) {
         player.addPotionEffect(PotionEffect(PotionEffectType.LEVITATION, LEVITATION_DURATION, 0))
         player.playSound(player.location, Sound.ENTITY_ELDER_GUARDIAN_AMBIENT, SOUND_VOLUME, 1f)
-        val scheduler = ServiceContainer[TaskScheduler::class.java]
+        val scheduler = ServiceContainer.get(TaskScheduler::class.java)
         Circle(Particle.DUST, AnimationTarget(player), scheduler.plugin)
             .setColor(Color.FUCHSIA)
             .setDelay(PARTICLE_DELAY)
@@ -400,7 +400,7 @@ class Elytra(
             return
         }
         player.sendMessage(ELYTRA_SUCCESS + "Décollage imminent !")
-        val scheduler = ServiceContainer[TaskScheduler::class.java]
+        val scheduler = ServiceContainer.get(TaskScheduler::class.java)
         Concentration(scheduler.plugin).setParticle(Particle.DUST)
             .setColor(Color.FUCHSIA)
             .setTarget(AnimationTarget(player))
@@ -443,8 +443,8 @@ class Elytra(
     }
 
     private fun saveYaml() {
-        ServiceContainer[EquipmentService::class.java]
-            .saveEquipment(ServiceContainer[EquipmentService::class.java].getEquipment(playerUUID))
+        ServiceContainer.get(EquipmentService::class.java)
+            .saveEquipment(ServiceContainer.get(EquipmentService::class.java).getEquipment(playerUUID))
     }
 
     companion object {
