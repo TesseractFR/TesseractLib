@@ -1,4 +1,4 @@
-package onl.tesseract.lib.menu;
+package onl.tesseract.lib.itembuilder;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;

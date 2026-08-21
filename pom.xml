@@ -20,6 +20,7 @@
         <module>tesseract-gender</module>
         <module>tesseract-equipment</module>
         <module>tesseract-plugin</module>
+        <module>tesseract-itembuilder</module>
     </modules>
 
     <properties>

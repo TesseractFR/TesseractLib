@@ -3,6 +3,7 @@ package onl.tesseract.lib.menu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.lib.Tick;
+import onl.tesseract.lib.itembuilder.ItemBuilder;
 import onl.tesseract.lib.logger.LoggerFactory;
 import onl.tesseract.lib.service.PluginService;
 import onl.tesseract.lib.service.ServiceContainer;
@@ -17,13 +18,12 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -157,6 +157,12 @@ public class Menu implements Listener {
      */
     public final void addButton(int index, ItemStack item, Consumer<InventoryClickEvent> function) {
         addButton(index, new Button(item, function));
+    }
+    /**
+     * Add a normal button to the menu.
+     */
+    public final void addButton(int index, ItemStack item, Runnable function) {
+        addButton(index, new Button(item, event->function.run()));
     }
 
     public final void addButton(int index,Plugin plugin, Supplier<ItemStack> async){

@@ -1,10 +1,8 @@
-package onl.tesseract.lib.menu;
+package onl.tesseract.lib.itembuilder;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import onl.tesseract.lib.util.AItemLoreBuilder;
-import onl.tesseract.lib.util.ItemLoreBuilder;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

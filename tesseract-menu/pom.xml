@@ -17,10 +17,12 @@
         <dependency>
             <groupId>onl.tesseract</groupId>
             <artifactId>tesseract-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>onl.tesseract</groupId>
-            <artifactId>tesseract-profile</artifactId>
+            <artifactId>tesseract-itembuilder</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.papermc.paper</groupId>

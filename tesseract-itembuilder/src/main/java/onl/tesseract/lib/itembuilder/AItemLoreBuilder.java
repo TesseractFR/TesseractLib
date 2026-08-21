@@ -1,10 +1,11 @@
-package onl.tesseract.lib.util;
+package onl.tesseract.lib.itembuilder;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import onl.tesseract.lib.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

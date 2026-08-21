@@ -1,4 +1,4 @@
-package onl.tesseract.lib.util;
+package onl.tesseract.lib.itembuilder;
 
 import net.kyori.adventure.text.Component;
 
