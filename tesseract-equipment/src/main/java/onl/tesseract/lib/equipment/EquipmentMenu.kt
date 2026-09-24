@@ -3,15 +3,16 @@ package onl.tesseract.lib.equipment
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import onl.tesseract.lib.event.equipment.invocable.Boussole
+import onl.tesseract.lib.itembuilder.ItemBuilder
+import onl.tesseract.lib.itembuilder.ItemLoreBuilder
 import onl.tesseract.lib.menu.Button
-import onl.tesseract.lib.menu.ItemBuilder
 import onl.tesseract.lib.menu.Menu
 import onl.tesseract.lib.menu.MenuSize
-import onl.tesseract.lib.util.ItemLoreBuilder
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import java.util.function.Consumer
 
 class EquipmentMenu(val player: Player, val service: EquipmentService, previous: Menu? = null) : Menu(
     MenuSize.Six,
@@ -47,9 +48,9 @@ class EquipmentMenu(val player: Player, val service: EquipmentService, previous:
 
         val boussole = equipment.get(Boussole::class.java)
         if (boussole != null) {
-            addButton(38, ItemBuilder(boussole.getItem()).enchanted(boussole.isInvoked).build()) {
+            addButton(38, ItemBuilder(boussole.getItem()).enchanted(boussole.isInvoked).build(), Consumer {
                 mainHandInvocationMenu(boussole, viewer)
-            }
+            })
         } else {
             addButton(38, ItemBuilder(Material.BARRIER).name("Emplacement de boussole", NamedTextColor.RED).build())
         }
@@ -64,9 +65,9 @@ class EquipmentMenu(val player: Player, val service: EquipmentService, previous:
     ) {
         val item: ItemStack = equipment[slotType]?.getItem()
             ?: ItemBuilder(Material.STRUCTURE_VOID).name(text, NamedTextColor.DARK_AQUA).build()
-        this.addButton(index, item) {
+        this.addButton(index, item, Consumer {
             subMenu(equipment.getAll(slotType), text, viewer)
-        }
+        })
     }
 
     fun subMenu(invocables: List<Invocable>, title: String, viewer: Player) {
@@ -75,9 +76,9 @@ class EquipmentMenu(val player: Player, val service: EquipmentService, previous:
         var invoked: Invocable? = null
         var index = 0
         invocables.forEach { invocable ->
-            subMenu.addButton(index++, invocable.getItem()) {
+            subMenu.addButton(index++, invocable.getItem(), Consumer {
                 invokeHandler(invocable, viewer)
-            }
+            })
             if (invocable.isInvoked) invoked = invocable
         }
         while (index < 45) {
@@ -94,12 +95,12 @@ class EquipmentMenu(val player: Player, val service: EquipmentService, previous:
         subMenu.addButton(
             49,
             ItemBuilder(Material.NAME_TAG).name("Désinvoquer cet équipement", NamedTextColor.GOLD).build()
-        ) {
+        , Consumer {
             invoked?.let {
                 service.uninvoke(player, it)
                 open(viewer)
             }
-        }
+        })
         subMenu.addBackButton()
         subMenu.addCloseButton()
     }
@@ -130,13 +131,13 @@ class EquipmentMenu(val player: Player, val service: EquipmentService, previous:
                             .append("Cliquez pour invoquer votre équipement ici", NamedTextColor.GRAY)
                             .get()
                     ).build()
-            menu.addButton(i, item) {
+            menu.addButton(i, item, Consumer {
                 if (i == invocable.handSlot)
                     service.uninvoke(this.player, invocable)
                 else
                     service.invoke(this.player, invocable.javaClass, i, true)
                 mainHandInvocationMenu(invocable, viewer)
-            }
+            })
         }
         menu.addButton(
             13, ItemBuilder(Material.ACACIA_SIGN)

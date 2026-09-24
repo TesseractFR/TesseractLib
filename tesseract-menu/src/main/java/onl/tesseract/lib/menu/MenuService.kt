@@ -3,10 +3,12 @@ package onl.tesseract.lib.menu
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import onl.tesseract.lib.event.EventService
+import onl.tesseract.lib.itembuilder.ItemBuilder
 import onl.tesseract.lib.menu.event.PlayerMenuOpenEvent
 import onl.tesseract.lib.service.PluginService
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import java.util.function.Consumer
 
 class MenuService(private val pluginService: PluginService, private val eventService: EventService) {
 
@@ -34,9 +36,9 @@ class MenuService(private val pluginService: PluginService, private val eventSer
         menu.addButton(
             4,
             ItemBuilder(Material.LIME_CONCRETE).name(message).color(NamedTextColor.GREEN).build()
-        ) {
+        , Consumer{
             menu.close()
             onAccept()
-        }
+        })
     }
 }

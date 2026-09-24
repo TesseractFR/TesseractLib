@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -150,7 +149,7 @@ public class Menu implements Listener {
      * Add a normal button to the menu.
      */
     public final void addButton(int index, ItemStack item) {
-        addButton(index,item,null);
+        addButton(index, new Button(item,null));
     }
     /**
      * Add a normal button to the menu.
@@ -341,5 +340,17 @@ public class Menu implements Listener {
 
     public InventoryView getView() {
         return view;
+    }
+
+    public int getSize() {
+        return size.getSize();
+    }
+
+    public Component getTitle() {
+        return title;
+    }
+
+    public Menu getPrevious() {
+        return previous;
     }
 }

@@ -10,6 +10,10 @@ import org.bukkit.plugin.Plugin
 
 class PluginService(private val plugin: Plugin) {
 
+    fun getPlugin(): Plugin {
+        return plugin
+    }
+
     fun registerEventListener(listener: Listener) {
         plugin.server.pluginManager.registerEvents(listener, plugin)
     }

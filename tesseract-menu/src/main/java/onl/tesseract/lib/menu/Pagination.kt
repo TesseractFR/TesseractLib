@@ -1,5 +1,8 @@
 package onl.tesseract.lib.menu
 
+import onl.tesseract.lib.itembuilder.ItemBuilder
+import java.util.function.Consumer
+
 class Pagination<T>(
     val menu: Menu,
     val area: Area,
@@ -32,17 +35,17 @@ class Pagination<T>(
             ItemBuilder(Menu.getBackButton())
                 .name("Précedent")
                 .build()
-        ) {
+        , Consumer {
             displayPage((page - 1).coerceAtLeast(0))
-        }
+        })
         menu.addButton(
             nextIndex,
             ItemBuilder(Menu.getBackButton())
             .name("Suivant")
             .build()
-        ) {
+        ,Consumer {
             displayPage((page + 1).coerceAtMost(maxPage - 1))
-        }
+        })
     }
 
     private fun getAreaIndices(): List<Int> {
