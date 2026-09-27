@@ -1,10 +1,10 @@
 package onl.tesseract.lib.equipment
 
 import net.kyori.adventure.text.format.NamedTextColor
+import onl.tesseract.lib.itembuilder.ItemLoreBuilder
 import onl.tesseract.lib.menu.Menu
 import onl.tesseract.lib.persistantcontainer.NamedspacedKeyProvider
 import onl.tesseract.lib.service.ServiceContainer
-import onl.tesseract.lib.util.ItemLoreBuilder
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
