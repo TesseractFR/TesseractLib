@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>onl.tesseract</groupId>
+    <groupId>onl.tesseract.lib</groupId>
     <artifactId>tesseractlib-pom</artifactId>
     <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -63,47 +63,47 @@
         <dependencies>
             <!-- Submodules -->
             <dependency>
-                <groupId>onl.tesseract</groupId>
+                <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>onl.tesseract</groupId>
+                <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-translation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>onl.tesseract</groupId>
+                <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-chat</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>onl.tesseract</groupId>
+                <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-animation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>onl.tesseract</groupId>
+                <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-menu</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>onl.tesseract</groupId>
+                <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-persistence</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>onl.tesseract</groupId>
+                <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-profile</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>onl.tesseract</groupId>
+                <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-equipment</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>onl.tesseract</groupId>
+                <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>

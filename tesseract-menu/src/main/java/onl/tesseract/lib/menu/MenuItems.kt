@@ -1,6 +1,6 @@
 package onl.tesseract.lib.menu
 
-import onl.tesseract.lib.util.menu.InventoryHeadIcons
+import onl.tesseract.lib.itembuilder.ItemBuilder
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
