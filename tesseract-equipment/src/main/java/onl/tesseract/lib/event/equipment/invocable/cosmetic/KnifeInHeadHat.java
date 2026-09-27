@@ -2,7 +2,7 @@ package onl.tesseract.lib.event.equipment.invocable.cosmetic;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.tesseract.lib.equipment.Invocable;
-import onl.tesseract.lib.util.ItemBuilder;
+import onl.tesseract.lib.itembuilder.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,7 +24,7 @@ public class KnifeInHeadHat extends Invocable {
     protected ItemStack createItem()
     {
         return new ItemBuilder(Material.QUARTZ)
-                .setCustomModelData(4)
+                .customModelData(4)
                 .name("Couteau", NamedTextColor.LIGHT_PURPLE)
                 .build();
     }
