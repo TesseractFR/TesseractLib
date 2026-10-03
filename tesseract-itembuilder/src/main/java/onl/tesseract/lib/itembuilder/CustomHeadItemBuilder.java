@@ -1,6 +1,7 @@
 package onl.tesseract.lib.itembuilder;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
+import onl.tesseract.lib.profile.PlayerProfileService;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -25,15 +26,19 @@ public class CustomHeadItemBuilder extends AItemBuilder<CustomHeadItemBuilder>{
         return this;
     }
 
-    public ItemStack build(){
+    public ItemStack build(PlayerProfileService playerProfileService){
         ItemStack item = material(Material.PLAYER_HEAD).build();
 
         item.editMeta(meta -> {
-            var profile = Bukkit.createProfile(UUID.randomUUID());
+            var profile = playerProfileService.createProfile();
             profile.setProperty(new ProfileProperty("textures", data, signature));
             ((SkullMeta) meta).setPlayerProfile(profile);
         });
 
         return item;
+    }
+
+    public ItemStack build(){
+        return super.build();
     }
 }

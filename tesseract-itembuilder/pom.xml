@@ -44,5 +44,9 @@
       <artifactId>tesseract-core</artifactId>
       <version>${project.version}</version>
     </dependency>
+      <dependency>
+          <groupId>onl.tesseract.lib</groupId>
+          <artifactId>tesseract-profile</artifactId>
+      </dependency>
   </dependencies>
 </project>
