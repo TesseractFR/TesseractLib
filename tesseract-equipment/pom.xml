@@ -25,7 +25,6 @@
         <dependency>
             <groupId>onl.tesseract.lib</groupId>
             <artifactId>tesseract-gender</artifactId>
-            <version>5.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>onl.tesseract.lib</groupId>

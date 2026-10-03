@@ -11,15 +11,15 @@
 
     <modules>
         <module>tesseract-core</module>
-        <module>tesseract-profile</module>
+        <module>tesseract-gender</module>
         <module>tesseract-translation</module>
+        <module>tesseract-profile</module>
+        <module>tesseract-itembuilder</module>
         <module>tesseract-chat</module>
         <module>tesseract-animation</module>
-        <module>tesseract-menu</module>
         <module>tesseract-persistence</module>
-        <module>tesseract-gender</module>
+        <module>tesseract-menu</module>
         <module>tesseract-equipment</module>
-        <module>tesseract-itembuilder</module>
         <module>tesseract-plugin</module>
     </modules>
 
@@ -69,7 +69,22 @@
             </dependency>
             <dependency>
                 <groupId>onl.tesseract.lib</groupId>
+                <artifactId>tesseract-gender</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-translation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>onl.tesseract.lib</groupId>
+                <artifactId>tesseract-profile</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>onl.tesseract.lib</groupId>
+                <artifactId>tesseract-itembuilder</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -90,11 +105,6 @@
             <dependency>
                 <groupId>onl.tesseract.lib</groupId>
                 <artifactId>tesseract-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>onl.tesseract.lib</groupId>
-                <artifactId>tesseract-profile</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
