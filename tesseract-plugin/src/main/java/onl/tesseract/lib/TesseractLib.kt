@@ -59,7 +59,7 @@ object TesseractLib {
             EquipmentService::class.java,
             EquipmentService(EquipmentYamlRepository, namedspacedKeyProvider, eventService)
         )
-        container.registerService(MenuService::class.java, MenuService(pluginService,eventService));
+        container.registerService(MenuService::class.java, MenuService(eventService));
         equipmentService.registerEventHandler(plugin)
         container.registerService(PlayerProfileService::class.java, PlayerProfileService())
         val chatEntryService = container.registerService(ChatEntryService::class.java, ChatEntryService(taskScheduler))
