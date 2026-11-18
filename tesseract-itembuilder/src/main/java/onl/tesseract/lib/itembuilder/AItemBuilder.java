@@ -5,16 +5,20 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Abstract builder for crafting ItemStacks with various metadata.
@@ -30,10 +34,13 @@ public abstract class AItemBuilder<T extends AItemBuilder<T>> {
     private boolean enchanted;
     private List<Component> lore;
     private Color metaColor;
+    private Integer maxStackSize;
     private final List<ItemFlag> flags;
     private int amount;
     private Integer customModelData;
     private final Map<Enchantment, Integer> enchantments;
+    private final Map<NamespacedKey, Consumer<PersistentDataContainer>> persistentData;
+
 
     protected AItemBuilder(Material material, ItemStack base, AItemBuilder<?> builder) {
         if (builder != null) {
@@ -50,12 +57,15 @@ public abstract class AItemBuilder<T extends AItemBuilder<T>> {
             this.amount = builder.amount != 0 ? builder.amount : 1;
             this.customModelData = builder.customModelData;
             this.enchantments = builder.enchantments != null ? new java.util.HashMap<>(builder.enchantments) : new java.util.HashMap<>();
+            this.persistentData = builder.persistentData != null ? new java.util.HashMap<>(builder.persistentData) : new java.util.HashMap<>();
+            this.maxStackSize = builder.maxStackSize;
         } else {
             this.material = material;
             this.base = base;
             this.flags = new ArrayList<>();
             this.amount = 1;
             this.enchantments = new java.util.HashMap<>();
+            this.persistentData = new java.util.HashMap<>();
         }
     }
 
@@ -150,6 +160,16 @@ public abstract class AItemBuilder<T extends AItemBuilder<T>> {
         return self();
     }
 
+    public <P, C> T persistData(NamespacedKey key, PersistentDataType<P, C> dataType, C value) {
+        this.persistentData.put(key, container -> container.set(key, dataType, value));
+        return self();
+    }
+
+    public T maxStackSize(int maxStackSize) {
+        this.maxStackSize = maxStackSize;
+        return self();
+    }
+
     /**
      * Gets the flags list. Use {@link #flags(ItemFlag...)} to add flags instead.
      */
@@ -176,6 +196,12 @@ public abstract class AItemBuilder<T extends AItemBuilder<T>> {
                 meta.addEnchant(Enchantment.UNBREAKING, 1, true);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
+
+            if (!persistentData.isEmpty()) {
+                PersistentDataContainer container = meta.getPersistentDataContainer();
+                persistentData.values().forEach(setter -> setter.accept(container));
+            }
+
             for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
                 meta.addEnchant(entry.getKey(), entry.getValue(), true);
             }
@@ -195,6 +221,9 @@ public abstract class AItemBuilder<T extends AItemBuilder<T>> {
             }
             if (customModelData != null) {
                 meta.setCustomModelData(customModelData);
+            }
+            if (maxStackSize != null) {
+                meta.setMaxStackSize(maxStackSize);
             }
         });
         item.setAmount(amount);
