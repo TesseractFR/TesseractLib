@@ -51,7 +51,7 @@
         </repository>
         <repository>
             <id>githubcommandbuilder</id>
-            <url>https://maven.pkg.github.com/TesseractFR/CommandBuilder</url>
+            <url>https://maven.tesseract.onl</url>
         </repository>
         <repository>
             <id>placeholderapi</id>
