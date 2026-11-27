@@ -38,9 +38,9 @@
 
     <distributionManagement>
         <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/TesseractFR/TesseractLib</url>
+            <id>tesseract</id>
+            <name>Tesseract Maven</name>
+            <url>https://maven.tesseract.onl</url>
         </repository>
     </distributionManagement>
 
@@ -51,7 +51,7 @@
         </repository>
         <repository>
             <id>githubcommandbuilder</id>
-            <url>https://maven.pkg.github.com/TesseractFR/CommandBuilder</url>
+            <url>https://maven.tesseract.onl</url>
         </repository>
         <repository>
             <id>placeholderapi</id>
